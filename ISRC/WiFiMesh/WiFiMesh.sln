@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WiFiMesh", "WiFiMesh.vcproj", "{72249F8D-7F17-424E-B249-4CDCE761FBF9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshGUI", "..\MeshGUI\MeshGUI.vcproj", "{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}"
+	ProjectSection(ProjectDependencies) = postProject
+		{72249F8D-7F17-424E-B249-4CDCE761FBF9} = {72249F8D-7F17-424E-B249-4CDCE761FBF9}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72249F8D-7F17-424E-B249-4CDCE761FBF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72249F8D-7F17-424E-B249-4CDCE761FBF9}.Debug|Win32.Build.0 = Debug|Win32
+		{72249F8D-7F17-424E-B249-4CDCE761FBF9}.Release|Win32.ActiveCfg = Release|Win32
+		{72249F8D-7F17-424E-B249-4CDCE761FBF9}.Release|Win32.Build.0 = Release|Win32
+		{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}.Debug|Win32.Build.0 = Debug|Win32
+		{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}.Release|Win32.ActiveCfg = Release|Win32
+		{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
