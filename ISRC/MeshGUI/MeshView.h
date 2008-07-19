@@ -16,7 +16,6 @@ public:
 	virtual	~CMeshView();
 
 	CMeshDoc*		GetDocument() const;
-	void			SetGrid(Grid* pGrid);
 	void			Refresh();
 
 protected:
@@ -39,6 +38,9 @@ private:
 	CRect			GetHorizontalRuleRect() const;
 	Cell&			GetCell(int row, int column);
 	Cell*			GetCellByLocation(CPoint point);
+	Grid*			GetGrid() const { return GetDocument()->GetGrid(); }
+	CMeshSettings&	GetSettings() const { return GetDocument()->GetSettings(); }
+	int				GetCellsCount() const { return m_rows * m_columns; }
 
 protected:
 	// Message handlers
@@ -56,10 +58,10 @@ public:
 	virtual void	OnDraw(CDC* pDC);  // overridden to draw this view
 
 private:
-	Grid*	m_pGrid;
 	Cell*	m_pCells;
 	Cell*	m_pCurrentCell;
-	int		m_cellsCount;
+	int		m_rows;
+	int		m_columns;
 	CRgn	m_primaryCoverage;
 	CRgn	m_secondaryCoverage;
 	CBitmap m_wifiBitmap;

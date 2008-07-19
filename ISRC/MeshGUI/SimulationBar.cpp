@@ -5,9 +5,15 @@
 BEGIN_MESSAGE_MAP(CSimulationBar, CDialogBar)
 	ON_WM_ERASEBKGND()
 	ON_WM_CTLCOLOR()
-	ON_WM_PAINT()
-	ON_WM_NCPAINT()
 END_MESSAGE_MAP()
+
+void CSimulationBar::DoDataExchange(CDataExchange *pDX)
+{
+	CDialogBar::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SPEED_SLIDER, m_speedSlider);
+	DDX_Control(pDX, IDC_COVERAGE_SLIDER, m_coverageSlider);
+	DDX_Control(pDX, IDC_DURATION_SLIDER, m_durationSlider);
+}
 
 BOOL CSimulationBar::OnEraseBkgnd(CDC* pDC)
 {
@@ -36,16 +42,15 @@ HBRUSH CSimulationBar::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return CDialogBar::OnCtlColor(pDC, pWnd, nCtlColor);;
 }
 
-void CSimulationBar::OnPaint()
+BOOL CSimulationBar::Create(CWnd* pParentWnd, UINT nIDTemplate, UINT nStyle, UINT nID)
 {
-	CPaintDC dc(this); // device context for painting
-	// TODO: Add your message handler code here
-	// Do not call CDialogBar::OnPaint() for painting messages
+	// TODO: Add your specialized code here and/or call the base class
+	if (!CDialogBar::Create(pParentWnd, nIDTemplate, nStyle, nID)) return FALSE;
+	return OnInitDialogBar();
 }
 
-void CSimulationBar::OnNcPaint()
+BOOL CSimulationBar::OnInitDialogBar()
 {
-	TRACE0("test");
-	// TODO: Add your message handler code here
-	// Do not call CDialogBar::OnNcPaint() for painting messages
+	UpdateData(FALSE);
+	return TRUE;
 }

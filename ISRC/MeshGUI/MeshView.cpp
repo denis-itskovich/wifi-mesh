@@ -6,6 +6,7 @@
 
 #include "MeshDoc.h"
 #include "MeshView.h"
+#include "MeshException.h"
 #include <math.h>
 
 #ifdef _DEBUG
@@ -25,7 +26,7 @@ public:
 	void		Clear()								{ m_stations.RemoveAll(); m_title.Empty(); }
 	bool		IsEmpty() const						{ return m_stations.IsEmpty() != FALSE; }
 	CString		GetTitle()							{ return m_title; }
-	void		Add(GridItem* pItem)				{ m_title.AppendFormat((IsEmpty() ? L"%d" : L", %d"), pItem->station.id); m_stations.AddHead(pItem); }
+	void		Add(GridItem* pItem);
 
 	GridItem*	GetHead() const						{ return m_stations.IsEmpty() ? NULL : m_stations.GetHead(); }
 	int			GetRow() const						{ return m_row; }
@@ -39,6 +40,13 @@ private:
 	int				m_column;
 };
 
+void CMeshView::Cell::Add(GridItem* pItem)
+{
+	Station station;
+	MESH_CHECK_STATUS(GridItemGetStation(pItem, &station));
+	m_title.AppendFormat((IsEmpty() ? _T("%d") : _T(", %d")), station.id);
+	m_stations.AddHead(pItem);
+}
 
 IMPLEMENT_DYNCREATE(CMeshView, CView)
 
@@ -56,9 +64,10 @@ END_MESSAGE_MAP()
 // CMeshView construction/destruction
 
 CMeshView::CMeshView() :
-m_pGrid(NULL),
 m_pCells(NULL),
-m_pCurrentCell(NULL)
+m_pCurrentCell(NULL),
+m_rows(0),
+m_columns(0)
 {
 	m_wifiBitmap.LoadBitmap(IDB_WIFI_STATION);
 }
@@ -76,17 +85,20 @@ void CMeshView::OnDraw(CDC* pDC)
 {
 	CMeshDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	if (!pDoc) return;
+	if (!pDoc || !pDoc->IsValid()) return;
 
-	CSettingsBar* pSettings = pDoc->GetSettings();
-	if (pSettings->m_showBackground) DrawBackground(pDC);
+	if (pDoc->IsChanged()) Refresh();
 
-	if (!m_pGrid || !(m_pGrid->size.x * m_pGrid->size.y)) return;
+	CMeshSettings& settings = GetSettings();
+	if (settings.IsVisible(eVI_BACKGROUND)) DrawBackground(pDC);
 
-	if (pSettings->m_showCoverage) DrawCoverage(pDC);
-	if (pSettings->m_showRules) DrawRules(pDC);
-	if (pSettings->m_showGrid) DrawGrid(pDC);
-	if (pSettings->m_showStations) DrawStations(pDC);
+	Grid* pGrid = GetGrid();
+	if (!pGrid) return;
+
+	if (settings.IsVisible(eVI_COVERAGE)) DrawCoverage(pDC);
+	if (settings.IsVisible(eVI_RULES)) DrawRules(pDC);
+	if (settings.IsVisible(eVI_GRID)) DrawGrid(pDC);
+	if (settings.IsVisible(eVI_STATIONS)) DrawStations(pDC);
 }
 
 void CMeshView::DrawGrid(CDC* pDC)
@@ -122,9 +134,10 @@ void CMeshView::DrawGrid(CDC* pDC)
 
 void CMeshView::DrawCoverage(CDC* pDC)
 {
-	if (!m_pGrid->items) return;
+	int items;
+	MESH_CHECK_STATUS(GridGetItemsCount(GetGrid(), &items));
 
-	double radius = GetDocument()->GetSettings()->m_coverage;
+	double radius = GetSettings().GetCoverageRange();
 
 	CRect rcClip;
 	pDC->GetClipBox(rcClip);
@@ -133,8 +146,8 @@ void CMeshView::DrawCoverage(CDC* pDC)
 
 	if (rcClip.Width() >= gridRect.Width() || rcClip.Height() >= gridRect.Height())
 	{
-		CalcCoverage(m_primaryCoverage, radius / 4);
-		CalcCoverage(m_secondaryCoverage, radius / 2);
+		CalcCoverage(m_primaryCoverage, radius / 2);
+		CalcCoverage(m_secondaryCoverage, radius);
 	}
 
 	rcClip.InflateRect(1,1);
@@ -181,16 +194,16 @@ void CMeshView::DrawCoverage(CDC* pDC)
 
 void CMeshView::DrawStations(CDC* pDC)
 {
-	CSettingsBar* pSettings = GetDocument()->GetSettings();
+	CMeshSettings& settings = GetSettings();
 
 	CFont font; font.CreatePointFont(100, FONT_STATION);
 	CFont* pOldFont = pDC->SelectObject(&font);
 
-	for (int i = 0; i < m_cellsCount; ++i)
+	for (int i = 0; i < GetCellsCount(); ++i)
 	{
 		Cell& cell = m_pCells[i];
 
-		if (pSettings->m_showStations && !cell.IsEmpty()) DrawCell(pDC, cell);
+		if (settings.IsVisible(eVI_STATIONS) && !cell.IsEmpty()) DrawCell(pDC, cell);
 	}
 
 	if (m_pCurrentCell) DrawCell(pDC, *m_pCurrentCell, TRUE);
@@ -209,9 +222,21 @@ void CMeshView::DrawCell(CDC* pDC, Cell& cell, BOOL bSelected)
 
 	if (bSelected)
 	{
+		CDC dcSel;
+		dcSel.CreateCompatibleDC(pDC);
+		CBitmap bmp;
+		bmp.CreateBitmap(rcClip.Width(), rcClip.Height(), 1, 32, NULL);
+		dcSel.SelectObject(&bmp);
+		dcSel.SetViewportOrg(-rcClip.left, -rcClip.top);
+
 		CBrush brush(COLOR_CELL_CELLECTION);
-		pDC->FillRect(rect, &brush);
+		dcSel.FillRect(rcClip, &brush);
+		BLENDFUNCTION blend = {AC_SRC_OVER, 0, 128, 0};
+		pDC->AlphaBlend(rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), &dcSel, rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), blend);
+
+		bmp.DeleteObject();
 		brush.DeleteObject();
+		dcSel.DeleteDC();
 	}
 
 	if (cell.IsEmpty()) return;
@@ -234,7 +259,7 @@ void CMeshView::CalcCoverage(CRgn& rgn, double radius)
 	if (rgn.GetSafeHandle()) rgn.DeleteObject();
 	rgn.CreateRectRgn(0,0,0,0);
 
-	for (int i = 0; i < m_cellsCount; ++i)
+	for (int i = 0; i < GetCellsCount(); ++i)
 	{
 		Cell& cell = m_pCells[i];
 		if (!cell.IsEmpty()) CalcCoverage(rgn, cell, radius);
@@ -247,7 +272,8 @@ void CMeshView::CalcCoverage(CRgn& rgn, Cell& cell, double radius)
 	int dy = (int)(GetVerticalStep() * radius);
 
 	CRect dstRect = GetCellRect(cell);
-	dstRect.InflateRect(CRect(dx, dy, dx, dy));
+	dstRect = CRect(dstRect.CenterPoint(), dstRect.CenterPoint());
+	dstRect.InflateRect(CRect(dx + 1, dy + 1, dx + 2, dy + 2));
 
 	CRgn newRgn; newRgn.CreateEllipticRgn(dstRect.left, dstRect.top, dstRect.right, dstRect.bottom);
 	rgn.CombineRgn(&rgn, &newRgn, RGN_OR);
@@ -311,6 +337,8 @@ void CMeshView::DrawBackground(CDC* pDC)
 
 void CMeshView::DrawRules(CDC* pDC)
 {
+	if (!m_pCells) return;
+
 	CRect rcHoriz = GetHorizontalRuleRect();
 	CRect rcVert = GetVerticalRuleRect();
 
@@ -328,7 +356,7 @@ void CMeshView::DrawRules(CDC* pDC)
 
 	pDC->SetBkMode(TRANSPARENT);
 
-	for (unsigned i = 0; i < m_pGrid->size.x; ++i)
+	for (int i = 0; i < m_columns; ++i)
 	{
 		CRect rect = GetCellRect(GetCell(0, i));
 		rect.top = rcHoriz.top + 1;
@@ -338,7 +366,7 @@ void CMeshView::DrawRules(CDC* pDC)
 		tmp.IntersectRect(rect, rcClip);
 		if (tmp.IsRectEmpty()) continue;
 
-		CString num; num.Format(L"%d", i);
+		CString num; num.Format(_T("%d"), i);
 
 		pDC->MoveTo(rect.left, rcHoriz.Height() / 2);
 		pDC->LineTo(rect.left, rcHoriz.Height());
@@ -346,7 +374,7 @@ void CMeshView::DrawRules(CDC* pDC)
 		pDC->DrawText(num, rect, DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
 	}
 
-	for (unsigned i = 0; i < m_pGrid->size.y; ++i)
+	for (int i = 0; i < m_rows; ++i)
 	{
 		CRect rect = GetCellRect(GetCell(i, 0));
 		rect.left = rcVert.left + 1;
@@ -356,7 +384,7 @@ void CMeshView::DrawRules(CDC* pDC)
 		tmp.IntersectRect(rect, rcClip);
 		if (tmp.IsRectEmpty()) continue;
 
-		CString num; num.Format(L"%d", i);
+		CString num; num.Format(_T("%d"), i);
 
 		pDC->MoveTo(rcVert.Width() / 2, rect.top);
 		pDC->LineTo(rcVert.Width(), rect.top);
@@ -374,7 +402,7 @@ CRect CMeshView::GetGridRect() const
 	GetClientRect(&rect);
 
 	CMeshDoc* pDoc = (CMeshDoc*)GetDocument();
-	if (!pDoc->GetSettings()->m_showRules) return rect;
+	if (!GetSettings().IsVisible(eVI_RULES)) return rect;
 
 	rect.SubtractRect(rect, GetHorizontalRuleRect());
 	rect.SubtractRect(rect, GetVerticalRuleRect());
@@ -401,14 +429,14 @@ double CMeshView::GetHorizontalStep() const
 {
 	CRect rect = GetGridRect();
 	CSize size = rect.Size();
-	return (double)m_pGrid->gridStep.x * (double)size.cx / (double)m_pGrid->size.x;
+	return (double)size.cx / (double)m_columns;
 }
 
 double CMeshView::GetVerticalStep() const
 {
 	CRect rect = GetGridRect();
 	CSize size = rect.Size();
-	return (double)m_pGrid->gridStep.y * (double)size.cy / (double)m_pGrid->size.y;
+	return (double)size.cy / (double)m_rows;
 }
 
 CRect CMeshView::GetCellRect(const Cell& cell) const
@@ -419,59 +447,63 @@ CRect CMeshView::GetCellRect(const Cell& cell) const
 	int row = cell.GetRow();
 	int column = cell.GetColumn();
 
-	rect.right = rect.left + (int)(dx * (column + 1));
-	rect.left += (int)(dx * column);
-	rect.bottom = rect.top + (int)(dy * (row + 1));
-	rect.top += (int)(dy * row);
+	rect.right = rect.left + (int)(dx * (double)(column + 1));
+	rect.left += (int)(dx * (double)column) + 1;
+	rect.bottom = rect.top + (int)(dy * (double)(row + 1));
+	rect.top += (int)(dy * (double)row) + 1;
 
 	return rect;
 }
 
 CMeshView::Cell& CMeshView::GetCell(int row, int column)
 {
-	return m_pCells[row * m_pGrid->size.x + column];
+	return m_pCells[row * m_columns + column];
 }
 
 void CMeshView::Refresh()
 {
+	Size size = {0, 0};
+	Grid* pGrid = GetGrid();
+	if (pGrid) GridGetSize(pGrid, &size);
+
+	if (m_columns != size.x || m_rows != size.y)
+	{
+		m_rows = size.y;
+		m_columns = size.x;
+		if (m_pCells)
+		{
+			delete[] m_pCells;
+			m_pCells = NULL;
+		}
+
+		int cellsCount = GetCellsCount();
+		if (cellsCount) m_pCells = new Cell[cellsCount];
+		for (int i = 0; i < cellsCount; ++i) m_pCells[i].SetLocation(i / m_columns, i % m_columns);
+	}
+
 	if (!m_pCells) return;
 
-	for (int i = 0; i < m_cellsCount; ++i)
+	for (int i = 0; i < GetCellsCount(); ++i)
 	{
 		m_pCells[i].Clear();
 	}
 
 	GridItem* pItem = NULL;
-	GridFirstItem(m_pGrid, &pItem);
+	GridFirstItem(pGrid, &pItem);
 
 	while (pItem)
 	{
-		int x = (int)(pItem->position.x + 0.5);
-		int y = (int)(pItem->position.y + 0.5);
+		Position pos;
+		MESH_CHECK_STATUS(GridItemGetPosition(pItem, &pos));
+
+		int x = (int)(pos.x + 0.5);
+		int y = (int)(pos.y + 0.5);
 
 		Cell& curCell = GetCell(y, x);
 		curCell.Add(pItem);
-		GridNextItem(m_pGrid, &pItem);
+		GridNextItem(pGrid, &pItem);
 	}
 
-}
-
-void CMeshView::SetGrid(Grid* pGrid)
-{
-	if (m_pCells) delete[] m_pCells;
-	m_pCells = m_pCurrentCell = NULL;
-	m_pGrid = pGrid;
-	m_cellsCount = m_pGrid ? (m_pGrid->size.x * m_pGrid->size.y) : 0;
-	if (m_cellsCount) m_pCells = new Cell[m_cellsCount];
-	for (unsigned i = 0; i < m_pGrid->size.y; ++i)
-	{
-		for (unsigned j = 0; j < m_pGrid->size.x; ++j)
-		{
-			Cell& cell = GetCell(i, j);
-			cell.SetLocation(i, j);
-		}
-	}
-	Refresh();
 }
 
 CMeshView::Cell* CMeshView::GetCellByLocation(CPoint point)
@@ -484,7 +516,6 @@ CMeshView::Cell* CMeshView::GetCellByLocation(CPoint point)
 	int row = (int)((double)(point.y - gridRect.top) / GetVerticalStep());
 	return &GetCell(row, column);
 }
-
 
 // CMeshView message handlers
 

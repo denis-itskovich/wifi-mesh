@@ -2,6 +2,7 @@
 #define _WIFI_MESH_LIST_H
 
 #include "Defs.h"
+#include "Status.h"
 
 typedef struct _ListHeader
 {

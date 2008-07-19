@@ -5,6 +5,10 @@
 	Name="MeshGUI"
 	ProjectGUID="{8B2CB393-E8E1-4EB2-84EC-80A0551B5F70}"
 	RootNamespace="MeshGUI"
+	SccProjectName="Svn"
+	SccAuxPath="Svn"
+	SccLocalPath="Svn"
+	SccProvider="SubversionScc"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -221,6 +225,14 @@
 		<Filter
 			Name="Controls"
 			>
+			<File
+				RelativePath=".\TransparentSliderCtrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TransparentSliderCtrl.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Document"
@@ -231,6 +243,14 @@
 			</File>
 			<File
 				RelativePath=".\MeshDoc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshSettings.h"
 				>
 			</File>
 			<File
@@ -262,14 +282,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SettingsBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SettingsBar.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SimulationBar.cpp"
 				>
 			</File>
@@ -281,6 +293,10 @@
 		<Filter
 			Name="Defs"
 			>
+			<File
+				RelativePath=".\MeshException.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Palette.h"
 				>
