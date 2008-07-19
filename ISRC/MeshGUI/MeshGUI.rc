@@ -81,15 +81,16 @@ BEGIN
     POPUP "&View"
     BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "S&imulation Bar",             ID_VIEW_SIMULATIONTOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
         MENUITEM SEPARATOR
-        MENUITEM "Show &grid",                  ID_VIEW_SHOWGRID
-        MENUITEM "Show &rules",                 ID_VIEW_SHOWRULES
-        MENUITEM "Show &background",            ID_VIEW_SHOWBACKGROUND
-        MENUITEM "Show &data flow",             ID_VIEW_SHOWDATAFLOW
-        MENUITEM "Show &stations",              ID_VIEW_SHOWSTATIONS
-        MENUITEM "Show r&outing",               ID_VIEW_SHOWROUTING
-        MENUITEM "Show &coverage",              ID_VIEW_SHOWCOVERAGE
+        MENUITEM "Show &background\tCtrl+F1",   ID_VIEW_SHOWBACKGROUND
+        MENUITEM "Show &grid\tCtrl+F2",         ID_VIEW_SHOWGRID
+        MENUITEM "Show &rules\tCtrl+F3",        ID_VIEW_SHOWRULES
+        MENUITEM "Show &stations\tCtrl+F4",     ID_VIEW_SHOWSTATIONS
+        MENUITEM "Show &data flow\tCtrl+F5",    ID_VIEW_SHOWDATAFLOW
+        MENUITEM "Show r&outing\tCtrl+F6",      ID_VIEW_SHOWROUTING
+        MENUITEM "Show &coverage\tCtrl+F7",     ID_VIEW_SHOWCOVERAGE
     END
     POPUP "&Simulation"
     BEGIN
@@ -128,6 +129,13 @@ BEGIN
     VK_F5,          ID_SIMULATION_BREAK,    VIRTKEY, SHIFT, NOINVERT
     VK_F5,          ID_SIMULATION_RUN,      VIRTKEY, NOINVERT
     VK_F10,         ID_SIMULATION_SETTINGS, VIRTKEY, NOINVERT
+    VK_F1,          ID_VIEW_SHOWBACKGROUND, VIRTKEY, CONTROL, NOINVERT
+    VK_F2,          ID_VIEW_SHOWGRID,       VIRTKEY, CONTROL, NOINVERT
+    VK_F3,          ID_VIEW_SHOWRULES,      VIRTKEY, CONTROL, NOINVERT
+    VK_F4,          ID_VIEW_SHOWSTATIONS,   VIRTKEY, CONTROL, NOINVERT
+    VK_F5,          ID_VIEW_SHOWDATAFLOW,   VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_VIEW_SHOWROUTING,    VIRTKEY, CONTROL, NOINVERT
+    VK_F7,          ID_VIEW_SHOWCOVERAGE,   VIRTKEY, CONTROL, NOINVERT
 END
 
 
