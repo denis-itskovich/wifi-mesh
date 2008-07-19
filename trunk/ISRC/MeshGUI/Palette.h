@@ -10,7 +10,7 @@
 #define COLOR_BACKGROUND_FILL			RGB(255,255,255)
 #define COLOR_RULES						RGB(224,224,224)
 
-#define TEXT_BACKGROUND					_T("WiFi Mesh Simulator")
+#define TEXT_BACKGROUND					_T("ISRC Project")
 #define FONT_BACKGROUND					_T("Tahoma")
 #define FONT_RULES						_T("Tahoma")
 #define FONT_STATION					_T("Tahoma")

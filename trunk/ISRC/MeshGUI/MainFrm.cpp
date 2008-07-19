@@ -19,6 +19,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_COMMAND(ID_SIMULATION_SETTINGS, &CMainFrame::OnSimulationSettings)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SIMULATIONTOOLBAR, &CMainFrame::OnUpdateViewSimulationToolbar)
+	ON_COMMAND(ID_VIEW_SIMULATIONTOOLBAR, &CMainFrame::OnViewSimulationToolbar)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -72,12 +74,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1; // fail to create
 	}
 
-	m_wndReBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
+	m_wndReBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_FLOATING);
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	
 	EnableDocking(CBRS_ALIGN_ANY);
-	// DockControlBar(&m_wndToolBar);
 
 	return 0;
 }
@@ -119,6 +119,17 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 
 void CMainFrame::OnSimulationSettings()
 {
-	// TODO: Add your command handler code here
 	RecalcLayout();
+}
+
+void CMainFrame::OnUpdateViewSimulationToolbar(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_simulationBar.IsWindowVisible());
+	pCmdUI->Enable();
+}
+
+void CMainFrame::OnViewSimulationToolbar()
+{
+	m_simulationBar.ShowWindow(m_simulationBar.IsVisible() ? SW_HIDE : SW_SHOW);
+	this->RecalcLayout();
 }

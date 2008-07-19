@@ -31,4 +31,7 @@ protected:  // control bar embedded members
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+public:
+	afx_msg void OnUpdateViewSimulationToolbar(CCmdUI *pCmdUI);
+	afx_msg void OnViewSimulationToolbar();
 };

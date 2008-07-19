@@ -11,4 +11,10 @@ public:
 private:
 	unsigned		m_uState;
 	CToolTipCtrl	m_toolTip;
+public:
+	virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
+	virtual BOOL CreateEx(DWORD dwExStyle, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+protected:
+	virtual void PreSubclassWindow();
 };
