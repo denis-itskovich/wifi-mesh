@@ -1,67 +1,47 @@
-// MeshGUIDoc.h : interface of the CMeshDoc class
-//
-
 #pragma once
-
-#include "SettingsBar.h"
 
 EXTERN_C
 {
 	#include <Grid.h>
 };
 
-class CMeshView;
+#include "MeshSettings.h"
 
 class CMeshDoc : public CDocument
 {
 protected: // create from serialization only
 	CMeshDoc();
 	DECLARE_DYNCREATE(CMeshDoc)
-
-// Attributes
-public:
-
-// Operations
-public:
-
-// Overrides
-public:
-	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
-	virtual Grid* GetGrid();
-
-	CMeshView* GetMainView();
-	CSettingsBar* GetSettings();
-	void AddStation(int x, int y);
-	void Iterate();
-
-// Implementation
 public:
 	virtual ~CMeshDoc();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
 
-protected:
-// Generated message map functions
-	afx_msg void OnUpdateSimulationRun(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateSimulationBreak(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateSimulationSettings(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateViewSettings(CCmdUI* pCmdUI);
-	afx_msg void OnSimulationRun();
+public:
+	virtual BOOL	OnNewDocument();
+	virtual void	Serialize(CArchive& ar);
+
+	virtual Grid*	GetGrid();
+	CMeshSettings&	GetSettings() { return m_settings; }
+	void			AddStation(int x, int y);
+	void			Iterate();
+	void			Refresh();
+	bool			IsChanged();
+	bool			IsValid() const;
 
 protected:
 	DECLARE_MESSAGE_MAP()
 
-
 private:
-	BOOL IsGridValid() const;
-	BOOL IsStarted() const;
+	bool			IsStarted() const;
 
-	Grid	m_grid;
-	BOOL	m_bStarted;
-	BOOL	m_bInitialized;
-	ULONG	m_currentId;
+	Grid*			m_pGrid;
+	CMeshSettings	m_settings;
+	unsigned long	m_currentId;
+	bool			m_bInitialized;
+	bool			m_bChanged;
 
+#ifdef _DEBUG
+public:
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
+#endif
 };

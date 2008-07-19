@@ -48,9 +48,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	m_simulationBar.Create(this, IDD_SIMULATION_BAR, CBRS_ALIGN_ANY, AFX_IDW_DIALOGBAR);
-	m_settingsBar.Create(this);
-	m_settingsBar.UpdateData(FALSE);
-	m_settingsBar.ShowWindow(SW_HIDE);
 
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_TRANSPARENT | TBSTYLE_FLAT, CBRS_ALIGN_ANY) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
@@ -123,6 +120,5 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 void CMainFrame::OnSimulationSettings()
 {
 	// TODO: Add your command handler code here
-	m_settingsBar.ShowWindow(m_settingsBar.IsWindowVisible() ? SW_HIDE : SW_SHOWNORMAL);
 	RecalcLayout();
 }
