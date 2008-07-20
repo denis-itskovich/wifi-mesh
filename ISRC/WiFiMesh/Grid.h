@@ -17,7 +17,7 @@ EStatus	GridDestroy(Grid** ppThis);
 
 EStatus GridAddStation(Grid* pThis, Position position, Velocity velocity, Station station);
 
-EStatus GridRemoveItem(Grid* pThis, GridItem* pItem);
+EStatus GridEraseItem(Grid* pThis, GridItem* pItem);
 EStatus GridAddItem(Grid* pThis, GridItem* pItem);
 
 EStatus	GridMoveItems(Grid* pThis);
