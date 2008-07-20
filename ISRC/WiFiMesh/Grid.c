@@ -45,9 +45,10 @@ struct _Grid
 
 #define CHECK_STATUS_RETURN(rc)				SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
 #define CHECK_STATUS_BREAK(rc)				{if ((rc) != eSTATUS_COMMON_OK) break;}
-#define CHECK_BOUNDS(size, position)		SAFE_OPERATION(IF_OUT_OF_RANGE(size, position) return eSTATUS_GRID_OUT_OF_RANGE)
+#define VALIDATE_BOUNDS(size, position)		SAFE_OPERATION(IF_OUT_OF_RANGE(size, position) return eSTATUS_GRID_OUT_OF_RANGE)
 
 #define GET_MEMBER(destination, ptr, member) SAFE_OPERATION({VALIDATE(ptr && destination, eSTATUS_COMMON_INVALID_ARGUMENT); *destination = ptr->member; return eSTATUS_COMMON_OK; })
+#define SET_MEMBER(source, ptr, member) SAFE_OPERATION({VALIDATE(ptr, eSTATUS_COMMON_INVALID_ARGUMENT); ptr->member = source; return eSTATUS_COMMON_OK; })
 
 EStatus	GridCreate(Grid** ppThis, Size size)
 {
@@ -63,9 +64,9 @@ EStatus	GridCreate(Grid** ppThis, Size size)
 	pThis->items = 0;
 
 	pThis->pArray = NEW_ARRAY(ListHeader, size);
-	CLEAR_ARRAY(pThis->pArray, size);
-
 	VALIDATE(pThis->pArray, eSTATUS_COMMON_NO_MEMORY);
+
+	CLEAR_ARRAY(pThis->pArray, size);
 
 	return eSTATUS_COMMON_OK;
 }
@@ -123,7 +124,7 @@ EStatus GridAddItem(Grid* pThis, GridItem* pItem)
 	unsigned i;
 	VALIDATE_GRID(pThis);
 	VALIDATE(pItem != NULL, eSTATUS_GRID_INVALID_PTR);
-	CHECK_BOUNDS(pThis->size, pItem->position);
+	VALIDATE_BOUNDS(pThis->size, pItem->position);
 
 	i = ARRAY_INDEX(pThis->size, pItem->position);
 
@@ -134,11 +135,11 @@ EStatus GridMoveItem(Grid* pThis, GridItem* pItem)
 {
 	pItem->position.x += pItem->velocity.x;
 	pItem->position.y += pItem->velocity.y;
-	CHECK_BOUNDS(pThis->size, pItem->position);
+	VALIDATE_BOUNDS(pThis->size, pItem->position);
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus	GridIterate(Grid* pThis)
+EStatus	GridMoveItems(Grid* pThis)
 {
 	GridItem *pItem, *pNext;
 	unsigned i;
@@ -188,6 +189,17 @@ EStatus	GridIterate(Grid* pThis)
 	}
 
 	return rc;
+}
+
+EStatus GridGetItemAt(Grid* pThis, Position position, GridItem** ppItem)
+{
+    int index;
+    VALIDATE_GRID(pThis);
+    VALIDATE(ppItem, eSTATUS_COMMON_INVALID_ARGUMENT);
+    VALIDATE_BOUNDS(pThis->size, position);
+    index = ARRAY_INDEX(pThis->size, position);
+    *ppItem = (GridItem*)pThis->pArray[index].pNext;
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus GridFirstItem(Grid* pThis, GridItem** ppItem)
@@ -260,4 +272,14 @@ EStatus GridItemGetVelocity(GridItem* pItem, Velocity* pVelocity)
 EStatus GridItemGetStation(GridItem* pItem, Station* pStation)
 {
 	GET_MEMBER(pStation, pItem, station);
+}
+
+EStatus GridItemSetVelocity(GridItem* pItem, Velocity velocity)
+{
+    SET_MEMBER(velocity, pItem, velocity);
+}
+
+EStatus GridItemSetStation(GridItem* pItem, Station station)
+{
+    SET_MEMBER(station, pItem, station);
 }

@@ -52,6 +52,8 @@ IMPLEMENT_DYNCREATE(CMeshView, CView)
 
 // CMeshView message map
 
+
+
 BEGIN_MESSAGE_MAP(CMeshView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
@@ -59,6 +61,29 @@ BEGIN_MESSAGE_MAP(CMeshView, CView)
 	ON_WM_RBUTTONUP()
 	ON_WM_SETCURSOR()
 	ON_WM_ERASEBKGND()
+
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWBACKGROUND, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWCOVERAGE, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWGRID, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWRULES, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWSTATIONS, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWDATAFLOW, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWROUTING, &CMeshView::OnUpdateViewSubMenus)
+
+	ON_COMMAND(ID_VIEW_SHOWBACKGROUND, &CMeshView::OnViewShowBackground)
+	ON_COMMAND(ID_VIEW_SHOWCOVERAGE, &CMeshView::OnViewShowCoverage)
+	ON_COMMAND(ID_VIEW_SHOWGRID, &CMeshView::OnViewShowGrid)
+	ON_COMMAND(ID_VIEW_SHOWRULES, &CMeshView::OnViewShowRules)
+	ON_COMMAND(ID_VIEW_SHOWSTATIONS, &CMeshView::OnViewShowStations)
+	ON_COMMAND(ID_VIEW_SHOWDATAFLOW, &CMeshView::OnViewShowDataFlow)
+	ON_COMMAND(ID_VIEW_SHOWROUTING, &CMeshView::OnViewShowRouting)
+
+    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_ADD, &CMeshView::OnPopupStationAdd)
+    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_EDIT, &CMeshView::OnPopupStationEdit)
+    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_REMOVE, &CMeshView::OnPopupStationRemove)
+
+    ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_EDIT, &CMeshView::OnUpdatePopupStationEdit)
+    ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_REMOVE, &CMeshView::OnUpdatePopupStationRemove)
 END_MESSAGE_MAP()
 
 // CMeshView construction/destruction
@@ -154,6 +179,7 @@ void CMeshView::DrawCoverage(CDC* pDC)
 
 	CBrush primaryBrush(COLOR_COVERAGE_PRIMARY_FILL);
 	CBrush secondaryBrush(COLOR_COVERAGE_SECONDARY_FILL);
+	CBrush strokeBrush(COLOR_COVERAGE_STROKE);
 
 	CRgn rgnClip; rgnClip.CreateRectRgn(rcClip.left, rcClip.top, rcClip.right, rcClip.bottom);
 
@@ -164,7 +190,6 @@ void CMeshView::DrawCoverage(CDC* pDC)
 	CRgn rgnSecondary;
 	rgnSecondary.CreateRectRgn(0,0,0,0);
 	rgnSecondary.CombineRgn(&rgnClip, &m_secondaryCoverage, RGN_AND);
-	rgnSecondary.CombineRgn(&rgnSecondary, &rgnPrimary, RGN_DIFF);
 
 	CDC dcMem;
 	CBitmap bmp;
@@ -176,7 +201,10 @@ void CMeshView::DrawCoverage(CDC* pDC)
 	dcMem.BitBlt(0, 0, rcClip.Width(), rcClip.Height(), pDC, rcClip.left, rcClip.top, SRCCOPY);
 	dcMem.SetViewportOrg(-rcClip.left, -rcClip.top);
 
+	rgnSecondary.CombineRgn(&rgnSecondary, &rgnPrimary, RGN_DIFF);
+
 	dcMem.FillRgn(&rgnSecondary, &secondaryBrush);
+	// dcMem.FrameRgn(&rgnSecondary, &strokeBrush, 1, 1);
 	dcMem.FillRgn(&rgnPrimary, &primaryBrush);
 
 	BLENDFUNCTION blend = { AC_SRC_OVER, 0, 128, 0 };
@@ -306,7 +334,7 @@ void CMeshView::DrawBackground(CDC* pDC)
 
 	int dcOld = pDC->SaveDC();
 	pDC->SetTextColor(COLOR_BACKGROUND_TEXT);
-	CFont* pOldFont = pDC->SelectObject(&font);
+	pDC->SelectObject(&font);
 
 	CRect newRect = rect;
 	pDC->DrawText(text, newRect, DT_CALCRECT | DT_SINGLELINE);
@@ -328,11 +356,24 @@ void CMeshView::DrawBackground(CDC* pDC)
 	textPos.y += (int)(cos(angle) * (double)fontHeight / 2);
 
 	pDC->SetBkMode(TRANSPARENT);
+	pDC->BeginPath();
 	pDC->TextOut(textPos.x, textPos.y, text);
-	pDC->SelectObject(pOldFont);
-	font.DeleteObject();
+	pDC->EndPath();
+	// pDC->SelectClipPath(RGN_AND);
+
+	CBrush brush;
+	CPen pen(PS_SOLID, 1, COLOR_BACKGROUND_STROKE);
+	brush.CreateSolidBrush(COLOR_BACKGROUND_TEXT);
+	pDC->SelectObject(&brush);
+	pDC->SelectObject(&pen);
+	pDC->StrokeAndFillPath();
+	// pDC->FillPath();
 
 	pDC->RestoreDC(dcOld);
+
+	font.DeleteObject();
+	brush.DeleteObject();
+	pen.DeleteObject();
 }
 
 void CMeshView::DrawRules(CDC* pDC)
@@ -503,7 +544,6 @@ void CMeshView::Refresh()
 		curCell.Add(pItem);
 		GridNextItem(pGrid, &pItem);
 	}
-
 }
 
 CMeshView::Cell* CMeshView::GetCellByLocation(CPoint point)
@@ -549,7 +589,7 @@ void CMeshView::OnRButtonUp(UINT nFlags, CPoint point)
 
 	ClientToScreen(&point);
 	CMenu* pPopup = menu.GetSubMenu(0);
-	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, point.x, point.y, this);
+	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
 
 	CView::OnRButtonUp(nFlags, point);
 }
@@ -565,6 +605,60 @@ BOOL CMeshView::OnEraseBkgnd(CDC* pDC)
 {
 	return CView::OnEraseBkgnd(pDC);
 }
+
+void CMeshView::OnPopupStationAdd()
+{
+    GetDocument()->AddStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
+}
+
+void CMeshView::OnUpdateViewSubMenus(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetDocument()->IsValid());
+	pCmdUI->SetCheck(GetSettings().IsVisible((EVisualItems)(eVI_BACKGROUND + pCmdUI->m_nID - ID_VIEW_SHOWBACKGROUND)));
+}
+
+void CMeshView::OnViewShowBackground()
+{
+	GetSettings().Toggle(eVI_BACKGROUND);
+	Invalidate();
+}
+
+void CMeshView::OnViewShowGrid()
+{
+	GetSettings().Toggle(eVI_GRID);
+	Invalidate();
+}
+
+void CMeshView::OnViewShowRules()
+{
+	GetSettings().Toggle(eVI_RULES);
+	Invalidate();
+}
+
+void CMeshView::OnViewShowStations()
+{
+	GetSettings().Toggle(eVI_STATIONS);
+	Invalidate();
+}
+
+void CMeshView::OnViewShowDataFlow()
+{
+	GetSettings().Toggle(eVI_DATA_FLOW);
+	Invalidate();
+}
+
+void CMeshView::OnViewShowCoverage()
+{
+	if (!GetSettings().Toggle(eVI_COVERAGE)) Refresh();
+	Invalidate();
+}
+
+void CMeshView::OnViewShowRouting()
+{
+	GetSettings().Toggle(eVI_ROUTING);
+	Invalidate();
+}
+
 
 // CMeshView diagnostics
 
@@ -585,3 +679,25 @@ CMeshDoc* CMeshView::GetDocument() const // non-debug version is inline
 	return (CMeshDoc*)m_pDocument;
 }
 #endif //_DEBUG
+
+
+void CMeshView::OnPopupStationEdit()
+{
+    GetDocument()->EditStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
+}
+
+void CMeshView::OnPopupStationRemove()
+{
+    GetDocument()->RemoveStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
+}
+
+
+void CMeshView::OnUpdatePopupStationEdit(CCmdUI *pCmdUI)
+{
+    pCmdUI->Enable(m_pCurrentCell != NULL && !m_pCurrentCell->IsEmpty());
+}
+
+void CMeshView::OnUpdatePopupStationRemove(CCmdUI *pCmdUI)
+{
+    pCmdUI->Enable(m_pCurrentCell != NULL && !m_pCurrentCell->IsEmpty());
+}

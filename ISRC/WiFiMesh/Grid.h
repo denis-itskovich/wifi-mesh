@@ -20,8 +20,9 @@ EStatus GridAddStation(Grid* pThis, Position position, Velocity velocity, Statio
 EStatus GridRemoveItem(Grid* pThis, GridItem* pItem);
 EStatus GridAddItem(Grid* pThis, GridItem* pItem);
 
-EStatus	GridIterate(Grid* pThis);
+EStatus	GridMoveItems(Grid* pThis);
 
+EStatus GridGetItemAt(Grid* pThis, Position position, GridItem** ppItem);
 EStatus GridNextItem(Grid* pThis, GridItem** ppItem);
 EStatus GridFirstItem(Grid* pThis, GridItem** ppItem);
 
@@ -32,5 +33,8 @@ EStatus GridIsValid(Grid* pThis);
 EStatus GridItemGetPosition(GridItem* pItem, Position* pPosition);
 EStatus GridItemGetVelocity(GridItem* pItem, Velocity* pVelocity);
 EStatus GridItemGetStation(GridItem* pItem, Station* pStation);
+
+EStatus GridItemSetVelocity(GridItem* pItem, Velocity velocity);
+EStatus GridItemSetStation(GridItem* pItem, Station station);
 
 #endif // _WIFI_MESH_GRID_H

@@ -53,6 +53,22 @@ protected:
 	afx_msg BOOL	OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg BOOL	OnEraseBkgnd(CDC* pDC);
 
+	afx_msg void	OnViewShowBackground();
+	afx_msg void	OnViewShowCoverage();
+	afx_msg void	OnViewShowGrid();
+	afx_msg void	OnViewShowRules();
+	afx_msg void	OnViewShowStations();
+	afx_msg void	OnViewShowDataFlow();
+	afx_msg void	OnViewShowRouting();
+
+    afx_msg void OnUpdateViewSubMenus(CCmdUI *pCmdUI);
+    afx_msg void OnViewShowbackground();
+    afx_msg void OnPopupStationAdd();
+    afx_msg void OnPopupStationEdit();
+    afx_msg void OnPopupStationRemove();
+    afx_msg void OnUpdatePopupStationEdit(CCmdUI *pCmdUI);
+    afx_msg void OnUpdatePopupStationRemove(CCmdUI *pCmdUI);
+
 public:
 	// overrides
 	virtual void	OnDraw(CDC* pDC);  // overridden to draw this view

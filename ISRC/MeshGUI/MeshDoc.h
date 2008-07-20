@@ -22,11 +22,15 @@ public:
 	virtual Grid*	GetGrid();
 	CMeshSettings&	GetSettings() { return m_settings; }
 	void			AddStation(int x, int y);
+    void            EditStation(int x, int y);
+    void            RemoveStation(int x, int y);
 	void			Iterate();
 	void			Refresh();
+	void			RefreshViews();
 	bool			IsChanged();
 	bool			IsValid() const;
 
+	static CMeshDoc* GetInstance() { return m_pInstance; }
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -38,6 +42,8 @@ private:
 	unsigned long	m_currentId;
 	bool			m_bInitialized;
 	bool			m_bChanged;
+
+	static CMeshDoc* m_pInstance;
 
 #ifdef _DEBUG
 public:

@@ -3,18 +3,15 @@
 class CTransparentSliderCtrl : public CSliderCtrl
 {
 public:
-	CTransparentSliderCtrl() {}
+	CTransparentSliderCtrl() : m_multiplier(1.0) {}
 	virtual ~CTransparentSliderCtrl() {}
 
+	void SetMultiplier(double multi) { m_multiplier = multi; }
+	double GetEffectivePosition() const { return (double)GetPos() * m_multiplier; }
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
 private:
 	unsigned		m_uState;
-	CToolTipCtrl	m_toolTip;
-public:
-	virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
-	virtual BOOL CreateEx(DWORD dwExStyle, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-protected:
-	virtual void PreSubclassWindow();
+	int				m_lastPos;
+	double			m_multiplier;
 };

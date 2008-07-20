@@ -10,12 +10,17 @@ void CTransparentSliderCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: Add your control notification handler code here
+
+	CDC* pDC = CDC::FromHandle(pNMCD->hdc);
+
 	if (pNMCD->dwDrawStage == CDDS_PREPAINT)
 	{
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		m_uState = pNMCD->uItemState;
 		return;
 	}
+
+	*pResult = 0;
 
 	switch (pNMCD->dwItemSpec)
 	{
@@ -28,44 +33,12 @@ void CTransparentSliderCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		break;
 	case TBCD_THUMB:
+		if (m_lastPos != GetPos())
 		{
-			CString str;
-			str.Format(_T("%d"), GetPos());
-			m_toolTip.SetTitle(0, str);
-			m_toolTip.Popup();
+			m_lastPos = GetPos();
+			NMTRBTHUMBPOSCHANGING posChanged = {{GetSafeHwnd(), GetDlgCtrlID(), TRBN_THUMBPOSCHANGING}, m_lastPos, TB_THUMBPOSITION};
+			GetParent()->SendMessage(WM_NOTIFY, GetDlgCtrlID(), (LPARAM)&posChanged);
 		}
+		break;
 	}
-	*pResult = 0;
-}
-
-BOOL CTransparentSliderCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
-{
-	// TODO: Add your specialized code here and/or call the base class
-
-	if (!CSliderCtrl::Create(dwStyle, rect, pParentWnd, nID)) return FALSE;
-	return m_toolTip.Create(this);
-}
-
-BOOL CTransparentSliderCtrl::CreateEx(DWORD dwExStyle, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
-{
-	// TODO: Add your specialized code here and/or call the base class
-
-	return CSliderCtrl::CreateEx(dwExStyle, dwStyle, rect, pParentWnd, nID);
-}
-
-int CTransparentSliderCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-	if (CSliderCtrl::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
-	// TODO:  Add your specialized creation code here
-
-	return 0;
-}
-
-void CTransparentSliderCtrl::PreSubclassWindow()
-{
-	// TODO: Add your specialized code here and/or call the base class
-	m_toolTip.Create(GetParent()->GetParent());
-	CSliderCtrl::PreSubclassWindow();
 }
