@@ -146,7 +146,7 @@ void CMeshDoc::EditStation(int x, int y)
     
     if (dlg.DoModal() == IDCANCEL) return;
 
-    GridRemoveItem(m_pGrid, pItem);
+    GridEraseItem(m_pGrid, pItem);
 
     angle = dlg.m_angle / 180 * PI;
     velocity.x = dlg.m_speed * cos(angle);
@@ -169,7 +169,7 @@ void CMeshDoc::RemoveStation(int x, int y)
     MESH_CHECK_STATUS(GridGetItemAt(m_pGrid, pos, &pItem));
     if (!pItem) return;
     
-    GridRemoveItem(m_pGrid, pItem);
+    GridEraseItem(m_pGrid, pItem);
     Refresh();
 }
 

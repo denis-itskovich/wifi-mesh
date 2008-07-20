@@ -111,12 +111,19 @@ EStatus GridAddStation(Grid* pThis, Position position, Velocity velocity, Statio
 	return GridAddItem(pThis, pItem);
 }
 
+EStatus GridEraseItem(Grid* pThis, GridItem* pItem)
+{
+    CHECK_STATUS_RETURN(GridRemoveItem(pThis, pItem));
+    free(pItem);
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus GridRemoveItem(Grid* pThis, GridItem* pItem)
 {
 	VALIDATE_GRID(pThis);
 	VALIDATE(pItem != NULL, eSTATUS_GRID_INVALID_PTR);
 
-	return ListRemove(&pItem->list);
+	CHECK_STATUS_RETURN(ListRemove(&pItem->list));
 }
 
 EStatus GridAddItem(Grid* pThis, GridItem* pItem)
