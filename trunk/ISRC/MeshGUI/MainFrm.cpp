@@ -17,7 +17,6 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_WM_SIZE()
 	ON_COMMAND(ID_SIMULATION_SETTINGS, &CMainFrame::OnSimulationSettings)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_SIMULATIONTOOLBAR, &CMainFrame::OnUpdateViewSimulationToolbar)
 	ON_COMMAND(ID_VIEW_SIMULATIONTOOLBAR, &CMainFrame::OnViewSimulationToolbar)
@@ -51,7 +50,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_simulationBar.Create(this, IDD_SIMULATION_BAR, CBRS_ALIGN_ANY, AFX_IDW_DIALOGBAR);
 
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_TRANSPARENT | TBSTYLE_FLAT, CBRS_ALIGN_ANY) ||
+	if (!m_wndToolBar.CreateEx(this, TBSTYLE_TRANSPARENT | TBSTYLE_FLAT, CBRS_SIZE_DYNAMIC | CBRS_ALIGN_ANY) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
 		TRACE0("Failed to create toolbar\n");
@@ -74,48 +73,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1; // fail to create
 	}
 
-	m_wndReBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_FLOATING);
+	m_wndReBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
-	
-	EnableDocking(CBRS_ALIGN_ANY);
+	// EnableDocking(CBRS_ALIGN_ANY);
 
 	return 0;
 }
-
-BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
-{
-	if( !CFrameWnd::PreCreateWindow(cs) )
-		return FALSE;
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return TRUE;
-}
-
-
-// CMainFrame diagnostics
-
-#ifdef _DEBUG
-void CMainFrame::AssertValid() const
-{
-	CFrameWnd::AssertValid();
-}
-
-void CMainFrame::Dump(CDumpContext& dc) const
-{
-	CFrameWnd::Dump(dc);
-}
-
-#endif //_DEBUG
-
-
-// CMainFrame message handlers
-
-void CMainFrame::OnSize(UINT nType, int cx, int cy)
-{
-	CFrameWnd::OnSize(nType, cx, cy);
-}
-
 
 void CMainFrame::OnSimulationSettings()
 {
@@ -133,3 +96,18 @@ void CMainFrame::OnViewSimulationToolbar()
 	m_simulationBar.ShowWindow(m_simulationBar.IsVisible() ? SW_HIDE : SW_SHOW);
 	this->RecalcLayout();
 }
+
+// CMainFrame diagnostics
+
+#ifdef _DEBUG
+void CMainFrame::AssertValid() const
+{
+	CFrameWnd::AssertValid();
+}
+
+void CMainFrame::Dump(CDumpContext& dc) const
+{
+	CFrameWnd::Dump(dc);
+}
+
+#endif //_DEBUG

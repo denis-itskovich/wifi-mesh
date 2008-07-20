@@ -266,19 +266,19 @@
 			Name="Dialogs"
 			>
 			<File
+				RelativePath=".\EditStationDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EditStationDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\NewMeshDlg.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\NewMeshDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\NewStationDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\NewStationDlg.h"
 				>
 			</File>
 			<File
