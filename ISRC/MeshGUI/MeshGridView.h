@@ -1,22 +1,21 @@
 #pragma once
 
+#include "MeshView.h"
 // forward declaration
 typedef struct _Grid Grid;
 
-class CMeshView : public CView
+class CMeshGridView : public CMeshView
 {
 	// forward declaration of inner class
 	class Cell;
 
 protected:
-	CMeshView();
-	DECLARE_DYNCREATE(CMeshView)
+	CMeshGridView();
+	DECLARE_DYNCREATE(CMeshGridView)
 
 public:
-	virtual	~CMeshView();
-
-	CMeshDoc*		GetDocument() const;
-	void			Refresh();
+	virtual	~CMeshGridView();
+    virtual void        Refresh();
 
 protected:
 	virtual void	DrawBackground(CDC* pDC);
@@ -61,13 +60,15 @@ protected:
 	afx_msg void	OnViewShowDataFlow();
 	afx_msg void	OnViewShowRouting();
 
-    afx_msg void OnUpdateViewSubMenus(CCmdUI *pCmdUI);
-    afx_msg void OnViewShowbackground();
-    afx_msg void OnPopupStationAdd();
-    afx_msg void OnPopupStationEdit();
-    afx_msg void OnPopupStationRemove();
-    afx_msg void OnUpdatePopupStationEdit(CCmdUI *pCmdUI);
-    afx_msg void OnUpdatePopupStationRemove(CCmdUI *pCmdUI);
+    afx_msg void    OnUpdateViewSubMenus(CCmdUI *pCmdUI);
+    afx_msg void    OnViewShowbackground();
+
+    afx_msg void    OnPopupStationAdd();
+    afx_msg void    OnPopupStationEdit();
+    afx_msg void    OnPopupStationRemove();
+
+    afx_msg void    OnUpdatePopupStationEdit(CCmdUI *pCmdUI);
+    afx_msg void    OnUpdatePopupStationAdd(CCmdUI *pCmdUI);
 
 public:
 	// overrides
@@ -90,7 +91,7 @@ public:
 };
 
 #ifndef _DEBUG  // debug version in MeshGUIView.cpp
-	inline CMeshDoc* CMeshView::GetDocument() const
+	inline CMeshDoc* CMeshGridView::GetDocument() const
 	{
 		return reinterpret_cast<CMeshDoc*>(m_pDocument);
 	}

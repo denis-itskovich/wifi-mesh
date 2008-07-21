@@ -8,7 +8,7 @@
 #include "NewMeshDlg.h"
 #include "EditStationDlg.h"
 #include "MainFrm.h"
-#include "MeshView.h"
+#include "MeshGridView.h"
 #include "MeshException.h"
 #include <math.h>
 
@@ -89,7 +89,7 @@ void CMeshDoc::AddStation(int x, int y)
     Size size;
     MESH_CHECK_STATUS(GridGetSize(m_pGrid, &size));
 
-    CEditStationDlg dlg(_T("New station"), size.x, size.y);
+    CEditStationDlg dlg(_T("New station"), size.x - 1, size.y - 1);
 	dlg.m_positionX = x;
 	dlg.m_positionY = y;
     dlg.m_id = m_currentId++;
@@ -125,7 +125,7 @@ void CMeshDoc::EditStation(int x, int y)
     Size size;
     MESH_CHECK_STATUS(GridGetSize(m_pGrid, &size));
 
-    CEditStationDlg dlg(_T("Edit station"), size.x, size.y);
+    CEditStationDlg dlg(_T("Edit station"), size.x - 1, size.y - 1);
     dlg.m_positionX = x;
     dlg.m_positionY = y;
 

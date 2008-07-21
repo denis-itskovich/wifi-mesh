@@ -39,7 +39,7 @@ void CEditStationDlg::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxDouble(pDX, m_speed, 0, max(m_gridWidth, m_gridHeight));
 
 	DDX_Text(pDX, IDC_STATION_ANGLE, m_angle);
-	DDV_MinMaxDouble(pDX, m_angle, 0, 360);
+	DDV_MinMaxDouble(pDX, m_angle, -360, 360);
 
     DDX_Text(pDX, IDC_STATION_ID, m_id);
     DDV_MinMaxInt(pDX, m_id, 0, 2000);

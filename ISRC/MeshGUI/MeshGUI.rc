@@ -176,7 +176,7 @@ STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_CHILD
 EXSTYLE WS_EX_PALETTEWINDOW
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    CONTROL         "",IDC_COVERAGE_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | TBS_FIXEDLENGTH | WS_TABSTOP,227,0,72,15
+    CONTROL         "",IDC_COVERAGE_SLIDER,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | TBS_FIXEDLENGTH | WS_TABSTOP,227,0,72,15
     LTEXT           "Simulation speed:",IDC_STATIC,6,4,64,11
     LTEXT           "Duration:",IDC_STATIC,331,4,33,11
     CONTROL         "",IDC_SPEED_SLIDER,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | TBS_FIXEDLENGTH | WS_TABSTOP,70,0,69,15
@@ -450,11 +450,11 @@ LANGUAGE LANG_HEBREW, SUBLANG_DEFAULT
 
 IDR_MENU1 MENU 
 BEGIN
-    POPUP "MeshViewPopup"
+    POPUP "MeshGridViewPopup"
     BEGIN
-        MENUITEM "&Add station",                ID_MESHVIEWPOPUP_STATION_ADD
-        MENUITEM "&Edit station",               ID_MESHVIEWPOPUP_STATION_EDIT
-        MENUITEM "&Remove station",             ID_MESHVIEWPOPUP_STATION_REMOVE
+        MENUITEM "&Add station",                ID_MeshGridViewPOPUP_STATION_ADD
+        MENUITEM "&Edit station",               ID_MeshGridViewPOPUP_STATION_EDIT
+        MENUITEM "&Remove station",             ID_MeshGridViewPOPUP_STATION_REMOVE
     END
 END
 

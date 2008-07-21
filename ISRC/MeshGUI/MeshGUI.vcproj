@@ -253,14 +253,6 @@
 				RelativePath=".\MeshSettings.h"
 				>
 			</File>
-			<File
-				RelativePath=".\MeshView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MeshView.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Dialogs"
@@ -351,6 +343,30 @@
 			</File>
 			<File
 				RelativePath=".\Mesh.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Views"
+			>
+			<File
+				RelativePath=".\MeshGridView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshGridView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshThroughputView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshView.h"
 				>
 			</File>
 		</Filter>

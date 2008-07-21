@@ -64,8 +64,8 @@ MeshGUIDoc.h, MeshGUIDoc.cpp - the document
     (via CMeshDoc::Serialize).
 
 MeshGUIView.h, MeshGUIView.cpp - the view of the document
-    These files contain your CMeshView class.
-    CMeshView objects are used to view CMeshDoc objects.
+    These files contain your CMeshGridView class.
+    CMeshGridView objects are used to view CMeshDoc objects.
 
 
 
