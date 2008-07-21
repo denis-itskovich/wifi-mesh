@@ -1,11 +1,11 @@
-// MeshGUIView.cpp : implementation of the CMeshView class
+// MeshGUIView.cpp : implementation of the CMeshGridView class
 //
 #include "stdafx.h"
 #include "Mesh.h"
 #include "Palette.h"
 
 #include "MeshDoc.h"
-#include "MeshView.h"
+#include "MeshGridView.h"
 #include "MeshException.h"
 #include <math.h>
 
@@ -13,10 +13,10 @@
 #define new DEBUG_NEW
 #endif
 
-// Inner class CMeshView::Cell
+// Inner class CMeshGridView::Cell
 // represents single cell in the grid.
 
-class CMeshView::Cell
+class CMeshGridView::Cell
 {
 	typedef CList<GridItem*>	StationList;
 
@@ -40,7 +40,7 @@ private:
 	int				m_column;
 };
 
-void CMeshView::Cell::Add(GridItem* pItem)
+void CMeshGridView::Cell::Add(GridItem* pItem)
 {
 	Station station;
 	MESH_CHECK_STATUS(GridItemGetStation(pItem, &station));
@@ -48,13 +48,13 @@ void CMeshView::Cell::Add(GridItem* pItem)
 	m_stations.AddHead(pItem);
 }
 
-IMPLEMENT_DYNCREATE(CMeshView, CView)
+IMPLEMENT_DYNCREATE(CMeshGridView, CView)
 
-// CMeshView message map
+// CMeshGridView message map
 
 
 
-BEGIN_MESSAGE_MAP(CMeshView, CView)
+BEGIN_MESSAGE_MAP(CMeshGridView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
 	ON_WM_LBUTTONDBLCLK()
@@ -62,33 +62,34 @@ BEGIN_MESSAGE_MAP(CMeshView, CView)
 	ON_WM_SETCURSOR()
 	ON_WM_ERASEBKGND()
 
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWBACKGROUND, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWCOVERAGE, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWGRID, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWRULES, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWSTATIONS, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWDATAFLOW, &CMeshView::OnUpdateViewSubMenus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWROUTING, &CMeshView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWBACKGROUND, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWCOVERAGE, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWGRID, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWRULES, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWSTATIONS, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWDATAFLOW, &CMeshGridView::OnUpdateViewSubMenus)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SHOWROUTING, &CMeshGridView::OnUpdateViewSubMenus)
 
-	ON_COMMAND(ID_VIEW_SHOWBACKGROUND, &CMeshView::OnViewShowBackground)
-	ON_COMMAND(ID_VIEW_SHOWCOVERAGE, &CMeshView::OnViewShowCoverage)
-	ON_COMMAND(ID_VIEW_SHOWGRID, &CMeshView::OnViewShowGrid)
-	ON_COMMAND(ID_VIEW_SHOWRULES, &CMeshView::OnViewShowRules)
-	ON_COMMAND(ID_VIEW_SHOWSTATIONS, &CMeshView::OnViewShowStations)
-	ON_COMMAND(ID_VIEW_SHOWDATAFLOW, &CMeshView::OnViewShowDataFlow)
-	ON_COMMAND(ID_VIEW_SHOWROUTING, &CMeshView::OnViewShowRouting)
+	ON_COMMAND(ID_VIEW_SHOWBACKGROUND, &CMeshGridView::OnViewShowBackground)
+	ON_COMMAND(ID_VIEW_SHOWCOVERAGE, &CMeshGridView::OnViewShowCoverage)
+	ON_COMMAND(ID_VIEW_SHOWGRID, &CMeshGridView::OnViewShowGrid)
+	ON_COMMAND(ID_VIEW_SHOWRULES, &CMeshGridView::OnViewShowRules)
+	ON_COMMAND(ID_VIEW_SHOWSTATIONS, &CMeshGridView::OnViewShowStations)
+	ON_COMMAND(ID_VIEW_SHOWDATAFLOW, &CMeshGridView::OnViewShowDataFlow)
+	ON_COMMAND(ID_VIEW_SHOWROUTING, &CMeshGridView::OnViewShowRouting)
 
-    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_ADD, &CMeshView::OnPopupStationAdd)
-    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_EDIT, &CMeshView::OnPopupStationEdit)
-    ON_COMMAND(ID_MESHVIEWPOPUP_STATION_REMOVE, &CMeshView::OnPopupStationRemove)
+    ON_COMMAND(ID_MeshGridViewPOPUP_STATION_ADD, &CMeshGridView::OnPopupStationAdd)
+    ON_COMMAND(ID_MeshGridViewPOPUP_STATION_EDIT, &CMeshGridView::OnPopupStationEdit)
+    ON_COMMAND(ID_MeshGridViewPOPUP_STATION_REMOVE, &CMeshGridView::OnPopupStationRemove)
 
-    ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_EDIT, &CMeshView::OnUpdatePopupStationEdit)
-    ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_REMOVE, &CMeshView::OnUpdatePopupStationRemove)
+    ON_UPDATE_COMMAND_UI(ID_MeshGridViewPOPUP_STATION_ADD, &CMeshGridView::OnUpdatePopupStationAdd)
+    ON_UPDATE_COMMAND_UI(ID_MeshGridViewPOPUP_STATION_EDIT, &CMeshGridView::OnUpdatePopupStationEdit)
+    ON_UPDATE_COMMAND_UI(ID_MeshGridViewPOPUP_STATION_REMOVE, &CMeshGridView::OnUpdatePopupStationEdit)
 END_MESSAGE_MAP()
 
-// CMeshView construction/destruction
+// CMeshGridView construction/destruction
 
-CMeshView::CMeshView() :
+CMeshGridView::CMeshGridView() :
 m_pCells(NULL),
 m_pCurrentCell(NULL),
 m_rows(0),
@@ -97,16 +98,16 @@ m_columns(0)
 	m_wifiBitmap.LoadBitmap(IDB_WIFI_STATION);
 }
 
-CMeshView::~CMeshView()
+CMeshGridView::~CMeshGridView()
 {
 	if (m_pCells) delete[] m_pCells;
 	if (m_primaryCoverage.GetSafeHandle()) m_primaryCoverage.DeleteObject();
 	if (m_secondaryCoverage.GetSafeHandle()) m_secondaryCoverage.DeleteObject();
 }
 
-// CMeshView drawing
+// CMeshGridView drawing
 
-void CMeshView::OnDraw(CDC* pDC)
+void CMeshGridView::OnDraw(CDC* pDC)
 {
 	CMeshDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -126,7 +127,7 @@ void CMeshView::OnDraw(CDC* pDC)
 	if (settings.IsVisible(eVI_STATIONS)) DrawStations(pDC);
 }
 
-void CMeshView::DrawGrid(CDC* pDC)
+void CMeshGridView::DrawGrid(CDC* pDC)
 {
 	CRect rect = GetGridRect();
 	CSize size = rect.Size();
@@ -157,7 +158,7 @@ void CMeshView::DrawGrid(CDC* pDC)
 	pen.DeleteObject();
 }
 
-void CMeshView::DrawCoverage(CDC* pDC)
+void CMeshGridView::DrawCoverage(CDC* pDC)
 {
 	int items;
 	MESH_CHECK_STATUS(GridGetItemsCount(GetGrid(), &items));
@@ -220,7 +221,7 @@ void CMeshView::DrawCoverage(CDC* pDC)
 	primaryBrush.DeleteObject();
 }
 
-void CMeshView::DrawStations(CDC* pDC)
+void CMeshGridView::DrawStations(CDC* pDC)
 {
 	CMeshSettings& settings = GetSettings();
 
@@ -240,7 +241,7 @@ void CMeshView::DrawStations(CDC* pDC)
 	font.DeleteObject();
 }
 
-void CMeshView::DrawCell(CDC* pDC, Cell& cell, BOOL bSelected)
+void CMeshGridView::DrawCell(CDC* pDC, Cell& cell, BOOL bSelected)
 {
 	CRect rect = GetCellRect(cell);
 	CRect rcClip;
@@ -282,7 +283,7 @@ void CMeshView::DrawCell(CDC* pDC, Cell& cell, BOOL bSelected)
 	bmpDC.DeleteDC();
 }
 
-void CMeshView::CalcCoverage(CRgn& rgn, double radius)
+void CMeshGridView::CalcCoverage(CRgn& rgn, double radius)
 {
 	if (rgn.GetSafeHandle()) rgn.DeleteObject();
 	rgn.CreateRectRgn(0,0,0,0);
@@ -294,7 +295,7 @@ void CMeshView::CalcCoverage(CRgn& rgn, double radius)
 	}
 }
 
-void CMeshView::CalcCoverage(CRgn& rgn, Cell& cell, double radius)
+void CMeshGridView::CalcCoverage(CRgn& rgn, Cell& cell, double radius)
 {
 	int dx = (int)(GetHorizontalStep() * radius);
 	int dy = (int)(GetVerticalStep() * radius);
@@ -308,7 +309,7 @@ void CMeshView::CalcCoverage(CRgn& rgn, Cell& cell, double radius)
 	newRgn.DeleteObject();
 }
 
-void CMeshView::DrawBackground(CDC* pDC)
+void CMeshGridView::DrawBackground(CDC* pDC)
 {
 	CRect rect;
 	pDC->GetClipBox(rect);
@@ -376,7 +377,7 @@ void CMeshView::DrawBackground(CDC* pDC)
 	pen.DeleteObject();
 }
 
-void CMeshView::DrawRules(CDC* pDC)
+void CMeshGridView::DrawRules(CDC* pDC)
 {
 	if (!m_pCells) return;
 
@@ -437,7 +438,7 @@ void CMeshView::DrawRules(CDC* pDC)
 	font.DeleteObject();
 }
 
-CRect CMeshView::GetGridRect() const
+CRect CMeshGridView::GetGridRect() const
 {
 	CRect rect;
 	GetClientRect(&rect);
@@ -450,7 +451,7 @@ CRect CMeshView::GetGridRect() const
 	return rect;
 }
 
-CRect CMeshView::GetHorizontalRuleRect() const
+CRect CMeshGridView::GetHorizontalRuleRect() const
 {
 	CRect rect;
 	GetClientRect(rect);
@@ -458,7 +459,7 @@ CRect CMeshView::GetHorizontalRuleRect() const
 	return rect;
 }
 
-CRect CMeshView::GetVerticalRuleRect() const
+CRect CMeshGridView::GetVerticalRuleRect() const
 {
 	CRect rect;
 	GetClientRect(rect);
@@ -466,21 +467,21 @@ CRect CMeshView::GetVerticalRuleRect() const
 	return rect;
 }
 
-double CMeshView::GetHorizontalStep() const
+double CMeshGridView::GetHorizontalStep() const
 {
 	CRect rect = GetGridRect();
 	CSize size = rect.Size();
 	return (double)size.cx / (double)m_columns;
 }
 
-double CMeshView::GetVerticalStep() const
+double CMeshGridView::GetVerticalStep() const
 {
 	CRect rect = GetGridRect();
 	CSize size = rect.Size();
 	return (double)size.cy / (double)m_rows;
 }
 
-CRect CMeshView::GetCellRect(const Cell& cell) const
+CRect CMeshGridView::GetCellRect(const Cell& cell) const
 {
 	CRect rect = GetGridRect();
 	double dx = GetHorizontalStep();
@@ -496,12 +497,12 @@ CRect CMeshView::GetCellRect(const Cell& cell) const
 	return rect;
 }
 
-CMeshView::Cell& CMeshView::GetCell(int row, int column)
+CMeshGridView::Cell& CMeshGridView::GetCell(int row, int column)
 {
 	return m_pCells[row * m_columns + column];
 }
 
-void CMeshView::Refresh()
+void CMeshGridView::Refresh()
 {
 	Size size = {0, 0};
 	Grid* pGrid = GetGrid();
@@ -546,7 +547,7 @@ void CMeshView::Refresh()
 	}
 }
 
-CMeshView::Cell* CMeshView::GetCellByLocation(CPoint point)
+CMeshGridView::Cell* CMeshGridView::GetCellByLocation(CPoint point)
 {
 	if (!m_pCells) return NULL;
 	CRect gridRect = GetGridRect();
@@ -557,9 +558,9 @@ CMeshView::Cell* CMeshView::GetCellByLocation(CPoint point)
 	return &GetCell(row, column);
 }
 
-// CMeshView message handlers
+// CMeshGridView message handlers
 
-void CMeshView::OnMouseMove(UINT nFlags, CPoint point)
+void CMeshGridView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	Cell* pNewCurrCell = GetCellByLocation(point);
 	if (!pNewCurrCell || pNewCurrCell == m_pCurrentCell) return;
@@ -570,19 +571,20 @@ void CMeshView::OnMouseMove(UINT nFlags, CPoint point)
 	m_pCurrentCell = pNewCurrCell;
 }
 
-void CMeshView::OnMouseLeave()
+void CMeshGridView::OnMouseLeave()
 {
 	if (!m_pCurrentCell) return;
 	InvalidateRect(GetCellRect(*m_pCurrentCell));
 	m_pCurrentCell = NULL;
 }
 
-void CMeshView::OnLButtonDblClk(UINT nFlags, CPoint point)
+void CMeshGridView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
+    if (!m_pCurrentCell) return;
 	GetDocument()->AddStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
 }
 
-void CMeshView::OnRButtonUp(UINT nFlags, CPoint point)
+void CMeshGridView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	CMenu menu;
 	menu.LoadMenu(IDR_MENU1);
@@ -594,110 +596,105 @@ void CMeshView::OnRButtonUp(UINT nFlags, CPoint point)
 	CView::OnRButtonUp(nFlags, point);
 }
 
-BOOL CMeshView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+BOOL CMeshGridView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
 	if (!m_pCurrentCell || m_pCurrentCell->IsEmpty()) return CView::OnSetCursor(pWnd, nHitTest, message);
 	::SetCursor(AfxGetApp()->LoadStandardCursor(IDC_HAND));
 	return TRUE;
 }
 
-BOOL CMeshView::OnEraseBkgnd(CDC* pDC)
+BOOL CMeshGridView::OnEraseBkgnd(CDC* pDC)
 {
 	return CView::OnEraseBkgnd(pDC);
 }
 
-void CMeshView::OnPopupStationAdd()
+void CMeshGridView::OnPopupStationAdd()
 {
     GetDocument()->AddStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
 }
 
-void CMeshView::OnUpdateViewSubMenus(CCmdUI *pCmdUI)
+void CMeshGridView::OnUpdateViewSubMenus(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetDocument()->IsValid());
 	pCmdUI->SetCheck(GetSettings().IsVisible((EVisualItems)(eVI_BACKGROUND + pCmdUI->m_nID - ID_VIEW_SHOWBACKGROUND)));
 }
 
-void CMeshView::OnViewShowBackground()
+void CMeshGridView::OnViewShowBackground()
 {
 	GetSettings().Toggle(eVI_BACKGROUND);
 	Invalidate();
 }
 
-void CMeshView::OnViewShowGrid()
+void CMeshGridView::OnViewShowGrid()
 {
 	GetSettings().Toggle(eVI_GRID);
 	Invalidate();
 }
 
-void CMeshView::OnViewShowRules()
+void CMeshGridView::OnViewShowRules()
 {
 	GetSettings().Toggle(eVI_RULES);
 	Invalidate();
 }
 
-void CMeshView::OnViewShowStations()
+void CMeshGridView::OnViewShowStations()
 {
 	GetSettings().Toggle(eVI_STATIONS);
 	Invalidate();
 }
 
-void CMeshView::OnViewShowDataFlow()
+void CMeshGridView::OnViewShowDataFlow()
 {
 	GetSettings().Toggle(eVI_DATA_FLOW);
 	Invalidate();
 }
 
-void CMeshView::OnViewShowCoverage()
+void CMeshGridView::OnViewShowCoverage()
 {
 	if (!GetSettings().Toggle(eVI_COVERAGE)) Refresh();
 	Invalidate();
 }
 
-void CMeshView::OnViewShowRouting()
+void CMeshGridView::OnViewShowRouting()
 {
 	GetSettings().Toggle(eVI_ROUTING);
 	Invalidate();
 }
 
 
-// CMeshView diagnostics
+// CMeshGridView diagnostics
 
 #ifdef _DEBUG
-void CMeshView::AssertValid() const
+void CMeshGridView::AssertValid() const
 {
 	CView::AssertValid();
 }
 
-void CMeshView::Dump(CDumpContext& dc) const
+void CMeshGridView::Dump(CDumpContext& dc) const
 {
 	CView::Dump(dc);
 }
 
-CMeshDoc* CMeshView::GetDocument() const // non-debug version is inline
-{
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CMeshDoc)));
-	return (CMeshDoc*)m_pDocument;
-}
 #endif //_DEBUG
 
 
-void CMeshView::OnPopupStationEdit()
+void CMeshGridView::OnPopupStationEdit()
 {
     GetDocument()->EditStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
 }
 
-void CMeshView::OnPopupStationRemove()
+void CMeshGridView::OnPopupStationRemove()
 {
     GetDocument()->RemoveStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
 }
 
 
-void CMeshView::OnUpdatePopupStationEdit(CCmdUI *pCmdUI)
+void CMeshGridView::OnUpdatePopupStationEdit(CCmdUI *pCmdUI)
 {
     pCmdUI->Enable(m_pCurrentCell != NULL && !m_pCurrentCell->IsEmpty());
 }
 
-void CMeshView::OnUpdatePopupStationRemove(CCmdUI *pCmdUI)
+void CMeshGridView::OnUpdatePopupStationAdd(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(m_pCurrentCell != NULL && !m_pCurrentCell->IsEmpty());
+    pCmdUI->Enable(m_pCurrentCell != NULL);
 }

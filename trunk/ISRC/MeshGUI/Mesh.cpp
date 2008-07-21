@@ -6,7 +6,7 @@
 #include "MainFrm.h"
 
 #include "MeshDoc.h"
-#include "MeshView.h"
+#include "MeshGridView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,7 +59,7 @@ BOOL CMeshApp::InitInstance()
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CMeshDoc),
 		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
-		RUNTIME_CLASS(CMeshView));
+		RUNTIME_CLASS(CMeshGridView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
