@@ -193,7 +193,8 @@ void CMeshDoc::RemoveStation(int x, int y)
 void CMeshDoc::Iterate()
 {
 	MESH_CHECK_STATUS(GridMoveItems(m_pGrid));
-	Refresh();
+    Refresh();
+	RefreshViews();
 }
 
 void CMeshDoc::Serialize(CArchive& ar)

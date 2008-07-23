@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\rotator.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\Toolbar.bmp"
 				>
 			</File>

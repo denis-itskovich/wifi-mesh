@@ -430,6 +430,7 @@ IDR_WIFI_STATION        ICON                    "res\\WiFiStation.ico"
 //
 
 IDB_WIFI_STATION        BITMAP                  "res\\wifistation.bmp"
+IDB_ROTATOR             BITMAP                  "res\\rotator.bmp"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -41,7 +41,7 @@ struct _Grid
 #define NEXT_ITEM(item)						(GridItem*)((item)->list.pNext)
 #define FIRST_ITEM(list)					(GridItem*)(list.pNext)
 
-#define IF_OUT_OF_RANGE(size, position)		if (((int)(size.x) <= ROUND(position.x)) || ((int)(size.y) <= ROUND(position.y)))
+#define IF_OUT_OF_RANGE(size, position)		if (((int)(size.x) <= ROUND(position.x)) || ((int)(size.y) <= ROUND(position.y)) || (ROUND(position.x) < 0) || (ROUND(position.y) < 0))
 
 #define CHECK_STATUS_RETURN(rc)				SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
 #define CHECK_STATUS_BREAK(rc)				{if ((rc) != eSTATUS_COMMON_OK) break;}
@@ -126,6 +126,7 @@ EStatus GridRemoveItem(Grid* pThis, GridItem* pItem)
 	VALIDATE(pItem != NULL, eSTATUS_GRID_INVALID_PTR);
 
 	CHECK_STATUS_RETURN(ListRemove(&pItem->list));
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus GridAddItem(Grid* pThis, GridItem* pItem)
@@ -191,9 +192,10 @@ EStatus	GridMoveItems(Grid* pThis)
 		pNext = pItem;
 		rc = GridNextItem(pThis, &pNext);
 
-		if (rc && rc != eSTATUS_GRID_EMPTY) return rc;
+		if (rc && rc != eSTATUS_GRID_LAST_ITEM) return rc;
 
 		i = ARRAY_INDEX(pThis->size, pItem->position);
+        GridMoveItem(pThis, pItem);
 		if (i != ARRAY_INDEX(pThis->size, pItem->position))
 		{
 			rc = GridRemoveItem(pThis, pItem);
