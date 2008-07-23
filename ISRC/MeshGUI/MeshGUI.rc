@@ -452,9 +452,9 @@ IDR_MENU1 MENU
 BEGIN
     POPUP "MeshGridViewPopup"
     BEGIN
-        MENUITEM "&Add station",                ID_MeshGridViewPOPUP_STATION_ADD
-        MENUITEM "&Edit station",               ID_MeshGridViewPOPUP_STATION_EDIT
-        MENUITEM "&Remove station",             ID_MeshGridViewPOPUP_STATION_REMOVE
+        MENUITEM "&Add station",                ID_MESHVIEWPOPUP_STATION_ADD
+        MENUITEM "&Edit station",               ID_MESHVIEWPOPUP_STATION_EDIT
+        MENUITEM "&Remove station",             ID_MESHVIEWPOPUP_STATION_REMOVE
     END
 END
 

@@ -24,15 +24,17 @@ protected:
 	virtual void	DrawCoverage(CDC* pDC);
 	virtual void	DrawCell(CDC* pDC, Cell& cell, BOOL bSelected = FALSE);
 
-	virtual void	CalcCoverage(CRgn& pRgn, Cell& cell, double radius);
-	virtual void	CalcCoverage(CRgn& pRgn, double radius);
+	virtual void	CalcCoverage(CRgn& pRgn, const Cell& cell, double radius) const;
+	virtual void	CalcCoverage(CRgn& pRgn, double radius) const;
 	virtual void	DrawRules(CDC* pDC);
 
 private:
+    void            RefreshCoverage();
 	double			GetHorizontalStep() const;
 	double			GetVerticalStep() const;
 	CRect			GetGridRect() const;
 	CRect			GetCellRect(const Cell& cell) const;
+    void            GetCellRgn(const Cell& cell, CRgn& rgn, bool bEmpty) const;
 	CRect			GetVerticalRuleRect() const;
 	CRect			GetHorizontalRuleRect() const;
 	Cell&			GetCell(int row, int column);
@@ -79,6 +81,7 @@ private:
 	Cell*	m_pCurrentCell;
 	int		m_rows;
 	int		m_columns;
+    double  m_range;
 	CRgn	m_primaryCoverage;
 	CRgn	m_secondaryCoverage;
 	CBitmap m_wifiBitmap;
@@ -88,6 +91,7 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // debug version in MeshGUIView.cpp

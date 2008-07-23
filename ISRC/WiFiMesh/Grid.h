@@ -21,6 +21,7 @@ EStatus GridEraseItem(Grid* pThis, GridItem* pItem);
 EStatus GridAddItem(Grid* pThis, GridItem* pItem);
 
 EStatus	GridMoveItems(Grid* pThis);
+EStatus GridMoveItemTo(Grid* pThis, GridItem* pItem, Position newPosition);
 
 EStatus GridGetItemAt(Grid* pThis, Position position, GridItem** ppItem);
 EStatus GridNextItem(Grid* pThis, GridItem** ppItem);

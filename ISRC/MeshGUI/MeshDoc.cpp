@@ -84,6 +84,17 @@ BOOL CMeshDoc::OnNewDocument()
 	return TRUE;
 }
 
+GridItem* CMeshDoc::GetStationAt(int x, int y)
+{
+    GridItem* pItem = NULL;
+    Position pos;
+    pos.x = x;
+    pos.y = y;
+
+    MESH_CHECK_STATUS(GridGetItemAt(m_pGrid, pos, &pItem));
+    return pItem;
+}
+
 void CMeshDoc::AddStation(int x, int y)
 {
     Size size;
@@ -112,23 +123,23 @@ void CMeshDoc::AddStation(int x, int y)
 
 void CMeshDoc::EditStation(int x, int y)
 {
-    GridItem* pItem;
-    Position pos;
-    pos.x = x;
-    pos.y = y;
-    MESH_CHECK_STATUS(GridGetItemAt(m_pGrid, pos, &pItem));
+    GridItem* pItem = GetStationAt(x, y);
     if (!pItem) return;
 
     Velocity velocity;
-    MESH_CHECK_STATUS(GridItemGetVelocity(pItem, &velocity));
-
+    Station station;
     Size size;
+    Position pos;
+
+    MESH_CHECK_STATUS(GridItemGetVelocity(pItem, &velocity));
     MESH_CHECK_STATUS(GridGetSize(m_pGrid, &size));
+    MESH_CHECK_STATUS(GridItemGetStation(pItem, &station));
 
     CEditStationDlg dlg(_T("Edit station"), size.x - 1, size.y - 1);
     dlg.m_positionX = x;
     dlg.m_positionY = y;
 
+    // TODO: fix angle calculation
     double speed = (sqrt(velocity.x * velocity.x + velocity.y * velocity.y));
     double angle = 0;
     if (speed > 0)
@@ -138,44 +149,50 @@ void CMeshDoc::EditStation(int x, int y)
 
     dlg.m_speed = speed;
     dlg.m_angle = angle;
-
-    Station station;
-    GridItemGetStation(pItem, &station);
-
     dlg.m_id = station.id;
     
     if (dlg.DoModal() == IDCANCEL) return;
 
-    GridEraseItem(m_pGrid, pItem);
-
     angle = dlg.m_angle / 180 * PI;
     velocity.x = dlg.m_speed * cos(angle);
     velocity.y = dlg.m_speed * sin(angle);
+
     pos.x = dlg.m_positionX;
     pos.y = dlg.m_positionY;
-
     station.id = dlg.m_id;
 
-    GridAddStation(m_pGrid, pos, velocity, station);
+    MESH_CHECK_STATUS(GridItemSetVelocity(pItem, velocity));
+    MESH_CHECK_STATUS(GridItemSetStation(pItem, station));
+    MESH_CHECK_STATUS(GridMoveItemTo(m_pGrid, pItem, pos));
+
+    Refresh();
+}
+
+void CMeshDoc::MoveStation(int srcX, int srcY, int dstX, int dstY)
+{
+    GridItem* pItem = GetStationAt(srcX, srcY);
+    if (!pItem) return;
+
+    Position pos;
+    pos.x = dstX;
+    pos.y = dstY;
+
+    MESH_CHECK_STATUS(GridMoveItemTo(m_pGrid, pItem, pos));
     Refresh();
 }
 
 void CMeshDoc::RemoveStation(int x, int y)
 {
-    GridItem* pItem;
-    Position pos;
-    pos.x = x;
-    pos.y = y;
-    MESH_CHECK_STATUS(GridGetItemAt(m_pGrid, pos, &pItem));
+    GridItem* pItem = GetStationAt(x, y);
     if (!pItem) return;
     
-    GridEraseItem(m_pGrid, pItem);
+    MESH_CHECK_STATUS(GridEraseItem(m_pGrid, pItem));
     Refresh();
 }
 
 void CMeshDoc::Iterate()
 {
-	GridMoveItems(m_pGrid);
+	MESH_CHECK_STATUS(GridMoveItems(m_pGrid));
 	Refresh();
 }
 
@@ -257,17 +274,18 @@ bool CMeshDoc::IsChanged()
 void CMeshDoc::RefreshViews()
 {
 	POSITION pos = GetFirstViewPosition();
-	CView* pView;
-	while (pView = GetNextView(pos))
+	CMeshView* pView;
+	while (pView = (CMeshView*)GetNextView(pos))
 	{
-		pView->Invalidate();
+		// pView->Invalidate();
+        pView->Refresh();
 	}
 }
 
 void CMeshDoc::Refresh()
 {
 	m_bChanged = true;
-	RefreshViews();
+	// RefreshViews();
 }
 
 // CMeshDoc diagnostics
