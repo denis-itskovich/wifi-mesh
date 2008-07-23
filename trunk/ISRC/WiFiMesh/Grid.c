@@ -50,6 +50,8 @@ struct _Grid
 #define GET_MEMBER(destination, ptr, member) SAFE_OPERATION({VALIDATE(ptr && destination, eSTATUS_COMMON_INVALID_ARGUMENT); *destination = ptr->member; return eSTATUS_COMMON_OK; })
 #define SET_MEMBER(source, ptr, member) SAFE_OPERATION({VALIDATE(ptr, eSTATUS_COMMON_INVALID_ARGUMENT); ptr->member = source; return eSTATUS_COMMON_OK; })
 
+static EStatus GridRemoveItem(Grid* pThis, GridItem* pItem);
+
 EStatus	GridCreate(Grid** ppThis, Size size)
 {
 	Grid* pThis;
@@ -144,6 +146,29 @@ EStatus GridMoveItem(Grid* pThis, GridItem* pItem)
 	pItem->position.y += pItem->velocity.y;
 	VALIDATE_BOUNDS(pThis->size, pItem->position);
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus GridMoveItemTo(Grid* pThis, GridItem* pItem, Position newPosition)
+{
+    unsigned oldIndex, newIndex;
+
+    VALIDATE_GRID(pThis);
+    VALIDATE(pItem, eSTATUS_GRID_INVALID_PTR);
+    VALIDATE_BOUNDS(pThis->size, pItem->position);
+    VALIDATE_BOUNDS(pThis->size, newPosition);
+
+    oldIndex = ARRAY_INDEX(pThis->size, pItem->position);
+    newIndex = ARRAY_INDEX(pThis->size, newPosition);
+
+    if (oldIndex != newIndex)
+    {
+        GridRemoveItem(pThis, pItem);
+        pItem->position = newPosition;
+        GridAddItem(pThis, pItem);
+    }
+    else pItem->position = newPosition;
+
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus	GridMoveItems(Grid* pThis)

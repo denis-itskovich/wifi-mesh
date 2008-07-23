@@ -91,6 +91,7 @@ BOOL CSimulationBar::OnInitDialogBar()
 {
 	UpdateData(FALSE);
 	m_coverageSlider.SetMultiplier(0.1);
+    m_coverageSlider.SetRange(0, 200);
 	return TRUE;
 }
 

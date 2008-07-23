@@ -21,9 +21,12 @@ public:
 
 	virtual Grid*	GetGrid();
 	CMeshSettings&	GetSettings() { return m_settings; }
+
 	void			AddStation(int x, int y);
     void            EditStation(int x, int y);
     void            RemoveStation(int x, int y);
+    void            MoveStation(int srcX, int srcY, int dstX, int dstY);
+
 	void			Iterate();
 	void			Refresh();
 	void			RefreshViews();
@@ -36,6 +39,7 @@ protected:
 
 private:
 	bool			IsStarted() const;
+    GridItem*       GetStationAt(int x, int y);
 
 	Grid*			m_pGrid;
 	CMeshSettings	m_settings;

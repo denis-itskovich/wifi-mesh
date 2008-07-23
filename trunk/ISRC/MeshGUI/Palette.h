@@ -11,6 +11,8 @@
 #define COLOR_BACKGROUND_FILL			RGB(255,255,255)
 #define COLOR_RULES						RGB(224,224,224)
 
+#define OPACITY_COVERAGE           100
+
 #define TEXT_BACKGROUND					_T("ISRC Project")
 #define FONT_BACKGROUND					_T("Arial")
 #define FONT_RULES						_T("Tahoma")
