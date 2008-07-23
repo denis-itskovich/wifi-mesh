@@ -71,6 +71,8 @@ protected:
 
     afx_msg void    OnUpdatePopupStationEdit(CCmdUI *pCmdUI);
     afx_msg void    OnUpdatePopupStationAdd(CCmdUI *pCmdUI);
+    afx_msg void    OnSize(UINT nType, int cx, int cy);
+    afx_msg void    OnTimer(UINT_PTR nIDEvent);
 
 public:
 	// overrides
@@ -85,19 +87,16 @@ private:
 	CRgn	m_primaryCoverage;
 	CRgn	m_secondaryCoverage;
 	CBitmap m_wifiBitmap;
+    int     m_nStep;
+    bool    m_bIsRunning;
 
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-    afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg void OnUpdateSimulationRun(CCmdUI *pCmdUI);
+    afx_msg void OnUpdateSimulationBreak(CCmdUI *pCmdUI);
+    afx_msg void OnSimulationRun();
+    afx_msg void OnSimulationBreak();
 };
-
-#ifndef _DEBUG  // debug version in MeshGUIView.cpp
-	inline CMeshDoc* CMeshGridView::GetDocument() const
-	{
-		return reinterpret_cast<CMeshDoc*>(m_pDocument);
-	}
-#endif
-

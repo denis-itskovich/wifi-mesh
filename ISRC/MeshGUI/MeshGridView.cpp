@@ -86,6 +86,11 @@ BEGIN_MESSAGE_MAP(CMeshGridView, CView)
     ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_EDIT, &CMeshGridView::OnUpdatePopupStationEdit)
     ON_UPDATE_COMMAND_UI(ID_MESHVIEWPOPUP_STATION_REMOVE, &CMeshGridView::OnUpdatePopupStationEdit)
     ON_WM_SIZE()
+    ON_WM_TIMER()
+    ON_UPDATE_COMMAND_UI(ID_SIMULATION_RUN, &CMeshGridView::OnUpdateSimulationRun)
+    ON_UPDATE_COMMAND_UI(ID_SIMULATION_BREAK, &CMeshGridView::OnUpdateSimulationBreak)
+    ON_COMMAND(ID_SIMULATION_RUN, &CMeshGridView::OnSimulationRun)
+    ON_COMMAND(ID_SIMULATION_BREAK, &CMeshGridView::OnSimulationBreak)
 END_MESSAGE_MAP()
 
 // CMeshGridView construction/destruction
@@ -95,7 +100,9 @@ m_pCells(NULL),
 m_pCurrentCell(NULL),
 m_rows(0),
 m_columns(0),
-m_range(0)
+m_range(0),
+m_nStep(0),
+m_bIsRunning(0)
 {
 	m_wifiBitmap.LoadBitmap(IDB_WIFI_STATION);
 }
@@ -147,16 +154,16 @@ void CMeshGridView::DrawGrid(CDC* pDC)
 	CRect rcClip;
 	pDC->GetClipBox(rcClip);
 
-	for (double i = rect.left; (i < size.cx) && (i < rcClip.right); i+=stepX)
+	for (double i = rect.left; ((int)i < size.cx) && ((int)i <= rcClip.right); i+=stepX)
 	{
-		if (i < rcClip.left) continue;
+		if ((int)i < rcClip.left) continue;
 		pDC->MoveTo((int)i, (max(rect.top, rcClip.top) + 1) & ~1);
 		pDC->LineTo((int)i, min(rect.top + size.cy, rcClip.bottom));
 	}
 
-	for (double i = rect.top; (i < size.cy) && (i < rcClip.bottom); i+=stepY)
+	for (double i = rect.top; ((int)i < size.cy) && ((int)i <= rcClip.bottom); i+=stepY)
 	{
-		if (i < rcClip.top) continue;
+		if ((int)i < rcClip.top) continue;
 		pDC->MoveTo((max(rect.left, rcClip.left) + 1) & ~1, (int)i);
 		pDC->LineTo(min(rect.left + size.cx, rcClip.right), (int)i);
 	}
@@ -301,7 +308,9 @@ void CMeshGridView::DrawCell(CDC* pDC, Cell& cell, BOOL bSelected)
 	bmpDC.SelectObject(&m_wifiBitmap);
 	COLORREF background = bmpDC.GetPixel(0,0);
 
-	pDC->TransparentBlt(rect.left + 2, rect.top + 2, rect.Width() - 4, rect.Height() - 4, &bmpDC, 0, 0, 128, 128, background);
+    BITMAP bmpWiFi;
+    m_wifiBitmap.GetBitmap(&bmpWiFi);
+	pDC->TransparentBlt(rect.left + 2, rect.top + 2, rect.Width() - 4, rect.Height() - 4, &bmpDC, 0, 0, bmpWiFi.bmWidth, bmpWiFi.bmHeight, background);
 	
 	pDC->SetBkMode(TRANSPARENT);
 	pDC->DrawText(cell.GetTitle(), CRect(rect), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
@@ -731,22 +740,6 @@ void CMeshGridView::OnViewShowRouting()
 }
 
 
-// CMeshGridView diagnostics
-
-#ifdef _DEBUG
-void CMeshGridView::AssertValid() const
-{
-	CView::AssertValid();
-}
-
-void CMeshGridView::Dump(CDumpContext& dc) const
-{
-	CView::Dump(dc);
-}
-
-#endif //_DEBUG
-
-
 void CMeshGridView::OnPopupStationEdit()
 {
     GetDocument()->EditStation(m_pCurrentCell->GetColumn(), m_pCurrentCell->GetRow());
@@ -768,9 +761,67 @@ void CMeshGridView::OnUpdatePopupStationAdd(CCmdUI *pCmdUI)
     pCmdUI->Enable(m_pCurrentCell != NULL);
 }
 
+void CMeshGridView::OnUpdateSimulationRun(CCmdUI *pCmdUI)
+{
+    // TODO: Add your command update UI handler code here
+    pCmdUI->Enable(GetDocument()->IsValid() && !m_bIsRunning);
+}
+
+void CMeshGridView::OnUpdateSimulationBreak(CCmdUI *pCmdUI)
+{
+    // TODO: Add your command update UI handler code here
+    pCmdUI->Enable(GetDocument()->IsValid() && m_bIsRunning);
+}
+
 void CMeshGridView::OnSize(UINT nType, int cx, int cy)
 {
     CMeshView::OnSize(nType, cx, cy);
     RefreshCoverage();
     // TODO: Add your message handler code here
+}
+
+void CMeshGridView::OnTimer(UINT_PTR nIDEvent)
+{
+    // TODO: Add your message handler code here and/or call default
+    if (nIDEvent == 1)
+    {
+        if (++m_nStep >= GetSettings().GetDuration()) OnSimulationBreak();
+        else
+        {
+            GetDocument()->Iterate();
+        }
+    }
+    CMeshView::OnTimer(nIDEvent);
+}
+
+
+
+// CMeshGridView diagnostics
+
+#ifdef _DEBUG
+void CMeshGridView::AssertValid() const
+{
+	CView::AssertValid();
+}
+
+void CMeshGridView::Dump(CDumpContext& dc) const
+{
+	CView::Dump(dc);
+}
+
+#endif //_DEBUG
+
+void CMeshGridView::OnSimulationRun()
+{
+    // TODO: Add your command handler code here
+    m_bIsRunning = true;
+    m_nStep = 0;
+    SetTimer(1, 20, NULL);
+}
+
+void CMeshGridView::OnSimulationBreak()
+{
+    // TODO: Add your command handler code here
+    m_bIsRunning = false;
+    KillTimer(1);
 }
