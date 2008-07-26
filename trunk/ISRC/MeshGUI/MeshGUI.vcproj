@@ -362,6 +362,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MeshLayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshLayer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MeshThroughputView.h"
 				>
 			</File>

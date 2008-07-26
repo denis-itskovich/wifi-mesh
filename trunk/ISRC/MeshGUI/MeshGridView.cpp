@@ -125,14 +125,12 @@ void CMeshGridView::OnDraw(CDC* pDC)
 	if (pDoc->IsChanged()) Refresh();
 
 	CMeshSettings& settings = GetSettings();
-	if (settings.IsVisible(eVI_BACKGROUND)) DrawBackground(pDC);
+	if (settings.IsVisible(eVI_BACKGROUND) ||
+        settings.IsVisible(eVI_GRID) ||
+        settings.IsVisible(eVI_RULES)) DrawCache(pDC, m_bmpBackground, 255);
 
-	Grid* pGrid = GetGrid();
-	if (!pGrid) return;
 
 	if (settings.IsVisible(eVI_COVERAGE)) DrawCoverage(pDC);
-	if (settings.IsVisible(eVI_RULES)) DrawRules(pDC);
-	if (settings.IsVisible(eVI_GRID)) DrawGrid(pDC);
 	if (settings.IsVisible(eVI_STATIONS)) DrawStations(pDC);
 }
 
@@ -196,6 +194,77 @@ void CMeshGridView::RefreshCoverage()
 
     oldPrimary.DeleteObject();
     oldSecondary.DeleteObject();
+
+}
+
+void CMeshGridView::DrawCache(CDC* pDC, CBitmap& bitmap, int opacity)
+{
+    CDC dcMem;
+    dcMem.CreateCompatibleDC(pDC);
+    dcMem.SelectObject(&bitmap);
+    CRect rcClip;
+    pDC->GetClipBox(rcClip);
+
+    if (opacity < 255)
+    {
+        BLENDFUNCTION blend = {AC_SRC_OVER, 0, 0, 0};
+        blend.SourceConstantAlpha = (BYTE)opacity;
+        pDC->AlphaBlend(rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), &dcMem,
+                        rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), blend);
+    }
+    else pDC->BitBlt(rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), &dcMem,
+                     rcClip.left, rcClip.top, SRCCOPY);
+}
+
+void CMeshGridView::RefreshBackground()
+{
+    TRACE0("Refreshing background\n");
+
+    BITMAP bmp;
+    ZeroMemory(&bmp, sizeof(bmp));
+    CRect rcClient;
+    GetClientRect(rcClient);
+
+    DWORD count = rcClient.Width() * rcClient.Height();
+    DWORD* pArray = new DWORD[count];
+    DWORD byteSize = count * sizeof(*pArray);
+
+    FillMemory(pArray, byteSize, 0xFF);
+
+    if (m_bmpBackground.GetSafeHandle())
+    {
+        m_bmpBackground.GetBitmap(&bmp);
+        
+        if (bmp.bmWidth != rcClient.Width() ||
+            bmp.bmHeight != rcClient.Height())
+        {
+            m_bmpBackground.DeleteObject();
+        }
+    }
+
+    if (!m_bmpBackground.GetSafeHandle())
+    {
+        m_bmpBackground.CreateBitmap(rcClient.Width(), rcClient.Height(), 1, 32, pArray);
+    }
+    else m_bmpBackground.SetBitmapBits(byteSize, pArray);
+
+    delete[] pArray;
+
+    CDC dc;
+    dc.CreateCompatibleDC(NULL);
+    dc.SelectObject(&m_bmpBackground);
+
+    CMeshSettings& settings = GetSettings();
+
+    if (settings.IsVisible(eVI_BACKGROUND)) DrawBackground(&dc);
+
+    if (GetDocument()->IsValid())
+    {
+        if (settings.IsVisible(eVI_GRID)) DrawGrid(&dc);
+        if (settings.IsVisible(eVI_RULES)) DrawRules(&dc);
+    }
+
+    dc.DeleteDC();
 }
 
 void CMeshGridView::DrawCoverage(CDC* pDC)
@@ -577,6 +646,7 @@ void CMeshGridView::Refresh()
 		for (int i = 0; i < cellsCount; ++i) m_pCells[i].SetLocation(i / m_columns, i % m_columns);
         Invalidate();
         RefreshCoverage();
+        RefreshBackground();
         return;
 	}
 
@@ -777,6 +847,7 @@ void CMeshGridView::OnSize(UINT nType, int cx, int cy)
 {
     CMeshView::OnSize(nType, cx, cy);
     RefreshCoverage();
+    RefreshBackground();
     // TODO: Add your message handler code here
 }
 

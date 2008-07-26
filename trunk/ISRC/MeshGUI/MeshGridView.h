@@ -23,6 +23,7 @@ protected:
 	virtual void	DrawStations(CDC* pDC);
 	virtual void	DrawCoverage(CDC* pDC);
 	virtual void	DrawCell(CDC* pDC, Cell& cell, BOOL bSelected = FALSE);
+    virtual void    DrawCache(CDC* pDC, CBitmap& cache, int opacity);
 
 	virtual void	CalcCoverage(CRgn& pRgn, const Cell& cell, double radius) const;
 	virtual void	CalcCoverage(CRgn& pRgn, double radius) const;
@@ -30,6 +31,8 @@ protected:
 
 private:
     void            RefreshCoverage();
+    void            RefreshBackground();
+
 	double			GetHorizontalStep() const;
 	double			GetVerticalStep() const;
 	CRect			GetGridRect() const;
@@ -89,6 +92,8 @@ private:
 	CBitmap m_wifiBitmap;
     int     m_nStep;
     bool    m_bIsRunning;
+    CBitmap m_bmpCoverage;
+    CBitmap m_bmpBackground;
 
 public:
 #ifdef _DEBUG
