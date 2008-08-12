@@ -22,8 +22,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="Build\$(ConfigurationName)"
+			IntermediateDirectory="Build\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="1"
 			CharacterSet="1"
@@ -102,8 +102,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="Build\$(ConfigurationName)"
+			IntermediateDirectory="Build\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="1"
 			CharacterSet="1"
@@ -362,14 +362,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MeshLayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MeshLayer.h"
-				>
-			</File>
-			<File
 				RelativePath=".\MeshThroughputView.h"
 				>
 			</File>
@@ -379,6 +371,14 @@
 			</File>
 			<File
 				RelativePath=".\MeshView.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Release"
+			>
+			<File
+				RelativePath=".\Build\Release\MeshGUI.exe"
 				>
 			</File>
 		</Filter>
