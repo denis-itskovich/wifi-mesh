@@ -15,7 +15,7 @@ MeshStation::~MeshStation()
 {
 }
 
-unsigned long MeshStation::getId()
+unsigned long MeshStation::id()
 {
 	return m_station.id;
 }

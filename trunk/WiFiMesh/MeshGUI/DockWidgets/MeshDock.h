@@ -15,13 +15,15 @@
 class MeshDock : public QDockWidget
 {
 public:
-	MeshDock(QWidget* parent = 0);
-	virtual ~MeshDock();
-
 	void setDocument(MeshDocument* doc);
 
 protected:
-	void refresh() = 0;
+	MeshDock(const QString& title, QWidget* parent = 0);
+	MeshDock(QWidget* parent = 0);
+
+	virtual ~MeshDock();
+
+	void refresh() {};
 	MeshDocument* document();
 
 private:

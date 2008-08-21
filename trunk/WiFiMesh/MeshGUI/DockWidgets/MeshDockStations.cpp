@@ -7,8 +7,7 @@
 
 #include "MeshDockStations.h"
 
-MeshDockStations::MeshDockStations(QWidget* parent) :
-	QDockWidget(tr("Stations"), parent)
+MeshDockStations::MeshDockStations(QWidget* parent) : MeshDock(tr("Stations"), parent)
 {
 	init();
 }
@@ -27,7 +26,7 @@ void MeshDockStations::init()
 
 void MeshDockStations::addStation(MeshStation* station)
 {
-	m_listWidget->addItem(tr("Station %1").arg(station->getId()));
+	m_listWidget->addItem(tr("Station %1").arg(station->id()));
 }
 
 void MeshDockStations::clear()
