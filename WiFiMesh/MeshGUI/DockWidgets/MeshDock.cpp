@@ -7,10 +7,19 @@
 
 #include "MeshDock.h"
 
-MeshDock::MeshDock()
+MeshDock::MeshDock(const QString& title, QWidget* parent) : QDockWidget(title, parent)
+{
+}
+
+MeshDock::MeshDock(QWidget* parent) : QDockWidget(parent)
 {
 }
 
 MeshDock::~MeshDock()
 {
+}
+
+MeshDocument* MeshDock::document()
+{
+	return m_document;
 }

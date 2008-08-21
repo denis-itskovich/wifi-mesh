@@ -17,6 +17,7 @@ public:
 	virtual ~MeshDockStations();
 
 	void addStation(MeshStation* station);
+	void clear();
 
 private:
 	void init();

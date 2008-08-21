@@ -7,7 +7,7 @@
 
 #include "MeshDockRandomizer.h"
 
-MeshDockRandomizer::MeshDockRandomizer()
+MeshDockRandomizer::MeshDockRandomizer(QWidget* parent) : MeshDock(tr("Randomizer"), parent)
 {
 }
 
@@ -19,15 +19,11 @@ void MeshDockRandomizer::init()
 {
 	QBoxLayout* mainLayout = new QVBoxLayout(this);
 	QGridLayout* randomParamsLayout = new QGridLayout();
-	randomParams->
 
-	m_stationsCount = new QSlider(Qt::Horizontal, this);
+	m_sliderStationsCount = new QSlider(Qt::Horizontal, this);
 
-	m_minmalVelocity = new QTextLine();
-	m_maximalVelocity;
-
-	m_minimalDataAmount;
-	m_maximalDataAmount;
+	m_textMinVelocity = new QTextLine();
+	m_textMaxVelocity = new QTextLine();
 
 	mainLayout->addWidget(new QLabel(tr("Stations count")));
 }
