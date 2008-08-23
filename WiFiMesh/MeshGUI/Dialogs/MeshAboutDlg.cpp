@@ -1,9 +1,9 @@
 #include "MeshAboutDlg.h"
 
-#define COPYRIGHT_STRING 	"<p>WiFi Mesh Simulator, <b>version 0.0.1</b></p>" 	\
-							"<p><b>(C) 2008 Denis Itskovich</b></p><p></p>"
-#define QT_TEXT				"<p>This application was written using</p>"			\
-							"<p><i>Qt4 open source edition</i></p>"
+#define COPYRIGHT_STRING 	"<p>%1, <b>version %2</b></p>" 		\
+							"<p><b>(C) 2008 Denis Itskovich</b></p>"				\
+							"<p>Application is distributed 'as is'</p>"				\
+							"<p>Source code can be found at <a href=\"http://wifi-mesh.googlecode.com/svn/trunk/\">SVN repository</a></p>"
 
 
 MeshAboutDlg::MeshAboutDlg(QWidget *parent)
@@ -20,15 +20,14 @@ MeshAboutDlg::~MeshAboutDlg()
 void MeshAboutDlg::init()
 {
 	setModal(true);
+	setWindowTitle(tr("About %1").arg(qApp->applicationName()));
 
-	QLabel* copyright = new QLabel(tr(COPYRIGHT_STRING), this);
-	QLabel* qtText = new QLabel(tr(QT_TEXT), this);
-
+	QLabel* copyright = new QLabel(tr(COPYRIGHT_STRING).arg(qApp->applicationName()).arg(qApp->applicationVersion()), this);
 	QLabel* meshLogo = new QLabel(this);
-	QLabel* qtLogo = new QLabel(this);
+	copyright->setOpenExternalLinks(true);
+	meshLogo->setAlignment(Qt::AlignTop);
 
 	meshLogo->setPixmap(QPixmap(":/wifi.png"));
-	qtLogo->setPixmap(QPixmap(":/qt.png"));
 
 	QPushButton* buttonOK = new QPushButton(tr("Close"));
 	QBoxLayout* vlayout = new QVBoxLayout(this);
@@ -37,13 +36,11 @@ void MeshAboutDlg::init()
 	gridLayout->setSpacing(10);
 	gridLayout->addWidget(meshLogo, 0, 0);
 	gridLayout->addWidget(copyright, 0, 1);
-	gridLayout->addWidget(qtLogo, 1, 0);
-	gridLayout->addWidget(qtText, 1, 1);
 
 	vlayout->addItem(gridLayout);
 	vlayout->addWidget(buttonOK);
 
-	this->setLayout(vlayout);
+	setLayout(vlayout);
 
 	connect(buttonOK, SIGNAL(clicked()), this, SLOT(close()));
 }

@@ -12,7 +12,7 @@
         <file>Images/open.png</file>
         <file>Images/qt-logo.png</file>
         <file alias="qt.png" >Images/qt.png</file>
-        <file alias="run.pngS" >Images/right-32.png</file>
+        <file alias="run.png" >Images/right-32.png</file>
         <file>Images/save.png</file>
         <file>Images/standardbutton-close-32.png</file>
         <file>Images/standardbutton-delete-32.png</file>
@@ -28,7 +28,7 @@
         <file>images/network.png</file>
         <file>images/new.png</file>
         <file>images/open.png</file>
-        <file alias="qt-logo.png" >images/qt-logo.png</file>
+        <file alias="qt_logo.png" >images/qt-logo.png</file>
         <file alias="run.png" >images/right-32.png</file>
         <file>images/save.png</file>
         <file>images/standardbutton-close-32.png</file>

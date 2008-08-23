@@ -1,22 +1,22 @@
 /*
- * MeshDockStations.cpp
+ * MeshFrameStations.cpp
  *
  *  Created on: 20/08/2008
  *      Author: denis
  */
 
-#include "MeshDockStations.h"
+#include "MeshFrameStations.h"
 
-MeshDockStations::MeshDockStations(QWidget* parent) : MeshDock(tr("Stations"), parent)
+MeshFrameStations::MeshFrameStations(QWidget* parent) : MeshFrame(parent)
 {
 	init();
 }
 
-MeshDockStations::~MeshDockStations()
+MeshFrameStations::~MeshFrameStations()
 {
 }
 
-void MeshDockStations::init()
+void MeshFrameStations::init()
 {
 	QBoxLayout* layout = new QVBoxLayout();
 	m_listWidget = new QListWidget(this);
@@ -24,12 +24,12 @@ void MeshDockStations::init()
 	this->setLayout(layout);
 }
 
-void MeshDockStations::addStation(MeshStation* station)
+void MeshFrameStations::addStation(MeshStation* station)
 {
 	m_listWidget->addItem(tr("Station %1").arg(station->id()));
 }
 
-void MeshDockStations::clear()
+void MeshFrameStations::clear()
 {
 	m_listWidget->clear();
 }
