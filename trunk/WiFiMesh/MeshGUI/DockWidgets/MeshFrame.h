@@ -1,33 +1,34 @@
 /*
- * AMeshDock.h
+ * MeshFrame.h
  *
  *  Created on: 21/08/2008
  *      Author: denis
  */
 
-#ifndef AMESHDOCK_H_
-#define AMESHDOCK_H_
+#ifndef MESHFRAME_H_
+#define MESHFRAME_H_
 
 #include <QtGui>
 #include "../CoreWrappers/MeshStation.h"
 #include "../Document/MeshDocument.h"
 
-class MeshDock : public QDockWidget
+class MeshFrame : public QFrame
 {
 public:
 	void setDocument(MeshDocument* doc);
 
 protected:
-	MeshDock(const QString& title, QWidget* parent = 0);
-	MeshDock(QWidget* parent = 0);
+	MeshFrame(QWidget* parent = 0);
 
-	virtual ~MeshDock();
+	virtual ~MeshFrame();
 
 	void refresh() {};
 	MeshDocument* document();
 
 private:
-	MeshDocument* m_document;
+	void init();
+
+	MeshDocument* 	m_document;
 };
 
-#endif /* AMESHDOCK_H_ */
+#endif /* MESHFRAME_H_ */

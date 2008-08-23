@@ -18,9 +18,13 @@ private:
 	void createWidgets();
 	void createToolBars();
 	void createStatusBar();
+	void createDocks();
+
+	void addFrame(const QString& title, QFrame* frame, Qt::DockWidgetArea area);
 
 private slots:
-	void showAboutDlg();
+	void about();
+	void aboutQt();
 
 private:
 
@@ -51,10 +55,17 @@ private:
 	QAction*	m_actSimulationBreak;
 
 	QAction*	m_actHelpAbout;
+	QAction*	m_actHelpAboutQt;
 
-	QSlider*	m_sliderSpeed;
-	QSlider*	m_sliderCoverage;
-	QSlider*	m_sliderDuration;
+	QSlider*		m_sliderSpeed;
+	QSpinBox*		m_spinSpeed;
+
+	QSlider*		m_sliderCoverage;
+	QDoubleSpinBox*	m_spinCoverage;
+
+	QSlider*		m_sliderDuration;
+	QSpinBox*		m_spinDuration;
+
 };
 
 #endif // MESHAPP_H
