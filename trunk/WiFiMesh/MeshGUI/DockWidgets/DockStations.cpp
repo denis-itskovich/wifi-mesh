@@ -18,9 +18,22 @@ DockStations::~DockStations()
 
 void DockStations::init()
 {
-	QBoxLayout* layout = new QVBoxLayout();
+	QBoxLayout* layout = new QVBoxLayout(this);
+	QBoxLayout* buttonsLayout = new QHBoxLayout();
 	m_listWidget = new QListWidget(this);
+
+	m_buttonAdd = new QPushButton(tr("&Add"), this);
+	m_buttonRemove = new QPushButton(tr("&Remove"), this);
+	m_buttonProperties = new QPushButton(tr("&Properties"), this);
+
 	layout->addWidget(m_listWidget);
+
+	buttonsLayout->addWidget(m_buttonAdd);
+	buttonsLayout->addWidget(m_buttonRemove);
+	buttonsLayout->addWidget(m_buttonProperties);
+
+	layout->addItem(buttonsLayout);
+
 	this->setLayout(layout);
 }
 

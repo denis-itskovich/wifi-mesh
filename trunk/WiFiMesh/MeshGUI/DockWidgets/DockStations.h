@@ -23,6 +23,9 @@ private:
 	void init();
 
 	QListWidget*	m_listWidget;
+	QPushButton*	m_buttonAdd;
+	QPushButton*	m_buttonRemove;
+	QPushButton*	m_buttonProperties;
 };
 
 #endif /* MESHDOCKSTATIONS_H_ */

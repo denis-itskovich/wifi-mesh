@@ -7,7 +7,7 @@
 
 #include "DockFrame.h"
 
-DockFrame::DockFrame(QWidget* parent) : QFrame(parent)
+DockFrame::DockFrame(QWidget* parent) : QWidget(parent)
 {
 	init();
 }

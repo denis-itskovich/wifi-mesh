@@ -20,7 +20,7 @@ private:
 	void createStatusBar();
 	void createDocks();
 
-	void addFrame(const QString& title, QFrame* frame, Qt::DockWidgetArea area);
+	QDockWidget* createDock(const QString& title, QWidget* widget);
 
 private slots:
 	void about();
