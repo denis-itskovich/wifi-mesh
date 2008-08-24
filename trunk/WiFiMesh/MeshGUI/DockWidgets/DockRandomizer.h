@@ -1,5 +1,5 @@
 /*
- * MeshFrameRandomizer.h
+ * Randomizer.h
  *
  *  Created on: 21/08/2008
  *      Author: denis
@@ -8,13 +8,13 @@
 #ifndef MESHDOCKRANDOMIZER_H_
 #define MESHDOCKRANDOMIZER_H_
 
-#include "MeshFrame.h"
+#include "DockFrame.h"
 
-class MeshFrameRandomizer : public MeshFrame
+class DockRandomizer : public DockFrame
 {
 public:
-	MeshFrameRandomizer(QWidget* parent = 0);
-	virtual ~MeshFrameRandomizer();
+	DockRandomizer(QWidget* parent = 0);
+	virtual ~DockRandomizer();
 
 private:
 	void init();

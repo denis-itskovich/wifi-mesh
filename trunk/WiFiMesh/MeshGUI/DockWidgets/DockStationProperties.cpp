@@ -1,22 +1,22 @@
 /*
- * MeshFrameStationProperties.cpp
+ * StationProperties.cpp
  *
  *  Created on: 22/08/2008
  *      Author: denis
  */
 
-#include "MeshFrameStationProperties.h"
+#include "DockStationProperties.h"
 
-MeshFrameStationProperties::MeshFrameStationProperties(QWidget* parent) : MeshFrame(parent)
+DockStationProperties::DockStationProperties(QWidget* parent) : DockFrame(parent)
 {
 	init();
 }
 
-MeshFrameStationProperties::~MeshFrameStationProperties()
+DockStationProperties::~DockStationProperties()
 {
 }
 
-void MeshFrameStationProperties::init()
+void DockStationProperties::init()
 {
 	QBoxLayout* layout = new QVBoxLayout(this);
 

@@ -1,5 +1,5 @@
 /*
- * MeshFrameStations.h
+ * Stations.h
  *
  *  Created on: 20/08/2008
  *      Author: denis
@@ -8,13 +8,13 @@
 #ifndef MESHDOCKSTATIONS_H_
 #define MESHDOCKSTATIONS_H_
 
-#include "MeshFrame.h"
+#include "DockFrame.h"
 
-class MeshFrameStations : public MeshFrame
+class DockStations : public DockFrame
 {
 public:
-	MeshFrameStations(QWidget* parent = 0);
-	virtual ~MeshFrameStations();
+	DockStations(QWidget* parent = 0);
+	virtual ~DockStations();
 
 	void addStation(MeshStation* station);
 	void clear();
