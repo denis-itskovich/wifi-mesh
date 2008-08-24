@@ -33,10 +33,22 @@ void DockRandomizer::init()
 	m_sliderStationsCount->setTickPosition(QSlider::TicksBelow);
 	m_spinStationsCount = new QSpinBox(this);
 
+	connect(m_sliderStationsCount, SIGNAL(valueChanged(int)), m_spinStationsCount, SLOT(setValue(int)));
+	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), m_sliderStationsCount, SLOT(setValue(int)));
+
+	connect(m_sliderStationsCount, SIGNAL(rangeChanged(int,int)), m_spinStationsCount, SLOT(setRange(int,int)));
+	connect(m_spinStationsCount, SIGNAL(rangeChanged(int,int)), m_sliderStationsCount, SLOT(setRange(int,int)));
+
 	m_spinMinVelocity = new QDoubleSpinBox(this);
 	m_spinMaxVelocity = new QDoubleSpinBox(this);
+	m_spinMinVelocity->setSingleStep(0.05);
+	m_spinMaxVelocity->setSingleStep(0.05);
+	connect(m_spinMinVelocity, SIGNAL(valueChanged(double)), this, SLOT(setMinVelocity(double)));
+
 	m_spinMinDataAmount = new QSpinBox(this);
 	m_spinMaxDataAmount = new QSpinBox(this);
+	connect(m_spinMinDataAmount, SIGNAL(valueChanged(int)), this, SLOT(setMinDataAmount(int)));
+
 	m_buttonGenerate = new QPushButton(tr("Generate"), this);
 
 	mainLayout->addWidget(new QLabel(tr("Stations count:"), this));
@@ -61,4 +73,14 @@ void DockRandomizer::init()
 	mainLayout->addStretch();
 
 	setLayout(mainLayout);
+}
+
+void DockRandomizer::setMinVelocity(double velocity)
+{
+	m_spinMaxVelocity->setMinimum(velocity);
+}
+
+void DockRandomizer::setMinDataAmount(int amount)
+{
+	m_spinMaxDataAmount->setMinimum(amount);
 }

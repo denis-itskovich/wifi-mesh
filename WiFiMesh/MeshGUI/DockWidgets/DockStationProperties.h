@@ -12,9 +12,14 @@
 
 class DockStationProperties : public DockFrame
 {
+	Q_OBJECT
 public:
 	DockStationProperties(QWidget* parent = 0);
 	virtual ~DockStationProperties();
+
+private slots:
+	void dialAngleChanged(int angle);
+	void spinAngleChanged(int angle);
 
 private:
 	void init();
@@ -23,7 +28,7 @@ private:
 	QSpinBox*		m_spinCol;
 
 	QDoubleSpinBox*	m_spinVelocity;
-	QDoubleSpinBox*	m_spinAngle;
+	QSpinBox*		m_spinAngle;
 	QDial*			m_dialAngle;
 
 };
