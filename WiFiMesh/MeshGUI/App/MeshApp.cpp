@@ -3,6 +3,7 @@
 
 #include "../DockWidgets/DockRandomizer.h"
 #include "../DockWidgets/DockStationProperties.h"
+#include "../DockWidgets/DockStations.h"
 
 MeshApp::MeshApp(QWidget *parent)
     : QMainWindow(parent)
@@ -147,17 +148,24 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
-	addFrame(tr("Stations randomizer"), new DockRandomizer(this), Qt::RightDockWidgetArea);
-	addFrame(tr("Station properties"), new DockStationProperties(this), Qt::RightDockWidgetArea);
+	QDockWidget* dockStations = createDock(tr("Stations list"), new DockStations(this));
+	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new DockRandomizer(this));
+	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new DockStationProperties(this));
+
+	addDockWidget(Qt::RightDockWidgetArea, dockStations);
+	tabifyDockWidget(dockStations, dockRandomizer);
+	addDockWidget(Qt::RightDockWidgetArea, dockStationProperties);
+
 	setCentralWidget(new QMdiArea(this));
 }
 
-void MeshApp::addFrame(const QString& title, QFrame* frame, Qt::DockWidgetArea area)
+QDockWidget* MeshApp::createDock(const QString& title, QWidget* widget)
 {
 	QDockWidget* dock = new QDockWidget(title, this);
-	dock->setWidget(frame);
-	addDockWidget(area, dock);
+	dock->setWidget(widget);
+	return dock;
 }
+
 
 void MeshApp::about()
 {

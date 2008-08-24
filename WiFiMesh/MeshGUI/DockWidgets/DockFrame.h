@@ -12,7 +12,7 @@
 #include "../CoreWrappers/MeshStation.h"
 #include "../Document/MeshDocument.h"
 
-class DockFrame : public QFrame
+class DockFrame : public QWidget
 {
 public:
 	void setDocument(MeshDocument* doc);

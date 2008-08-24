@@ -27,6 +27,7 @@ void DockStationProperties::init()
 	m_spinRow = new QSpinBox(groupLocation);
 	m_spinCol = new QSpinBox(groupLocation);
 
+	layoutLocation->setSpacing(4);
 	layoutLocation->addWidget(new QLabel(tr("Row:")), 0, 0);
 	layoutLocation->addWidget(m_spinRow, 0, 1);
 	layoutLocation->addWidget(new QLabel(tr("Column:")), 1, 0);
@@ -36,6 +37,7 @@ void DockStationProperties::init()
 	QGroupBox* groupVelocity = new QGroupBox(tr("Station velocity"), this);
 	QGridLayout* layoutVelocity = new QGridLayout();
 	QBoxLayout* layoutDirection = new QVBoxLayout(groupVelocity);
+	layoutVelocity->setSpacing(4);
 	groupVelocity->setLayout(layoutDirection);
 
 	m_spinVelocity = new QDoubleSpinBox(groupVelocity);
