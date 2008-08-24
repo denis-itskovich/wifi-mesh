@@ -12,9 +12,14 @@
 
 class DockRandomizer : public DockFrame
 {
+	Q_OBJECT
 public:
 	DockRandomizer(QWidget* parent = 0);
 	virtual ~DockRandomizer();
+
+private slots:
+	void setMinVelocity(double);
+	void setMinDataAmount(int);
 
 private:
 	void init();
@@ -29,7 +34,6 @@ private:
 	QSpinBox*			m_spinMaxDataAmount;
 
 	QPushButton*		m_buttonGenerate;
-
 };
 
 #endif /* MESHDOCKRANDOMIZER_H_ */

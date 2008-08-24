@@ -127,7 +127,9 @@ void MeshApp::createWidgets()
 void MeshApp::createToolBars()
 {
 	m_toolbarFile = addToolBar(tr("File"));
+	m_toolbarFile->setIconSize(QSize(20, 20));
 	m_toolbarSimulation = addToolBar(tr("Simulation"));
+	m_toolbarSimulation->setIconSize(QSize(20, 20));
 
 	m_toolbarFile->addAction(m_actFileNew);
 	m_toolbarFile->addAction(m_actFileOpen);

@@ -39,13 +39,20 @@ void DockStationProperties::init()
 	groupVelocity->setLayout(layoutDirection);
 
 	m_spinVelocity = new QDoubleSpinBox(groupVelocity);
-	m_spinAngle = new QDoubleSpinBox(groupVelocity);
+	m_spinVelocity->setSingleStep(0.05);
+
+	m_spinAngle = new QSpinBox(groupVelocity);
 	m_dialAngle = new QDial(groupVelocity);
 
+	connect(m_spinAngle, SIGNAL(valueChanged(int)), this, SLOT(spinAngleChanged(int)));
+	connect(m_dialAngle, SIGNAL(valueChanged(int)), this, SLOT(dialAngleChanged(int)));
+
+	m_spinAngle->setMaximum(359);
 	m_dialAngle->setWrapping(true);
 	m_dialAngle->setNotchesVisible(true);
 	m_dialAngle->setNotchTarget(15);
-	m_dialAngle->setMaximum(360);
+	m_dialAngle->setMaximum(359);
+	spinAngleChanged(m_spinAngle->value());
 
 	layoutVelocity->addWidget(new QLabel(tr("Velocity:"), groupVelocity), 0, 0);
 	layoutVelocity->addWidget(m_spinVelocity, 0, 1);
@@ -59,5 +66,19 @@ void DockStationProperties::init()
 
 	layout->addWidget(groupLocation);
 	layout->addWidget(groupVelocity);
+	layout->addWidget(new QPushButton(tr("Apply"), this));
+
 	layout->addStretch();
+}
+
+void DockStationProperties::dialAngleChanged(int angle)
+{
+	angle = (angle + 90) % 360;
+	m_spinAngle->setValue(angle);
+}
+
+void DockStationProperties::spinAngleChanged(int angle)
+{
+	angle = (angle + 270) % 360;
+	m_dialAngle->setValue(angle);
 }
