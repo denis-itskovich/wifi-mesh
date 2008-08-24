@@ -1,8 +1,8 @@
 #include "MeshApp.h"
 #include "../Dialogs/MeshAboutDlg.h"
 
-#include "../DockWidgets/MeshFrameRandomizer.h"
-#include "../DockWidgets/MeshFrameStationProperties.h"
+#include "../DockWidgets/DockRandomizer.h"
+#include "../DockWidgets/DockStationProperties.h"
 
 MeshApp::MeshApp(QWidget *parent)
     : QMainWindow(parent)
@@ -44,6 +44,7 @@ void MeshApp::createActions()
 
 	m_actFileExit =	new QAction(QIcon(":/exit.png"), tr("E&xit"), this);
 	m_actFileExit->setStatusTip(tr("Quit WiFi Mesh simulator"));
+	connect(m_actFileExit, SIGNAL(triggered()), this, SLOT(close()));
 
 	m_actViewShowBackground = new QAction(tr("Show &background"), this);
 	m_actViewShowBackground->setShortcut(tr("Ctrl+1"));
@@ -121,25 +122,12 @@ void MeshApp::createMenus()
 
 void MeshApp::createWidgets()
 {
-	m_sliderSpeed = new QSlider(Qt::Horizontal, this);
-	m_sliderSpeed->setTickPosition(QSlider::TicksBelow);
-	m_spinSpeed = new QSpinBox(this);
-
-	m_sliderCoverage = new QSlider(Qt::Horizontal, this);
-	m_sliderCoverage->setTickPosition(QSlider::TicksBelow);
-	m_spinCoverage = new QDoubleSpinBox(this);
-
-	m_sliderDuration = new QSlider(Qt::Horizontal, this);
-	m_sliderDuration->setTickPosition(QSlider::TicksBelow);
-	m_spinDuration = new QSpinBox(this);
 }
 
 void MeshApp::createToolBars()
 {
 	m_toolbarFile = addToolBar(tr("File"));
 	m_toolbarSimulation = addToolBar(tr("Simulation"));
-	m_toolbarSettings = addToolBar(tr("Settings"));
-
 
 	m_toolbarFile->addAction(m_actFileNew);
 	m_toolbarFile->addAction(m_actFileOpen);
@@ -148,22 +136,6 @@ void MeshApp::createToolBars()
 
 	m_toolbarSimulation->addAction(m_actSimulationRun);
 	m_toolbarSimulation->addAction(m_actSimulationBreak);
-
-	m_toolbarSettings->layout()->setSpacing(4);
-	m_toolbarSettings->addWidget(new QLabel(tr("Speed:")));
-	m_toolbarSettings->addWidget(m_sliderSpeed);
-	m_toolbarSettings->addWidget(m_spinSpeed);
-	m_toolbarSettings->addSeparator();
-
-	m_toolbarSettings->addWidget(new QLabel(tr("Coverage:")));
-	m_toolbarSettings->addWidget(m_sliderCoverage);
-	m_toolbarSettings->addWidget(m_spinCoverage);
-	m_toolbarSettings->addSeparator();
-
-	m_toolbarSettings->addWidget(new QLabel(tr("Duration:")));
-	m_toolbarSettings->addWidget(m_sliderDuration);
-	m_toolbarSettings->addWidget(m_spinDuration);
-	m_toolbarSettings->addSeparator();
 }
 
 void MeshApp::createStatusBar()
@@ -173,8 +145,8 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
-	addFrame(tr("Stations randomizer"), new MeshFrameRandomizer(this), Qt::RightDockWidgetArea);
-	addFrame(tr("Station properties"), new MeshFrameStationProperties(this), Qt::RightDockWidgetArea);
+	addFrame(tr("Stations randomizer"), new DockRandomizer(this), Qt::RightDockWidgetArea);
+	addFrame(tr("Station properties"), new DockStationProperties(this), Qt::RightDockWidgetArea);
 	setCentralWidget(new QMdiArea(this));
 }
 

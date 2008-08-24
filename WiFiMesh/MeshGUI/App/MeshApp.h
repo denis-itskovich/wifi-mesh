@@ -30,7 +30,6 @@ private:
 
 	QToolBar*	m_toolbarFile;
 	QToolBar*	m_toolbarSimulation;
-	QToolBar*	m_toolbarSettings;
 
 	QMenu*		m_menuFile;
 	QMenu*		m_menuView;
@@ -56,16 +55,6 @@ private:
 
 	QAction*	m_actHelpAbout;
 	QAction*	m_actHelpAboutQt;
-
-	QSlider*		m_sliderSpeed;
-	QSpinBox*		m_spinSpeed;
-
-	QSlider*		m_sliderCoverage;
-	QDoubleSpinBox*	m_spinCoverage;
-
-	QSlider*		m_sliderDuration;
-	QSpinBox*		m_spinDuration;
-
 };
 
 #endif // MESHAPP_H

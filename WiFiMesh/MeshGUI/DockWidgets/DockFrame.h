@@ -1,5 +1,5 @@
 /*
- * MeshFrame.h
+ * .h
  *
  *  Created on: 21/08/2008
  *      Author: denis
@@ -12,15 +12,14 @@
 #include "../CoreWrappers/MeshStation.h"
 #include "../Document/MeshDocument.h"
 
-class MeshFrame : public QFrame
+class DockFrame : public QFrame
 {
 public:
 	void setDocument(MeshDocument* doc);
 
 protected:
-	MeshFrame(QWidget* parent = 0);
-
-	virtual ~MeshFrame();
+	DockFrame(QWidget* parent = 0);
+	virtual ~DockFrame();
 
 	void refresh() {};
 	MeshDocument* document();

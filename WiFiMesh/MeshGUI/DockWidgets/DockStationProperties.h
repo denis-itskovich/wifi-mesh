@@ -1,5 +1,5 @@
 /*
- * MeshFrameStationProperties.h
+ * StationProperties.h
  *
  *  Created on: 22/08/2008
  *      Author: denis
@@ -8,13 +8,13 @@
 #ifndef MESHDOCKSTATIONPROPERTIES_H_
 #define MESHDOCKSTATIONPROPERTIES_H_
 
-#include "MeshFrame.h"
+#include "DockFrame.h"
 
-class MeshFrameStationProperties : public MeshFrame
+class DockStationProperties : public DockFrame
 {
 public:
-	MeshFrameStationProperties(QWidget* parent = 0);
-	virtual ~MeshFrameStationProperties();
+	DockStationProperties(QWidget* parent = 0);
+	virtual ~DockStationProperties();
 
 private:
 	void init();

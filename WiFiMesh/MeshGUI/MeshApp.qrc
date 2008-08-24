@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
         <file>Images/configure.png</file>
+        <file alias="exit.png" >Images/exit.png</file>
         <file alias="close.png" >Images/fileclose.png</file>
         <file alias="about.png" >Images/fileinfo-32.png</file>
         <file alias="new.png" >Images/filenew.png</file>
@@ -20,22 +21,22 @@
         <file>Images/standardbutton-open-32.png</file>
         <file>Images/standardbutton-save-32.png</file>
         <file alias="break.png" >Images/stop-32.png</file>
-        <file alias="close.png" >images/fileclose.png</file>
-        <file alias="about.png" >images/fileinfo-32.png</file>
-        <file alias="new.png" >images/filenew.png</file>
-        <file alias="open.png" >images/fileopen.png</file>
-        <file alias="save.png" >images/filesave.png</file>
-        <file>images/network.png</file>
-        <file>images/new.png</file>
-        <file>images/open.png</file>
-        <file alias="qt_logo.png" >images/qt-logo.png</file>
-        <file alias="run.png" >images/right-32.png</file>
-        <file>images/save.png</file>
-        <file>images/standardbutton-close-32.png</file>
-        <file>images/standardbutton-delete-32.png</file>
-        <file>images/standardbutton-help-32.png</file>
-        <file>images/standardbutton-open-32.png</file>
-        <file>images/standardbutton-save-32.png</file>
-        <file alias="break.png" >images/stop-32.png</file>
+        <file alias="close.png" >Images/fileclose.png</file>
+        <file alias="about.png" >Images/fileinfo-32.png</file>
+        <file alias="new.png" >Images/filenew.png</file>
+        <file alias="open.png" >Images/fileopen.png</file>
+        <file alias="save.png" >Images/filesave.png</file>
+        <file>Images/network.png</file>
+        <file>Images/new.png</file>
+        <file>Images/open.png</file>
+        <file alias="qt_logo.png" >Images/qt-logo.png</file>
+        <file alias="run.png" >Images/right-32.png</file>
+        <file>Images/save.png</file>
+        <file>Images/standardbutton-close-32.png</file>
+        <file>Images/standardbutton-delete-32.png</file>
+        <file>Images/standardbutton-help-32.png</file>
+        <file>Images/standardbutton-open-32.png</file>
+        <file>Images/standardbutton-save-32.png</file>
+        <file alias="break.png" >Images/stop-32.png</file>
     </qresource>
 </RCC>

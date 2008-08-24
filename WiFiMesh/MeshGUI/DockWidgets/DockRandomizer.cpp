@@ -1,22 +1,22 @@
 /*
- * MeshFrameRandomizer.cpp
+ * Randomizer.cpp
  *
  *  Created on: 21/08/2008
  *      Author: denis
  */
 
-#include "MeshFrameRandomizer.h"
+#include "DockRandomizer.h"
 
-MeshFrameRandomizer::MeshFrameRandomizer(QWidget* parent) : MeshFrame(parent)
+DockRandomizer::DockRandomizer(QWidget* parent) : DockFrame(parent)
 {
 	init();
 }
 
-MeshFrameRandomizer::~MeshFrameRandomizer()
+DockRandomizer::~DockRandomizer()
 {
 }
 
-void MeshFrameRandomizer::init()
+void DockRandomizer::init()
 {
 	QBoxLayout* mainLayout = new QVBoxLayout(this);
 	QBoxLayout* layoutStations = new QHBoxLayout();
