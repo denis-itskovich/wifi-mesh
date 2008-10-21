@@ -6,6 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
     a.setApplicationVersion("0.1.0");
     a.setApplicationName("WiFi Mesh Simulator");
 
