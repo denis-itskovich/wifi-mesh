@@ -1,7 +1,9 @@
 #include "Grid.h"
+#include "List.h"
+#include "Macros.h"
+
 #include <malloc.h>
 #include <string.h>
-#include "List.h"
 
 struct _GridItem
 {
@@ -19,36 +21,17 @@ struct _Grid
 	ListHeader*		pArray;
 };
 
-#define SAFE_OPERATION(operation)			do {operation;} while (0)
-
-#define VALIDATE(condition, error)			SAFE_OPERATION(if (!(condition)) return (error))
 #define VALIDATE_THIS						VALIDATE(pThis, eSTATUS_GRID_INVALID_PTR)
 #define VALIDATE_GRID(pThis)				SAFE_OPERATION({VALIDATE(pThis, eSTATUS_GRID_INVALID_PTR); VALIDATE(pThis->pArray, eSTATUS_GRID_INVALID_ARRAY);})
 
-#define ROUND(x)							(long)((x) + 0.5)
-
-#define ARRAY_SIZE(size)					((size.x) * (size.y))
-#define ARRAY_BYTE_SIZE(type, size)			(sizeof(type) * ARRAY_SIZE(size))
 #define ARRAY_INDEX(size, position)			((size.x) * ROUND(position.y) + ROUND(position.x))
-
-#define CLEAR(var)							SAFE_OPERATION(memset(var, 0, sizeof(*var)))
-#define CLEAR_ARRAY(var, size)				SAFE_OPERATION(memset(var, 0, sizeof(var[0]) * ARRAY_SIZE(size)))
-
-#define NEW(type)							(type*)(malloc(sizeof(type)))
-#define NEW_ARRAY(type, size)				(type*)(malloc(ARRAY_BYTE_SIZE(type, size)))
 
 #define PREV_ITEM(item)						(GridItem*)((item)->list.pPrev)
 #define NEXT_ITEM(item)						(GridItem*)((item)->list.pNext)
 #define FIRST_ITEM(list)					(GridItem*)(list.pNext)
 
 #define IF_OUT_OF_RANGE(size, position)		if (((int)(size.x) <= ROUND(position.x)) || ((int)(size.y) <= ROUND(position.y)) || (ROUND(position.x) < 0) || (ROUND(position.y) < 0))
-
-#define CHECK_STATUS_RETURN(rc)				SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
-#define CHECK_STATUS_BREAK(rc)				{if ((rc) != eSTATUS_COMMON_OK) break;}
 #define VALIDATE_BOUNDS(size, position)		SAFE_OPERATION(IF_OUT_OF_RANGE(size, position) return eSTATUS_GRID_OUT_OF_RANGE)
-
-#define GET_MEMBER(destination, ptr, member) SAFE_OPERATION({VALIDATE(ptr && destination, eSTATUS_COMMON_INVALID_ARGUMENT); *destination = ptr->member; return eSTATUS_COMMON_OK; })
-#define SET_MEMBER(source, ptr, member) SAFE_OPERATION({VALIDATE(ptr, eSTATUS_COMMON_INVALID_ARGUMENT); ptr->member = source; return eSTATUS_COMMON_OK; })
 
 static EStatus GridRemoveItem(Grid* pThis, GridItem* pItem);
 
@@ -86,7 +69,7 @@ EStatus GridDestroy(Grid** ppThis)
 	while (GridFirstItem(pThis, &pItem) == eSTATUS_COMMON_OK)
 	{
 		GridRemoveItem(pThis, pItem);
-		free(pItem);
+		DELETE(pItem);
 	}
 
 	free(pThis->pArray);
@@ -116,7 +99,7 @@ EStatus GridAddStation(Grid* pThis, Position position, Velocity velocity, Statio
 EStatus GridEraseItem(Grid* pThis, GridItem* pItem)
 {
     CHECK_STATUS_RETURN(GridRemoveItem(pThis, pItem));
-    free(pItem);
+    DELETE(pItem);
     return eSTATUS_COMMON_OK;
 }
 
@@ -216,7 +199,7 @@ EStatus	GridMoveItems(Grid* pThis)
 		rc = GridAddItem(pThis, pItem);
 		if (rc == eSTATUS_GRID_OUT_OF_RANGE)
 		{
-			free(pItem);
+			DELETE(pItem);
 			rc = eSTATUS_COMMON_OK;
 		}
 		else CHECK_STATUS_BREAK(rc);
