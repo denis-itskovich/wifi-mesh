@@ -2,7 +2,8 @@ INCLUDEPATH +=
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += DockWidgets/DockStationProperties.h \
+HEADERS += DockWidgets/DockTimeLine.h \
+    DockWidgets/DockStationProperties.h \
     DockWidgets/DockFrame.h \
     DockWidgets/DockStations.h \
     DockWidgets/DockRandomizer.h \
@@ -10,7 +11,8 @@ HEADERS += DockWidgets/DockStationProperties.h \
     CoreWrappers/MeshStation.h \
     Dialogs/MeshAboutDlg.h \
     App/MeshApp.h
-SOURCES += DockWidgets/DockFrame.cpp \
+SOURCES += DockWidgets/DockTimeLine.cpp \
+    DockWidgets/DockFrame.cpp \
     DockWidgets/DockStations.cpp \
     DockWidgets/DockStationProperties.cpp \
     DockWidgets/DockRandomizer.cpp \
