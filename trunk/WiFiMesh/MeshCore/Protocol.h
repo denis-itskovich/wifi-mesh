@@ -9,22 +9,22 @@ typedef enum
 	eMSG_TYPE_ACK
 } EMessageType;
 
+typedef unsigned long StationId;
+
 typedef union _Payload
 {
 	struct
 	{
-		unsigned long	searchId;
-		unsigned long	routeLength;
+		StationId id;
 	} searchRequest;
 
 	struct
 	{
-		unsigned long	routeLength;
 	} searchResponse;
 
 	struct
 	{
-		unsigned long dataSize;
+		unsigned long size;
 	} data;
 
 } Payload;

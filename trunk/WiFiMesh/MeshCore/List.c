@@ -4,8 +4,8 @@
 EStatus ListCreate(ListHeader* pHeader)
 {
 	if (!pHeader) return eSTATUS_LIST_INVALID_HEADER;
-
 	pHeader->pNext = pHeader->pPrev = NULL;
+
 	return eSTATUS_COMMON_OK;
 }
 
