@@ -10,26 +10,31 @@
 
 #define _MIN(a,b) ((a) < (b) ? (a) : (b))
 
-DECLARE_STATUS_MESSAGES(gStatusMessages, eSTATUS_LAST)
+DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 {
+	// Common
 	STATUS_MESSAGE("Success"),
 	STATUS_MESSAGE("Out of memory"),
-	STATUS_MESSAGE("Grid pointer is invalid"),
-	STATUS_MESSAGE("Grid array is corrupted or uninitialized"),
-	STATUS_MESSAGE("Grid is empty"),
-	STATUS_MESSAGE("Last grid item reached"),
-	STATUS_MESSAGE("Position is out of grid's dimensions"),
+	STATUS_MESSAGE("Invalid argument"),
+
+	// List
 	STATUS_MESSAGE("List header is invalid"),
 	STATUS_MESSAGE("List item is invalid"),
+
+	// Simulator
+	STATUS_MESSAGE("Station not found"),
+	STATUS_MESSAGE("Simulation finished"),
+
+	// Terminator
 	STATUS_MESSAGE("Unknown error")
 };
 
 const wchar_t* GetStatusMessageW(EStatus status)
 {
-	return gStatusMessages[_MIN(status, eSTATUS_LAST)].wmsg;
+	return s_statusMessages[_MIN(status, eSTATUS_LAST)].wmsg;
 }
 
 const char* GetStatusMessageA(EStatus status)
 {
-	return gStatusMessages[_MIN(status, eSTATUS_LAST)].amsg;
+	return s_statusMessages[_MIN(status, eSTATUS_LAST)].amsg;
 }

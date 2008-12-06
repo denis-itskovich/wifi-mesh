@@ -1,16 +1,12 @@
 #ifndef _WIFI_MESH_EVENT_H
 #define _WIFI_MESH_EVENT_H
 
-#include "List.h"
 #include "Message.h"
+#include "Status.h"
 
-typedef struct _Event
-{
-	ListHeader 		list;
-	unsigned long	time;
-	Message			message;
-} Event;
+typedef struct _Event Event;
 
-void CreateEvent()
+EStatus EventCreate(Event** ppThis, unsigned time, Message* pMessage);
+EStatus EventDestroy(Event** ppThis);
 
 #endif // _WIFI_MESH_EVENT_H
