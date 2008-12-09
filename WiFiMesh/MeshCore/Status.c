@@ -20,6 +20,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	// List
 	STATUS_MESSAGE("List header is invalid"),
 	STATUS_MESSAGE("List item is invalid"),
+	STATUS_MESSAGE("List item not found"),
 
 	// Simulator
 	STATUS_MESSAGE("Station not found"),

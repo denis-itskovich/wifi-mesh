@@ -4,7 +4,6 @@
 
 struct _Event
 {
-	ListHeader 		list;
 	unsigned long	time;
 	Message*		pMessage;
 };

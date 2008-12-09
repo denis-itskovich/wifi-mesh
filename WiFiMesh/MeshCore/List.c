@@ -1,36 +1,136 @@
 #include "List.h"
-#include <stdlib.h>
+#include "Macros.h"
 
-EStatus ListCreate(ListHeader* pHeader)
+struct _ListItem
 {
-	if (!pHeader) return eSTATUS_LIST_INVALID_HEADER;
-	pHeader->pNext = pHeader->pPrev = NULL;
+	ListItem*	pNext;
+	ListItem*	pPrev;
+	void*		pValue;
+};
+
+struct _List
+{
+	ListItem*	pHead;
+	ListItem*	pTail;
+	unsigned	count;
+};
+
+EStatus ListCreate(List** ppThis)
+{
+	CONSTRUCT(ppThis, List, TRUE);
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListInsert(ListHeader* pAfter, ListHeader* pItem)
+EStatus ListDestroy(List** ppThis)
 {
-	if (!pItem) return eSTATUS_LIST_INVALID_ITEM;
+	ListItem* pItem;
+	VALIDATE_ARGUMENTS(ppThis && *ppThis);
 
-	pItem->pPrev = pAfter;
-	if (pAfter)
+	while (pItem = *ppThis->pTail)
 	{
-		pItem->pNext = pAfter->pNext;
-		if (pItem->pNext) pItem->pNext->pPrev = pItem;
-		pAfter->pNext = pItem;
+		CHECK_STATUS_RETURN(ListRemove(*ppThis, &pItem));
 	}
 
+	DELETE(*ppThis);
+
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListRemove(ListHeader* pItem)
+EStatus ListGetCount(List* pThis, unsigned* pCount)
 {
-	if (!pItem) return eSTATUS_LIST_INVALID_ITEM;
+	GET_MEMBER(pCount, pThis, count);
+}
 
-	if (pItem->pPrev) pItem->pPrev->pNext = pItem->pNext;
-	if (pItem->pNext) pItem->pNext->pPrev = pItem->pPrev;
-	pItem->pNext = pItem->pPrev = NULL;
+EStatus ListInsert(List* pThis, void* pValue)
+{
+	ListItem* pItem;
+	VALIDATE_ARGUMENTS(pThis && pValue);
+	NEW(pItem);
+
+	pItem->pValue = pValue;
+	pItem->pPrev = pThis->pTail;
+	pItem->pNext = NULL;
+
+	if (pItem->pPrev) pPrev->pNext = pItem;
+	++pThis->count;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListRemove(List* pThis, ListItem** ppIterator)
+{
+	VALIDATE_ARGUMENTS(pThis && ppIterator && *ppIterator);
+
+	if (*ppIterator->pNext) *ppIterator->pNext->pPrev = *ppIterator->pPrev;
+	else pThis->pTail = *ppIterator->pPrev;
+
+	if (*ppIterator->pPrev) *ppIterator->pPrev->pPnext= *ppIterator->pNext;
+	else pThis->pHead = *ppIterator->pHead;
+
+	--pThis->count;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListFind(List* pThis, ListItem** ppIterator, ListComparator comparator, const void* arg)
+{
+	VALIDATE_ARGUMENTS(pThis && ppIterator);
+	CHECK_STATUS_RETURN(ListGetBegin(pThis, ppIterator));
+
+	while (*ppIterator)
+	{
+		if (comarator(*ppIterator->pValue, arg)) return eSTATUS_COMMON_OK;
+		CHECK_STATUS_RETURN(ListGetNext(ppIterator));
+	}
+
+	return eSTATUS_LIST_NOT_FOUND;
+}
+
+EStatus ListGetBegin(List* pThis, ListItem** ppIterator)
+{
+	VALIDATE_ARGUMENTS(pThis && ppIterator);
+	*ppIterator = pThis->pHead;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListGetEnd(List* pThis, ListItem** ppIterator)
+{
+	VALIDATE_ARGUMENTS(pThis && ppIterator);
+	*ppIterator = pThis->pTail;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListGetNext(ListItem** ppIterator)
+{
+	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
+	*ppIterator = *ppIterator->pNext;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListGetPrevious(ListItem** ppIterator)
+{
+	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
+	*ppIterator = *ppIterator->pPrev;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListIsEmpty(List* pThis, Boolean* pIsEmpty)
+{
+	VALIDATE_ARGUMENTS(pThis && pIsEmpty);
+	*pIsEmpty = (pThis->pHead != NULL) ? TRUE : FALSE;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus ListGetValue(ListItem* pIterator, void** ppValue)
+{
+	VALIDATE_ARGUMENTS(pIterator && ppValue);
+	*ppValue = pIterator->pValue;
 
 	return eSTATUS_COMMON_OK;
 }
