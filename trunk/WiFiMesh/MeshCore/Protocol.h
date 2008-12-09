@@ -1,6 +1,8 @@
 #ifndef _WIFI_MESH_PROTOCOL_H
 #define _WIFI_MESH_PROTOCOL_H
 
+#include "Status.h"
+
 typedef enum
 {
 	eMSG_TYPE_SEARCH_REQUEST,
@@ -28,5 +30,12 @@ typedef union _Payload
 	} data;
 
 } Payload;
+
+typedef struct _Protocol Protocol;
+
+EStatus ProtocolCreate(Protocol** pThis)
+{
+
+}
 
 #endif // _WIFI_MESH_PROTOCOL_H
