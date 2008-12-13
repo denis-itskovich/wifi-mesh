@@ -6,10 +6,6 @@
 
 struct _Message
 {
-	EMessageType	type;
-	StationId		srcId;
-	StationId		dstId;
-	Payload			payload;
 };
 
 EStatus MessageCreateData(Message** ppThis, StationId srcId, StationId dstId, unsigned long size)

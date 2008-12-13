@@ -1,22 +1,29 @@
 #ifndef _WIFI_MESH_STATUS_H
 #define _WIFI_MESH_STATUS_H
 
-#include <wchar.h>
+/**
+ * \file Status.h
+ *
+ * Defines status return codes
+ *
+ * \author Denis Itskovich
+ * \date   1/12/2008
+ */
 
+/// Global return codes
 typedef enum
 {
-	eSTATUS_COMMON_OK = 0,
-	eSTATUS_COMMON_NO_MEMORY,
-	eSTATUS_COMMON_INVALID_ARGUMENT,
+	eSTATUS_COMMON_OK = 0,							///< Successful
+	eSTATUS_COMMON_NO_MEMORY,						///< Allocation failed due to memory shortage
+	eSTATUS_COMMON_INVALID_ARGUMENT,				///< Invalid argument provided <i>(usually NULL-pointer)</i>
 
-	eSTATUS_LIST_INVALID_HEADER,
-	eSTATUS_LIST_INVALID_ITEM,
-	eSTATUS_LIST_NOT_FOUND,
+	eSTATUS_LIST_INVALID_POSITION,					///< Invalid position provided
+	eSTATUS_LIST_NOT_FOUND,							///< Item was not found
 
-	eSTATUS_TIME_LINE_FINISHED,
+	eSTATUS_TIME_LINE_FINISHED,						///< Last event was reached
 
-	eSTATUS_SIMULATOR_STATION_NOT_FOUND,
-	eSTATUS_SIMULATOR_FINISHED,
+	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
+	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished
 
 	// terminator
 	eSTATUS_LAST

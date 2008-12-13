@@ -18,8 +18,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("Invalid argument"),
 
 	// List
-	STATUS_MESSAGE("List header is invalid"),
-	STATUS_MESSAGE("List item is invalid"),
+	STATUS_MESSAGE("List position is invalid"),
 	STATUS_MESSAGE("List item not found"),
 
 	// Simulator

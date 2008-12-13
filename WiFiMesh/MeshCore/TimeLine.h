@@ -6,7 +6,9 @@
 typedef struct _TimeLine TimeLine;
 
 EStatus TimeLineCreate(TimeLine** ppThis);
-EStatus TimeLineDestroy(TimeLine** ppThis);
+EStatus TimeLineDispose(TimeLine** ppThis);
+EStatus TimeLineInit(TimeLine* pThis);
+EStatus TimeLineDestroy(TimeLine* pThis);
 
 EStatus TimeLineAddEvent(TimeLine* pThis, Event* pEvent);
 EStatus TimeLineGetNextEvent(TimeLine* pThis, Event** pEvent);
