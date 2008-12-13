@@ -3,15 +3,15 @@
 
 struct _ListItem
 {
-	ListItem*	pNext;
-	ListItem*	pPrev;
+	ListPosition*	pNext;
+	ListPosition*	pPrev;
 	void*		pValue;
 };
 
 struct _List
 {
-	ListItem*	pHead;
-	ListItem*	pTail;
+	ListPosition*	pHead;
+	ListPosition*	pTail;
 	unsigned	count;
 };
 
@@ -24,12 +24,12 @@ EStatus ListCreate(List** ppThis)
 
 EStatus ListDestroy(List** ppThis)
 {
-	ListItem* pItem;
+	ListPosition* pItem;
 	VALIDATE_ARGUMENTS(ppThis && *ppThis);
 
 	while (pItem = *ppThis->pTail)
 	{
-		CHECK_STATUS_RETURN(ListRemove(*ppThis, &pItem));
+		CHECK_STATUS(ListRemove(*ppThis, &pItem));
 	}
 
 	DELETE(*ppThis);
@@ -44,50 +44,78 @@ EStatus ListGetCount(List* pThis, unsigned* pCount)
 
 EStatus ListInsert(List* pThis, void* pValue)
 {
-	ListItem* pItem;
-	VALIDATE_ARGUMENTS(pThis && pValue);
-	NEW(pItem);
+	ListPosition* pTail;
+	CHECK_STATUS(ListGetTail(pThis, &pTail));
+	return ListInsertAfter(pThis, pTail, pValue);
+}
 
-	pItem->pValue = pValue;
-	pItem->pPrev = pThis->pTail;
-	pItem->pNext = NULL;
+EStatus ListInsertAt(List* pThis, ListPosition* pPrev, ListPosition* pNext, void* pValue)
+{
+	ListPosition* pNewItem;
+	VALIDATE_ARGUMENTS(pThis && pValue);
+	NEW(pNewItem);
+
+	pNewItem->pValue = pValue;
+	pNewItem->pPrev = pPrev;
+	pNewItem->pNext = pNext;
 
 	if (pItem->pPrev) pPrev->pNext = pItem;
+	if (pItem->pNext) pNext->pPrev = pItem;
+
+	if (pItem->pNext == pThis->pHead) pHead = pItem;
+	if (pItem->pPrev == pThis->pTail) pTail = pItem;
+
+	if (!pHead || !pTail)
+	{
+		pHead = pTail = pItem;
+	}
+
 	++pThis->count;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListRemove(List* pThis, ListItem** ppIterator)
+EStatus ListInsertAfter(List* pThis, ListPosition* pItem, void* pValue)
 {
-	VALIDATE_ARGUMENTS(pThis && ppIterator && *ppIterator);
+	return ListInsertAt(pThis, pItem, (pItem) ? pItem->pNext : pThis->pHead);
+}
 
-	if (*ppIterator->pNext) *ppIterator->pNext->pPrev = *ppIterator->pPrev;
-	else pThis->pTail = *ppIterator->pPrev;
 
-	if (*ppIterator->pPrev) *ppIterator->pPrev->pPnext= *ppIterator->pNext;
-	else pThis->pHead = *ppIterator->pHead;
+EStatus ListInsertBefore(List* pThis, ListPosition* pItem, void* pValue)
+{
+	return ListInsertAt(pThis, (pItem) ? pItem->pPrev : pThis->pTail, pItem);
+}
+
+EStatus ListRemove(List* pThis, ListPosition* pIterator)
+{
+	VALIDATE_ARGUMENTS(pThis && pIterator);
+
+	if (pIterator->pNext) pIterator->pNext->pPrev = pIterator->pPrev;
+	else pThis->pTail = pIterator->pPrev;
+
+	if (pIterator->pPrev) pIterator->pPrev->pPnext= pIterator->pNext;
+	else pThis->pHead = pIterator->pHead;
 
 	--pThis->count;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListFind(List* pThis, ListItem** ppIterator, ListComparator comparator, const void* arg)
+EStatus ListFind(List* pThis, ListPosition** ppIterator, ListComparator comparator, const void* arg)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
-	CHECK_STATUS_RETURN(ListGetBegin(pThis, ppIterator));
+	CHECK_STATUS(ListGetBegin(pThis, ppIterator));
 
 	while (*ppIterator)
 	{
 		if (comarator(*ppIterator->pValue, arg)) return eSTATUS_COMMON_OK;
-		CHECK_STATUS_RETURN(ListGetNext(ppIterator));
+		CHECK_STATUS(ListGetNext(ppIterator));
 	}
 
 	return eSTATUS_LIST_NOT_FOUND;
 }
 
-EStatus ListGetBegin(List* pThis, ListItem** ppIterator)
+EStatus ListGetBegin(List* pThis, ListPosition** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pHead;
@@ -95,7 +123,7 @@ EStatus ListGetBegin(List* pThis, ListItem** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetEnd(List* pThis, ListItem** ppIterator)
+EStatus ListGetEnd(List* pThis, ListPosition** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pTail;
@@ -103,7 +131,7 @@ EStatus ListGetEnd(List* pThis, ListItem** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetNext(ListItem** ppIterator)
+EStatus ListGetNext(ListPosition** ppIterator)
 {
 	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
 	*ppIterator = *ppIterator->pNext;
@@ -111,7 +139,7 @@ EStatus ListGetNext(ListItem** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetPrevious(ListItem** ppIterator)
+EStatus ListGetPrevious(ListPosition** ppIterator)
 {
 	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
 	*ppIterator = *ppIterator->pPrev;
@@ -127,7 +155,7 @@ EStatus ListIsEmpty(List* pThis, Boolean* pIsEmpty)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetValue(ListItem* pIterator, void** ppValue)
+EStatus ListGetValue(ListPosition* pIterator, void** ppValue)
 {
 	VALIDATE_ARGUMENTS(pIterator && ppValue);
 	*ppValue = pIterator->pValue;

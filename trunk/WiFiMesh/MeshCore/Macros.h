@@ -20,7 +20,7 @@
 
 #define DELETE(ptr)								SAFE_OPERATION(free(ptr); ptr = NULL)
 
-#define CHECK_STATUS_RETURN(rc)					SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
+#define CHECK_STATUS(rc)						SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
 #define CHECK_STATUS_BREAK(rc)					{if ((rc) != eSTATUS_COMMON_OK) break;}
 
 #define GET_MEMBER(destination, ptr, member)	SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr && destination); *destination = ptr->member; return eSTATUS_COMMON_OK;)
@@ -31,7 +31,6 @@
 													VALIDATE(pptr && cond, eSTATUS_COMMON_INVALID_ARGUMENT); \
 													*pptr = NEW(type); \
 													VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
-													CLEAR(*pptr); \
 												)
 
 typedef enum { FALSE, TRUE } Boolean;
