@@ -19,33 +19,31 @@
       <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-<h1>Simulator.h</h1><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
-<a name="l00002"></a>00002 <span class="comment"> * Simulator.h</span>
-<a name="l00003"></a>00003 <span class="comment"> *</span>
-<a name="l00004"></a>00004 <span class="comment"> * Represents Simulator</span>
-<a name="l00005"></a>00005 <span class="comment"> *</span>
-<a name="l00006"></a>00006 <span class="comment"> * \author Denis Itskovich</span>
-<a name="l00007"></a>00007 <span class="comment"> * \date   06/12/2008</span>
-<a name="l00008"></a>00008 <span class="comment"> */</span>
-<a name="l00009"></a>00009 
-<a name="l00010"></a>00010 <span class="preprocessor">#ifndef SIMULATOR_H_</span>
-<a name="l00011"></a>00011 <span class="preprocessor"></span><span class="preprocessor">#define SIMULATOR_H_</span>
+<h1>Simulator.h</h1><a href="_simulator_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 
+<a name="l00010"></a>00010 <span class="preprocessor">#ifndef WIFI_MESH_SIMULATOR_H_</span>
+<a name="l00011"></a>00011 <span class="preprocessor"></span><span class="preprocessor">#define WIFI_MESH_SIMULATOR_H_</span>
 <a name="l00012"></a>00012 <span class="preprocessor"></span>
 <a name="l00013"></a>00013 <span class="preprocessor">#include "<a class="code" href="_status_8h.html">Status.h</a>"</span>
-<a name="l00014"></a>00014 <span class="preprocessor">#include "Protocol.h"</span>
-<a name="l00015"></a>00015 
-<a name="l00016"></a>00016 <span class="keyword">typedef</span> <span class="keyword">struct </span>_Simulator Simulator;
-<a name="l00017"></a>00017 
-<a name="l00018"></a>00018 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorCreate(Simulator** ppThis);
-<a name="l00019"></a>00019 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorDispose(Simulator** ppThis);
-<a name="l00020"></a>00020 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorInit(Simulator** pThis);
-<a name="l00021"></a>00021 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorDestroy(Simulator* pThis);
-<a name="l00022"></a>00022 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorAddStation(Simulator* pThis, <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a> <span class="keywordtype">id</span>);
-<a name="l00023"></a>00023 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorProcess(Simulator* pThis);
-<a name="l00024"></a>00024 
-<a name="l00025"></a>00025 <span class="preprocessor">#endif </span><span class="comment">/* SIMULATOR_H_ */</span>
+<a name="l00014"></a>00014 <span class="preprocessor">#include "<a class="code" href="_station_8h.html">Station.h</a>"</span>
+<a name="l00015"></a>00015 <span class="preprocessor">#include "Protocol.h"</span>
+<a name="l00016"></a>00016 
+<a name="l00017"></a><a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">00017</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>_Simulator <a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>; 
+<a name="l00018"></a>00018 
+<a name="l00022"></a>00022 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_simulator_8h.html#964e89ce9c1a204c467a36a16fad2d81">SimulatorNew</a>(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>** ppThis);
+<a name="l00023"></a>00023 
+<a name="l00027"></a>00027 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_simulator_8h.html#5b5cfbe003be66eca23e2eb5ce880211">SimulatorDelete</a>(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>** ppThis);
+<a name="l00028"></a>00028 
+<a name="l00032"></a>00032 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorInit(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>* pThis);
+<a name="l00033"></a>00033 
+<a name="l00037"></a>00037 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorDestroy(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>* pThis);
+<a name="l00038"></a>00038 
+<a name="l00043"></a>00043 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_simulator_8h.html#8ffd5d0ddaf34cbbcbfb30291ae63e09">SimulatorAddStation</a>(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>* pThis, <a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pStation);
+<a name="l00044"></a>00044 
+<a name="l00048"></a>00048 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> SimulatorProcess(<a class="code" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e" title="Simulator forward declaration.">Simulator</a>* pThis);
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050 <span class="preprocessor">#endif </span><span class="comment">/* WIFI_MESH_SIMULATOR_H_ */</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Dec 13 23:44:00 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 00:30:40 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>
