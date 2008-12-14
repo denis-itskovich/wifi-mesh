@@ -15,13 +15,6 @@
 #include "Protocol.h"
 #include "Status.h"
 
-/// Location and Velocity vector declarations
-typedef struct _Vector
-{
-	double x;					///< \a x component
-	double y; 					///< \a y component
-} Location, Velocity;
-
 typedef struct _Station Station; 	///< Station forward declaration
 
 /** Allocates and initializes new instance
