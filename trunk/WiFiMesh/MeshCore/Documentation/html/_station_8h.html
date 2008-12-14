@@ -21,31 +21,23 @@
   </div>
 </div>
 <div class="contents">
-<h1>Station.h File Reference</h1><code>#include &quot;Protocol.h&quot;</code><br>
+<h1>Station.h File Reference</h1><code>#include &quot;<a class="el" href="_protocol_8h-source.html">Protocol.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
 
 <p>
 <a href="_station_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
-<tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct___vector.html">_Vector</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location and Velocity vector declarations.  <a href="struct___vector.html#_details">More...</a><br></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8538e4af04d366fc0874b6483c86b6f2"></a><!-- doxytag: member="Station.h::Location" ref="8538e4af04d366fc0874b6483c86b6f2" args="" -->
-typedef struct <a class="el" href="struct___vector.html">_Vector</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#8538e4af04d366fc0874b6483c86b6f2">Location</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location and Velocity vector declarations. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8eeba6a2f93bb5d4ef4040b2cf424d23"></a><!-- doxytag: member="Station.h::Station" ref="8eeba6a2f93bb5d4ef4040b2cf424d23" args="" -->
 typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Station forward declaration. <br></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#588e1f02340c203b4b37905d3537d4d7">StationNew</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **ppThis, <a class="el" href="struct___vector.html">Velocity</a> velocity, <a class="el" href="struct___vector.html">Location</a> location)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#588e1f02340c203b4b37905d3537d4d7">StationNew</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **ppThis, <a class="el" href="struct_vector.html">Velocity</a> velocity, <a class="el" href="struct_vector.html">Location</a> location)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#7926cbb1a751df1efe20b6ebe8cde53c">StationDelete</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **ppThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f3fff20e8a4773532d8ab45dd20775fe">StationInit</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct___vector.html">Velocity</a> velocity, <a class="el" href="struct___vector.html">Location</a> location)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f3fff20e8a4773532d8ab45dd20775fe">StationInit</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Velocity</a> velocity, <a class="el" href="struct_vector.html">Location</a> location)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#28a50a81358cd252e3d4ebe7e0ad8688">StationDestroy</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis)</td></tr>
 
@@ -158,13 +150,13 @@ Retrieves a station id <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct___vector.html">Velocity</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Velocity</a>&nbsp;</td>
           <td class="paramname"> <em>velocity</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct___vector.html">Location</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Location</a>&nbsp;</td>
           <td class="paramname"> <em>location</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -235,13 +227,13 @@ Moves a station according to a time, passed since last move <dl compact><dt><b>P
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct___vector.html">Velocity</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Velocity</a>&nbsp;</td>
           <td class="paramname"> <em>velocity</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct___vector.html">Location</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Location</a>&nbsp;</td>
           <td class="paramname"> <em>location</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -265,7 +257,7 @@ Allocates and initializes new instance <dl compact><dt><b>Parameters:</b></dt><d
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 00:30:40 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

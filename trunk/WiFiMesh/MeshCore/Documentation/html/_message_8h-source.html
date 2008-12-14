@@ -35,16 +35,16 @@
 <a name="l00025"></a>00025 
 <a name="l00026"></a><a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4">00026</a> <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>;        
 <a name="l00027"></a>00027 
-<a name="l00029"></a><a class="code" href="struct___payload.html">00029</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct___payload.html" title="Message payload - depends on message type.">_Payload</a>
+<a name="l00029"></a><a class="code" href="struct_payload.html">00029</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>_Payload
 <a name="l00030"></a>00030 {
-<a name="l00031"></a><a class="code" href="struct___payload.html#7cee3a183aa5280b1f9abb0f4d8f91b0">00031</a>         <a class="code" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9" title="Message type.">EMessageType</a>    <a class="code" href="struct___payload.html#7cee3a183aa5280b1f9abb0f4d8f91b0" title="Message type.">type</a>;                                   
-<a name="l00032"></a><a class="code" href="struct___payload.html#75b01cfdee91df9e38320901aaa11fba">00032</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               <a class="code" href="struct___payload.html#75b01cfdee91df9e38320901aaa11fba" title="Original source station id.">originalSrcId</a>;                  
-<a name="l00033"></a><a class="code" href="struct___payload.html#ad1de7630a808070b57fae549ed83449">00033</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               <a class="code" href="struct___payload.html#ad1de7630a808070b57fae549ed83449" title="Original destination station id.">originalDstId</a>;                  
-<a name="l00034"></a><a class="code" href="struct___payload.html#0b3d3e7617463bf3833dfbd8c3647d66">00034</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               <a class="code" href="struct___payload.html#0b3d3e7617463bf3833dfbd8c3647d66" title="Transit source id.">transitSrcId</a>;                   
-<a name="l00035"></a><a class="code" href="struct___payload.html#7b47092b363fdc3b61ad2d4abcd3ad5e">00035</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               <a class="code" href="struct___payload.html#7b47092b363fdc3b61ad2d4abcd3ad5e" title="Transit destination id.">transitDstId</a>;                   
+<a name="l00031"></a><a class="code" href="struct_payload.html#668ad4df09a9142e8fce97f1ea8e03a3">00031</a>         <a class="code" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9" title="Message type.">EMessageType</a>    type;                                   
+<a name="l00032"></a><a class="code" href="struct_payload.html#ff770d46c62fc8f93831bac4b5b906a0">00032</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               originalSrcId;                  
+<a name="l00033"></a><a class="code" href="struct_payload.html#553a965f75597bc4e078e2dc48474ec0">00033</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               originalDstId;                  
+<a name="l00034"></a><a class="code" href="struct_payload.html#92c6b2ee7d4c7d93601e7474df834979">00034</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               transitSrcId;                   
+<a name="l00035"></a><a class="code" href="struct_payload.html#04e1be3d4fba696660aaf10c4df6c61a">00035</a>         <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>               transitDstId;                   
 <a name="l00036"></a>00036 
-<a name="l00037"></a><a class="code" href="struct___payload.html#3fdcc5e853712dca07ece26a6d40a375">00037</a>         <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>   <a class="code" href="struct___payload.html#3fdcc5e853712dca07ece26a6d40a375" title="Data size (for data packets only).">size</a>;                                   
-<a name="l00038"></a>00038 } <a class="code" href="struct___payload.html" title="Message payload - depends on message type.">Payload</a>;
+<a name="l00037"></a><a class="code" href="struct_payload.html#977978ea55fa14118eb1d2245eccf366">00037</a>         <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>   size;                                   
+<a name="l00038"></a>00038 } <a class="code" href="struct_payload.html" title="Message payload - depends on message type.">Payload</a>;
 <a name="l00039"></a>00039 
 <a name="l00040"></a><a class="code" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e">00040</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>_Message <a class="code" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e" title="forward declaration">Message</a>; 
 <a name="l00041"></a>00041 
@@ -74,7 +74,7 @@
 <a name="l00121"></a>00121 
 <a name="l00122"></a>00122 <span class="preprocessor">#endif // _WIFI_MESH_MESSAGE_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 00:30:40 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

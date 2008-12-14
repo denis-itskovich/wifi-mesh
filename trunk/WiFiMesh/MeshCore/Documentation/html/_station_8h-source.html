@@ -23,32 +23,26 @@
 <a name="l00012"></a>00012 <span class="preprocessor">#ifndef _WIFI_MESH_STATION_H</span>
 <a name="l00013"></a>00013 <span class="preprocessor"></span><span class="preprocessor">#define _WIFI_MESH_STATION_H</span>
 <a name="l00014"></a>00014 <span class="preprocessor"></span>
-<a name="l00015"></a>00015 <span class="preprocessor">#include "Protocol.h"</span>
+<a name="l00015"></a>00015 <span class="preprocessor">#include "<a class="code" href="_protocol_8h.html">Protocol.h</a>"</span>
 <a name="l00016"></a>00016 <span class="preprocessor">#include "<a class="code" href="_status_8h.html">Status.h</a>"</span>
 <a name="l00017"></a>00017 
-<a name="l00019"></a><a class="code" href="struct___vector.html">00019</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct___vector.html" title="Location and Velocity vector declarations.">_Vector</a>
-<a name="l00020"></a>00020 {
-<a name="l00021"></a><a class="code" href="struct___vector.html#ae3f79370b881ce2f2d7870c16ec035b">00021</a>         <span class="keywordtype">double</span> <a class="code" href="struct___vector.html#ae3f79370b881ce2f2d7870c16ec035b" title="x component">x</a>;                                       
-<a name="l00022"></a><a class="code" href="struct___vector.html#9a2e8bbc6249fe3ef29f15f3e6c5ea76">00022</a>         <span class="keywordtype">double</span> <a class="code" href="struct___vector.html#9a2e8bbc6249fe3ef29f15f3e6c5ea76" title="y component">y</a>;                                       
-<a name="l00023"></a>00023 } <a class="code" href="struct___vector.html" title="Location and Velocity vector declarations.">Location</a>, <a class="code" href="struct___vector.html" title="Location and Velocity vector declarations.">Velocity</a>;
-<a name="l00024"></a>00024 
-<a name="l00025"></a><a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">00025</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>_Station <a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>;        
+<a name="l00018"></a><a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">00018</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>_Station <a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>;        
+<a name="l00019"></a>00019 
+<a name="l00025"></a>00025 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_station_8h.html#588e1f02340c203b4b37905d3537d4d7">StationNew</a>(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>** ppThis, <a class="code" href="struct_vector.html" title="Location and Velocity vector declarations.">Velocity</a> velocity, <a class="code" href="struct_vector.html" title="Location and Velocity vector declarations.">Location</a> location);
 <a name="l00026"></a>00026 
-<a name="l00032"></a>00032 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_station_8h.html#588e1f02340c203b4b37905d3537d4d7">StationNew</a>(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>** ppThis, Velocity velocity, <a class="code" href="struct___vector.html" title="Location and Velocity vector declarations.">Location</a> location);
-<a name="l00033"></a>00033 
-<a name="l00037"></a>00037 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_station_8h.html#7926cbb1a751df1efe20b6ebe8cde53c">StationDelete</a>(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>** ppThis);
+<a name="l00030"></a>00030 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> <a class="code" href="_station_8h.html#7926cbb1a751df1efe20b6ebe8cde53c">StationDelete</a>(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>** ppThis);
+<a name="l00031"></a>00031 
+<a name="l00037"></a>00037 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationInit(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, <a class="code" href="struct_vector.html" title="Location and Velocity vector declarations.">Velocity</a> velocity, <a class="code" href="struct_vector.html" title="Location and Velocity vector declarations.">Location</a> location);
 <a name="l00038"></a>00038 
-<a name="l00044"></a>00044 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationInit(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, Velocity velocity, <a class="code" href="struct___vector.html" title="Location and Velocity vector declarations.">Location</a> location);
-<a name="l00045"></a>00045 
-<a name="l00049"></a>00049 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationDestroy(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis);
-<a name="l00050"></a>00050 
-<a name="l00055"></a>00055 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationMove(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, <span class="keywordtype">unsigned</span> timeDelta);
-<a name="l00056"></a>00056 
-<a name="l00061"></a>00061 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationGetId(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>* pId);
-<a name="l00062"></a>00062 
-<a name="l00063"></a>00063 <span class="preprocessor">#endif //_WIFI_MESH_STATION_H</span>
+<a name="l00042"></a>00042 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationDestroy(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis);
+<a name="l00043"></a>00043 
+<a name="l00048"></a>00048 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationMove(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, <span class="keywordtype">unsigned</span> timeDelta);
+<a name="l00049"></a>00049 
+<a name="l00054"></a>00054 <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> StationGetId(<a class="code" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23" title="Station forward declaration.">Station</a>* pThis, <a class="code" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4" title="Station id.">StationId</a>* pId);
+<a name="l00055"></a>00055 
+<a name="l00056"></a>00056 <span class="preprocessor">#endif //_WIFI_MESH_STATION_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 00:30:40 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>
