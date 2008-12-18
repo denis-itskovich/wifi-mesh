@@ -21,7 +21,8 @@
   </div>
 </div>
 <div class="contents">
-<h1>Macros.h File Reference</h1><code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
+<h1>Macros.h File Reference</h1><code>#include &lt;stdlib.h&gt;</code><br>
+<code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
 
 <p>
 <a href="_macros_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -45,7 +46,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(ptr)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(free(ptr); ptr = NULL)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#c23ed6c60426d9aa86fc676d8655dec5">CHECK_STATUS</a>(rc)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(rc)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#ad4a69b87be33b070b166effee9fb788">CHECK_STATUS_BREAK</a>(rc)&nbsp;&nbsp;&nbsp;{if ((rc) != eSTATUS_COMMON_OK) break;}</td></tr>
 
@@ -53,7 +54,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#6597bb8060a772b356a55ad9f9631732">SET_MEMBER</a>(source, ptr, member)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr); ptr-&gt;member = source; return eSTATUS_COMMON_OK;)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#e34e3568b923b0db7fa7795679062b1e">CONSTRUCT</a>(pptr, type, cond)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#e3849980b3ea1fb6e959a683a4251fbc">CONSTRUCT</a>(pptr, module,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#58512d1ce8553061615ea76ab2e28524">DESTRUCT</a>(pptr, module)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -61,12 +64,12 @@ Functional macros<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>01/12/2008 </dd></dl>
 <hr><h2>Define Documentation</h2>
-<a class="anchor" name="c23ed6c60426d9aa86fc676d8655dec5"></a><!-- doxytag: member="Macros.h::CHECK_STATUS" ref="c23ed6c60426d9aa86fc676d8655dec5" args="(rc)" -->
+<a class="anchor" name="21d67ad587afc797b526f602e409fadf"></a><!-- doxytag: member="Macros.h::CHECK" ref="21d67ad587afc797b526f602e409fadf" args="(rc)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define CHECK_STATUS          </td>
+          <td class="memname">#define CHECK          </td>
           <td>(</td>
           <td class="paramtype">rc&nbsp;</td>
           <td class="paramname">          </td>
@@ -167,7 +170,7 @@ Zeroes an array <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="e34e3568b923b0db7fa7795679062b1e"></a><!-- doxytag: member="Macros.h::CONSTRUCT" ref="e34e3568b923b0db7fa7795679062b1e" args="(pptr, type, cond)" -->
+<a class="anchor" name="e3849980b3ea1fb6e959a683a4251fbc"></a><!-- doxytag: member="Macros.h::CONSTRUCT" ref="e3849980b3ea1fb6e959a683a4251fbc" args="(pptr, module,...)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -177,10 +180,10 @@ Zeroes an array <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="paramtype">pptr,         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type,         <tr>
+          <td class="paramtype">module,         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">cond&nbsp;</td>
+          <td class="paramtype"> <em>...</em>&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -191,15 +194,16 @@ Zeroes an array <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a> ( \
-                                                                                                        <a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(pptr &amp;&amp; cond, <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c29f00a6fb237ba333392348887be399" title="Invalid argument provided (usually NULL-pointer).">eSTATUS_COMMON_INVALID_ARGUMENT</a>); \
-                                                                                                        *pptr = <a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>(type); \
+                                                                                                        <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr); \
+                                                                                                        *pptr = <a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>(module); \
                                                                                                         <a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(*pptr, <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14" title="Allocation failed due to memory shortage.">eSTATUS_COMMON_NO_MEMORY</a>); \
+                                                                                                        <span class="keywordflow">return</span> module ## Init (*pptr, ## __VA_ARGS__); \
                                                                                                 )
-</pre></div>Allocates a structure, validating a pointer <dl compact><dt><b>Parameters:</b></dt><dd>
+</pre></div>Allocates and initializes a structure, validating a pointer <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pptr</em>&nbsp;</td><td>*pptr will be initialized with allocated structure </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>type</em>&nbsp;</td><td>data type to be allocated </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>cond</em>&nbsp;</td><td>additional condition to be checked during arguments validation </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>module</em>&nbsp;</td><td>data type to be allocated </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>additional parameters, provided to initializer </td></tr>
   </table>
 </dl>
 <dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a> </dd></dl>
@@ -228,7 +232,42 @@ Frees previousely allocated variable <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>ptr</em>&nbsp;</td><td>pointer to allocated variable </td></tr>
   </table>
 </dl>
-<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>, <a class="el" href="_macros_8h.html#fc944ad8c4cd2e1416e7bdb5fb12850e">NEW_ARRAY</a> </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>, <a class="el" href="_macros_8h.html#fc944ad8c4cd2e1416e7bdb5fb12850e">NEW_ARRAY</a>, <a class="el" href="_macros_8h.html#58512d1ce8553061615ea76ab2e28524">DESTRUCT</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="58512d1ce8553061615ea76ab2e28524"></a><!-- doxytag: member="Macros.h::DESTRUCT" ref="58512d1ce8553061615ea76ab2e28524" args="(pptr, module)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DESTRUCT          </td>
+          <td>(</td>
+          <td class="paramtype">pptr,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">module&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a>( \
+                                                                                                        <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr &amp;&amp; *pptr); \
+                                                                                                        <a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(module ## Init(*pptr)); \
+                                                                                                        <a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(*pptr); \
+                                                                                                        <span class="keywordflow">return</span> <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>; \
+                                                                                                )
+</pre></div>Destroys and deallocates a structure <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pptr</em>&nbsp;</td><td>*pptr must point to valid structure </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>module</em>&nbsp;</td><td>module name </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>
@@ -461,7 +500,7 @@ Checks a condition and returns eSTATUS_COMMON_INVALID_ARGUMENT if a condition no
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Dec 18 07:45:29 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

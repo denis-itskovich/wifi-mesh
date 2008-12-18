@@ -44,6 +44,8 @@ EStatus QueuePop(Queue* pThis, void** pItem)
 {
 	ListPosition* pHead;
 	CHECK_STATUS(ListGetHead(&pThis->list, &pIter));
+	if (!pHead) return eSTATUS_QUEUE_EMPTY;
+
 	CHECK_STATUS(ListGetValue(pIter, pHead));
 	return ListRemove(pThis, pHead);
 }

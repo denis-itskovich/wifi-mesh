@@ -20,6 +20,8 @@ typedef enum
 	eSTATUS_LIST_INVALID_POSITION,					///< Invalid position provided
 	eSTATUS_LIST_NOT_FOUND,							///< Item was not found
 
+	eSTATUS_QUEUE_EMPTY,							///< Attempt to get an item from the empty queue
+
 	eSTATUS_TIME_LINE_FINISHED,						///< Last event was reached
 
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found

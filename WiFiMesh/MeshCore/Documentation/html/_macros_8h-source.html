@@ -23,43 +23,52 @@
 <a name="l00010"></a>00010 <span class="preprocessor">#ifndef _WIFI_MESH_MACROS_H</span>
 <a name="l00011"></a>00011 <span class="preprocessor"></span><span class="preprocessor">#define _WIFI_MESH_MACROS_H</span>
 <a name="l00012"></a>00012 <span class="preprocessor"></span>
-<a name="l00013"></a>00013 <span class="preprocessor">#include "<a class="code" href="_status_8h.html">Status.h</a>"</span>
-<a name="l00014"></a>00014 
-<a name="l00018"></a><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">00018</a> <span class="preprocessor">#define SAFE_OPERATION(operation)                               do {operation;} while (0)</span>
-<a name="l00019"></a>00019 <span class="preprocessor"></span>
-<a name="l00023"></a><a class="code" href="_macros_8h.html#0547b079e64c5a3d281dfb603f6d8533">00023</a> <span class="preprocessor">#define ROUND(val)                                                              (long)((val) + 0.5)</span>
-<a name="l00024"></a>00024 <span class="preprocessor"></span>
-<a name="l00029"></a><a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">00029</a> <span class="preprocessor">#define VALIDATE(condition, error)                              SAFE_OPERATION(if (!(condition)) return (error))</span>
-<a name="l00030"></a>00030 <span class="preprocessor"></span>
-<a name="l00034"></a><a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">00034</a> <span class="preprocessor">#define VALIDATE_ARGUMENTS(condition)                   VALIDATE(condition, eSTATUS_COMMON_INVALID_ARGUMENT)</span>
-<a name="l00035"></a>00035 <span class="preprocessor"></span>
-<a name="l00040"></a><a class="code" href="_macros_8h.html#5616f61f12f4499c3d0a24bd846aa35d">00040</a> <span class="preprocessor">#define CLEAR(var)                                                              SAFE_OPERATION(memset(var, 0, sizeof(*var)))</span>
-<a name="l00041"></a>00041 <span class="preprocessor"></span>
-<a name="l00047"></a><a class="code" href="_macros_8h.html#c12f27426352fd472ded901c4fe3eda6">00047</a> <span class="preprocessor">#define CLEAR_ARRAY(var, size)                                  SAFE_OPERATION(memset(var, 0, sizeof(var[0]) * ARRAY_SIZE(size)))</span>
-<a name="l00048"></a>00048 <span class="preprocessor"></span>
-<a name="l00053"></a><a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">00053</a> <span class="preprocessor">#define NEW(type)                                                               (type*)(malloc(sizeof(type)))</span>
-<a name="l00054"></a>00054 <span class="preprocessor"></span>
-<a name="l00060"></a><a class="code" href="_macros_8h.html#fc944ad8c4cd2e1416e7bdb5fb12850e">00060</a> <span class="preprocessor">#define NEW_ARRAY(type, size)                                   (type*)(malloc(ARRAY_BYTE_SIZE(type, size)))</span>
-<a name="l00061"></a>00061 <span class="preprocessor"></span>
-<a name="l00066"></a><a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">00066</a> <span class="preprocessor">#define DELETE(ptr)                                                             SAFE_OPERATION(free(ptr); ptr = NULL)</span>
-<a name="l00067"></a>00067 <span class="preprocessor"></span>
-<a name="l00071"></a><a class="code" href="_macros_8h.html#c23ed6c60426d9aa86fc676d8655dec5">00071</a> <span class="preprocessor">#define CHECK_STATUS(rc)                                                SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))</span>
-<a name="l00072"></a>00072 <span class="preprocessor"></span>
-<a name="l00076"></a><a class="code" href="_macros_8h.html#ad4a69b87be33b070b166effee9fb788">00076</a> <span class="preprocessor">#define CHECK_STATUS_BREAK(rc)                                  {if ((rc) != eSTATUS_COMMON_OK) break;}</span>
-<a name="l00077"></a>00077 <span class="preprocessor"></span>
-<a name="l00084"></a><a class="code" href="_macros_8h.html#5d64e2cda521f06b6a624f00c7b49849">00084</a> <span class="preprocessor">#define GET_MEMBER(destination, ptr, member)    SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr &amp;&amp; destination); *destination = ptr-&gt;member; return eSTATUS_COMMON_OK;)</span>
-<a name="l00085"></a>00085 <span class="preprocessor"></span>
-<a name="l00092"></a><a class="code" href="_macros_8h.html#6597bb8060a772b356a55ad9f9631732">00092</a> <span class="preprocessor">#define SET_MEMBER(source, ptr, member)                 SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr); ptr-&gt;member = source; return eSTATUS_COMMON_OK;)</span>
-<a name="l00093"></a>00093 <span class="preprocessor"></span>
-<a name="l00100"></a><a class="code" href="_macros_8h.html#e34e3568b923b0db7fa7795679062b1e">00100</a> <span class="preprocessor">#define CONSTRUCT(pptr, type, cond)                             SAFE_OPERATION ( \</span>
-<a name="l00101"></a>00101 <span class="preprocessor">                                                                                                        VALIDATE(pptr &amp;&amp; cond, eSTATUS_COMMON_INVALID_ARGUMENT); \</span>
-<a name="l00102"></a>00102 <span class="preprocessor">                                                                                                        *pptr = NEW(type); \</span>
-<a name="l00103"></a>00103 <span class="preprocessor">                                                                                                        VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \</span>
-<a name="l00104"></a>00104 <span class="preprocessor">                                                                                                )</span>
-<a name="l00105"></a>00105 <span class="preprocessor"></span>
-<a name="l00106"></a>00106 <span class="preprocessor">#endif // _WIFI_MESH_MACROS_H</span>
+<a name="l00013"></a>00013 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
+<a name="l00014"></a>00014 <span class="preprocessor">#include "<a class="code" href="_status_8h.html">Status.h</a>"</span>
+<a name="l00015"></a>00015 
+<a name="l00019"></a><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">00019</a> <span class="preprocessor">#define SAFE_OPERATION(operation)                               do {operation;} while (0)</span>
+<a name="l00020"></a>00020 <span class="preprocessor"></span>
+<a name="l00024"></a><a class="code" href="_macros_8h.html#0547b079e64c5a3d281dfb603f6d8533">00024</a> <span class="preprocessor">#define ROUND(val)                                                              (long)((val) + 0.5)</span>
+<a name="l00025"></a>00025 <span class="preprocessor"></span>
+<a name="l00030"></a><a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">00030</a> <span class="preprocessor">#define VALIDATE(condition, error)                              SAFE_OPERATION(if (!(condition)) return (error))</span>
+<a name="l00031"></a>00031 <span class="preprocessor"></span>
+<a name="l00035"></a><a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">00035</a> <span class="preprocessor">#define VALIDATE_ARGUMENTS(condition)                   VALIDATE(condition, eSTATUS_COMMON_INVALID_ARGUMENT)</span>
+<a name="l00036"></a>00036 <span class="preprocessor"></span>
+<a name="l00041"></a><a class="code" href="_macros_8h.html#5616f61f12f4499c3d0a24bd846aa35d">00041</a> <span class="preprocessor">#define CLEAR(var)                                                              SAFE_OPERATION(memset(var, 0, sizeof(*var)))</span>
+<a name="l00042"></a>00042 <span class="preprocessor"></span>
+<a name="l00048"></a><a class="code" href="_macros_8h.html#c12f27426352fd472ded901c4fe3eda6">00048</a> <span class="preprocessor">#define CLEAR_ARRAY(var, size)                                  SAFE_OPERATION(memset(var, 0, sizeof(var[0]) * ARRAY_SIZE(size)))</span>
+<a name="l00049"></a>00049 <span class="preprocessor"></span>
+<a name="l00054"></a><a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">00054</a> <span class="preprocessor">#define NEW(type)                                                               (type*)(malloc(sizeof(type)))</span>
+<a name="l00055"></a>00055 <span class="preprocessor"></span>
+<a name="l00061"></a><a class="code" href="_macros_8h.html#fc944ad8c4cd2e1416e7bdb5fb12850e">00061</a> <span class="preprocessor">#define NEW_ARRAY(type, size)                                   (type*)(malloc(ARRAY_BYTE_SIZE(type, size)))</span>
+<a name="l00062"></a>00062 <span class="preprocessor"></span>
+<a name="l00067"></a><a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">00067</a> <span class="preprocessor">#define DELETE(ptr)                                                             SAFE_OPERATION(free(ptr); ptr = NULL)</span>
+<a name="l00068"></a>00068 <span class="preprocessor"></span>
+<a name="l00072"></a><a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">00072</a> <span class="preprocessor">#define CHECK(rc)                                               SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))</span>
+<a name="l00073"></a>00073 <span class="preprocessor"></span>
+<a name="l00077"></a><a class="code" href="_macros_8h.html#ad4a69b87be33b070b166effee9fb788">00077</a> <span class="preprocessor">#define CHECK_STATUS_BREAK(rc)                                  {if ((rc) != eSTATUS_COMMON_OK) break;}</span>
+<a name="l00078"></a>00078 <span class="preprocessor"></span>
+<a name="l00085"></a><a class="code" href="_macros_8h.html#5d64e2cda521f06b6a624f00c7b49849">00085</a> <span class="preprocessor">#define GET_MEMBER(destination, ptr, member)    SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr &amp;&amp; destination); *destination = ptr-&gt;member; return eSTATUS_COMMON_OK;)</span>
+<a name="l00086"></a>00086 <span class="preprocessor"></span>
+<a name="l00093"></a><a class="code" href="_macros_8h.html#6597bb8060a772b356a55ad9f9631732">00093</a> <span class="preprocessor">#define SET_MEMBER(source, ptr, member)                 SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr); ptr-&gt;member = source; return eSTATUS_COMMON_OK;)</span>
+<a name="l00094"></a>00094 <span class="preprocessor"></span>
+<a name="l00101"></a><a class="code" href="_macros_8h.html#e3849980b3ea1fb6e959a683a4251fbc">00101</a> <span class="preprocessor">#define CONSTRUCT(pptr, module, ...)                    SAFE_OPERATION ( \</span>
+<a name="l00102"></a>00102 <span class="preprocessor">                                                                                                        VALIDATE_ARGUMENTS(pptr); \</span>
+<a name="l00103"></a>00103 <span class="preprocessor">                                                                                                        *pptr = NEW(module); \</span>
+<a name="l00104"></a>00104 <span class="preprocessor">                                                                                                        VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \</span>
+<a name="l00105"></a>00105 <span class="preprocessor">                                                                                                        return module ## Init (*pptr, ## __VA_ARGS__); \</span>
+<a name="l00106"></a>00106 <span class="preprocessor">                                                                                                )</span>
+<a name="l00107"></a>00107 <span class="preprocessor"></span>
+<a name="l00112"></a><a class="code" href="_macros_8h.html#58512d1ce8553061615ea76ab2e28524">00112</a> <span class="preprocessor">#define DESTRUCT(pptr, module)                                  SAFE_OPERATION( \</span>
+<a name="l00113"></a>00113 <span class="preprocessor">                                                                                                        VALIDATE_ARGUMENTS(pptr &amp;&amp; *pptr); \</span>
+<a name="l00114"></a>00114 <span class="preprocessor">                                                                                                        CHECK(module ## Init(*pptr)); \</span>
+<a name="l00115"></a>00115 <span class="preprocessor">                                                                                                        DELETE(*pptr); \</span>
+<a name="l00116"></a>00116 <span class="preprocessor">                                                                                                        return eSTATUS_COMMON_OK; \</span>
+<a name="l00117"></a>00117 <span class="preprocessor">                                                                                                )</span>
+<a name="l00118"></a>00118 <span class="preprocessor"></span>
+<a name="l00119"></a>00119 <span class="preprocessor">#endif // _WIFI_MESH_MACROS_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Dec 18 07:45:29 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

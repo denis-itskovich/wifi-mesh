@@ -29,7 +29,7 @@ EStatus ListDestroy(List** ppThis)
 
 	while (pItem = *ppThis->pTail)
 	{
-		CHECK_STATUS(ListRemove(*ppThis, &pItem));
+		CHECK(ListRemove(*ppThis, &pItem));
 	}
 
 	DELETE(*ppThis);
@@ -45,7 +45,7 @@ EStatus ListGetCount(List* pThis, unsigned* pCount)
 EStatus ListInsert(List* pThis, void* pValue)
 {
 	ListPosition* pTail;
-	CHECK_STATUS(ListGetTail(pThis, &pTail));
+	CHECK(ListGetTail(pThis, &pTail));
 	return ListInsertAfter(pThis, pTail, pValue);
 }
 
@@ -104,12 +104,12 @@ EStatus ListRemove(List* pThis, ListPosition* pIterator)
 EStatus ListFind(List* pThis, ListPosition** ppIterator, ListComparator comparator, const void* arg)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
-	CHECK_STATUS(ListGetBegin(pThis, ppIterator));
+	CHECK(ListGetBegin(pThis, ppIterator));
 
 	while (*ppIterator)
 	{
 		if (comarator(*ppIterator->pValue, arg)) return eSTATUS_COMMON_OK;
-		CHECK_STATUS(ListGetNext(ppIterator));
+		CHECK(ListGetNext(ppIterator));
 	}
 
 	return eSTATUS_LIST_NOT_FOUND;

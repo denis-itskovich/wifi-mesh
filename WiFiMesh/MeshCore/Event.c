@@ -1,27 +1,44 @@
+/**
+ * \file Event.c
+ *
+ * \date 17/12/2008
+ * \author Denis Itskovich
+ */
+
 #include "Event.h"
 #include "List.h"
 #include "Macros.h"
 
 struct _Event
 {
-	unsigned long	time;
-	Message*		pMessage;
+	double		time;		///< time of event
+	Message*	pMessage;	///< a Message associated with event
 };
 
-EStatus EventCreate(Event** ppThis, unsigned time, Message* pMessage)
+EStatus EventNew(Event** ppThis, double time, Message* pMessage)
 {
-	CONSTRUCT(ppThis, Event, pMessage);
-
-	*ppThis->time = time;
-	return MessageClone(*ppThis->pMessage, pMessage);
+	CONSTRUCT(ppThis, Event, time, pMessage);
 }
 
-EStatus EventDestroy(Event** ppThis)
+EStatus EventDelete(Event** ppThis)
 {
-	VALIDATE_ARGUMENTS(ppThis && *ppThis);
+	DESTRUCT(ppThis, Event);
+}
 
-	MessageDestroy(*ppThis->pMessage);
-	DELETE(*ppThis);
+EStatus EventInit(Event* pThis, double time, Message* pMessage)
+{
+	VALIDATE_ARGUMENTS(pThis && pMessage);
+	CLEAR(pThis);
+
+	pThis->time = time;
+
+	return MessageClone(pThis->pMessage, pMessage);
+}
+
+EStatus EventDestroy(Event* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	MessageDestroy(pThis->pMessage);
 
 	return eSTATUS_COMMON_OK;
 }

@@ -21,6 +21,9 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("List position is invalid"),
 	STATUS_MESSAGE("List item not found"),
 
+	// Queue
+	STATUS_MESSAGE("Queue is empty"),
+
 	// Simulator
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),

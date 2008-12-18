@@ -3,7 +3,7 @@
 
 struct _TimeLine
 {
-	List 		events;
+	List 			events;
 	ListPosition*	pCurrent;
 };
 
@@ -17,7 +17,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	CHECK_STATUS(ListInit(&pThis->events));
+	CHECK(ListInit(&pThis->events));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -33,14 +33,14 @@ EStatus TimeLineDispose(TimeLine** ppThis)
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK_STATUS(ListDestroy(&pThis->events));
+	CHECK(ListDestroy(&pThis->events));
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus TimeLineAddEvent(TimeLine* pThis, Event* pEvent)
 {
 	VALIDATE_ARGUMENTS(pThis && pEvent);
-	CHECK_STATUS(ListInsert(&pThis->events, pEvent));
+	CHECK(ListInsert(&pThis->events, pEvent));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -50,11 +50,11 @@ EStatus TimeLineGetNextEvent(TimeLine* pThis, Event** ppEvent)
 	VALIDATE_ARGUMENTS(pThis && ppEvent);
 	*ppEvent = NULL;
 
-	if (pThis->pCurrent) CHECK_STATUS(ListGetNext(&pThis->pCurrent));
-	else CHECK_STATUS(ListGetHead(pThis->pEvents, &pThis->pCurrent));
+	if (pThis->pCurrent) CHECK(ListGetNext(&pThis->pCurrent));
+	else CHECK(ListGetHead(pThis->pEvents, &pThis->pCurrent));
 
 	VALIDATE(pThis->pCurrent, eSTATUS_TIME_LINE_FINISHED);
-	CHECK_STATUS(ListGetValue(pThis->pCurrent, (void**)ppEvent));
+	CHECK(ListGetValue(pThis->pCurrent, (void**)ppEvent));
 
 	return eSTATUS_COMMON_OK;
 }

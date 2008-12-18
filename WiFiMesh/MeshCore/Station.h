@@ -41,16 +41,42 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location);
  */
 EStatus StationDestroy(Station* pThis);
 
-/** Moves a station according to a time, passed since last move
+/** Synchonizes a station with current time
+ * Moves the station
  * \param pThis [in] pointer to instance
- * \param timeDelta [in] time, passed since last update
+ * \param time [in] current time
  */
-EStatus StationMove(Station* pThis, unsigned timeDelta);
+EStatus StationSynchronize(Station* pThis, double time);
+
+/** Moves a station to new location
+ * \param pThis [in] pointer to instance
+ * \param newLocation [in] new location
+ */
+EStatus StationMoveTo(Station* pThis, Location newLocation);
 
 /** Retrieves a station id
  * \param pThis [in] pointer to instance
  * \param pId [out] pointer to id
  */
 EStatus StationGetId(Station* pThis, StationId* pId);
+
+/** Retrieves next outbox messages
+ * \param pThis [in] pointer to instance
+ * \param ppMessage [out] pointer to message will be stored at *ppMessage
+ */
+EStatus StationGetMessage(Station* pThis, Message** ppMessage);
+
+/** Deliveries a message
+ * \param pThis [in] pointer to instance
+ * \param pMessage [in] pointer to message
+ */
+EStatus StationPutMessage(Station* pThis, Message* pMessage);
+
+/** Checks whether a station is adjacent to another one
+ * \param pThis [in] pointer to instance
+ * \param pStation [in] pointer to station to check
+ * \param pIsAdjacent [out] result will be stored at *pIsAdjacent
+ */
+EStatus StationIsAdjacent(Station* pThis, Station* pStation, Boolean* pIsAdjacent);
 
 #endif //_WIFI_MESH_STATION_H
