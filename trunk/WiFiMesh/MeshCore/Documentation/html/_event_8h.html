@@ -28,11 +28,11 @@
 <a href="_event_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#44adafabc4b056ada4fbc04aeaec5149">EventNew</a> (Event **ppThis, unsigned time, <a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e">Message</a> *pMessage)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#44adafabc4b056ada4fbc04aeaec5149">EventNew</a> (Event **ppThis, unsigned time, <a class="el" href="struct_message.html">Message</a> *pMessage)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#bd551373a13725334067a5fc750d7903">EventDelete</a> (Event **ppThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#510c23fb964c2d18c485d41eb783dc63">EventInit</a> (Event *pThis, unsigned time, <a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e">Message</a> *pMessage)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#c83a948d059fd50ec31da124f753aad3">EventInit</a> (Event *pThis, double time, <a class="el" href="struct_message.html">Message</a> *pMessage)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_event_8h.html#c4a35461468fe46f166efd8310d6ce87">EventDestroy</a> (Event *pThis)</td></tr>
 
@@ -93,7 +93,7 @@ Destroys an event <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="510c23fb964c2d18c485d41eb783dc63"></a><!-- doxytag: member="Event.h::EventInit" ref="510c23fb964c2d18c485d41eb783dc63" args="(Event *pThis, unsigned time, Message *pMessage)" -->
+<a class="anchor" name="c83a948d059fd50ec31da124f753aad3"></a><!-- doxytag: member="Event.h::EventInit" ref="c83a948d059fd50ec31da124f753aad3" args="(Event *pThis, double time, Message *pMessage)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -106,13 +106,13 @@ Destroys an event <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned&nbsp;</td>
+          <td class="paramtype">double&nbsp;</td>
           <td class="paramname"> <em>time</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e">Message</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> *&nbsp;</td>
           <td class="paramname"> <em>pMessage</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -132,7 +132,7 @@ Initializes an event <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to a message associated with an event </td></tr>
   </table>
 </dl>
-<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e" title="forward declaration">Message</a> </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="struct_message.html" title="Message declaration.">Message</a> </dd></dl>
 
 </div>
 </div><p>
@@ -155,7 +155,7 @@ Initializes an event <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e">Message</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> *&nbsp;</td>
           <td class="paramname"> <em>pMessage</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -175,12 +175,12 @@ Allocates and initializes an event <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to a message associated with an event </td></tr>
   </table>
 </dl>
-<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_message_8h.html#0d4b40ad42cd010fadd906ee5720ac5e" title="forward declaration">Message</a> </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="struct_message.html" title="Message declaration.">Message</a> </dd></dl>
 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Dec 18 07:45:29 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

@@ -36,7 +36,7 @@ EStatus EventDelete(Event** ppThis);
  * \param pMessage [in] pointer to a message associated with an event
  * \sa Message
  */
-EStatus EventInit(Event* pThis, unsigned time, Message* pMessage);
+EStatus EventInit(Event* pThis, double time, Message* pMessage);
 
 /** Destroys an event
  * \param pThis [in] pointer to valid instance

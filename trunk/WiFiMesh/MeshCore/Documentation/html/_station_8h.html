@@ -41,9 +41,17 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#28a50a81358cd252e3d4ebe7e0ad8688">StationDestroy</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#50457d1d375c0e9d9d43f988c03a28f3">StationMove</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, unsigned timeDelta)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#5b489b2f718b1b0055625adb8dd7fb0a">StationSynchronize</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, double time)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#ffd326894933eed95e6397deebd30f23">StationMoveTo</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> newLocation)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e2dde6558a305aeb5f8c5d6298d78282">StationGetId</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_message_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> *pId)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#0ce09f7a94caed2958cee1ed09aa5f76">StationGetMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> **ppMessage)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#2887cb667bb4cd7dc14069b00f0f56c7">StationPutMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> *pMessage)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#a5da9724293fa2f306ab49ee4507ce59">StationIsAdjacent</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, Boolean *pIsAdjacent)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -137,6 +145,41 @@ Retrieves a station id <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="0ce09f7a94caed2958cee1ed09aa5f76"></a><!-- doxytag: member="Station.h::StationGetMessage" ref="0ce09f7a94caed2958cee1ed09aa5f76" args="(Station *pThis, Message **ppMessage)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationGetMessage           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppMessage</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves next outbox messages <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppMessage</em>&nbsp;</td><td>[out] pointer to message will be stored at *ppMessage </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="f3fff20e8a4773532d8ab45dd20775fe"></a><!-- doxytag: member="Station.h::StationInit" ref="f3fff20e8a4773532d8ab45dd20775fe" args="(Station *pThis, Velocity velocity, Location location)" -->
 <div class="memitem">
 <div class="memproto">
@@ -179,12 +222,12 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="50457d1d375c0e9d9d43f988c03a28f3"></a><!-- doxytag: member="Station.h::StationMove" ref="50457d1d375c0e9d9d43f988c03a28f3" args="(Station *pThis, unsigned timeDelta)" -->
+<a class="anchor" name="a5da9724293fa2f306ab49ee4507ce59"></a><!-- doxytag: member="Station.h::StationIsAdjacent" ref="a5da9724293fa2f306ab49ee4507ce59" args="(Station *pThis, Station *pStation, Boolean *pIsAdjacent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationMove           </td>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationIsAdjacent           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
           <td class="paramname"> <em>pThis</em>, </td>
@@ -192,8 +235,14 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned&nbsp;</td>
-          <td class="paramname"> <em>timeDelta</em></td><td>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pStation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Boolean *&nbsp;</td>
+          <td class="paramname"> <em>pIsAdjacent</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -205,10 +254,46 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Moves a station according to a time, passed since last move <dl compact><dt><b>Parameters:</b></dt><dd>
+Checks whether a station is adjacent to another one <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>timeDelta</em>&nbsp;</td><td>[in] time, passed since last update </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station to check </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pIsAdjacent</em>&nbsp;</td><td>[out] result will be stored at *pIsAdjacent </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ffd326894933eed95e6397deebd30f23"></a><!-- doxytag: member="Station.h::StationMoveTo" ref="ffd326894933eed95e6397deebd30f23" args="(Station *pThis, Location newLocation)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationMoveTo           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Location</a>&nbsp;</td>
+          <td class="paramname"> <em>newLocation</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Moves a station to new location <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>newLocation</em>&nbsp;</td><td>[in] new location </td></tr>
   </table>
 </dl>
 
@@ -256,8 +341,78 @@ Allocates and initializes new instance <dl compact><dt><b>Parameters:</b></dt><d
 
 </div>
 </div><p>
+<a class="anchor" name="2887cb667bb4cd7dc14069b00f0f56c7"></a><!-- doxytag: member="Station.h::StationPutMessage" ref="2887cb667bb4cd7dc14069b00f0f56c7" args="(Station *pThis, Message *pMessage)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationPutMessage           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> *&nbsp;</td>
+          <td class="paramname"> <em>pMessage</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 14 21:59:14 2008 for MeshCore by&nbsp;
+<div class="memdoc">
+
+<p>
+Deliveries a message <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to message </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="5b489b2f718b1b0055625adb8dd7fb0a"></a><!-- doxytag: member="Station.h::StationSynchronize" ref="5b489b2f718b1b0055625adb8dd7fb0a" args="(Station *pThis, double time)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationSynchronize           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&nbsp;</td>
+          <td class="paramname"> <em>time</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Synchonizes a station with current time Moves the station <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] current time </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Dec 18 07:45:29 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

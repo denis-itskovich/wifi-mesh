@@ -2,41 +2,43 @@
 #include "Protocol.h"
 #include "Macros.h"
 
-#define CONSTRUCT_MESSAGE(pptr, _msgType, _srcId, _dstId) SAFE_OPERATION(CONSTRUCT(pptr, Message, TRUE); *pptr->type = _msgType; *pptr->srcId = _srcId; *pptr->dstId = _dstId)
+#define CONSTRUCT_MESSAGE(pptr, _msgType, _srcId, _dstId) SAFE_OPERATION \
+	( \
+		CONSTRUCT(pptr, Message, TRUE); \
+		*pptr->type = _msgType; \
+		*pptr->originalSrcId = _srcId; \
+		*pptr->originalDstId = _dstId \
+	)
 
-struct _Message
-{
-};
-
-EStatus MessageCreateData(Message** ppThis, StationId srcId, StationId dstId, unsigned long size)
+EStatus MessageNewData(Message** ppThis, StationId srcId, StationId dstId, unsigned long size)
 {
 	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_DATA, srcId, dstId);
-	*ppThis->payload.data.size = size;
+	*ppThis->size = size;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus MessageCreateSearchRequest(Message** ppThis, StationId srcId, StationId dstId, StationId lookForId)
+EStatus MessageNewSearchRequest(Message** ppThis, StationId srcId, StationId lookForId)
 {
-	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_SEARCH_REQUEST, srcId, dstId);
-	*ppThis->payload.searchRequest.id = lookForId;
-
+	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_SEARCH_REQUEST, srcId, lookForId);
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus MessageCreateSearchResponse(Message** ppThis, StationId srcId, StationId dstId)
+EStatus MessageNewSearchResponse(Message** ppThis, StationId srcId, StationId dstId)
 {
 	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_SEARCH_RESPONSE, srcId, dstId);
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus MessageCreateAck(Message** ppThis, StationId srcId, StationId dstId)
+EStatus MessageNewAck(Message** ppThis, StationId srcId, StationId dstId)
 {
 	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_ACK, srcId, dstId);
+
+	return eSTATUS_COMMON_OK;
 }
 
-EStatus MessageDestroy(Message** ppThis)
+EStatus MessageDelete(Message** ppThis)
 {
 	VALIDATE_ARGUMENTS(ppThis && *ppThis);
 	DELETE(*ppThis);

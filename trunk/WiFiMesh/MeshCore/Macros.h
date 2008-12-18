@@ -10,6 +10,7 @@
 #ifndef _WIFI_MESH_MACROS_H
 #define _WIFI_MESH_MACROS_H
 
+#include <stdlib.h>
 #include "Status.h"
 
 /** Used in other macros in order to allow usage of macros inside if/else block
@@ -61,14 +62,14 @@
 
 /** Frees previousely allocated variable
  * \param ptr pointer to allocated variable
- * \sa NEW, NEW_ARRAY
+ * \sa NEW, NEW_ARRAY, DESTRUCT
  */
 #define DELETE(ptr)								SAFE_OPERATION(free(ptr); ptr = NULL)
 
 /** Checks return code and exits function if not successfull
  * \param rc return code to be checked
  */
-#define CHECK_STATUS(rc)						SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
+#define CHECK(rc)						SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
 
 /** Checks return code and breaks a loop if not successfull
  * \param rc return code to be checked
@@ -91,16 +92,28 @@
  */
 #define SET_MEMBER(source, ptr, member)			SAFE_OPERATION(VALIDATE_ARGUMENTS(ptr); ptr->member = source; return eSTATUS_COMMON_OK;)
 
-/** Allocates a structure, validating a pointer
+/** Allocates and initializes a structure, validating a pointer
  * \param pptr *pptr will be initialized with allocated structure
- * \param type data type to be allocated
- * \param cond additional condition to be checked during arguments validation
+ * \param module data type to be allocated
+ * \param ...  additional parameters, provided to initializer
  * \sa NEW
  */
-#define CONSTRUCT(pptr, type, cond)				SAFE_OPERATION ( \
-													VALIDATE(pptr && cond, eSTATUS_COMMON_INVALID_ARGUMENT); \
-													*pptr = NEW(type); \
+#define CONSTRUCT(pptr, module, ...) 			SAFE_OPERATION ( \
+													VALIDATE_ARGUMENTS(pptr); \
+													*pptr = NEW(module); \
 													VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
+													return module ## Init (*pptr, ## __VA_ARGS__); \
+												)
+
+/** Destroys and deallocates a structure
+ * \param pptr *pptr must point to valid structure
+ * \param module module name
+ */
+#define DESTRUCT(pptr, module)					SAFE_OPERATION( \
+													VALIDATE_ARGUMENTS(pptr && *pptr); \
+													CHECK(module ## Init(*pptr)); \
+													DELETE(*pptr); \
+													return eSTATUS_COMMON_OK; \
 												)
 
 #endif // _WIFI_MESH_MACROS_H

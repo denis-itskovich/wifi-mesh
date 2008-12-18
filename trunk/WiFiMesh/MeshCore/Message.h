@@ -25,8 +25,8 @@ typedef enum
 
 typedef unsigned long StationId; 	///< Station id
 
-/// Message payload - depends on message type
-typedef struct _Payload
+/// Message declaration
+typedef struct _Message
 {
 	EMessageType	type;					///< Message type
 	StationId		originalSrcId;			///< Original source station id
@@ -35,9 +35,7 @@ typedef struct _Payload
 	StationId		transitDstId;			///< Transit destination id
 
 	unsigned long 	size;					///< Data size <i>(for data packets only)</i>
-} Payload;
-
-typedef struct _Message Message; ///< forward declaration
+} Message;
 
 /** Allocates data message
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
