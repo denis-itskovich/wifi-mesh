@@ -13,6 +13,7 @@
 #define _WIFI_MESH_MESSAGE_H
 
 #include "Status.h"
+#include "CommonTypes.h"
 
 /// Message type
 typedef enum
@@ -20,10 +21,10 @@ typedef enum
 	eMSG_TYPE_SEARCH_REQUEST,		///< Search request - sent via broadcast in order to locate a route
 	eMSG_TYPE_SEARCH_RESPONSE,		///< Search response - response to search request
 	eMSG_TYPE_DATA,					///< Data message
-	eMSG_TYPE_ACK					///< Acknowledgment message - response to data message
-} EMessageType;
+	eMSG_TYPE_ACK,					///< Acknowledgment message - response to data message
 
-typedef unsigned long StationId; 	///< Station id
+	eMSG_TYPE_LAST					///< Terminator item
+} EMessageType;
 
 /// Message declaration
 typedef struct _Message
@@ -33,9 +34,11 @@ typedef struct _Message
 	StationId		originalDstId;			///< Original destination station id
 	StationId		transitSrcId;			///< Transit source id
 	StationId		transitDstId;			///< Transit destination id
+	unsigned		nodesCount;				///< Transit nodes counts
 
 	unsigned long 	size;					///< Data size <i>(for data packets only)</i>
 } Message;
+
 
 /** Allocates data message
  * \param ppThis [out] pointer to new instance will be stored at *ppThis

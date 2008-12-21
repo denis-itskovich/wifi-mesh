@@ -28,15 +28,19 @@
 <a href="_list_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5cf1fa6cbbefddc71056ae73814a4382"></a><!-- doxytag: member="List.h::ListPosition" ref="5cf1fa6cbbefddc71056ae73814a4382" args="" -->
-typedef struct _ListItem&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a9ecd3fc51577f0d2c8e61d90ed36d09"></a><!-- doxytag: member="List.h::ListPosition" ref="a9ecd3fc51577f0d2c8e61d90ed36d09" args="" -->
+typedef struct _ListEntry&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">forward declaration of _ListItem (declared in List.c) <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f415aadeab887feeda9d2e42371a40b0"></a><!-- doxytag: member="List.h::List" ref="f415aadeab887feeda9d2e42371a40b0" args="" -->
 typedef struct _List&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">forward declaration of _List (declared in List.c) <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef Comparison(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#a57f6f179429ff5506b42de825071d47">ItemComparator</a> )(const void *arg1, const void *arg2)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef Comparison(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> )(const void *pValueLeft, const void *pValueRight, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef Boolean(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> )(void *pValue, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef Boolean(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#78cf197548df700bc6c4bc7a411cf4d5">ItemEnumerator</a> )(const void *pValue, void *pUserArg)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#e71bcd0656759d0bc25c3b8f0e989491">ListNew</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> **ppThis)</td></tr>
@@ -51,23 +55,27 @@ typedef struct _List&nbsp;</td><td class="memItemRight" valign="bottom"><a class
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#6354e51017fc663ee669f494e108d6e2">ListInsert</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#780be11064f457ca0caedc44134a571e">ListInsertAfter</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *pPosition, void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#780be11064f457ca0caedc44134a571e">ListInsertAfter</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#51d21f0c1b092e2f0fcfd180f84b76ab">ListInsertBefore</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *pPosition, void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#51d21f0c1b092e2f0fcfd180f84b76ab">ListInsertBefore</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#4e77c6c560fa9a69f761ea9de5e71c5b">ListRemove</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *pPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#4e77c6c560fa9a69f761ea9de5e71c5b">ListRemove</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#c04d4a54f0bb93f97b1dca2686c55e64">ListFind</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **ppPosition, ListComparator comparator, const void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#66573af922cc9e283abc8bc41078f91c">ListGetHead</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#66573af922cc9e283abc8bc41078f91c">ListGetHead</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#aeeb41d0680897a7398b8542b9e53f2c">ListGetTail</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#aeeb41d0680897a7398b8542b9e53f2c">ListGetTail</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#41d5abb3aadf6c40472b9d51cc91b0ec">ListGetNext</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#41d5abb3aadf6c40472b9d51cc91b0ec">ListGetNext</a> (<a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#6586065cdb375fea4262a25d560c7ad5">ListGetPrevious</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#6586065cdb375fea4262a25d560c7ad5">ListGetPrevious</a> (<a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#69280ac468c4f3d6814242365683213d">ListGetValue</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void **ppValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#69280ac468c4f3d6814242365683213d">ListGetValue</a> (<a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *pPosition, void **ppValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#d84a4024f44462dc9b83391656699ce5">ListFind</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, const void *pValue, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#3343e3b6af652945460dd53f3790bb8b">ListCleanUp</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> filter, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#9bc1e8112badecbd2d7cf23f1b532b6e">ListEnumerate</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#78cf197548df700bc6c4bc7a411cf4d5">ItemEnumerator</a> enumerator, void *pUserArg)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -77,12 +85,12 @@ Represents generic linked list data structure allows to insert, remove and look 
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>1/12/2008 </dd></dl>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="a57f6f179429ff5506b42de825071d47"></a><!-- doxytag: member="List.h::ItemComparator" ref="a57f6f179429ff5506b42de825071d47" args=")(const void *arg1, const void *arg2)" -->
+<a class="anchor" name="de6b2369bd85196ecc9457fe4d1f10e4"></a><!-- doxytag: member="List.h::ItemComparator" ref="de6b2369bd85196ecc9457fe4d1f10e4" args=")(const void *pValueLeft, const void *pValueRight, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef Comparison(* <a class="el" href="_list_8h.html#a57f6f179429ff5506b42de825071d47">ItemComparator</a>)(const void *arg1, const void *arg2)          </td>
+          <td class="memname">typedef Comparison(* <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a>)(const void *pValueLeft, const void *pValueRight, void *pUserArg)          </td>
         </tr>
       </table>
 </div>
@@ -91,15 +99,111 @@ Represents generic linked list data structure allows to insert, remove and look 
 <p>
 Compares between 2 values <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>arg1</em>&nbsp;</td><td>[in] pointer to first item </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>arg2</em>&nbsp;</td><td>[in] pointer to second item </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pValueLeft</em>&nbsp;</td><td>[in] pointer to first item </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pValueRight</em>&nbsp;</td><td>[in] pointer to second item </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>value indicates relationship between items </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>value indicates relationship between items <p>
+LESS if *pValueLeft &lt; *pValueRight <p>
+EQUAL if *pValueLeft == *pValueRight <p>
+GREAT if *pValueLeft &gt; *pValueRight </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#d84a4024f44462dc9b83391656699ce5">ListFind</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="78cf197548df700bc6c4bc7a411cf4d5"></a><!-- doxytag: member="List.h::ItemEnumerator" ref="78cf197548df700bc6c4bc7a411cf4d5" args=")(const void *pValue, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef Boolean(* <a class="el" href="_list_8h.html#78cf197548df700bc6c4bc7a411cf4d5">ItemEnumerator</a>)(const void *pValue, void *pUserArg)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Used for items enumeration <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] pointer to value </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>TRUE if an enumeration should be continued <p>
+FALSE if an enumeration should be stopped </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#9bc1e8112badecbd2d7cf23f1b532b6e">ListEnumerate</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="d018a30283785fa8e2b7ba396d274202"></a><!-- doxytag: member="List.h::ItemFilter" ref="d018a30283785fa8e2b7ba396d274202" args=")(void *pValue, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef Boolean(* <a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a>)(void *pValue, void *pUserArg)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Decides whether to leave to remove an item from list <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] pointer to value </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>TRUE if an item should be leaved <p>
+FALSE if an item should be removed </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#3343e3b6af652945460dd53f3790bb8b">ListCleanUp</a> </dd></dl>
 
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
+<a class="anchor" name="3343e3b6af652945460dd53f3790bb8b"></a><!-- doxytag: member="List.h::ListCleanUp" ref="3343e3b6af652945460dd53f3790bb8b" args="(List *pThis, ItemFilter filter, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListCleanUp           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a>&nbsp;</td>
+          <td class="paramname"> <em>filter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>filter</em>&nbsp;</td><td>[in] pointer to item filter function </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument of filter function </td></tr>
+  </table>
+</dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="45879356e8365b82ec23405ba9e915d6"></a><!-- doxytag: member="List.h::ListDelete" ref="45879356e8365b82ec23405ba9e915d6" args="(List **ppThis)" -->
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +254,50 @@ Deinitializes an instance without deallocating <dl compact><dt><b>Parameters:</b
 
 </div>
 </div><p>
-<a class="anchor" name="c04d4a54f0bb93f97b1dca2686c55e64"></a><!-- doxytag: member="List.h::ListFind" ref="c04d4a54f0bb93f97b1dca2686c55e64" args="(List *pThis, ListPosition **ppPosition, ListComparator comparator, const void *pValue)" -->
+<a class="anchor" name="9bc1e8112badecbd2d7cf23f1b532b6e"></a><!-- doxytag: member="List.h::ListEnumerate" ref="9bc1e8112badecbd2d7cf23f1b532b6e" args="(List *pThis, ItemEnumerator enumerator, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListEnumerate           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#78cf197548df700bc6c4bc7a411cf4d5">ItemEnumerator</a>&nbsp;</td>
+          <td class="paramname"> <em>enumerator</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>enumerator</em>&nbsp;</td><td>[in] pointer to item enumerator function </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument of filter function </td></tr>
+  </table>
+</dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#78cf197548df700bc6c4bc7a411cf4d5">ItemEnumerator</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="d84a4024f44462dc9b83391656699ce5"></a><!-- doxytag: member="List.h::ListFind" ref="d84a4024f44462dc9b83391656699ce5" args="(List *pThis, ListPosition **ppPosition, ItemComparator comparator, const void *pValue, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -163,20 +310,26 @@ Deinitializes an instance without deallocating <dl compact><dt><b>Parameters:</b
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
           <td class="paramname"> <em>ppPosition</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ListComparator&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a>&nbsp;</td>
           <td class="paramname"> <em>comparator</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&nbsp;</td>
-          <td class="paramname"> <em>pValue</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>pValue</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -193,14 +346,11 @@ Looks for an item in a list <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[out] found item position will be stored at *ppPosition </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>comparator</em>&nbsp;</td><td>[in] pointer to item comparator function </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] item to look for (pValueRight argument of ItemComparator) </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument of comparator function </td></tr>
   </table>
 </dl>
-<dl class="see" compact><dt><b>See also:</b></dt><dd>ListComparator </dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] item to look for (second argument of ListComparator) </td></tr>
-  </table>
-</dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> </dd></dl>
 
 </div>
 </div><p>
@@ -252,7 +402,7 @@ Gets items count <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
           <td class="paramname"> <em>ppPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -281,7 +431,7 @@ Gets a <em>head</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetNext           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
           <td class="paramname"> <em>ppPosition</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -306,7 +456,7 @@ Gets a <em>next</em> to specified position <dl compact><dt><b>Parameters:</b></d
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetPrevious           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
           <td class="paramname"> <em>ppPosition</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -337,7 +487,7 @@ Gets a <em>previous</em> to specified position <dl compact><dt><b>Parameters:</b
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> **&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
           <td class="paramname"> <em>ppPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -366,7 +516,7 @@ Gets a <em>tail</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetValue           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
           <td class="paramname"> <em>pPosition</em>, </td>
         </tr>
         <tr>
@@ -467,7 +617,7 @@ Inserts new item to the tail <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
           <td class="paramname"> <em>pPosition</em>, </td>
         </tr>
         <tr>
@@ -509,7 +659,7 @@ Inserts new item <em>after</em> specified position <dl compact><dt><b>Parameters
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
           <td class="paramname"> <em>pPosition</em>, </td>
         </tr>
         <tr>
@@ -576,7 +726,7 @@ Allocates &amp; initializes new List instance <dl compact><dt><b>Parameters:</b>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#5cf1fa6cbbefddc71056ae73814a4382">ListPosition</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
           <td class="paramname"> <em>pPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -599,7 +749,7 @@ Removes an item from specified position <dl compact><dt><b>Parameters:</b></dt><
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Dec 18 07:45:29 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

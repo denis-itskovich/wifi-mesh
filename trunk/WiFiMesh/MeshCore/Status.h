@@ -19,6 +19,7 @@ typedef enum
 
 	eSTATUS_LIST_INVALID_POSITION,					///< Invalid position provided
 	eSTATUS_LIST_NOT_FOUND,							///< Item was not found
+	eSTATUS_LIST_ENUMERATION_STOPPED,				///< Enumeration was stopped by enumerator
 
 	eSTATUS_QUEUE_EMPTY,							///< Attempt to get an item from the empty queue
 

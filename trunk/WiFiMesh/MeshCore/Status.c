@@ -20,6 +20,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	// List
 	STATUS_MESSAGE("List position is invalid"),
 	STATUS_MESSAGE("List item not found"),
+	STATUS_MESSAGE("List enumeration was stopped"),
 
 	// Queue
 	STATUS_MESSAGE("Queue is empty"),
