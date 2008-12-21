@@ -41,7 +41,7 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location);
  */
 EStatus StationDestroy(Station* pThis);
 
-/** Synchonizes a station with current time
+/** Synchronizes a station with current time
  * Moves the station
  * \param pThis [in] pointer to instance
  * \param time [in] current time
@@ -60,9 +60,9 @@ EStatus StationMoveTo(Station* pThis, Location newLocation);
  */
 EStatus StationGetId(Station* pThis, StationId* pId);
 
-/** Retrieves next outbox messages
+/** Retrieves next outgoing message
  * \param pThis [in] pointer to instance
- * \param ppMessage [out] pointer to message will be stored at *ppMessage
+ * \param ppMessage [out] pointer to message will be stored at *ppMessage. NULL will be stored if no outgoing messages are available
  */
 EStatus StationGetMessage(Station* pThis, Message** ppMessage);
 
@@ -72,11 +72,24 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage);
  */
 EStatus StationPutMessage(Station* pThis, Message* pMessage);
 
+/** Request to send - orders to station not to transmit for specified time period
+ * \param pThis [in] pointer to instance
+ * \param time [in] time, when transmit will be allowed
+ */
+EStatus StationDelayTransmits(Station* pThis, double time);
+
 /** Checks whether a station is adjacent to another one
  * \param pThis [in] pointer to instance
  * \param pStation [in] pointer to station to check
  * \param pIsAdjacent [out] result will be stored at *pIsAdjacent
  */
 EStatus StationIsAdjacent(Station* pThis, Station* pStation, Boolean* pIsAdjacent);
+
+/** Enqueues a message for delayed transmit
+ * \param pThis [in] pointer to instance
+ * \param pMessage [in] pointer to message to be sent
+ * \param time [in] time, when the message should be sent
+ */
+EStatus StationEnqueueMessage(Station* pThis, Message* pMessage, double time);
 
 #endif //_WIFI_MESH_STATION_H

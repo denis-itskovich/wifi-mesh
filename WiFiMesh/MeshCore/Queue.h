@@ -34,7 +34,7 @@ EStatus QueueDelete(Queue** ppThis);
  */
 EStatus QueueInit(Queue* pThis);
 
-/** Deinitializes an instance without deallocating
+/** Destroys an instance without deallocating
  * \param pThis [in] pointer to instance
  */
 EStatus QueueDestroy(Queue* pThis);
@@ -42,6 +42,7 @@ EStatus QueueDestroy(Queue* pThis);
 /** Adds new item into the queue
  * \param pThis [in] pointer to instance
  * \param pItem [in] pointer to abstract item
+ * \sa QueuePeek, QueuePush
  */
 EStatus QueuePush(Queue* pThis, void* pItem);
 
@@ -50,5 +51,12 @@ EStatus QueuePush(Queue* pThis, void* pItem);
  * \param ppItem [out] pointer to retrieved item will be stored at *ppItem
  */
 EStatus QueuePop(Queue* pThis, void** ppItem);
+
+/** Retrieves top item from the queue (without removing)
+ * \param pThis [in] pointer to instance
+ * \param ppItem [out] an item will be stored at *ppItem
+ * \sa QueuePop, QueuePush
+ */
+EStatus QueuePeek(Queue* pThis, void** ppItem);
 
 #endif /* WIFI_MESH_QUEUE_H_ */

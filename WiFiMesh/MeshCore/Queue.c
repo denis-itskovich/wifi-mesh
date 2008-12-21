@@ -7,25 +7,26 @@
 
 #include "Queue.h"
 #include "List.h"
+#include "Macros.h"
 
 struct _Queue
 {
 	List	list;
 };
 
-EStatus QueueCreate(Queue** ppThis)
+EStatus QueueNew(Queue** ppThis)
 {
-	return ListCreate((List**)ppThis);
+	CONSTRUCT(ppThis, Queue);
+}
+
+EStatus QueueDelete(Queue** ppThis)
+{
+	DESTRUCT(ppThis, Queue);
 }
 
 EStatus QueueInit(Queue* pThis)
 {
 	return ListInit(&pThis->list);
-}
-
-EStatus QueueDispose(Queue** ppThis)
-{
-	return ListDispose((List**)ppThis);
 }
 
 EStatus QueueDestroy(Queue* pThis)
@@ -36,16 +37,23 @@ EStatus QueueDestroy(Queue* pThis)
 EStatus QueuePush(Queue* pThis, void* pItem)
 {
 	ListPosition* pTail;
-	CHECK_STATUS(ListGetTail(&pThis->list, &pTail));
+	CHECK(ListGetTail(&pThis->list, &pTail));
 	return ListInsertAfter(&pThis->list, pTail, pItem);
 }
 
 EStatus QueuePop(Queue* pThis, void** pItem)
 {
 	ListPosition* pHead;
-	CHECK_STATUS(ListGetHead(&pThis->list, &pIter));
+	CHECK(QueuePeek(pThis, pItem));
+	CHECK(ListGetHead(&pThis->list, &pIter));
+	return ListRemove(pThis, pHead);
+}
+
+EStatus QueuePeek(Queue* pThis, void** pItem)
+{
+	ListPosition* pHead;
+	CHECK(ListGetHead(&pThis->list, &pIter));
 	if (!pHead) return eSTATUS_QUEUE_EMPTY;
 
-	CHECK_STATUS(ListGetValue(pIter, pHead));
-	return ListRemove(pThis, pHead);
+	return ListGetValue(pIter, pHead);
 }
