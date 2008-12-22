@@ -19,43 +19,45 @@
       <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
-<h1>Status.h</h1><a href="_status_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#ifndef _WIFI_MESH_STATUS_H</span>
-<a name="l00002"></a>00002 <span class="preprocessor"></span><span class="preprocessor">#define _WIFI_MESH_STATUS_H</span>
-<a name="l00003"></a>00003 <span class="preprocessor"></span>
-<a name="l00013"></a>00013 
-<a name="l00014"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193">00014</a> <span class="keyword">typedef</span> <span class="keyword">enum</span>
-<a name="l00015"></a>00015 {
-<a name="l00016"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f">00016</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a> = 0,                                                  
-<a name="l00017"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14">00017</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14" title="Allocation failed due to memory shortage.">eSTATUS_COMMON_NO_MEMORY</a>,                                               
-<a name="l00018"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c29f00a6fb237ba333392348887be399">00018</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c29f00a6fb237ba333392348887be399" title="Invalid argument provided (usually NULL-pointer).">eSTATUS_COMMON_INVALID_ARGUMENT</a>,                                
-<a name="l00019"></a>00019 
-<a name="l00020"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819309336830a9ba51f89f4b8f21b91bcb7e">00020</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819309336830a9ba51f89f4b8f21b91bcb7e" title="Invalid position provided.">eSTATUS_LIST_INVALID_POSITION</a>,                                  
-<a name="l00021"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81935c7b3718e89f1fb851ecbf8f52c0dbfd">00021</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81935c7b3718e89f1fb851ecbf8f52c0dbfd" title="Item was not found.">eSTATUS_LIST_NOT_FOUND</a>,                                                 
-<a name="l00022"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81937b8347a75b7c81da7caa8e1836319f12">00022</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81937b8347a75b7c81da7caa8e1836319f12" title="Enumeration was stopped by enumerator.">eSTATUS_LIST_ENUMERATION_STOPPED</a>,                               
-<a name="l00023"></a>00023 
-<a name="l00024"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931ea5a2b39864d29b544944de966cd478">00024</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931ea5a2b39864d29b544944de966cd478" title="Attempt to get an item from the empty queue.">eSTATUS_QUEUE_EMPTY</a>,                                                    
+<h1>Status.h</h1><a href="_status_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 
+<a name="l00010"></a>00010 <span class="preprocessor">#ifndef _WIFI_MESH_STATUS_H</span>
+<a name="l00011"></a>00011 <span class="preprocessor"></span><span class="preprocessor">#define _WIFI_MESH_STATUS_H</span>
+<a name="l00012"></a>00012 <span class="preprocessor"></span>
+<a name="l00013"></a>00013 <span class="preprocessor">#include &lt;wchar.h&gt;</span>
+<a name="l00014"></a>00014 
+<a name="l00016"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193">00016</a> <span class="keyword">typedef</span> <span class="keyword">enum</span>
+<a name="l00017"></a>00017 {
+<a name="l00018"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f">00018</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a> = 0,                                                  
+<a name="l00019"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14">00019</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14" title="Allocation failed due to memory shortage.">eSTATUS_COMMON_NO_MEMORY</a>,                                               
+<a name="l00020"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c29f00a6fb237ba333392348887be399">00020</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c29f00a6fb237ba333392348887be399" title="Invalid argument provided (usually NULL-pointer).">eSTATUS_COMMON_INVALID_ARGUMENT</a>,                                
+<a name="l00021"></a>00021 
+<a name="l00022"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819309336830a9ba51f89f4b8f21b91bcb7e">00022</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819309336830a9ba51f89f4b8f21b91bcb7e" title="Invalid position provided.">eSTATUS_LIST_INVALID_POSITION</a>,                                  
+<a name="l00023"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81935c7b3718e89f1fb851ecbf8f52c0dbfd">00023</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81935c7b3718e89f1fb851ecbf8f52c0dbfd" title="Item was not found.">eSTATUS_LIST_NOT_FOUND</a>,                                                 
+<a name="l00024"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81937b8347a75b7c81da7caa8e1836319f12">00024</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81937b8347a75b7c81da7caa8e1836319f12" title="Enumeration was stopped by enumerator.">eSTATUS_LIST_ENUMERATION_STOPPED</a>,                               
 <a name="l00025"></a>00025 
-<a name="l00026"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819329e3302e25d086d9fdcc98ad5c784edd">00026</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819329e3302e25d086d9fdcc98ad5c784edd" title="Last event was reached.">eSTATUS_TIME_LINE_FINISHED</a>,                                             
+<a name="l00026"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931ea5a2b39864d29b544944de966cd478">00026</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931ea5a2b39864d29b544944de966cd478" title="Attempt to get an item from the empty queue.">eSTATUS_QUEUE_EMPTY</a>,                                                    
 <a name="l00027"></a>00027 
-<a name="l00028"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682">00028</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682" title="Referred station was not found.">eSTATUS_SIMULATOR_STATION_NOT_FOUND</a>,                    
-<a name="l00029"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0">00029</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0" title="Simulation finished.">eSTATUS_SIMULATOR_FINISHED</a>,                                             
-<a name="l00030"></a>00030 
-<a name="l00031"></a>00031         <span class="comment">// terminator</span>
-<a name="l00032"></a>00032         eSTATUS_LAST
-<a name="l00033"></a>00033 } <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a>;
-<a name="l00034"></a>00034 
-<a name="l00035"></a>00035 <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* GetStatusMessageW(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
-<a name="l00036"></a>00036 <span class="keyword">const</span> <span class="keywordtype">char</span>* GetStatusMessageA(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
-<a name="l00037"></a>00037 
-<a name="l00038"></a>00038 <span class="preprocessor">#ifdef UNICODE</span>
-<a name="l00039"></a>00039 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageW</span>
-<a name="l00040"></a>00040 <span class="preprocessor"></span><span class="preprocessor">#else</span>
-<a name="l00041"></a>00041 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageA</span>
-<a name="l00042"></a>00042 <span class="preprocessor"></span><span class="preprocessor">#endif // UNICODE</span>
-<a name="l00043"></a>00043 <span class="preprocessor"></span>
-<a name="l00044"></a>00044 <span class="preprocessor">#endif // _WIFI_MESH_STATUS_H</span>
+<a name="l00028"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819329e3302e25d086d9fdcc98ad5c784edd">00028</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d819329e3302e25d086d9fdcc98ad5c784edd" title="Last event was reached.">eSTATUS_TIME_LINE_FINISHED</a>,                                             
+<a name="l00029"></a>00029 
+<a name="l00030"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682">00030</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682" title="Referred station was not found.">eSTATUS_SIMULATOR_STATION_NOT_FOUND</a>,                    
+<a name="l00031"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0">00031</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0" title="Simulation finished.">eSTATUS_SIMULATOR_FINISHED</a>,                                             
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033         <span class="comment">// terminator</span>
+<a name="l00034"></a>00034         eSTATUS_LAST
+<a name="l00035"></a>00035 } <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a>;
+<a name="l00036"></a>00036 
+<a name="l00037"></a>00037 <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* GetStatusMessageW(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
+<a name="l00038"></a>00038 <span class="keyword">const</span> <span class="keywordtype">char</span>* GetStatusMessageA(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
+<a name="l00039"></a>00039 
+<a name="l00040"></a>00040 <span class="preprocessor">#ifdef UNICODE</span>
+<a name="l00041"></a>00041 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageW</span>
+<a name="l00042"></a>00042 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00043"></a>00043 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageA</span>
+<a name="l00044"></a>00044 <span class="preprocessor"></span><span class="preprocessor">#endif // UNICODE</span>
+<a name="l00045"></a>00045 <span class="preprocessor"></span>
+<a name="l00046"></a>00046 <span class="preprocessor">#endif // _WIFI_MESH_STATUS_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

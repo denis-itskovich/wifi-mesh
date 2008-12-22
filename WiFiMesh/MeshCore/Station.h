@@ -12,8 +12,7 @@
 #ifndef _WIFI_MESH_STATION_H
 #define _WIFI_MESH_STATION_H
 
-#include "Protocol.h"
-#include "Status.h"
+#include "Message.h"
 
 typedef struct _Station Station; 	///< Station forward declaration
 
@@ -44,9 +43,9 @@ EStatus StationDestroy(Station* pThis);
 /** Synchronizes a station with current time
  * Moves the station
  * \param pThis [in] pointer to instance
- * \param time [in] current time
+ * \param timeDelta [in] time, passed since last update
  */
-EStatus StationSynchronize(Station* pThis, double time);
+EStatus StationSynchronize(Station* pThis, double timeDelta);
 
 /** Moves a station to new location
  * \param pThis [in] pointer to instance
@@ -58,7 +57,7 @@ EStatus StationMoveTo(Station* pThis, Location newLocation);
  * \param pThis [in] pointer to instance
  * \param pId [out] pointer to id
  */
-EStatus StationGetId(Station* pThis, StationId* pId);
+EStatus StationGetId(const Station* pThis, StationId* pId);
 
 /** Retrieves next outgoing message
  * \param pThis [in] pointer to instance
@@ -83,7 +82,7 @@ EStatus StationDelayTransmits(Station* pThis, double time);
  * \param pStation [in] pointer to station to check
  * \param pIsAdjacent [out] result will be stored at *pIsAdjacent
  */
-EStatus StationIsAdjacent(Station* pThis, Station* pStation, Boolean* pIsAdjacent);
+EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent);
 
 /** Enqueues a message for delayed transmit
  * \param pThis [in] pointer to instance

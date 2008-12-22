@@ -23,7 +23,7 @@ typedef struct _Event Event;
  * \param pMessage [in] pointer to a message associated with an event
  * \sa Message
  */
-EStatus EventNew(Event** ppThis, unsigned time, Message* pMessage);
+EStatus EventNew(Event** ppThis, double time, Message* pMessage);
 
 /** Destroys and deallocates and instance of Event
  * \param ppThis [in, out] *ppThis must point to valid instance

@@ -10,6 +10,7 @@
 #define _WIFI_MESH_PROTOCOL_H
 
 #include "Status.h"
+#include "TimeLine.h"
 
 typedef struct _Protocol Protocol; ///< forward declaration of protocol manager
 

@@ -19,7 +19,7 @@
 #include "CommonTypes.h"
 
 /// forward declaration of _ListItem (declared in List.c)
-typedef struct _ListEntry ListPosition;
+typedef struct _ListEntry ListEntry;
 
 /// forward declaration of _List (declared in List.c)
 typedef struct _List List;
@@ -88,61 +88,61 @@ EStatus ListInsert(List* pThis, void* pValue);
 
 /** Inserts new item \a after specified position
  * \param pThis [in] pointer to instance
- * \param pPosition [in] points to position in the list
+ * \param pEntry [in] points to position in the list
  * \param pValue [in] pointer to abstract value
  */
-EStatus ListInsertAfter(List* pThis, ListPosition* pPosition, void* pValue);
+EStatus ListInsertAfter(List* pThis, ListEntry* pEntry, void* pValue);
 
 /** Inserts new item \a before specified position
  * \param pThis [in] pointer to instance
- * \param pPosition [in] points to position in the list
+ * \param pEntry [in] points to position in the list
  * \param pValue [in] pointer to abstract value
  */
-EStatus ListInsertBefore(List* pThis, ListPosition* pPosition, void* pValue);
+EStatus ListInsertBefore(List* pThis, ListEntry* pEntry, void* pValue);
 
 /** Removes an item from specified position
  * \param pThis [in] pointer to instance
- * \param pPosition [in] points to position of an item to be removed
+ * \param pEntry [in] points to position of an item to be removed
  */
-EStatus ListRemove(List* pThis, ListPosition* pPosition);
+EStatus ListRemove(List* pThis, ListEntry* pEntry);
 
 /** Gets a \a head position
  * \param pThis [in] pointer to instance
- * \param ppPosition [out] head position will be stored at *ppPosition
+ * \param ppEntry [out] head position will be stored at *ppEntry
  */
-EStatus ListGetHead(List* pThis, ListPosition** ppPosition);
+EStatus ListGetHead(List* pThis, ListEntry** ppEntry);
 
 /** Gets a \a tail position
  * \param pThis [in] pointer to instance
- * \param ppPosition [out] tail position will be stored at *ppPosition
+ * \param ppEntry [out] tail position will be stored at *ppEntry
  */
-EStatus ListGetTail(List* pThis, ListPosition** ppPosition);
+EStatus ListGetTail(List* pThis, ListEntry** ppEntry);
 
 /** Gets a \a next to specified position
- * \param ppPosition [in, out] *ppPosition will be initialized with position next to *ppPosition
+ * \param ppEntry [in, out] *ppEntry will be initialized with position next to *ppEntry
  */
-EStatus ListGetNext(ListPosition** ppPosition);
+EStatus ListGetNext(ListEntry** ppEntry);
 
 /** Gets a \a previous to specified position
- * \param ppPosition [in, out] *ppPosition will be initialized with position previous to *ppPosition
+ * \param ppEntry [in, out] *ppEntry will be initialized with position previous to *ppEntry
  */
-EStatus ListGetPrevious(ListPosition** ppPosition);
+EStatus ListGetPrevious(ListEntry** ppEntry);
 
 /** Gets a value of specified position
- * \param pPosition [in] position in a list
+ * \param pEntry [in] position in a list
  * \param ppValue [out] *ppValue will be initialized with a pointer to value
  */
-EStatus ListGetValue(ListPosition* pPosition, void** ppValue);
+EStatus ListGetValue(ListEntry* pEntry, void** ppValue);
 
 /** Looks for an item in a list
  * \param pThis [in] pointer to instance
- * \param ppPosition [out] found item position will be stored at *ppPosition
+ * \param ppEntry [out] found item position will be stored at *ppEntry
  * \param comparator [in] pointer to item comparator function
  * \param pValue [in] item to look for (pValueRight argument of ItemComparator)
  * \param pUserArg [in] user defined argument of comparator function
  * \sa ItemComparator
  */
-EStatus ListFind(List* pThis, ListPosition** ppPosition, ItemComparator comparator, const void* pValue, void* pUserArg);
+EStatus ListFind(List* pThis, ListEntry** ppEntry, ItemComparator comparator, const void* pValue, void* pUserArg);
 
 /** Cleans a list according to filter function
  * \param pThis [in] pointer to instance

@@ -10,7 +10,10 @@
 #ifndef WIFI_MESH_COMMONTYPES_H_
 #define WIFI_MESH_COMMONTYPES_H_
 
-typedef enum { FALSE, TRUE } Boolean;					///< Boolean type
+#undef FALSE
+#undef TRUE
+
+typedef enum { FALSE = 0, TRUE } Boolean;					///< Boolean type
 typedef enum { LESS = -1, EQUAL, GREAT } Comparison;	///< Comparison type, used as return type of comparison operations
 
 /// Location and Velocity vector declarations

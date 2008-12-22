@@ -28,8 +28,8 @@
 <a href="_list_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a9ecd3fc51577f0d2c8e61d90ed36d09"></a><!-- doxytag: member="List.h::ListPosition" ref="a9ecd3fc51577f0d2c8e61d90ed36d09" args="" -->
-typedef struct _ListEntry&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4a610d5dd47a320a536cbe7fdf79183c"></a><!-- doxytag: member="List.h::ListEntry" ref="4a610d5dd47a320a536cbe7fdf79183c" args="" -->
+typedef struct _ListEntry&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">forward declaration of _ListItem (declared in List.c) <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f415aadeab887feeda9d2e42371a40b0"></a><!-- doxytag: member="List.h::List" ref="f415aadeab887feeda9d2e42371a40b0" args="" -->
@@ -55,23 +55,23 @@ typedef struct _List&nbsp;</td><td class="memItemRight" valign="bottom"><a class
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#6354e51017fc663ee669f494e108d6e2">ListInsert</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#780be11064f457ca0caedc44134a571e">ListInsertAfter</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#3ff1db9b29887ed9ecf4adfa56677990">ListInsertAfter</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#51d21f0c1b092e2f0fcfd180f84b76ab">ListInsertBefore</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#7b0da13f7bcaa104c284fa1f8fda7d75">ListInsertBefore</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#4e77c6c560fa9a69f761ea9de5e71c5b">ListRemove</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#bec32699e226f8ca929826fbf6db15d6">ListRemove</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#66573af922cc9e283abc8bc41078f91c">ListGetHead</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#457c083b1832bc3d701c2ffe55fb18cc">ListGetHead</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#aeeb41d0680897a7398b8542b9e53f2c">ListGetTail</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#a657ca67e5548c0eadf93e8151051d78">ListGetTail</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#41d5abb3aadf6c40472b9d51cc91b0ec">ListGetNext</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#cf717e145ac43a66bef298e84ea2ef3c">ListGetNext</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#6586065cdb375fea4262a25d560c7ad5">ListGetPrevious</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#5426665218c0d7adfa0828e2008c74f4">ListGetPrevious</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#69280ac468c4f3d6814242365683213d">ListGetValue</a> (<a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *pPosition, void **ppValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#b1ab88835d15ce6c87762a5b6a92b9e0">ListGetValue</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void **ppValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#d84a4024f44462dc9b83391656699ce5">ListFind</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **ppPosition, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, const void *pValue, void *pUserArg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#78f0c29596281146bcb2e43ebd978ec6">ListFind</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, const void *pValue, void *pUserArg)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_list_8h.html#3343e3b6af652945460dd53f3790bb8b">ListCleanUp</a> (<a class="el" href="_list_8h.html#f415aadeab887feeda9d2e42371a40b0">List</a> *pThis, <a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> filter, void *pUserArg)</td></tr>
 
@@ -108,7 +108,7 @@ Compares between 2 values <dl compact><dt><b>Parameters:</b></dt><dd>
 LESS if *pValueLeft &lt; *pValueRight <p>
 EQUAL if *pValueLeft == *pValueRight <p>
 GREAT if *pValueLeft &gt; *pValueRight </dd></dl>
-<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#d84a4024f44462dc9b83391656699ce5">ListFind</a> </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#78f0c29596281146bcb2e43ebd978ec6">ListFind</a> </dd></dl>
 
 </div>
 </div><p>
@@ -297,7 +297,7 @@ Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></d
 
 </div>
 </div><p>
-<a class="anchor" name="d84a4024f44462dc9b83391656699ce5"></a><!-- doxytag: member="List.h::ListFind" ref="d84a4024f44462dc9b83391656699ce5" args="(List *pThis, ListPosition **ppPosition, ItemComparator comparator, const void *pValue, void *pUserArg)" -->
+<a class="anchor" name="78f0c29596281146bcb2e43ebd978ec6"></a><!-- doxytag: member="List.h::ListFind" ref="78f0c29596281146bcb2e43ebd978ec6" args="(List *pThis, ListEntry **ppEntry, ItemComparator comparator, const void *pValue, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -310,8 +310,8 @@ Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></d
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppPosition</em>, </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppEntry</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -344,7 +344,7 @@ Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></d
 Looks for an item in a list <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[out] found item position will be stored at *ppPosition </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppEntry</em>&nbsp;</td><td>[out] found item position will be stored at *ppEntry </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>comparator</em>&nbsp;</td><td>[in] pointer to item comparator function </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] item to look for (pValueRight argument of ItemComparator) </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument of comparator function </td></tr>
@@ -389,7 +389,7 @@ Gets items count <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="66573af922cc9e283abc8bc41078f91c"></a><!-- doxytag: member="List.h::ListGetHead" ref="66573af922cc9e283abc8bc41078f91c" args="(List *pThis, ListPosition **ppPosition)" -->
+<a class="anchor" name="457c083b1832bc3d701c2ffe55fb18cc"></a><!-- doxytag: member="List.h::ListGetHead" ref="457c083b1832bc3d701c2ffe55fb18cc" args="(List *pThis, ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -402,8 +402,8 @@ Gets items count <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppPosition</em></td><td>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppEntry</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -418,21 +418,21 @@ Gets items count <dl compact><dt><b>Parameters:</b></dt><dd>
 Gets a <em>head</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[out] head position will be stored at *ppPosition </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppEntry</em>&nbsp;</td><td>[out] head position will be stored at *ppEntry </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="41d5abb3aadf6c40472b9d51cc91b0ec"></a><!-- doxytag: member="List.h::ListGetNext" ref="41d5abb3aadf6c40472b9d51cc91b0ec" args="(ListPosition **ppPosition)" -->
+<a class="anchor" name="cf717e145ac43a66bef298e84ea2ef3c"></a><!-- doxytag: member="List.h::ListGetNext" ref="cf717e145ac43a66bef298e84ea2ef3c" args="(ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetNext           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppPosition</em>          </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppEntry</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -443,21 +443,21 @@ Gets a <em>head</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Gets a <em>next</em> to specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[in, out] *ppPosition will be initialized with position next to *ppPosition </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppEntry</em>&nbsp;</td><td>[in, out] *ppEntry will be initialized with position next to *ppEntry </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="6586065cdb375fea4262a25d560c7ad5"></a><!-- doxytag: member="List.h::ListGetPrevious" ref="6586065cdb375fea4262a25d560c7ad5" args="(ListPosition **ppPosition)" -->
+<a class="anchor" name="5426665218c0d7adfa0828e2008c74f4"></a><!-- doxytag: member="List.h::ListGetPrevious" ref="5426665218c0d7adfa0828e2008c74f4" args="(ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetPrevious           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppPosition</em>          </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppEntry</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -468,13 +468,13 @@ Gets a <em>next</em> to specified position <dl compact><dt><b>Parameters:</b></d
 <p>
 Gets a <em>previous</em> to specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[in, out] *ppPosition will be initialized with position previous to *ppPosition </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppEntry</em>&nbsp;</td><td>[in, out] *ppEntry will be initialized with position previous to *ppEntry </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="aeeb41d0680897a7398b8542b9e53f2c"></a><!-- doxytag: member="List.h::ListGetTail" ref="aeeb41d0680897a7398b8542b9e53f2c" args="(List *pThis, ListPosition **ppPosition)" -->
+<a class="anchor" name="a657ca67e5548c0eadf93e8151051d78"></a><!-- doxytag: member="List.h::ListGetTail" ref="a657ca67e5548c0eadf93e8151051d78" args="(List *pThis, ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -487,8 +487,8 @@ Gets a <em>previous</em> to specified position <dl compact><dt><b>Parameters:</b
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppPosition</em></td><td>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppEntry</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -503,21 +503,21 @@ Gets a <em>previous</em> to specified position <dl compact><dt><b>Parameters:</b
 Gets a <em>tail</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>ppPosition</em>&nbsp;</td><td>[out] tail position will be stored at *ppPosition </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppEntry</em>&nbsp;</td><td>[out] tail position will be stored at *ppEntry </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="69280ac468c4f3d6814242365683213d"></a><!-- doxytag: member="List.h::ListGetValue" ref="69280ac468c4f3d6814242365683213d" args="(ListPosition *pPosition, void **ppValue)" -->
+<a class="anchor" name="b1ab88835d15ce6c87762a5b6a92b9e0"></a><!-- doxytag: member="List.h::ListGetValue" ref="b1ab88835d15ce6c87762a5b6a92b9e0" args="(ListEntry *pEntry, void **ppValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> ListGetValue           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
-          <td class="paramname"> <em>pPosition</em>, </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *&nbsp;</td>
+          <td class="paramname"> <em>pEntry</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -537,7 +537,7 @@ Gets a <em>tail</em> position <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Gets a value of specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>pPosition</em>&nbsp;</td><td>[in] position in a list </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pEntry</em>&nbsp;</td><td>[in] position in a list </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>ppValue</em>&nbsp;</td><td>[out] *ppValue will be initialized with a pointer to value </td></tr>
   </table>
 </dl>
@@ -604,7 +604,7 @@ Inserts new item to the tail <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="780be11064f457ca0caedc44134a571e"></a><!-- doxytag: member="List.h::ListInsertAfter" ref="780be11064f457ca0caedc44134a571e" args="(List *pThis, ListPosition *pPosition, void *pValue)" -->
+<a class="anchor" name="3ff1db9b29887ed9ecf4adfa56677990"></a><!-- doxytag: member="List.h::ListInsertAfter" ref="3ff1db9b29887ed9ecf4adfa56677990" args="(List *pThis, ListEntry *pEntry, void *pValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -617,8 +617,8 @@ Inserts new item to the tail <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
-          <td class="paramname"> <em>pPosition</em>, </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *&nbsp;</td>
+          <td class="paramname"> <em>pEntry</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -639,14 +639,14 @@ Inserts new item to the tail <dl compact><dt><b>Parameters:</b></dt><dd>
 Inserts new item <em>after</em> specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pPosition</em>&nbsp;</td><td>[in] points to position in the list </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pEntry</em>&nbsp;</td><td>[in] points to position in the list </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] pointer to abstract value </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="51d21f0c1b092e2f0fcfd180f84b76ab"></a><!-- doxytag: member="List.h::ListInsertBefore" ref="51d21f0c1b092e2f0fcfd180f84b76ab" args="(List *pThis, ListPosition *pPosition, void *pValue)" -->
+<a class="anchor" name="7b0da13f7bcaa104c284fa1f8fda7d75"></a><!-- doxytag: member="List.h::ListInsertBefore" ref="7b0da13f7bcaa104c284fa1f8fda7d75" args="(List *pThis, ListEntry *pEntry, void *pValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -659,8 +659,8 @@ Inserts new item <em>after</em> specified position <dl compact><dt><b>Parameters
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
-          <td class="paramname"> <em>pPosition</em>, </td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *&nbsp;</td>
+          <td class="paramname"> <em>pEntry</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -681,7 +681,7 @@ Inserts new item <em>after</em> specified position <dl compact><dt><b>Parameters
 Inserts new item <em>before</em> specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pPosition</em>&nbsp;</td><td>[in] points to position in the list </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pEntry</em>&nbsp;</td><td>[in] points to position in the list </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] pointer to abstract value </td></tr>
   </table>
 </dl>
@@ -713,7 +713,7 @@ Allocates &amp; initializes new List instance <dl compact><dt><b>Parameters:</b>
 
 </div>
 </div><p>
-<a class="anchor" name="4e77c6c560fa9a69f761ea9de5e71c5b"></a><!-- doxytag: member="List.h::ListRemove" ref="4e77c6c560fa9a69f761ea9de5e71c5b" args="(List *pThis, ListPosition *pPosition)" -->
+<a class="anchor" name="bec32699e226f8ca929826fbf6db15d6"></a><!-- doxytag: member="List.h::ListRemove" ref="bec32699e226f8ca929826fbf6db15d6" args="(List *pThis, ListEntry *pEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -726,8 +726,8 @@ Allocates &amp; initializes new List instance <dl compact><dt><b>Parameters:</b>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_list_8h.html#a9ecd3fc51577f0d2c8e61d90ed36d09">ListPosition</a> *&nbsp;</td>
-          <td class="paramname"> <em>pPosition</em></td><td>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *&nbsp;</td>
+          <td class="paramname"> <em>pEntry</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -742,14 +742,14 @@ Allocates &amp; initializes new List instance <dl compact><dt><b>Parameters:</b>
 Removes an item from specified position <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pPosition</em>&nbsp;</td><td>[in] points to position of an item to be removed </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pEntry</em>&nbsp;</td><td>[in] points to position of an item to be removed </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

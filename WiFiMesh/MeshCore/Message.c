@@ -2,52 +2,97 @@
 #include "Protocol.h"
 #include "Macros.h"
 
-#define CONSTRUCT_MESSAGE(pptr, _msgType, _srcId, _dstId) SAFE_OPERATION \
+#define CONSTRUCT_MESSAGE(pptr, _msgtype, ...) SAFE_OPERATION \
 	( \
-		CONSTRUCT(pptr, Message, TRUE); \
-		*pptr->type = _msgType; \
-		*pptr->originalSrcId = _srcId; \
-		*pptr->originalDstId = _dstId \
+		VALIDATE_ARGUMENTS(pptr); \
+		*pptr = NEW(Message); \
+		VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
+		return MessageInit ## _msgType (*pptr, __VA_ARGS__) \
 	)
+
+#define INIT_MESSAGE(ptr, _msgtype, _srcId, _dstId) SAFE_OPERATION \
+	( \
+		VALIDATE_ARGUMENTS(ptr); \
+		CLEAR(ptr); \
+		ptr->originalSrcId = _srcId; \
+		ptr->originalDstId = _dstId; \
+	)
+
+EStatus MessageNew(Message** ppThis, EMessageType msgType, StationId srcId, StationId dstId)
+{
+	CONSTRUCT(ppThis, Message, msgType, srcId, dstId);
+}
 
 EStatus MessageNewData(Message** ppThis, StationId srcId, StationId dstId, unsigned long size)
 {
-	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_DATA, srcId, dstId);
-	*ppThis->size = size;
-
-	return eSTATUS_COMMON_OK;
+	CONSTRUCT_MESSAGE(ppThis, Data, srcId, dstId, size);
 }
 
 EStatus MessageNewSearchRequest(Message** ppThis, StationId srcId, StationId lookForId)
 {
-	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_SEARCH_REQUEST, srcId, lookForId);
-	return eSTATUS_COMMON_OK;
+	CONSTRUCT_MESSAGE(ppThis, SearchRequest, srcId, lookForId);
 }
 
 EStatus MessageNewSearchResponse(Message** ppThis, StationId srcId, StationId dstId)
 {
-	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_SEARCH_RESPONSE, srcId, dstId);
-
-	return eSTATUS_COMMON_OK;
+	CONSTRUCT_MESSAGE(ppThis, SearchResponse, srcId, dstId);
 }
 
 EStatus MessageNewAck(Message** ppThis, StationId srcId, StationId dstId)
 {
-	CONSTRUCT_MESSAGE(ppThis, eMSG_TYPE_ACK, srcId, dstId);
-
-	return eSTATUS_COMMON_OK;
+	CONSTRUCT_MESSAGE(ppThis, SearchRequest, srcId, dstId);
 }
 
 EStatus MessageDelete(Message** ppThis)
 {
-	VALIDATE_ARGUMENTS(ppThis && *ppThis);
-	DELETE(*ppThis);
+	DESTRUCT(ppThis, Message);
 }
 
-EStatus MessageClone(Message** ppDst, Message* pSrc)
+EStatus MessageDestroy(Message* pThis)
 {
-	CONSTRUCT_MESSAGE(ppDst, pSrc->type, pSrc->srcId, pSrc->dstId);
-	*ppDst->payload = pSrc->payload;
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageInit(Message* pThis, EMessageType msgType, StationId srcId, StationId dstId)
+{
+	INIT_MESSAGE(pThis, msgType, srcId, dstId);
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageInitData(Message* pThis, StationId srcId, StationId dstId, unsigned long size)
+{
+	INIT_MESSAGE(pThis, eMSG_TYPE_DATA, srcId, dstId);
+	pThis->size = size;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageInitSearchRequest(Message* pThis, StationId srcId, StationId lookForId)
+{
+	INIT_MESSAGE(pThis, eMSG_TYPE_SEARCH_REQUEST, srcId, lookForId);
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageInitSearchResponse(Message* pThis, StationId srcId, StationId dstId)
+{
+	INIT_MESSAGE(pThis, eMSG_TYPE_SEARCH_RESPONSE, srcId, dstId);
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageInitAck(Message* pThis, StationId srcId, StationId dstId)
+{
+	INIT_MESSAGE(pThis, eMSG_TYPE_ACK, srcId, dstId);
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus MessageClone(Message** ppDst, const Message* pSrc)
+{
+	VALIDATE_ARGUMENTS(ppDst && pSrc);
+
+	CHECK(MessageNew(ppDst, pSrc->type, pSrc->originalSrcId, pSrc->originalDstId));
+	(*ppDst)->size = pSrc->size;
+	(*ppDst)->transitSrcId = pSrc->transitSrcId;
+	(*ppDst)->transitDstId = pSrc->transitDstId;
 
 	return eSTATUS_COMMON_OK;
 }

@@ -44,6 +44,8 @@
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight"><a class="el" href="struct_message.html" title="Message declaration.">Message</a> type.  <a href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9">More...</a><br></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#bfc4d6356ecb8dc184452a8eab14bc73">MessageNew</a> (<a class="el" href="struct_message.html">Message</a> **ppThis, <a class="el" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9">EMessageType</a> msgType, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#81d8debc9eba28e9d89f9c81bafa9850">MessageNewData</a> (<a class="el" href="struct_message.html">Message</a> **ppThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId, unsigned long size)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#90abae077f0ee72c26586006bd5209b1">MessageNewSearchRequest</a> (<a class="el" href="struct_message.html">Message</a> **ppThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> lookForId)</td></tr>
@@ -51,6 +53,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#a0a9a2fd657759a1c621cd11f9d2d88b">MessageNewSearchResponse</a> (<a class="el" href="struct_message.html">Message</a> **ppThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#10ad5d84843796fc71e05159f32adf70">MessageNewAck</a> (<a class="el" href="struct_message.html">Message</a> **ppThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#8c86ada291f17d220a36fe0d7c8275b2">MessageInit</a> (<a class="el" href="struct_message.html">Message</a> *pThis, <a class="el" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9">EMessageType</a> msgType, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_message_8h.html#ca04bd919b39c82e2b82aa4997d1c344">MessageInitData</a> (<a class="el" href="struct_message.html">Message</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> srcId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId, unsigned long size)</td></tr>
 
@@ -227,6 +231,55 @@ Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="8c86ada291f17d220a36fe0d7c8275b2"></a><!-- doxytag: member="Message.h::MessageInit" ref="8c86ada291f17d220a36fe0d7c8275b2" args="(Message *pThis, EMessageType msgType, StationId srcId, StationId dstId)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> MessageInit           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9">EMessageType</a>&nbsp;</td>
+          <td class="paramname"> <em>msgType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>srcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>dstId</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Initializes message <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>msgType</em>&nbsp;</td><td>[in] message type </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>srcId</em>&nbsp;</td><td>[in] source id </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>dstId</em>&nbsp;</td><td>[in] destination id </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="828c1bf8d95d668bac10af971ac777f1"></a><!-- doxytag: member="Message.h::MessageInitAck" ref="828c1bf8d95d668bac10af971ac777f1" args="(Message *pThis, StationId srcId, StationId dstId)" -->
 <div class="memitem">
 <div class="memproto">
@@ -395,6 +448,55 @@ Initializes search request message <dl compact><dt><b>Parameters:</b></dt><dd>
 Initializes search response message <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>srcId</em>&nbsp;</td><td>[in] source id </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>dstId</em>&nbsp;</td><td>[in] destination id </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="bfc4d6356ecb8dc184452a8eab14bc73"></a><!-- doxytag: member="Message.h::MessageNew" ref="bfc4d6356ecb8dc184452a8eab14bc73" args="(Message **ppThis, EMessageType msgType, StationId srcId, StationId dstId)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> MessageNew           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_message.html">Message</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_message_8h.html#d2ca0a3c84404274f8bfaa618869fdf9">EMessageType</a>&nbsp;</td>
+          <td class="paramname"> <em>msgType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>srcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>dstId</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Allocates new message <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>ppThis</em>&nbsp;</td><td>[out] pointer to new instance will be stored at *ppThis </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>msgType</em>&nbsp;</td><td>[in] message type </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>srcId</em>&nbsp;</td><td>[in] source id </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>dstId</em>&nbsp;</td><td>[in] destination id </td></tr>
   </table>
@@ -578,7 +680,7 @@ Allocates search response message <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

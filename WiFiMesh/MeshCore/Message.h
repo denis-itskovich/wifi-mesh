@@ -40,6 +40,14 @@ typedef struct _Message
 } Message;
 
 
+/** Allocates new message
+ * \param ppThis [out] pointer to new instance will be stored at *ppThis
+ * \param msgType [in] message type
+ * \param srcId [in] source id
+ * \param dstId [in] destination id
+ */
+EStatus MessageNew(Message** ppThis, EMessageType msgType, StationId srcId, StationId dstId);
+
 /** Allocates data message
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param srcId [in] source id
@@ -68,6 +76,14 @@ EStatus MessageNewSearchResponse(Message** ppThis, StationId srcId, StationId ds
  * \param dstId [in] destination id
  */
 EStatus MessageNewAck(Message** ppThis, StationId srcId, StationId dstId);
+
+/** Initializes message
+ * \param pThis [in] pointer to instance
+ * \param msgType [in] message type
+ * \param srcId [in] source id
+ * \param dstId [in] destination id
+ */
+EStatus MessageInit(Message* pThis, EMessageType msgType, StationId srcId, StationId dstId);
 
 /** Initializes data message
  * \param pThis [in] pointer to instance

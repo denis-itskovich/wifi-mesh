@@ -11,7 +11,7 @@
 
 struct _Queue
 {
-	List	list;
+	List*	pList;
 };
 
 EStatus QueueNew(Queue** ppThis)
@@ -26,34 +26,34 @@ EStatus QueueDelete(Queue** ppThis)
 
 EStatus QueueInit(Queue* pThis)
 {
-	return ListInit(&pThis->list);
+	return ListNew(&pThis->pList);
 }
 
 EStatus QueueDestroy(Queue* pThis)
 {
-	return ListDestroy(&pThis->list);
+	return ListDelete(&pThis->pList);
 }
 
 EStatus QueuePush(Queue* pThis, void* pItem)
 {
-	ListPosition* pTail;
-	CHECK(ListGetTail(&pThis->list, &pTail));
-	return ListInsertAfter(&pThis->list, pTail, pItem);
+	ListEntry* pTail;
+	CHECK(ListGetTail(pThis->pList, &pTail));
+	return ListInsertAfter(pThis->pList, pTail, pItem);
 }
 
 EStatus QueuePop(Queue* pThis, void** pItem)
 {
-	ListPosition* pHead;
+	ListEntry* pHead;
 	CHECK(QueuePeek(pThis, pItem));
-	CHECK(ListGetHead(&pThis->list, &pIter));
-	return ListRemove(pThis, pHead);
+	CHECK(ListGetHead(pThis->pList, &pHead));
+	return ListRemove(pThis->pList, pHead);
 }
 
 EStatus QueuePeek(Queue* pThis, void** pItem)
 {
-	ListPosition* pHead;
-	CHECK(ListGetHead(&pThis->list, &pIter));
+	ListEntry* pHead;
+	CHECK(ListGetHead(pThis->pList, &pHead));
 	if (!pHead) return eSTATUS_QUEUE_EMPTY;
 
-	return ListGetValue(pIter, pHead);
+	return ListGetValue(pHead, pItem);
 }

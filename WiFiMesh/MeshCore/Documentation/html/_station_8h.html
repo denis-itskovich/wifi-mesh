@@ -21,8 +21,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>Station.h File Reference</h1><code>#include &quot;<a class="el" href="_protocol_8h-source.html">Protocol.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
+<h1>Station.h File Reference</h1><code>#include &quot;<a class="el" href="_message_8h-source.html">Message.h</a>&quot;</code><br>
 
 <p>
 <a href="_station_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -41,11 +40,11 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#28a50a81358cd252e3d4ebe7e0ad8688">StationDestroy</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#5b489b2f718b1b0055625adb8dd7fb0a">StationSynchronize</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, double time)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e08143884ee39fa1f4b8dea67d39faf1">StationSynchronize</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, double timeDelta)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#ffd326894933eed95e6397deebd30f23">StationMoveTo</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> newLocation)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e2dde6558a305aeb5f8c5d6298d78282">StationGetId</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> *pId)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e64346ba8f4421f4555cc44664629088">StationGetId</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> *pId)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#0ce09f7a94caed2958cee1ed09aa5f76">StationGetMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> **ppMessage)</td></tr>
 
@@ -53,7 +52,7 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#c1702b26f200c4cbb60797d99eb0dc18">StationDelayTransmits</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, double time)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#a5da9724293fa2f306ab49ee4507ce59">StationIsAdjacent</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, Boolean *pIsAdjacent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#50179ecb66f67d586cc205dac5ca870f">StationIsAdjacent</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, Boolean *pIsAdjacent)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f4ff373cf30b792aab03f20916c60f9c">StationEnqueueMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> *pMessage, double time)</td></tr>
 
@@ -191,14 +190,14 @@ Enqueues a message for delayed transmit <dl compact><dt><b>Parameters:</b></dt><
 
 </div>
 </div><p>
-<a class="anchor" name="e2dde6558a305aeb5f8c5d6298d78282"></a><!-- doxytag: member="Station.h::StationGetId" ref="e2dde6558a305aeb5f8c5d6298d78282" args="(Station *pThis, StationId *pId)" -->
+<a class="anchor" name="e64346ba8f4421f4555cc44664629088"></a><!-- doxytag: member="Station.h::StationGetId" ref="e64346ba8f4421f4555cc44664629088" args="(const Station *pThis, StationId *pId)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationGetId           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
           <td class="paramname"> <em>pThis</em>, </td>
         </tr>
         <tr>
@@ -303,20 +302,20 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="a5da9724293fa2f306ab49ee4507ce59"></a><!-- doxytag: member="Station.h::StationIsAdjacent" ref="a5da9724293fa2f306ab49ee4507ce59" args="(Station *pThis, Station *pStation, Boolean *pIsAdjacent)" -->
+<a class="anchor" name="50179ecb66f67d586cc205dac5ca870f"></a><!-- doxytag: member="Station.h::StationIsAdjacent" ref="50179ecb66f67d586cc205dac5ca870f" args="(const Station *pThis, const Station *pStation, Boolean *pIsAdjacent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationIsAdjacent           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
           <td class="paramname"> <em>pThis</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
           <td class="paramname"> <em>pStation</em>, </td>
         </tr>
         <tr>
@@ -457,7 +456,7 @@ Deliveries a message <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="5b489b2f718b1b0055625adb8dd7fb0a"></a><!-- doxytag: member="Station.h::StationSynchronize" ref="5b489b2f718b1b0055625adb8dd7fb0a" args="(Station *pThis, double time)" -->
+<a class="anchor" name="e08143884ee39fa1f4b8dea67d39faf1"></a><!-- doxytag: member="Station.h::StationSynchronize" ref="e08143884ee39fa1f4b8dea67d39faf1" args="(Station *pThis, double timeDelta)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -471,7 +470,7 @@ Deliveries a message <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&nbsp;</td>
-          <td class="paramname"> <em>time</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>timeDelta</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -486,14 +485,14 @@ Deliveries a message <dl compact><dt><b>Parameters:</b></dt><dd>
 Synchronizes a station with current time Moves the station <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] current time </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>timeDelta</em>&nbsp;</td><td>[in] time, passed since last update </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

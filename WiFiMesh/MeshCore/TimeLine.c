@@ -1,46 +1,43 @@
 #include "TimeLine.h"
 #include "Macros.h"
+#include "List.h"
 
 struct _TimeLine
 {
-	List 			events;
-	ListPosition*	pCurrent;
+	List* 		pEvents;
+	ListEntry*	pCurrent;
 };
 
-EStatus TimeLineCreate(TimeLine** ppThis)
+EStatus TimeLineNew(TimeLine** ppThis)
 {
-	CONSTRUCT(ppThis, TimeLine, TRUE);
-	return TimeLineInit(*pThis);
+	CONSTRUCT(ppThis, TimeLine);
 }
 
 EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	CHECK(ListInit(&pThis->events));
+	CHECK(ListNew(&pThis->pEvents));
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus TimeLineDispose(TimeLine** ppThis)
+EStatus TimeLineDelete(TimeLine** ppThis)
 {
-	VALIDATE_ARGUMENTS(ppThis && *ppThis);
-	TimeLineDestroy(*ppThis);
-	DELETE(*ppThis);
-	return eSTATUS_COMMON_OK;
+	DESTRUCT(ppThis, TimeLine);
 }
 
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListDestroy(&pThis->events));
+	CHECK(ListDelete(&pThis->pEvents));
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus TimeLineAddEvent(TimeLine* pThis, Event* pEvent)
 {
 	VALIDATE_ARGUMENTS(pThis && pEvent);
-	CHECK(ListInsert(&pThis->events, pEvent));
+	CHECK(ListInsert(pThis->pEvents, pEvent));
 
 	return eSTATUS_COMMON_OK;
 }

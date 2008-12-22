@@ -11,78 +11,69 @@
 #include "Macros.h"
 #include "List.h"
 
-#define NEW_STATION_ITEM(ptr) SAFE_OPERATION(NEW(ptr); CHECK(ListCreate(&ptr->listHeader)))
+#define NEW_STATION_ITEM(ptr) SAFE_OPERATION(ptr = NEW(*ptr); CHECK(ListCreate(&ptr->listHeader)))
 #define STATION_FROM_LIST_ITEM(pListHdr) ((StationListItem*)pListHdr)->pStation
 
 struct _Simulator
 {
-	List		stations;
-	TimeLine	timeLine;
+	List*		pStations;
+	TimeLine*	pTimeLine;
 };
 
 EStatus SimulatorProcessEvent(Simulator* pThis, Event* pEvent);
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation);
 
-EStatus SimulatorCreate(Simulator** ppThis)
+EStatus SimulatoreNew(Simulator** ppThis)
 {
-	CONSTRUCT(ppThis, Simulator, TRUE);
-	return SimulatorInit(*ppThis);
+	CONSTRUCT(ppThis, Simulator);
 }
 
 EStatus SimulatorInit(Simulator* pThis)
 {
-	CHECK(ListInit(&pThis->stations));
-	CHECK(TimeLineInit(&pThis->timeLine));
+	CHECK(ListNew(&pThis->pStations));
+	CHECK(TimeLineNew(&pThis->pTimeLine));
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorDispose(Simulator** ppThis)
+EStatus SimulatorDelete(Simulator** ppThis)
 {
-	VALIDATE_ARGUMENTS(ppThis && *ppThis);
-	CHECK(SimulatorDestroy(*ppThis));
-	DELETE(*ppThis);
-
-	return eSTATUS_COMMON_OK;
+	DESTRUCT(ppThis, Simulator);
 }
 
 EStatus SimulatorDestroy(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(TimeLineDestroy(&ppThis->timeLine));
-	CHECK(ListDestroy(&pThis->stations));
+	CHECK(TimeLineDelete(&pThis->pTimeLine));
+	CHECK(ListDelete(&pThis->pStations));
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorAddStation(Simulator* pThis, StationId id)
+EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 {
-	Station* pStation;
-
-	VALIDATE_ARGUMENTS(pThis);
-	NEW_STATION_ITEM(pItem);
-
-	CHECK(StationCreate(&pStation));
-	CHECK(ListInsert(&pThis->stations, pStation));
-
-	return eSTATUS_COMMON_OK;
+	VALIDATE_ARGUMENTS(pThis && pStation);
+	return ListInsert(pThis->pStations, pStation);
 }
 
-Boolean SimulatorStationComparator(const void* pStation, const void* pId)
+Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId, void* pUserArg)
 {
-	return (((Station*)pStation)->id == *(StationId*)pId) ? TRUE : FALSE;
+	StationId id;
+	StationGetId(pStation, &id);
+
+	return (id == *pId) ? EQUAL :
+		   (id < *pId) ? LESS : GREAT;
 }
 
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 {
-	ListPosition* pIter;
-	StationId curId;
+	ListEntry* pEntry;
 
 	VALIDATE_ARGUMENTS(pThis && ppStation);
 
-	CHECK(ListFind(&pThis->stations, &pIter, SimulatorStationComparator, &id));
-	CHECK(ListGetValue(pIter, (void**)ppStation));
+	CHECK(ListFind(pThis->pStations, &pEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
+	CHECK(ListGetValue(pEntry, (void**)ppStation));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -92,7 +83,7 @@ EStatus SimulatorProcess(Simulator* pThis)
 	Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(TimeLineGetNextEvent(&pThis->timeLine, &pEvent));
+	CHECK(TimeLineGetEvent(pThis->pTimeLine, &pEvent));
 	SimulatorProcessEvent(pThis, pEvent);
 
 	return eSTATUS_COMMON_OK;
@@ -100,24 +91,24 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 EStatus SimulatorProcessEvent(Simulator* pThis, Event* pEvent)
 {
-	ListPosition* pIter;
-	Station* pStation;
-	unsigned long timeDelta, currentTime;
-
-	VALIDATE_ARGUMENTS(pThis && pEvent);
-
-	CHECK(EventGetTime(pEvent, &currentTime));
-	timeDelta = currentTime - pThis->lastTime;
-	pThis->lastTime = currentTime;
-
-	CHECK(ListGetBegin(pThis->pStations, &pIter));
-
-	while (pIter)
-	{
-		CHECK(ListGetValue(pIter, (void**)&pStation));
-		CHECK(StationMove(pStation, timeDelta));
-		CHECK(ListGetNext(&pIter));
-	}
-
-	return eSTATUS_COMMON_OK;
+//	ListEntry* pIter;
+//	Station* pStation;
+//	unsigned long timeDelta, currentTime;
+//
+//	VALIDATE_ARGUMENTS(pThis && pEvent);
+//
+//	CHECK(EventGetTime(pEvent, &currentTime));
+//	timeDelta = currentTime - pThis->lastTime;
+//	pThis->lastTime = currentTime;
+//
+//	CHECK(ListGetBegin(pThis->pStations, &pIter));
+//
+//	while (pIter)
+//	{
+//		CHECK(ListGetValue(pIter, (void**)&pStation));
+//		CHECK(StationSynchronize(pStation, currentTime));
+//		CHECK(ListGetNext(&pIter));
+//	}
+//
+//	return eSTATUS_COMMON_OK;
 }
