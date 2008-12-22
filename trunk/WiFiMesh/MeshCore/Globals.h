@@ -38,6 +38,6 @@ double GlobalsGetTime();
 /** Retrieves routing table item time to live
  * \return expiration time, in time units
  */
-double GlobalsRoutingEntryExpirationTime();
+double GlobalsRouteExpirationTime();
 
 #endif /* WIFI_MESH_GLOBALS_H_ */

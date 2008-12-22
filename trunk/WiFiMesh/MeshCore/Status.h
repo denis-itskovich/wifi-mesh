@@ -1,6 +1,3 @@
-#ifndef _WIFI_MESH_STATUS_H
-#define _WIFI_MESH_STATUS_H
-
 /**
  * \file Status.h
  *
@@ -9,6 +6,11 @@
  * \author Denis Itskovich
  * \date   1/12/2008
  */
+
+#ifndef _WIFI_MESH_STATUS_H
+#define _WIFI_MESH_STATUS_H
+
+#include <wchar.h>
 
 /// Global return codes
 typedef enum

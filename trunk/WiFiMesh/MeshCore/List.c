@@ -3,27 +3,27 @@
 
 struct _ListEntry
 {
-	ListPosition*	pNext;
-	ListPosition*	pPrev;
+	ListEntry*	pNext;
+	ListEntry*	pPrev;
 	void*			pValue;
 };
 
 struct _List
 {
-	ListPosition*	pHead;
-	ListPosition*	pTail;
+	ListEntry*	pHead;
+	ListEntry*	pTail;
 	unsigned	count;
 };
 
 
 /** Used for items enumeration
  * \param pThis [in] pointer to instance
- * \param pPosition [in] item position in a list
+ * \param pEntry [in] item position in a list
  * \param pUserArg1 [in] user defined argument
  * \param pUserArg2 [in] user defined argument
  * \param pUserArg3 [in] user defined argument
  */
-typedef Boolean (*PositionEnumerator) (List* pThis, ListPosition* pPosition, void* pUserArg1, void* pUserArg2, void* pUserArg3);
+typedef Boolean (*EntryEnumerator) (List* pThis, ListEntry* pEntry, void* pUserArg1, void* pUserArg2, void* pUserArg3);
 
 typedef struct _FindEnumeratorArgs
 {
@@ -32,24 +32,32 @@ typedef struct _FindEnumeratorArgs
 	void*			pUserArg;
 } FindEnumeratorArgs;
 
-EStatus ListCreate(List** ppThis)
+EStatus ListNew(List** ppThis)
 {
-	CONSTRUCT(ppThis, List, TRUE);
+	CONSTRUCT(ppThis, List);
+}
 
+EStatus ListDelete(List** ppThis)
+{
+	DESTRUCT(ppThis, List);
+}
+
+EStatus ListInit(List* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CLEAR(pThis);
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListDestroy(List** ppThis)
+EStatus ListDestroy(List* pThis)
 {
-	ListPosition* pItem;
-	VALIDATE_ARGUMENTS(ppThis && *ppThis);
+	ListEntry* pItem;
+	VALIDATE_ARGUMENTS(pThis);
 
-	while (pItem = *ppThis->pTail)
+	while (pItem = pThis->pTail)
 	{
-		CHECK(ListRemove(*ppThis, &pItem));
+		CHECK(ListRemove(pThis, &pItem));
 	}
-
-	DELETE(*ppThis);
 
 	return eSTATUS_COMMON_OK;
 }
@@ -61,63 +69,60 @@ EStatus ListGetCount(List* pThis, unsigned* pCount)
 
 EStatus ListInsert(List* pThis, void* pValue)
 {
-	ListPosition* pTail;
+	ListEntry* pTail;
 	CHECK(ListGetTail(pThis, &pTail));
 	return ListInsertAfter(pThis, pTail, pValue);
 }
 
-EStatus ListInsertAt(List* pThis, ListPosition* pPrev, ListPosition* pNext, void* pValue)
+EStatus ListInsertAt(List* pThis, ListEntry* pPrev, ListEntry* pNext, void* pValue)
 {
-	ListPosition* pNewItem;
+	ListEntry* pNewItem;
 	VALIDATE_ARGUMENTS(pThis && pValue);
-	NEW(pNewItem);
+	pNewItem = NEW(ListEntry);
 
 	pNewItem->pValue = pValue;
 	pNewItem->pPrev = pPrev;
 	pNewItem->pNext = pNext;
 
-	if (pItem->pPrev) pPrev->pNext = pItem;
-	if (pItem->pNext) pNext->pPrev = pItem;
+	if (pNewItem->pPrev) pPrev->pNext = pNewItem;
+	if (pNewItem->pNext) pNext->pPrev = pNewItem;
 
-	if (pItem->pNext == pThis->pHead) pHead = pItem;
-	if (pItem->pPrev == pThis->pTail) pTail = pItem;
-
-	if (!pHead || !pTail)
-	{
-		pHead = pTail = pItem;
-	}
+	if (pNewItem->pNext == pThis->pHead) pThis->pHead = pNewItem;
+	if (pNewItem->pPrev == pThis->pTail) pThis->pTail = pNewItem;
 
 	++pThis->count;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListInsertAfter(List* pThis, ListPosition* pItem, void* pValue)
+EStatus ListInsertAfter(List* pThis, ListEntry* pItem, void* pValue)
 {
-	return ListInsertAt(pThis, pItem, (pItem) ? pItem->pNext : pThis->pHead);
+	return ListInsertAt(pThis, pItem, (pItem) ? pItem->pNext : pThis->pHead, pValue);
 }
 
-EStatus ListInsertBefore(List* pThis, ListPosition* pItem, void* pValue)
+EStatus ListInsertBefore(List* pThis, ListEntry* pItem, void* pValue)
 {
-	return ListInsertAt(pThis, (pItem) ? pItem->pPrev : pThis->pTail, pItem);
+	return ListInsertAt(pThis, (pItem) ? pItem->pPrev : pThis->pTail, pItem, pValue);
 }
 
-EStatus ListRemove(List* pThis, ListPosition* pIterator)
+EStatus ListRemove(List* pThis, ListEntry* pEntry)
 {
-	VALIDATE_ARGUMENTS(pThis && pIterator);
+	VALIDATE_ARGUMENTS(pThis && pEntry);
 
-	if (pIterator->pNext) pIterator->pNext->pPrev = pIterator->pPrev;
-	else pThis->pTail = pIterator->pPrev;
+	if (pEntry->pNext) pEntry->pNext->pPrev = pEntry->pPrev;
+	else pThis->pTail = pEntry->pPrev;
 
-	if (pIterator->pPrev) pIterator->pPrev->pPnext= pIterator->pNext;
-	else pThis->pHead = pIterator->pHead;
+	if (pEntry->pPrev) pEntry->pPrev->pNext = pEntry->pNext;
+	else pThis->pHead = pEntry->pNext;
+
+	DELETE(pEntry);
 
 	--pThis->count;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetBegin(List* pThis, ListPosition** ppIterator)
+EStatus ListGetBegin(List* pThis, ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pHead;
@@ -125,7 +130,7 @@ EStatus ListGetBegin(List* pThis, ListPosition** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetEnd(List* pThis, ListPosition** ppIterator)
+EStatus ListGetEnd(List* pThis, ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pTail;
@@ -133,18 +138,18 @@ EStatus ListGetEnd(List* pThis, ListPosition** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetNext(ListPosition** ppIterator)
+EStatus ListGetNext(ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
-	*ppIterator = *ppIterator->pNext;
+	*ppIterator = (*ppIterator)->pNext;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetPrevious(ListPosition** ppIterator)
+EStatus ListGetPrevious(ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(ppIterator && *ppIterator);
-	*ppIterator = *ppIterator->pPrev;
+	*ppIterator = (*ppIterator)->pPrev;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -157,77 +162,77 @@ EStatus ListIsEmpty(List* pThis, Boolean* pIsEmpty)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetValue(ListPosition* pIterator, void** ppValue)
+EStatus ListGetValue(ListEntry* pEntry, void** ppValue)
 {
-	VALIDATE_ARGUMENTS(pIterator && ppValue);
-	*ppValue = pIterator->pValue;
+	VALIDATE_ARGUMENTS(pEntry && ppValue);
+	*ppValue = pEntry->pValue;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListEnumerateEntries(List* pThis, ListPosition** ppPosition, PositionEnumerator enumerator, void* pUserArg1, void* pUserArg2, void* pUserArg3)
+EStatus ListEnumerateEntries(List* pThis, ListEntry** ppEntry, EntryEnumerator enumerator, void* pUserArg1, void* pUserArg2, void* pUserArg3)
 {
-	ListPosition* pNextPosition;
-	VALIDATE_ARGUMENTS(pThis && ppPosition);
-	CHECK(ListGetBegin(pThis, ppPosition));
+	ListEntry* pNextEntry;
+	VALIDATE_ARGUMENTS(pThis && ppEntry);
+	CHECK(ListGetBegin(pThis, ppEntry));
 
-	while (*ppPosition)
+	while (*ppEntry)
 	{
-		pNextPosition = *ppPosition;
-		CHECK(ListGetNext(pNextPosition));
-		if (enumerator(pThis, *ppPosition, pUserArg1, pUserArg2, pUserArg3) == FALSE) break;
-		*ppPosition = pNextPosition;
+		pNextEntry = *ppEntry;
+		CHECK(ListGetNext(pNextEntry));
+		if (enumerator(pThis, *ppEntry, pUserArg1, pUserArg2, pUserArg3) == FALSE) break;
+		*ppEntry = pNextEntry;
 	}
 
 	return eSTATUS_COMMON_OK;
 }
 
-Boolean ListEnumeratorFinder(List* pThis, ListPosition* pPosition, void* pComparator, void* pValueRight, void* pUserArg)
+Boolean ListEnumeratorFinder(List* pThis, ListEntry* pEntry, void* pComparator, void* pValueRight, void* pUserArg)
 {
 	ItemComparator comparator = (ItemComparator)pComparator;
-	return comparator(pPosition->pValue, pValueRight, pUserArg) != EQUAL ? TRUE : FALSE;
+	return comparator(pEntry->pValue, pValueRight, pUserArg) != EQUAL ? TRUE : FALSE;
 }
 
-EStatus ListFind(List* pThis, ListPosition** ppPosition, ItemComparator comparator, const void* pValue, void* pUserArg)
+EStatus ListFind(List* pThis, ListEntry** ppEntry, ItemComparator comparator, const void* pValue, void* pUserArg)
 {
-	VALIDATE_ARGUMENTS(pThis && ppPosition && comparator && pValue);
+	VALIDATE_ARGUMENTS(pThis && ppEntry && comparator && pValue);
 
-	CHECK(ListEnumerateEntries(pThis, ppPosition, &ListEnumeratorFinder, comparator, (void*)pValue, pUserArg));
-	VALIDATE(*ppPosition, eSTATUS_LIST_NOT_FOUND);
+	CHECK(ListEnumerateEntries(pThis, ppEntry, &ListEnumeratorFinder, comparator, (void*)pValue, pUserArg));
+	VALIDATE(*ppEntry, eSTATUS_LIST_NOT_FOUND);
 
 	return eSTATUS_COMMON_OK;
 }
 
-Boolean ListEnumeratorCleaner(List* pThis, ListPosition* pPosition, void* pFilter, void* pUserArg, void* pUnused)
+Boolean ListEnumeratorCleaner(List* pThis, ListEntry* pEntry, void* pFilter, void* pUserArg, void* pUnused)
 {
 	ItemFilter filter = (ItemFilter)pFilter;
-	if (filter(pPosition->pValue, pUserArg) == FALSE)
+	if (filter(pEntry->pValue, pUserArg) == FALSE)
 	{
-		ListRemove(pThis, pPosition);
+		ListRemove(pThis, pEntry);
 	}
 	return TRUE;
 }
 
 EStatus ListCleanUp(List* pThis, ItemFilter filter, void* pUserArg)
 {
-	ListPosition* pPosition;
+	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && filter);
-	CHECK(ListEnumerateEntries(pThis, &pPosition, &ListEnumeratorCleaner, filter, pUserArg, NULL));
+	CHECK(ListEnumerateEntries(pThis, &pEntry, &ListEnumeratorCleaner, filter, pUserArg, NULL));
 
 	return eSTATUS_COMMON_OK;
 }
 
-Boolean ListEnumeratorEnumerator(List* pThis, ListPosition* pPosition, void* pEnumerator, void* pUserArg, void* pUnunsed)
+Boolean ListEnumeratorEnumerator(List* pThis, ListEntry* pEntry, void* pEnumerator, void* pUserArg, void* pUnunsed)
 {
 	ItemEnumerator enumerator = (ItemEnumerator)pEnumerator;
-	return enumerator(pPosition->pValue, pUserArg);
+	return enumerator(pEntry->pValue, pUserArg);
 }
 
 EStatus ListEnumerate(List* pThis, ItemEnumerator enumerator, void* pUserArg)
 {
-	ListPosition* pPosition;
+	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && enumerator);
-	CHECK(ListEnumerateEntries(pThis, &pPosition, &ListEnumeratorEnumerator, enumerator, pUserArg, NULL));
+	CHECK(ListEnumerateEntries(pThis, &pEntry, &ListEnumeratorEnumerator, enumerator, pUserArg, NULL));
 
 	return eSTATUS_COMMON_OK;
 }

@@ -9,9 +9,9 @@ struct _Station
 	Velocity	velocity;
 	Location	location;
 
-	Routing		routing;
-	Queue		inbox;
-	Queue		outbox;
+	Routing*	pRouting;
+	Queue*		pInbox;
+	Queue*		pOutbox;
 };
 
 static unsigned long s_nextId = 0;
@@ -53,9 +53,9 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location)
 	pThis->velocity = velocity;
 	pThis->id = s_nextId++;
 
-	CHECK(RoutingInit(&pThis->routing));
-	CHECK(QueueInit(&pThis->inbox));
-	CHECK(QueueInit(&pThis->outbox));
+	CHECK(RoutingNew(&pThis->pRouting));
+	CHECK(QueueNew(&pThis->pInbox));
+	CHECK(QueueNew(&pThis->pOutbox));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -64,20 +64,21 @@ EStatus StationDestroy(Station* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(QueueDestroy(&pThis->inbox));
-	CHECK(QueueDestroy(&pThis->outbox));
-	CHECK(RoutingDestroy(&pThis->routing));
+	CHECK(QueueDelete(&pThis->pInbox));
+	CHECK(QueueDelete(&pThis->pOutbox));
+	CHECK(RoutingDelete(&pThis->pRouting));
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus StationSynchronize(Station* pThis, double time)
+EStatus StationSynchronize(Station* pThis, double timeDelta)
 {
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
+
 	pThis->location.x += pThis->velocity.x * timeDelta;
 	pThis->location.y += pThis->velocity.y * timeDelta;
 
-	return RoutingSynchronize(&pThis->routing, time);
+	return RoutingSynchronize(pThis->pRouting);
 }
 
 EStatus StationMoveTo(Station* pThis, Location newLocation)
@@ -85,7 +86,7 @@ EStatus StationMoveTo(Station* pThis, Location newLocation)
 	SET_MEMBER(newLocation, pThis, location);
 }
 
-EStatus StationGetId(Station* pThis, StationId* pId)
+EStatus StationGetId(const Station* pThis, StationId* pId)
 {
 	GET_MEMBER(pId, pThis, id);
 }
@@ -93,13 +94,13 @@ EStatus StationGetId(Station* pThis, StationId* pId)
 EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
-	return QueuePop(&pThis->outbox, (void**)ppMessage);
+	return QueuePop(pThis->pOutbox, (void**)ppMessage);
 }
 
 EStatus StationPutMessage(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage && (pMessage->type < eMSG_TYPE_LAST));
-	CHECK(RoutingHandleMessage(&pThis->routing, pMessage));
+	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
 	if (!StationIsDestination(pThis, pMessage)) return StationHandleTransits(pThis, pMessage);
 	return StationHandleLocals(pThis, pMessage);
 }
@@ -116,15 +117,15 @@ EStatus StationHandleTransits(Station* pThis, Message* pMessage)
 	++pMessage->nodesCount;
 	pMessage->transitSrcId = pThis->id;
 
-	if (eSTATUS_COMMON_OK == RoutingLookFor(&pThis->routing, pMessage->originalDstId, &pMessage->transitDstId))
+	if (eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId))
 	{
-		return QueuePush(&pThis->outbox, pMessage);
+		return QueuePush(pThis->pOutbox, pMessage);
 	}
 
 	pMessage->transitDstId = INVALID_STATION_ID;
 	CHECK(MessageNewSearchRequest(&pNewMsg, pThis->id, pMessage->originalDstId));
-	CHECK(QueuePush(&pThis->outbox, pNewMsg));
-	CHECK(QueuePush(&pThis->outbox, pMessage));
+	CHECK(QueuePush(pThis->pOutbox, pNewMsg));
+	CHECK(QueuePush(pThis->pOutbox, pMessage));
 
 	return eSTATUS_COMMON_OK;
 }

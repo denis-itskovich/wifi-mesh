@@ -11,6 +11,8 @@
 #define _WIFI_MESH_MACROS_H
 
 #include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
 #include "Status.h"
 
 /** Used in other macros in order to allow usage of macros inside if/else block
@@ -111,7 +113,7 @@
  */
 #define DESTRUCT(pptr, module)					SAFE_OPERATION( \
 													VALIDATE_ARGUMENTS(pptr && *pptr); \
-													CHECK(module ## Init(*pptr)); \
+													CHECK(module ## Destroy(*pptr)); \
 													DELETE(*pptr); \
 													return eSTATUS_COMMON_OK; \
 												)

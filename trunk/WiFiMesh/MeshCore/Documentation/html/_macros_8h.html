@@ -22,6 +22,8 @@
 </div>
 <div class="contents">
 <h1>Macros.h File Reference</h1><code>#include &lt;malloc.h&gt;</code><br>
+<code>#include &lt;stdlib.h&gt;</code><br>
+<code>#include &lt;string.h&gt;</code><br>
 <code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
 
 <p>
@@ -258,7 +260,7 @@ Frees previousely allocated variable <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a>( \
                                                                                                         <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr &amp;&amp; *pptr); \
-                                                                                                        <a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(module ## Init(*pptr)); \
+                                                                                                        <a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(module ## Destroy(*pptr)); \
                                                                                                         <a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(*pptr); \
                                                                                                         <span class="keywordflow">return</span> <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>; \
                                                                                                 )
@@ -500,7 +502,7 @@ Checks a condition and returns eSTATUS_COMMON_INVALID_ARGUMENT if a condition no
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 21 07:56:56 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>
