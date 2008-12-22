@@ -20,8 +20,9 @@ typedef struct _Station Station; 	///< Station forward declaration
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
+ * \param pTimeLine [in] pointer to TimeLine instance
  */
-EStatus StationNew(Station** ppThis, Velocity velocity, Location location);
+EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings);
 
 /** Destroys and deallocates an instance
  * \param ppThis [in, out] *ppThis should point to valid instance
@@ -32,8 +33,9 @@ EStatus StationDelete(Station** ppThis);
  * \param pThis [in] pointer to instance to initialize
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
+ * \param pTimeLine [in] pointer to TimeLine instance
  */
-EStatus StationInit(Station* pThis, Velocity velocity, Location location);
+EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings);
 
 /** Destroys an instance
  * \param pThis [in] must point to valid instance
@@ -89,6 +91,6 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
  * \param pMessage [in] pointer to message to be sent
  * \param time [in] time, when the message should be sent
  */
-EStatus StationEnqueueMessage(Station* pThis, Message* pMessage, double time);
+EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
 
 #endif //_WIFI_MESH_STATION_H

@@ -2,6 +2,13 @@
 #include "Macros.h"
 #include "Queue.h"
 #include "Routing.h"
+#include "Scheduler.h"
+
+typedef struct _SchedulerEntry
+{
+	double 		time;
+	Message*	pMessage;
+} SchedulerEntry;
 
 struct _Station
 {
@@ -12,6 +19,7 @@ struct _Station
 	Routing*	pRouting;
 	Queue*		pInbox;
 	Queue*		pOutbox;
+	Scheduler*	pScheduler;
 };
 
 static unsigned long s_nextId = 0;
@@ -35,9 +43,9 @@ static MessageHandler s_handlers[eMSG_TYPE_LAST] =
 		&StationHandleAck
 };
 
-EStatus StationNew(Station** ppThis, Velocity velocity, Location location)
+EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine)
 {
-	CONSTRUCT(ppThis, Station, velocity, location);
+	CONSTRUCT(ppThis, Station, velocity, location, pTimeLine);
 }
 
 EStatus StationDelete(Station** ppThis)
@@ -45,7 +53,7 @@ EStatus StationDelete(Station** ppThis)
 	DESTRUCT(ppThis, Station);
 }
 
-EStatus StationInit(Station* pThis, Velocity velocity, Location location)
+EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLine* pTimeLine)
 {
 	CLEAR(pThis);
 
@@ -56,6 +64,7 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location)
 	CHECK(RoutingNew(&pThis->pRouting));
 	CHECK(QueueNew(&pThis->pInbox));
 	CHECK(QueueNew(&pThis->pOutbox));
+	CHECK(SchedulerNew(&pThis->pScheduler, pTimeLine));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -139,4 +148,10 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage)
 EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 {
 	StationId dst = pMessage->originalSrcId;
+}
+
+EStatus StatusScheduleMessage(Station* pThis, Message* pMessage, double time)
+{
+	VALIDATE_ARGUMENTS(pThis && pMessage);
+	return SchedulerPutMessage(pThis->pScheduler, pMessage, time);
 }

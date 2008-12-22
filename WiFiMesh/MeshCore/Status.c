@@ -29,6 +29,9 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),
 
+	// Scheduler
+	STATUS_MESSAGE("No available messages"),
+
 	// Terminator
 	STATUS_MESSAGE("Unknown error")
 };
