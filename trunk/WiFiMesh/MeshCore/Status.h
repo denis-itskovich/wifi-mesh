@@ -30,6 +30,8 @@ typedef enum
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
 	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished
 
+	eSTATUS_SCHEDULER_NO_MESSAGES,					///< No ready messages found
+
 	// terminator
 	eSTATUS_LAST
 } EStatus;

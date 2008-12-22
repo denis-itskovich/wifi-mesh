@@ -14,6 +14,7 @@
 #define WIFI_MESH_SORTEDLIST_H_
 
 #include "Status.h"
+#include "List.h"
 
 typedef struct _SortedList SortedList; ///< forward declaration of SortedList
 
@@ -45,32 +46,38 @@ EStatus SortedListDestroy(SortedList* pThis);
  */
 EStatus SortedListAdd(SortedList* pThis, void* pValue);
 
-/** Gets a position of the head
+/** Removes an item from the list
  * \param pThis [in] pointer to instance
- * \param ppPosition [out] head position will be stored in *ppPosition
+ * \param pEntry [in] pointer to entry, which should be removed
  */
-EStatus SortedListGetHead(SortedList* pThis, ListPosition** ppPosition);
+EStatus SortedListRemove(SortedList* pThis, ListEntry* pEntry);
 
-/** Gets a position of the tail
+/** Gets an entry of the head
  * \param pThis [in] pointer to instance
- * \param ppPosition [out] tail position will be stored in *ppPosition
+ * \param ppEntry [out] head entry will be stored in *ppEntry
  */
-EStatus SortedListGetTail(SortedList* pThis, ListPosition** ppPosition);
+EStatus SortedListGetHead(SortedList* pThis, ListEntry** ppEntry);
 
-/** Gets a position of the next to specified item
- * \param ppPosition [in, out] next position will be stored in *ppPosition
+/** Gets an entry of the tail
+ * \param pThis [in] pointer to instance
+ * \param ppEntry [out] tail entry will be stored in *ppEntry
  */
-EStatus SortedListGetNext(ListPosition** ppPosition);
+EStatus SortedListGetTail(SortedList* pThis, ListEntry** ppEntry);
 
-/** Gets a position of the previous to specified item
- * \param ppPosition [in, out] previous position will be stored in *ppPosition
+/** Gets an entry of the next to specified item
+ * \param ppEntry [in, out] next entry will be stored in *ppEntry
  */
-EStatus SortedListGetPrevious(ListPosition** ppPosition);
+EStatus SortedListGetNext(ListEntry** ppEntry);
 
-/** Gets a value by specified position
- * \param pPosition [in] list position
+/** Gets an entry of the previous to specified item
+ * \param ppEntry [in, out] previous entry will be stored in *ppEntry
+ */
+EStatus SortedListGetPrevious(ListEntry** ppEntry);
+
+/** Gets a value by specified entry
+ * \param pEntry [in] list entry
  * \param ppValue [out] value will be stored at *ppValue
  */
-EStatus SortedListGetValue(ListPosition* pPosition, void** ppValue);
+EStatus SortedListGetValue(ListEntry* pEntry, void** ppValue);
 
 #endif /* WIFI_MESH_SORTEDLIST_H_ */

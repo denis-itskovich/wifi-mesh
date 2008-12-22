@@ -4,15 +4,12 @@
  * TimeLine module
  *
  * Represents a time line - events collection
- * \see Event.h
  *
  * \author Denis Itskovich
  * \date 12/12/2008
  */
 #ifndef _WIFI_MESH_TIMELINE_H
 #define _WIFI_MESH_TIMELINE_H
-
-#include "Event.h"
 
 typedef struct _TimeLine TimeLine; ///< TimeLine forward declaration
 
@@ -36,16 +33,21 @@ EStatus TimeLineInit(TimeLine* pThis);
  */
 EStatus TimeLineDestroy(TimeLine* pThis);
 
-/** Puts an event into the time line
+/** Add a new milestone to time line
  * \param pThis [in] pointer to instance
- * \param pEvent [in] pointer to event
+ * \param time [in] time of event, in time units
  */
-EStatus TimeLinePutEvent(TimeLine* pThis, Event* pEvent);
+EStatus TimeLineMilestone(TimeLine* pThis, double time);
 
-/** Retrieves next event from the time line
+/** Switches to next milestone
  * \param pThis [in] pointer to instance
- * \param ppEvent [out] a pointer to event will be stored at *ppEvent
  */
-EStatus TimeLineGetEvent(TimeLine* pThis, Event** ppEvent);
+EStatus TimeLineNext(TimeLine* pThis);
+
+/** Retrieves current time
+ * \param pThis [in] pointer to instance
+ * \param pTime [out] current time will be stored at *pTime
+ */
+EStatus TimeLineGetTime(TimeLine* pThis, double* pTime);
 
 #endif // _WIFI_MESH_TIMELINE_H
