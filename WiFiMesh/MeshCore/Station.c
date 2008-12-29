@@ -20,6 +20,7 @@ struct _Station
 	Queue*		pInbox;
 	Queue*		pOutbox;
 	Scheduler*	pScheduler;
+	Settings*	pSettings;
 };
 
 static unsigned long s_nextId = 0;
@@ -43,9 +44,9 @@ static MessageHandler s_handlers[eMSG_TYPE_LAST] =
 		&StationHandleAck
 };
 
-EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine)
+EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings)
 {
-	CONSTRUCT(ppThis, Station, velocity, location, pTimeLine);
+	CONSTRUCT(ppThis, Station, velocity, location, pTimeLine, pSettings);
 }
 
 EStatus StationDelete(Station** ppThis)
@@ -53,13 +54,15 @@ EStatus StationDelete(Station** ppThis)
 	DESTRUCT(ppThis, Station);
 }
 
-EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLine* pTimeLine)
+EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings)
 {
+	VALIDATE_ARGUMENTS(pThis && pTimeLine && pSettings);
 	CLEAR(pThis);
 
 	pThis->location = location;
 	pThis->velocity = velocity;
 	pThis->id = s_nextId++;
+	pThis->pSettings = pSettings;
 
 	CHECK(RoutingNew(&pThis->pRouting));
 	CHECK(QueueNew(&pThis->pInbox));

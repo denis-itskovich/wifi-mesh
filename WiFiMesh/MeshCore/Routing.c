@@ -118,7 +118,7 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
 {
 	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && pTransitId);
-	return ListFind(pThis, &pEntry, (ItemComparator)RoutingFinder, &dstId, pTransitId);
+	return ListFind(pThis, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId);
 }
 
 EStatus RoutingSynchronize(Routing* pThis)

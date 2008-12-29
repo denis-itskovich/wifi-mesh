@@ -28,7 +28,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	return SortedListNew(&pThis->pMilestones, (ItemComparator)&TimeLineComparator);
+	return SortedListNew(&pThis->pMilestones, (ItemComparator)&TimeLineComparator, NULL);
 }
 
 EStatus TimeLineDestroy(TimeLine* pThis)

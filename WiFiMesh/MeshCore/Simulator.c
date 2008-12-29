@@ -20,7 +20,6 @@ struct _Simulator
 	TimeLine*	pTimeLine;
 };
 
-EStatus SimulatorProcessEvent(Simulator* pThis, Event* pEvent);
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation);
 
 EStatus SimulatoreNew(Simulator** ppThis)
@@ -80,35 +79,11 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 
 EStatus SimulatorProcess(Simulator* pThis)
 {
-	Event* pEvent;
-	VALIDATE_ARGUMENTS(pThis);
-
-	CHECK(TimeLineGetEvent(pThis->pTimeLine, &pEvent));
-	SimulatorProcessEvent(pThis, pEvent);
-
+//	Event* pEvent;
+//	VALIDATE_ARGUMENTS(pThis);
+//
+//	CHECK(TimeLineGetEvent(pThis->pTimeLine, &pEvent));
+//	SimulatorProcessEvent(pThis, pEvent);
+//
 	return eSTATUS_COMMON_OK;
-}
-
-EStatus SimulatorProcessEvent(Simulator* pThis, Event* pEvent)
-{
-//	ListEntry* pIter;
-//	Station* pStation;
-//	unsigned long timeDelta, currentTime;
-//
-//	VALIDATE_ARGUMENTS(pThis && pEvent);
-//
-//	CHECK(EventGetTime(pEvent, &currentTime));
-//	timeDelta = currentTime - pThis->lastTime;
-//	pThis->lastTime = currentTime;
-//
-//	CHECK(ListGetBegin(pThis->pStations, &pIter));
-//
-//	while (pIter)
-//	{
-//		CHECK(ListGetValue(pIter, (void**)&pStation));
-//		CHECK(StationSynchronize(pStation, currentTime));
-//		CHECK(ListGetNext(&pIter));
-//	}
-//
-//	return eSTATUS_COMMON_OK;
 }

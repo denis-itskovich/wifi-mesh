@@ -54,7 +54,7 @@ EStatus ListDestroy(List* pThis)
 	ListEntry* pItem;
 	VALIDATE_ARGUMENTS(pThis);
 
-	while (pItem = pThis->pTail)
+	while ((pItem = pThis->pTail))
 	{
 		CHECK(ListRemove(pThis, &pItem));
 	}
@@ -179,7 +179,7 @@ EStatus ListEnumerateEntries(List* pThis, ListEntry** ppEntry, EntryEnumerator e
 	while (*ppEntry)
 	{
 		pNextEntry = *ppEntry;
-		CHECK(ListGetNext(pNextEntry));
+		CHECK(ListGetNext(&pNextEntry));
 		if (enumerator(pThis, *ppEntry, pUserArg1, pUserArg2, pUserArg3) == FALSE) break;
 		*ppEntry = pNextEntry;
 	}
