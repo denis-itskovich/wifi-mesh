@@ -26,8 +26,8 @@ struct _Scheduler
 
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg)
 {
-	return (pLeft->time < pRightTime) ? LESS :
-		   (pLeft->time > pRightTime) ? GREAT : EQUAL;
+	return (pLeft->time < pRight->time) ? LESS :
+		   (pLeft->time > pRight->time) ? GREAT : EQUAL;
 }
 
 EStatus SchedulerNew(Scheduler** ppThis, TimeLine* pTimeLine)
@@ -45,7 +45,7 @@ EStatus SchedulerInit(Scheduler* pThis, TimeLine* pTimeLine)
 	VALIDATE_ARGUMENTS(pThis && pTimeLine);
 	CLEAR(pThis);
 	pThis->pTimeLine = pTimeLine;
-	return SortedListNew(&pThis->pEntries, (ItemComparator)&SchedulerComparator);
+	return SortedListNew(&pThis->pEntries, (ItemComparator)&SchedulerComparator, NULL);
 }
 
 EStatus SchedulerDestroy(Scheduler* pThis)
@@ -83,14 +83,17 @@ EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
 {
 	SchedulerEntry* pSchedulerEntry;
 	ListEntry* pListEntry;
+	double time;
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
+
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 
 	*ppMessage = NULL;
 	CHECK(SortedListGetHead(pThis->pEntries, &pListEntry));
 	if (!pListEntry) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
 	CHECK(SortedListGetValue(pListEntry, (void**)&pSchedulerEntry));
-	if (pSchedulerEntry->time > GlobalsGetTime()) return eSTATUS_SCHEDULER_NO_MESSAGES;
+	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
 	*ppMessage = pSchedulerEntry->pMessage;
 	DELETE(pSchedulerEntry);

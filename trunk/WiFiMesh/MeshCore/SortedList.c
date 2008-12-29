@@ -15,11 +15,12 @@ struct _SortedList
 {
 	List*			pList;
 	ItemComparator	comparator;
+	void*			pUserArg;
 };
 
-EStatus SortedListNew(SortedList** ppThis, ItemComparator comparator)
+EStatus SortedListNew(SortedList** ppThis, ItemComparator comparator, void* pUserArg)
 {
-	CONSTRUCT(ppThis, SortedList, comparator);
+	CONSTRUCT(ppThis, SortedList, comparator, pUserArg);
 }
 
 EStatus SortedListDelete(SortedList** ppThis)
@@ -27,11 +28,12 @@ EStatus SortedListDelete(SortedList** ppThis)
 	DESTRUCT(ppThis, SortedList);
 }
 
-EStatus SortedListInit(SortedList* pThis, ItemComparator comparator)
+EStatus SortedListInit(SortedList* pThis, ItemComparator comparator, void* pUserArg)
 {
 	VALIDATE_ARGUMENTS(pThis && comparator);
 	CLEAR(pThis);
 	pThis->comparator = comparator;
+	pThis->pUserArg = pUserArg;
 	return ListNew(&pThis->pList);
 }
 
@@ -52,7 +54,7 @@ EStatus SortedListAdd(SortedList* pThis, void* pValue)
 	while (pEntry)
 	{
 		CHECK(SortedListGetValue(pEntry, &pRight));
-		if (pThis->comparator(pRight, pValue) != GREAT)
+		if (pThis->comparator(pRight, pValue, pThis->pUserArg) != GREAT)
 		{
 			return ListInsertBefore(pThis->pList, pEntry, pValue);
 		}

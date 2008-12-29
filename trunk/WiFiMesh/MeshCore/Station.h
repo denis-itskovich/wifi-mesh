@@ -12,7 +12,10 @@
 #ifndef _WIFI_MESH_STATION_H
 #define _WIFI_MESH_STATION_H
 
+#include "CommonTypes.h"
 #include "Message.h"
+#include "Settings.h"
+#include "TimeLine.h"
 
 typedef struct _Station Station; 	///< Station forward declaration
 
@@ -21,6 +24,7 @@ typedef struct _Station Station; 	///< Station forward declaration
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
  * \param pTimeLine [in] pointer to TimeLine instance
+ * \param pSettings [in] pointer to simulation settings
  */
 EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings);
 
@@ -34,6 +38,7 @@ EStatus StationDelete(Station** ppThis);
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
  * \param pTimeLine [in] pointer to TimeLine instance
+ * \param pSettings [in] pointer to simulation settings
  */
 EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings);
 

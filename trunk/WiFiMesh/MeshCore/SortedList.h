@@ -21,8 +21,9 @@ typedef struct _SortedList SortedList; ///< forward declaration of SortedList
 /** Allocates & initializes new SortedList instance
  * \param ppThis [out] pointer to new instance will be placed at *ppThis
  * \param comparator [in] pointer to comparison function
+ * \param pUserArg [in] pointer to user-defined argument of comparison function
  */
-EStatus SortedListNew(SortedList** ppThis, ItemComparator comparator);
+EStatus SortedListNew(SortedList** ppThis, ItemComparator comparator, void* pUserArg);
 
 /** Deallocates & destroys SortedList instance
  * \param ppThis [in, out] *ppThis must point to valid instance
@@ -32,8 +33,9 @@ EStatus SortedListDelete(SortedList** ppThis);
 /** Initializes previously allocated instance
  * \param pThis [in] pointer to instance
  * \param comparator [in] pointer to comparison function
+ * \param pUserArg [in] pointer to user-defined argument of comparison function
  */
-EStatus SortedListInit(SortedList* pThis, ItemComparator comparator);
+EStatus SortedListInit(SortedList* pThis, ItemComparator comparator, void* pUserArg);
 
 /** Deinitializes an instance without deallocating
  * \param pThis [in] pointer to instance

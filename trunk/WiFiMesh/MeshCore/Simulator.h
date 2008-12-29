@@ -12,7 +12,6 @@
 
 #include "Status.h"
 #include "Station.h"
-#include "Protocol.h"
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 

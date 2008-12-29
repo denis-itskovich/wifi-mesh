@@ -1,5 +1,4 @@
 #include "Message.h"
-#include "Protocol.h"
 #include "Macros.h"
 
 #define CONSTRUCT_MESSAGE(pptr, _msgtype, ...) SAFE_OPERATION \
@@ -7,7 +6,7 @@
 		VALIDATE_ARGUMENTS(pptr); \
 		*pptr = NEW(Message); \
 		VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
-		return MessageInit ## _msgType (*pptr, __VA_ARGS__) \
+		return MessageInit ## _msgtype (*pptr, __VA_ARGS__) \
 	)
 
 #define INIT_MESSAGE(ptr, _msgtype, _srcId, _dstId) SAFE_OPERATION \
