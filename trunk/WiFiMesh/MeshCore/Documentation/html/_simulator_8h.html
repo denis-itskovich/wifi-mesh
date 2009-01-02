@@ -23,7 +23,7 @@
 <div class="contents">
 <h1>Simulator.h File Reference</h1><code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="_station_8h-source.html">Station.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="_protocol_8h-source.html">Protocol.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="_settings_8h-source.html">Settings.h</a>&quot;</code><br>
 
 <p>
 <a href="_simulator_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -34,11 +34,11 @@ typedef struct _Simulator&nbsp;</td><td class="memItemRight" valign="bottom"><a 
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Simulator forward declaration. <br></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#964e89ce9c1a204c467a36a16fad2d81">SimulatorNew</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> **ppThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#8dbb69cb748e372f20500bfaab5fb310">SimulatorNew</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> **ppThis, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#5b5cfbe003be66eca23e2eb5ce880211">SimulatorDelete</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> **ppThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#95dc0801120d0f62d3ce39ca2a925094">SimulatorInit</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#4ae36e98540ec00384ec9a26e799288d">SimulatorInit</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#80a7531d725d155b00ad3349211ec12b">SimulatorDestroy</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
 
@@ -137,7 +137,7 @@ Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="95dc0801120d0f62d3ce39ca2a925094"></a><!-- doxytag: member="Simulator.h::SimulatorInit" ref="95dc0801120d0f62d3ce39ca2a925094" args="(Simulator *pThis)" -->
+<a class="anchor" name="4ae36e98540ec00384ec9a26e799288d"></a><!-- doxytag: member="Simulator.h::SimulatorInit" ref="4ae36e98540ec00384ec9a26e799288d" args="(Simulator *pThis, Settings *pSettings)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -145,9 +145,18 @@ Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SimulatorInit           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *&nbsp;</td>
-          <td class="paramname"> <em>pThis</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pSettings</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -157,12 +166,13 @@ Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pSettings</em>&nbsp;</td><td>[in] pointer to settings instance </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="964e89ce9c1a204c467a36a16fad2d81"></a><!-- doxytag: member="Simulator.h::SimulatorNew" ref="964e89ce9c1a204c467a36a16fad2d81" args="(Simulator **ppThis)" -->
+<a class="anchor" name="8dbb69cb748e372f20500bfaab5fb310"></a><!-- doxytag: member="Simulator.h::SimulatorNew" ref="8dbb69cb748e372f20500bfaab5fb310" args="(Simulator **ppThis, Settings *pSettings)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -170,9 +180,18 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SimulatorNew           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppThis</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>ppThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pSettings</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -182,6 +201,7 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 Allocates and initializes new instance of Simulator <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>ppThis</em>&nbsp;</td><td>[out] pointer to new instance will be stored at *ppThis </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pSettings</em>&nbsp;</td><td>[in] pointer to settings instance </td></tr>
   </table>
 </dl>
 
@@ -213,7 +233,7 @@ Performs single simulation iteration <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 2 16:15:16 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

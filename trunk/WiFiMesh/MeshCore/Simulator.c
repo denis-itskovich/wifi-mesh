@@ -1,8 +1,8 @@
-/*
- * Simulator.c
+/**
+ * \file Simulator.c
  *
- *  Created on: 06/12/2008
- *      Author: denis
+ * \date 06/12/2008
+ * \author Denis Itskovich
  */
 
 #include "Simulator.h"
@@ -18,19 +18,33 @@ struct _Simulator
 {
 	List*		pStations;
 	TimeLine*	pTimeLine;
+	Settings*	pSettings;
 };
 
+/** Looks for a station with specified id
+ * \param pThis [in] pointer to instance
+ * \param id [in] station id to look for
+ * \param ppStation [out] pointer to station will be stored at *ppStation
+ */
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation);
 
-EStatus SimulatoreNew(Simulator** ppThis)
+/** Dispatches outbound messages for specified station
+ * \param pThis [in] pointer to instance
+ * \param pStation [in] pointer to station
+ */
+EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
+
+EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings)
 {
-	CONSTRUCT(ppThis, Simulator);
+	CONSTRUCT(ppThis, Simulator, pSettings);
 }
 
-EStatus SimulatorInit(Simulator* pThis)
+EStatus SimulatorInit(Simulator* pThis, Settings* pSettings)
 {
+	VALIDATE_ARGUMENTS(pThis && pSettings);
 	CHECK(ListNew(&pThis->pStations));
 	CHECK(TimeLineNew(&pThis->pTimeLine));
+	pThis->pSettings = pSettings;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -79,11 +93,52 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 
 EStatus SimulatorProcess(Simulator* pThis)
 {
-//	Event* pEvent;
-//	VALIDATE_ARGUMENTS(pThis);
-//
-//	CHECK(TimeLineGetEvent(pThis->pTimeLine, &pEvent));
-//	SimulatorProcessEvent(pThis, pEvent);
-//
+	ListEntry* pEntry;
+	Station* pStation;
+	double oldTime;
+	double newTime;
+	VALIDATE_ARGUMENTS(pThis);
+
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
+	CHECK(TimeLineNext(pThis->pTimeLine));
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &newTime));
+
+	CHECK(ListGetHead(pThis->pStations, &pEntry));
+
+	while (pEntry)
+	{
+		CHECK(ListGetValue(pEntry, (void**)&pStation));
+		CHECK(StationSynchronize(pStation, newTime-oldTime));
+		CHECK(SimulatorDispatchMessages(pThis, pStation));
+		CHECK(ListGetNext(&pEntry));
+	}
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
+{
+	Message* pMessage;
+	ListEntry* pEntry;
+	Boolean bIsAdjacent;
+	Station* pCurrent;
+
+	VALIDATE_ARGUMENTS(pThis && pStation);
+	CHECK(StationGetMessage(pStation, &pMessage));
+
+	if (!pMessage) return eSTATUS_COMMON_OK;
+
+	CHECK(ListGetHead(pThis->pStations, &pEntry));
+	while (pEntry)
+	{
+		CHECK(ListGetValue(pEntry, (void**)&pCurrent));
+		CHECK(StationIsAdjacent(pStation, pCurrent, &bIsAdjacent));
+		if (bIsAdjacent)
+		{
+			CHECK(StationPutMessage(pCurrent, pMessage));
+		}
+		CHECK(ListGetNext(&pEntry));
+	}
+
 	return eSTATUS_COMMON_OK;
 }

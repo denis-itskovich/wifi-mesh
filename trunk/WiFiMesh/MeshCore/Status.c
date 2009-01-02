@@ -36,6 +36,8 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("Unknown error")
 };
 
+EStatus s_lastStatus;
+
 const wchar_t* GetStatusMessageW(EStatus status)
 {
 	return s_statusMessages[_MIN(status, eSTATUS_LAST)].wmsg;

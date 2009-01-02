@@ -46,6 +46,12 @@ EStatus TimeLineMilestone(TimeLine* pThis, double time)
 	return SortedListAdd(pThis->pMilestones, pTime);
 }
 
+EStatus TimeLineRelativeMilestone(TimeLine* pThis, double timeDelta)
+{
+	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
+	return TimeLineMilestone(pThis, pThis->time + timeDelta);
+}
+
 EStatus TimeLineNext(TimeLine* pThis)
 {
 	double* pTime;

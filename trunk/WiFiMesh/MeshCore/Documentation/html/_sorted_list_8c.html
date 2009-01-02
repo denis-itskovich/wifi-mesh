@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>MeshCore: SortedList.h File Reference</title>
+<title>MeshCore: SortedList.c File Reference</title>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <link href="tabs.css" rel="stylesheet" type="text/css">
 </head><body>
@@ -21,48 +21,40 @@
   </div>
 </div>
 <div class="contents">
-<h1>SortedList.h File Reference</h1><code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="_list_8h-source.html">List.h</a>&quot;</code><br>
-
-<p>
-<a href="_sorted_list_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
+<h1>SortedList.c File Reference</h1><code>#include &quot;<a class="el" href="_sorted_list_8h-source.html">SortedList.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="_macros_8h-source.html">Macros.h</a>&quot;</code><br>
+<table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
-<tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="cd455f1cfdf1557e291d540e9c51b774"></a><!-- doxytag: member="SortedList.h::SortedList" ref="cd455f1cfdf1557e291d540e9c51b774" args="" -->
-typedef struct _SortedList&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">forward declaration of SortedList <br></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#0539d0c759b64c3ef0e8775fa4cb7187">SortedListNew</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> **ppThis, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, void *pUserArg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#0539d0c759b64c3ef0e8775fa4cb7187">SortedListNew</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> **ppThis, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, void *pUserArg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#e280918475765e1d10356cc775b8e8be">SortedListDelete</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> **ppThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#e280918475765e1d10356cc775b8e8be">SortedListDelete</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> **ppThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#eeb8697ff23afe0932ce26879fbde624">SortedListInit</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, void *pUserArg)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#eeb8697ff23afe0932ce26879fbde624">SortedListInit</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#de6b2369bd85196ecc9457fe4d1f10e4">ItemComparator</a> comparator, void *pUserArg)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#e5d11a8032924152013a4ed2f5738d66">SortedListDestroy</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#e5d11a8032924152013a4ed2f5738d66">SortedListDestroy</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#eaa57bf9f2dad0533bf986d5d29d3d0a">SortedListAdd</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, void *pValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#eaa57bf9f2dad0533bf986d5d29d3d0a">SortedListAdd</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, void *pValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#810d37748583180aabed46c6b88dc1a2">SortedListRemove</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#810d37748583180aabed46c6b88dc1a2">SortedListRemove</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#aac3873ac254cdc09e899e903a761663">SortedListGetHead</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#aac3873ac254cdc09e899e903a761663">SortedListGetHead</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#871a64f40105ab2145f7ec19b6463f65">SortedListGetTail</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#871a64f40105ab2145f7ec19b6463f65">SortedListGetTail</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#76e0398bc4082c33f3dcb2e0f4defe05">SortedListGetNext</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#76e0398bc4082c33f3dcb2e0f4defe05">SortedListGetNext</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#78ebef2f4e833497d352852659e4ceb5">SortedListGetPrevious</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#78ebef2f4e833497d352852659e4ceb5">SortedListGetPrevious</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> **ppEntry)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#ec81eed60c030ff43bd42c2a28744eeb">SortedListGetValue</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void **ppValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8c.html#ec81eed60c030ff43bd42c2a28744eeb">SortedListGetValue</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void **ppValue)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Sorted Linked List module<p>
-Represents a sorted list <dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html">List.h</a>, <a class="el" href="_queue_8h.html">Queue.h</a></dd></dl>
+Project: MeshCore (C) Copyright 2008 Denis Itskovich<p>
+<dl class="date" compact><dt><b>Date:</b></dt><dd>22/12/2008 </dd></dl>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
-<dl class="date" compact><dt><b>Date:</b></dt><dd>13/12/2008 </dd></dl>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="eaa57bf9f2dad0533bf986d5d29d3d0a"></a><!-- doxytag: member="SortedList.h::SortedListAdd" ref="eaa57bf9f2dad0533bf986d5d29d3d0a" args="(SortedList *pThis, void *pValue)" -->
+<a class="anchor" name="eaa57bf9f2dad0533bf986d5d29d3d0a"></a><!-- doxytag: member="SortedList.c::SortedListAdd" ref="eaa57bf9f2dad0533bf986d5d29d3d0a" args="(SortedList *pThis, void *pValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -97,7 +89,7 @@ Adds a new item into the sorted list <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="e280918475765e1d10356cc775b8e8be"></a><!-- doxytag: member="SortedList.h::SortedListDelete" ref="e280918475765e1d10356cc775b8e8be" args="(SortedList **ppThis)" -->
+<a class="anchor" name="e280918475765e1d10356cc775b8e8be"></a><!-- doxytag: member="SortedList.c::SortedListDelete" ref="e280918475765e1d10356cc775b8e8be" args="(SortedList **ppThis)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -122,7 +114,7 @@ Deallocates &amp; destroys SortedList instance <dl compact><dt><b>Parameters:</b
 
 </div>
 </div><p>
-<a class="anchor" name="e5d11a8032924152013a4ed2f5738d66"></a><!-- doxytag: member="SortedList.h::SortedListDestroy" ref="e5d11a8032924152013a4ed2f5738d66" args="(SortedList *pThis)" -->
+<a class="anchor" name="e5d11a8032924152013a4ed2f5738d66"></a><!-- doxytag: member="SortedList.c::SortedListDestroy" ref="e5d11a8032924152013a4ed2f5738d66" args="(SortedList *pThis)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -147,7 +139,7 @@ Deinitializes an instance without deallocating <dl compact><dt><b>Parameters:</b
 
 </div>
 </div><p>
-<a class="anchor" name="aac3873ac254cdc09e899e903a761663"></a><!-- doxytag: member="SortedList.h::SortedListGetHead" ref="aac3873ac254cdc09e899e903a761663" args="(SortedList *pThis, ListEntry **ppEntry)" -->
+<a class="anchor" name="aac3873ac254cdc09e899e903a761663"></a><!-- doxytag: member="SortedList.c::SortedListGetHead" ref="aac3873ac254cdc09e899e903a761663" args="(SortedList *pThis, ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -182,7 +174,7 @@ Gets an entry of the head <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="76e0398bc4082c33f3dcb2e0f4defe05"></a><!-- doxytag: member="SortedList.h::SortedListGetNext" ref="76e0398bc4082c33f3dcb2e0f4defe05" args="(ListEntry **ppEntry)" -->
+<a class="anchor" name="76e0398bc4082c33f3dcb2e0f4defe05"></a><!-- doxytag: member="SortedList.c::SortedListGetNext" ref="76e0398bc4082c33f3dcb2e0f4defe05" args="(ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -207,7 +199,7 @@ Gets an entry of the next to specified item <dl compact><dt><b>Parameters:</b></
 
 </div>
 </div><p>
-<a class="anchor" name="78ebef2f4e833497d352852659e4ceb5"></a><!-- doxytag: member="SortedList.h::SortedListGetPrevious" ref="78ebef2f4e833497d352852659e4ceb5" args="(ListEntry **ppEntry)" -->
+<a class="anchor" name="78ebef2f4e833497d352852659e4ceb5"></a><!-- doxytag: member="SortedList.c::SortedListGetPrevious" ref="78ebef2f4e833497d352852659e4ceb5" args="(ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -232,7 +224,7 @@ Gets an entry of the previous to specified item <dl compact><dt><b>Parameters:</
 
 </div>
 </div><p>
-<a class="anchor" name="871a64f40105ab2145f7ec19b6463f65"></a><!-- doxytag: member="SortedList.h::SortedListGetTail" ref="871a64f40105ab2145f7ec19b6463f65" args="(SortedList *pThis, ListEntry **ppEntry)" -->
+<a class="anchor" name="871a64f40105ab2145f7ec19b6463f65"></a><!-- doxytag: member="SortedList.c::SortedListGetTail" ref="871a64f40105ab2145f7ec19b6463f65" args="(SortedList *pThis, ListEntry **ppEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -267,7 +259,7 @@ Gets an entry of the tail <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="ec81eed60c030ff43bd42c2a28744eeb"></a><!-- doxytag: member="SortedList.h::SortedListGetValue" ref="ec81eed60c030ff43bd42c2a28744eeb" args="(ListEntry *pEntry, void **ppValue)" -->
+<a class="anchor" name="ec81eed60c030ff43bd42c2a28744eeb"></a><!-- doxytag: member="SortedList.c::SortedListGetValue" ref="ec81eed60c030ff43bd42c2a28744eeb" args="(ListEntry *pEntry, void **ppValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -302,7 +294,7 @@ Gets a value by specified entry <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="eeb8697ff23afe0932ce26879fbde624"></a><!-- doxytag: member="SortedList.h::SortedListInit" ref="eeb8697ff23afe0932ce26879fbde624" args="(SortedList *pThis, ItemComparator comparator, void *pUserArg)" -->
+<a class="anchor" name="eeb8697ff23afe0932ce26879fbde624"></a><!-- doxytag: member="SortedList.c::SortedListInit" ref="eeb8697ff23afe0932ce26879fbde624" args="(SortedList *pThis, ItemComparator comparator, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -344,7 +336,7 @@ Initializes previously allocated instance <dl compact><dt><b>Parameters:</b></dt
 
 </div>
 </div><p>
-<a class="anchor" name="0539d0c759b64c3ef0e8775fa4cb7187"></a><!-- doxytag: member="SortedList.h::SortedListNew" ref="0539d0c759b64c3ef0e8775fa4cb7187" args="(SortedList **ppThis, ItemComparator comparator, void *pUserArg)" -->
+<a class="anchor" name="0539d0c759b64c3ef0e8775fa4cb7187"></a><!-- doxytag: member="SortedList.c::SortedListNew" ref="0539d0c759b64c3ef0e8775fa4cb7187" args="(SortedList **ppThis, ItemComparator comparator, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -386,7 +378,7 @@ Allocates &amp; initializes new SortedList instance <dl compact><dt><b>Parameter
 
 </div>
 </div><p>
-<a class="anchor" name="810d37748583180aabed46c6b88dc1a2"></a><!-- doxytag: member="SortedList.h::SortedListRemove" ref="810d37748583180aabed46c6b88dc1a2" args="(SortedList *pThis, ListEntry *pEntry)" -->
+<a class="anchor" name="810d37748583180aabed46c6b88dc1a2"></a><!-- doxytag: member="SortedList.c::SortedListRemove" ref="810d37748583180aabed46c6b88dc1a2" args="(SortedList *pThis, ListEntry *pEntry)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">

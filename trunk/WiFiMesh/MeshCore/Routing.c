@@ -9,7 +9,6 @@
 
 #include "Routing.h"
 #include "Macros.h"
-#include "Globals.h"
 #include "List.h"
 
 typedef struct _RoutingEntry

@@ -21,6 +21,8 @@ struct _Station
 	Queue*		pOutbox;
 	Scheduler*	pScheduler;
 	Settings*	pSettings;
+	TimeLine*	pTimeLine;
+	double		silentTime;
 };
 
 static unsigned long s_nextId = 0;
@@ -35,6 +37,7 @@ EStatus StationHandleTransits(Station* pThis, Message* pMessage);
 EStatus StationHandleLocals(Station* pThis, Message* pMessage);
 
 Boolean StationIsDestination(Station* pThis, Message* pMessage);
+Boolean StationIsAccepted(Station* pThis, Message* pMessage);
 
 static MessageHandler s_handlers[eMSG_TYPE_LAST] =
 {
@@ -63,6 +66,7 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 	pThis->velocity = velocity;
 	pThis->id = s_nextId++;
 	pThis->pSettings = pSettings;
+	pThis->pTimeLine = pTimeLine;
 
 	CHECK(RoutingNew(&pThis->pRouting));
 	CHECK(QueueNew(&pThis->pInbox));
@@ -87,6 +91,9 @@ EStatus StationSynchronize(Station* pThis, double timeDelta)
 {
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
 
+	if (pThis->silentTime <= timeDelta) pThis->silentTime = 0;
+	else pThis->silentTime -= timeDelta;
+
 	pThis->location.x += pThis->velocity.x * timeDelta;
 	pThis->location.y += pThis->velocity.y * timeDelta;
 
@@ -105,13 +112,30 @@ EStatus StationGetId(const Station* pThis, StationId* pId)
 
 EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 {
+	EStatus ret;
+	*ppMessage = NULL;
+
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
-	return QueuePop(pThis->pOutbox, (void**)ppMessage);
+	if (pThis->silentTime > 0) return eSTATUS_COMMON_OK;
+
+	ret = QueuePop(pThis->pOutbox, (void**)ppMessage);
+	NCHECK(ret);
+
+	if (ret == eSTATUS_QUEUE_EMPTY)
+	{
+		*ppMessage = NULL;
+		return eSTATUS_COMMON_OK;
+	}
+	return ret;
 }
 
 EStatus StationPutMessage(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage && (pMessage->type < eMSG_TYPE_LAST));
+	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
+	CHECK(TimeLineRelativeMilestone(pThis->pTimeLine, pThis->silentTime));
+	if (!StationIsAccepted(pThis, pMessage)) return eSTATUS_COMMON_OK;
+
 	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
 	if (!StationIsDestination(pThis, pMessage)) return StationHandleTransits(pThis, pMessage);
 	return StationHandleLocals(pThis, pMessage);
@@ -120,6 +144,11 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 Boolean StationIsDestination(Station* pThis, Message* pMessage)
 {
 	return (IS_BROADCAST(pMessage->originalDstId)) || (pMessage->originalDstId == pThis->id) ? TRUE : FALSE;
+}
+
+Boolean StationIsAccepted(Station* pThis, Message* pMessage)
+{
+	return ((pMessage->transitDstId == pThis->id) || StationIsDestination(pThis, pMessage)) ? TRUE : FALSE;
 }
 
 EStatus StationHandleTransits(Station* pThis, Message* pMessage)
@@ -153,7 +182,7 @@ EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 	StationId dst = pMessage->originalSrcId;
 }
 
-EStatus StatusScheduleMessage(Station* pThis, Message* pMessage, double time)
+EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage);
 	return SchedulerPutMessage(pThis->pScheduler, pMessage, time);

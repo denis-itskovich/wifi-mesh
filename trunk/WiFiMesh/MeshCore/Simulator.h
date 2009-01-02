@@ -12,13 +12,15 @@
 
 #include "Status.h"
 #include "Station.h"
+#include "Settings.h"
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 
 /** Allocates and initializes new instance of Simulator
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
+ * \param pSettings [in] pointer to settings instance
  */
-EStatus SimulatorNew(Simulator** ppThis);
+EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings);
 
 /** Destroys and deallocates an instance of Simulator
  * \param ppThis [in, out] *ppThis must point to valid instance
@@ -27,8 +29,9 @@ EStatus SimulatorDelete(Simulator** ppThis);
 
 /** Initializes an instance
  * \param pThis [in] pointer to instance
+ * \param pSettings [in] pointer to settings instance
  */
-EStatus SimulatorInit(Simulator* pThis);
+EStatus SimulatorInit(Simulator* pThis, Settings* pSettings);
 
 /** Destroys an instance
  * \param pThis [in] pointer to valid instance

@@ -68,10 +68,15 @@
  */
 #define DELETE(ptr)								SAFE_OPERATION(free(ptr); ptr = NULL)
 
-/** Checks return code and exits function if not successfull
+/** Checks return code and exits function if <b>not successfull</b>
  * \param rc return code to be checked
  */
-#define CHECK(rc)						SAFE_OPERATION(if ((rc) != eSTATUS_COMMON_OK) return (rc))
+#define CHECK(rc)								SAFE_OPERATION(if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) return (s_lastStatus))
+
+/** Checks return code and exits function if <b>successfull</b>
+ * \param rc return code to be checked
+ */
+#define NCHECK(rc)								SAFE_OPERATION(if ((rc) == eSTATUS_COMMON_OK) return (eSTATUS_COMMON_OK))
 
 /** Checks return code and breaks a loop if not successfull
  * \param rc return code to be checked
