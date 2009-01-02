@@ -78,12 +78,6 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage);
  */
 EStatus StationPutMessage(Station* pThis, Message* pMessage);
 
-/** Request to send - orders to station not to transmit for specified time period
- * \param pThis [in] pointer to instance
- * \param time [in] time, when transmit will be allowed
- */
-EStatus StationDelayTransmits(Station* pThis, double time);
-
 /** Checks whether a station is adjacent to another one
  * \param pThis [in] pointer to instance
  * \param pStation [in] pointer to station to check

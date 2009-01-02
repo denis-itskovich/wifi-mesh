@@ -11,6 +11,8 @@
 #ifndef _WIFI_MESH_TIMELINE_H
 #define _WIFI_MESH_TIMELINE_H
 
+#include "Status.h"
+
 typedef struct _TimeLine TimeLine; ///< TimeLine forward declaration
 
 /** Allocates and initializes a new instance of TimeLine
@@ -38,6 +40,12 @@ EStatus TimeLineDestroy(TimeLine* pThis);
  * \param time [in] time of event, in time units
  */
 EStatus TimeLineMilestone(TimeLine* pThis, double time);
+
+/** Add a new relative milestone to time line
+ * \param pThis [in] pointer to instance
+ * \param timeDelta [in] delta time
+ */
+EStatus TimeLineRelativeMilestone(TimeLine* pThis, double timeDelta);
 
 /** Switches to next milestone
  * \param pThis [in] pointer to instance

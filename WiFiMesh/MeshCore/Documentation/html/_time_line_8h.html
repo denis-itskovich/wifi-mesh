@@ -21,7 +21,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>TimeLine.h File Reference</h1><code>#include &quot;<a class="el" href="_event_8h-source.html">Event.h</a>&quot;</code><br>
+<h1>TimeLine.h File Reference</h1><code>#include &quot;<a class="el" href="_status_8h-source.html">Status.h</a>&quot;</code><br>
 
 <p>
 <a href="_time_line_8h-source.html">Go to the source code of this file.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -40,14 +40,18 @@ typedef struct _TimeLine&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#598f2095a2f90c7f909671ab174ccd91">TimeLineDestroy</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#650b3867f9dccb6fe46403aa6a7b555d">TimeLinePutEvent</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, Event *pEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#18493d14dde1bc3537c21156f041fba7">TimeLineMilestone</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, double time)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#4fe04c9aa166bfa315ef53b7771a19d5">TimeLineGetEvent</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, Event **ppEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#6030523dc58a001a5ceb73f23705fbce">TimeLineRelativeMilestone</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, double timeDelta)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#50fc715f56315f0d94f5267af73d992b">TimeLineNext</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#fb60801c55be82e6d21681d5b82b3ebe">TimeLineGetTime</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, double *pTime)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 TimeLine module<p>
-Represents a time line - events collection <dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_event_8h.html">Event.h</a></dd></dl>
+Represents a time line - events collection<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>12/12/2008 </dd></dl>
 <hr><h2>Function Documentation</h2>
@@ -101,12 +105,12 @@ Destroys an instance of TimeLine <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="4fe04c9aa166bfa315ef53b7771a19d5"></a><!-- doxytag: member="TimeLine.h::TimeLineGetEvent" ref="4fe04c9aa166bfa315ef53b7771a19d5" args="(TimeLine *pThis, Event **ppEvent)" -->
+<a class="anchor" name="fb60801c55be82e6d21681d5b82b3ebe"></a><!-- doxytag: member="TimeLine.h::TimeLineGetTime" ref="fb60801c55be82e6d21681d5b82b3ebe" args="(TimeLine *pThis, double *pTime)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineGetEvent           </td>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineGetTime           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
           <td class="paramname"> <em>pThis</em>, </td>
@@ -114,8 +118,8 @@ Destroys an instance of TimeLine <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Event **&nbsp;</td>
-          <td class="paramname"> <em>ppEvent</em></td><td>&nbsp;</td>
+          <td class="paramtype">double *&nbsp;</td>
+          <td class="paramname"> <em>pTime</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -127,10 +131,10 @@ Destroys an instance of TimeLine <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Retrieves next event from the time line <dl compact><dt><b>Parameters:</b></dt><dd>
+Retrieves current time <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>ppEvent</em>&nbsp;</td><td>[out] a pointer to event will be stored at *ppEvent </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pTime</em>&nbsp;</td><td>[out] current time will be stored at *pTime </td></tr>
   </table>
 </dl>
 
@@ -161,6 +165,41 @@ Initializes an instance of TimeLine <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="18493d14dde1bc3537c21156f041fba7"></a><!-- doxytag: member="TimeLine.h::TimeLineMilestone" ref="18493d14dde1bc3537c21156f041fba7" args="(TimeLine *pThis, double time)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineMilestone           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&nbsp;</td>
+          <td class="paramname"> <em>time</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Add a new milestone to time line <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] time of event, in time units </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="a7fecc3e58481c2f58f768f6b028df58"></a><!-- doxytag: member="TimeLine.h::TimeLineNew" ref="a7fecc3e58481c2f58f768f6b028df58" args="(TimeLine **ppThis)" -->
 <div class="memitem">
 <div class="memproto">
@@ -186,12 +225,37 @@ Allocates and initializes a new instance of TimeLine <dl compact><dt><b>Paramete
 
 </div>
 </div><p>
-<a class="anchor" name="650b3867f9dccb6fe46403aa6a7b555d"></a><!-- doxytag: member="TimeLine.h::TimeLinePutEvent" ref="650b3867f9dccb6fe46403aa6a7b555d" args="(TimeLine *pThis, Event *pEvent)" -->
+<a class="anchor" name="50fc715f56315f0d94f5267af73d992b"></a><!-- doxytag: member="TimeLine.h::TimeLineNext" ref="50fc715f56315f0d94f5267af73d992b" args="(TimeLine *pThis)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLinePutEvent           </td>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineNext           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Switches to next milestone <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="6030523dc58a001a5ceb73f23705fbce"></a><!-- doxytag: member="TimeLine.h::TimeLineRelativeMilestone" ref="6030523dc58a001a5ceb73f23705fbce" args="(TimeLine *pThis, double timeDelta)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineRelativeMilestone           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
           <td class="paramname"> <em>pThis</em>, </td>
@@ -199,8 +263,8 @@ Allocates and initializes a new instance of TimeLine <dl compact><dt><b>Paramete
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Event *&nbsp;</td>
-          <td class="paramname"> <em>pEvent</em></td><td>&nbsp;</td>
+          <td class="paramtype">double&nbsp;</td>
+          <td class="paramname"> <em>timeDelta</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -212,17 +276,17 @@ Allocates and initializes a new instance of TimeLine <dl compact><dt><b>Paramete
 <div class="memdoc">
 
 <p>
-Puts an event into the time line <dl compact><dt><b>Parameters:</b></dt><dd>
+Add a new relative milestone to time line <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pEvent</em>&nbsp;</td><td>[in] pointer to event </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>timeDelta</em>&nbsp;</td><td>[in] delta time </td></tr>
   </table>
 </dl>
 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 2 16:15:16 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

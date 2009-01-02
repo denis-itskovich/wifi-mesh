@@ -42,22 +42,26 @@
 <a name="l00030"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682">00030</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193c8faad366c9989ed2c1bb420d1b69682" title="Referred station was not found.">eSTATUS_SIMULATOR_STATION_NOT_FOUND</a>,                    
 <a name="l00031"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0">00031</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81931eb0d7b7a2d97d608eceb72ec18c7ed0" title="Simulation finished.">eSTATUS_SIMULATOR_FINISHED</a>,                                             
 <a name="l00032"></a>00032 
-<a name="l00033"></a>00033         <span class="comment">// terminator</span>
-<a name="l00034"></a>00034         eSTATUS_LAST
-<a name="l00035"></a>00035 } <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a>;
-<a name="l00036"></a>00036 
-<a name="l00037"></a>00037 <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* GetStatusMessageW(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
-<a name="l00038"></a>00038 <span class="keyword">const</span> <span class="keywordtype">char</span>* GetStatusMessageA(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
-<a name="l00039"></a>00039 
-<a name="l00040"></a>00040 <span class="preprocessor">#ifdef UNICODE</span>
-<a name="l00041"></a>00041 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageW</span>
-<a name="l00042"></a>00042 <span class="preprocessor"></span><span class="preprocessor">#else</span>
-<a name="l00043"></a>00043 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageA</span>
-<a name="l00044"></a>00044 <span class="preprocessor"></span><span class="preprocessor">#endif // UNICODE</span>
-<a name="l00045"></a>00045 <span class="preprocessor"></span>
-<a name="l00046"></a>00046 <span class="preprocessor">#endif // _WIFI_MESH_STATUS_H</span>
+<a name="l00033"></a><a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81932e04b4fdd42d3b93aa0bb93e50b77084">00033</a>         <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81932e04b4fdd42d3b93aa0bb93e50b77084" title="No ready messages found.">eSTATUS_SCHEDULER_NO_MESSAGES</a>,                                  
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035         <span class="comment">// terminator</span>
+<a name="l00036"></a>00036         eSTATUS_LAST
+<a name="l00037"></a>00037 } <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a>;
+<a name="l00038"></a>00038 
+<a name="l00039"></a>00039 <span class="keyword">extern</span> <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> s_lastStatus;
+<a name="l00040"></a>00040 
+<a name="l00041"></a>00041 <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* GetStatusMessageW(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
+<a name="l00042"></a>00042 <span class="keyword">const</span> <span class="keywordtype">char</span>* GetStatusMessageA(<a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193" title="Global return codes.">EStatus</a> status);
+<a name="l00043"></a>00043 
+<a name="l00044"></a>00044 <span class="preprocessor">#ifdef UNICODE</span>
+<a name="l00045"></a>00045 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageW</span>
+<a name="l00046"></a>00046 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00047"></a>00047 <span class="preprocessor"></span><span class="preprocessor">        #define GetStatusMessage GetStatusMessageA</span>
+<a name="l00048"></a>00048 <span class="preprocessor"></span><span class="preprocessor">#endif // UNICODE</span>
+<a name="l00049"></a>00049 <span class="preprocessor"></span>
+<a name="l00050"></a>00050 <span class="preprocessor">#endif // _WIFI_MESH_STATUS_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Dec 22 08:35:00 2008 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 2 16:15:16 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

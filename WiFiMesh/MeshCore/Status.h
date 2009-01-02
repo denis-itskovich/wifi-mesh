@@ -36,6 +36,8 @@ typedef enum
 	eSTATUS_LAST
 } EStatus;
 
+extern EStatus s_lastStatus;
+
 const wchar_t* GetStatusMessageW(EStatus status);
 const char* GetStatusMessageA(EStatus status);
 

@@ -13,6 +13,7 @@
 #define SETTINGS_H_
 
 #include "Status.h"
+#include "Message.h"
 
 typedef struct _Settings Settings;	///< forward declaration
 
@@ -29,7 +30,7 @@ EStatus SettingsNew(Settings** ppThis, double coverage, unsigned dataRate, doubl
  */
 EStatus SettingsDelete(Settings** ppThis);
 
-/** Initizes an instance
+/** Initializes an instance
  * \param pThis [in] pointer to instance
  * \param coverage [in] station coverage range, in length units
  * \param dataRate [in] data rate, in bits per time unit
@@ -41,5 +42,12 @@ EStatus SettingsInit(Settings* pThis, double coverage, unsigned dataRate, double
  * \param pThis [in] pointer to instance
  */
 EStatus SettingsDestroy(Settings* pThis);
+
+/** Calculates transmit time
+ * \param pThis [in] pointer to instance
+ * \param pMessage [in] pointer to message
+ * \param pTime [out] transmit time will be stored at *pTime
+ */
+EStatus SettingsGetTransmitTime(Settings* pThis, Message* pMessage, double* pTime);
 
 #endif /* SETTINGS_H_ */
