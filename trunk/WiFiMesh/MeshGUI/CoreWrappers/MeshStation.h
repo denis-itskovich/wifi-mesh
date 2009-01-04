@@ -8,21 +8,15 @@
 #ifndef MESHSTATION_H_
 #define MESHSTATION_H_
 
-extern "C"
-{
-	#include "../../MeshCore/Station.h"
-};
-
 class MeshStation
 {
 public:
-	MeshStation(Station station);
+	MeshStation();
 	virtual ~MeshStation();
 
 	unsigned long id();
 
 private:
-	Station	m_station;
 };
 
 #endif /* MESHSTATION_H_ */
