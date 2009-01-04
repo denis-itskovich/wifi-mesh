@@ -7,7 +7,7 @@
 
 #include "MeshStation.h"
 
-MeshStation::MeshStation(Station station) : m_station(station)
+MeshStation::MeshStation()
 {
 }
 
@@ -17,5 +17,5 @@ MeshStation::~MeshStation()
 
 unsigned long MeshStation::id()
 {
-	return m_station.id;
+	return 0;
 }
