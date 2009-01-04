@@ -13,13 +13,17 @@
 #include "Status.h"
 #include "CommonTypes.h"
 #include "Message.h"
+#include "Settings.h"
+#include "TimeLine.h"
 
 typedef struct _Routing Routing; ///< forward declaration
 
 /** Allocates & initializes a new instance
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
+ * \param pSettings [in] pointer to settings instance
+ * \param pTimeLine [in] pointer to time line instance
  */
-EStatus RoutingNew(Routing** ppThis);
+EStatus RoutingNew(Routing** ppThis, Settings* pSettings, TimeLine* pTimeLine);
 
 /** Destroys and deallocates an instance
  * \param ppThis [in, out] *ppThis should point to valid instance
@@ -28,8 +32,10 @@ EStatus RoutingDelete(Routing** ppThis);
 
 /** Initializes an instance
  * \param pThis [in] pointer to instance
+ * \param pSettings [in] pointer to settings instance
+ * \param pTimeLine [in] pointer to time line instance
  */
-EStatus RoutingInit(Routing* pThis);
+EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine);
 
 /** Destroys an instance
  * \param pThis [in] pointer to valid instance

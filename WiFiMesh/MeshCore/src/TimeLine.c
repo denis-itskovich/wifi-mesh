@@ -34,7 +34,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	return ListDelete(&pThis->pMilestones);
+	return SortedListDelete(&pThis->pMilestones);
 }
 
 EStatus TimeLineMilestone(TimeLine* pThis, double time)

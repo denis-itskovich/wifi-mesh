@@ -71,7 +71,7 @@ EStatus SchedulerDestroy(Scheduler* pThis)
 EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time)
 {
 	SchedulerEntry* pEntry;
-	VALIDATE_ARGUMETNS(pThis && pMessage && (time >= 0));
+	VALIDATE_ARGUMENTS(pThis && pMessage && (time >= 0));
 	pEntry = NEW(SchedulerEntry);
 	pEntry->time = time;
 	pEntry->pMessage = pMessage;

@@ -68,7 +68,7 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 	pThis->pSettings = pSettings;
 	pThis->pTimeLine = pTimeLine;
 
-	CHECK(RoutingNew(&pThis->pRouting));
+	CHECK(RoutingNew(&pThis->pRouting, pSettings, pTimeLine));
 	CHECK(QueueNew(&pThis->pInbox));
 	CHECK(QueueNew(&pThis->pOutbox));
 	CHECK(SchedulerNew(&pThis->pScheduler, pTimeLine));
@@ -179,7 +179,10 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage)
 
 EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 {
-	StationId dst = pMessage->originalSrcId;
+	StationId dst;
+	VALIDATE_ARGUMENTS(pThis && pMessage);
+	dst = pMessage->originalSrcId;
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)

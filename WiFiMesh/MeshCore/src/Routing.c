@@ -21,7 +21,9 @@ typedef struct _RoutingEntry
 
 struct _Routing
 {
-	List*	pEntries;
+	List*		pEntries;
+	Settings*	pSettings;
+	TimeLine*	pTimeLine;
 };
 
 /** Adds a route
@@ -31,6 +33,12 @@ struct _Routing
  * \param length [in] estimated route length
  */
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length);
+
+/** Calculates entry expiration time
+ * \param pThis [in] pointer to instance
+ * \param pTime [out] routing entry expiration time will be stored at *pTime
+ */
+EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime);
 
 Boolean RoutingCleaner(RoutingEntry* pEntry, double* pTime)
 {
@@ -50,9 +58,9 @@ Comparison RoutingFinder(RoutingEntry* pEntry, StationId* pId, StationId* pTrans
 	return (pEntry->dstId < *pId) ? LESS : GREAT;
 }
 
-EStatus RoutingNew(Routing** ppThis)
+EStatus RoutingNew(Routing** ppThis, Settings* pSettings, TimeLine* pTimeLine)
 {
-	CONSTRUCT(ppThis, Routing);
+	CONSTRUCT(ppThis, Routing, pSettings, pTimeLine);
 }
 
 EStatus RoutingDelete(Routing** ppThis)
@@ -60,10 +68,12 @@ EStatus RoutingDelete(Routing** ppThis)
 	DESTRUCT(ppThis, Routing);
 }
 
-EStatus RoutingInit(Routing* pThis)
+EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine)
 {
-	VALIDATE_ARGUMENTS(pThis);
+	VALIDATE_ARGUMENTS(pThis && pSettings && pTimeLine);
 	CLEAR(pThis);
+	pThis->pSettings = pSettings;
+	pThis->pTimeLine = pTimeLine;
 	return ListNew(&pThis->pEntries);
 }
 
@@ -95,7 +105,7 @@ EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage)
 	{
 		pRouteEntry->length = pMessage->nodesCount;
 		pRouteEntry->transitId = pMessage->transitSrcId;
-		pRouteEntry->expires = GlobalsRouteExpirationTime();
+		CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
 	}
 
 	return eSTATUS_COMMON_OK;
@@ -109,7 +119,7 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
-	pEntry->expires = GlobalsGetRoutingEntryExpirationTime();
+	CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
 	return ListInsert(pThis->pEntries, pEntry);
 }
 
@@ -122,7 +132,19 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
 
 EStatus RoutingSynchronize(Routing* pThis)
 {
+	double time;
 	VALIDATE_ARGUMENTS(pThis);
-	double time = GlobalsGetTime();
+	TimeLineGetTime(pThis->pTimeLine, &time);
 	return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, &time);
+}
+
+EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
+{
+	double time;
+	double ttl;
+	VALIDATE_ARGUMENTS(pThis && pTime);
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+	CHECK(SettingsGetRoutingTTL(pThis->pSettings, &ttl));
+	*pTime = time + ttl;
+	return eSTATUS_COMMON_OK;
 }
