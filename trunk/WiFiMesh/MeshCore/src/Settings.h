@@ -50,4 +50,10 @@ EStatus SettingsDestroy(Settings* pThis);
  */
 EStatus SettingsGetTransmitTime(Settings* pThis, Message* pMessage, double* pTime);
 
+/** Retrieves routing table entry time to live
+ * \param pThis [in] pointer to instance
+ * \param pTTL [out] time to live will be stored at *pTTL
+ */
+EStatus SettingsGetRoutingTTL(Settings* pThis, double* pTTL);
+
 #endif /* SETTINGS_H_ */

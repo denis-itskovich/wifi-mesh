@@ -48,10 +48,17 @@ EStatus SettingsGetTransmitTime(Settings* pThis, Message* pMessage, double* pTim
 {
 	unsigned size;
 	double variance;
+	double resolution;
 	VALIDATE_ARGUMENTS(pThis && pMessage && pTime);
 
+	resolution = 1000000;
 	size = sizeof(*pMessage) + pMessage->size;
-	variance = (double)(rand() % (sizeof(*pMessage) * 1000000) + 1) / 1000000;
+	variance = (((double)(rand() % sizeof(*pMessage)) * resolution) + 1) / resolution;
 	*pTime = ((double)(size) + variance) / pThis->dataRate;
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus SettingsGetRoutingTTL(Settings* pThis, double* pTTL)
+{
+	GET_MEMBER(pTTL, pThis, routeTTL);
 }
