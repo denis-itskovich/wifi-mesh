@@ -61,7 +61,7 @@ EStatus TimeLineNext(TimeLine* pThis)
 	do
 	{
 		CHECK(SortedListGetHead(pThis->pMilestones, &pEntry));
-		SortedListGetValue(pEntry, (void**)&pTime);
+		SortedListGetValue(pEntry, &pTime);
 	} while (pEntry && (*pTime == pThis->time));
 
 	if (!pEntry) return eSTATUS_TIME_LINE_FINISHED;

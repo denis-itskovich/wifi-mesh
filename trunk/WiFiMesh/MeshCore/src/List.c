@@ -56,7 +56,7 @@ EStatus ListDestroy(List* pThis)
 
 	while ((pItem = pThis->pTail))
 	{
-		CHECK(ListRemove(pThis, &pItem));
+		CHECK(ListRemove(pThis, pItem));
 	}
 
 	return eSTATUS_COMMON_OK;
@@ -162,10 +162,11 @@ EStatus ListIsEmpty(List* pThis, Boolean* pIsEmpty)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetValue(ListEntry* pEntry, void** ppValue)
+EStatus ListGetValue(ListEntry* pEntry, void* ppValue)
 {
+	void** pptr = (void**)ppValue;
 	VALIDATE_ARGUMENTS(pEntry && ppValue);
-	*ppValue = pEntry->pValue;
+	*pptr = pEntry->pValue;
 
 	return eSTATUS_COMMON_OK;
 }

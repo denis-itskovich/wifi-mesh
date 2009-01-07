@@ -132,7 +132,7 @@ EStatus ListGetPrevious(ListEntry** ppEntry);
  * \param pEntry [in] position in a list
  * \param ppValue [out] *ppValue will be initialized with a pointer to value
  */
-EStatus ListGetValue(ListEntry* pEntry, void** ppValue);
+EStatus ListGetValue(ListEntry* pEntry, void* ppValue);
 
 /** Looks for an item in a list
  * \param pThis [in] pointer to instance

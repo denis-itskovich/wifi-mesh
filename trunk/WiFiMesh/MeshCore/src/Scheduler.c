@@ -59,7 +59,7 @@ EStatus SchedulerDestroy(Scheduler* pThis)
 		CHECK(SortedListGetHead(pThis->pEntries, &pEntry));
 		if (pEntry)
 		{
-			CHECK(SortedListGetValue(pEntry, (void**)&pMessage));
+			CHECK(SortedListGetValue(pEntry, &pMessage));
 			CHECK(MessageDelete(&pMessage));
 			CHECK(SortedListRemove(pThis->pEntries, pEntry));
 		}
@@ -76,7 +76,7 @@ EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time)
 	pEntry->time = time;
 	pEntry->pMessage = pMessage;
 	CHECK(SortedListAdd(pThis->pEntries, pEntry));
-	return TimeLineAdd(pThis->pTimeLine, time);
+	return TimeLineMilestone(pThis->pTimeLine, time);
 }
 
 EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
@@ -92,7 +92,7 @@ EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
 	CHECK(SortedListGetHead(pThis->pEntries, &pListEntry));
 	if (!pListEntry) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
-	CHECK(SortedListGetValue(pListEntry, (void**)&pSchedulerEntry));
+	CHECK(SortedListGetValue(pListEntry, &pSchedulerEntry));
 	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
 	*ppMessage = pSchedulerEntry->pMessage;

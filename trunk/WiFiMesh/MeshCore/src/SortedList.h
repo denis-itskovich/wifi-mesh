@@ -80,6 +80,6 @@ EStatus SortedListGetPrevious(ListEntry** ppEntry);
  * \param pEntry [in] list entry
  * \param ppValue [out] value will be stored at *ppValue
  */
-EStatus SortedListGetValue(ListEntry* pEntry, void** ppValue);
+EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue);
 
 #endif /* WIFI_MESH_SORTEDLIST_H_ */

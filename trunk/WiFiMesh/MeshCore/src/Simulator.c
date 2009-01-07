@@ -86,7 +86,7 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 	VALIDATE_ARGUMENTS(pThis && ppStation);
 
 	CHECK(ListFind(pThis->pStations, &pEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
-	CHECK(ListGetValue(pEntry, (void**)ppStation));
+	CHECK(ListGetValue(pEntry, ppStation));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -107,7 +107,7 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	while (pEntry)
 	{
-		CHECK(ListGetValue(pEntry, (void**)&pStation));
+		CHECK(ListGetValue(pEntry, &pStation));
 		CHECK(StationSynchronize(pStation, newTime-oldTime));
 		CHECK(SimulatorDispatchMessages(pThis, pStation));
 		CHECK(ListGetNext(&pEntry));
@@ -118,10 +118,11 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 {
-	Message* pMessage;
-	ListEntry* pEntry;
-	Boolean bIsAdjacent;
-	Station* pCurrent;
+	Message* pMessage = NULL;
+	Message* pNewMessage = NULL;
+	ListEntry* pEntry = NULL;
+	Boolean bIsAdjacent = FALSE;
+	Station* pCurrent = NULL;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetMessage(pStation, &pMessage));
@@ -131,14 +132,16 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)
 	{
-		CHECK(ListGetValue(pEntry, (void**)&pCurrent));
+		CHECK(ListGetValue(pEntry, &pCurrent));
 		CHECK(StationIsAdjacent(pStation, pCurrent, &bIsAdjacent));
 		if (bIsAdjacent)
 		{
-			CHECK(StationPutMessage(pCurrent, pMessage));
+			CHECK(MessageClone(&pNewMessage, pMessage));
+			CHECK(StationPutMessage(pCurrent, pNewMessage));
 		}
 		CHECK(ListGetNext(&pEntry));
 	}
 
+	CHECK(MessageDelete(&pMessage));
 	return eSTATUS_COMMON_OK;
 }
