@@ -29,11 +29,13 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#02d97bbd24eb366ad65435f36d13e625">RoutingAddRoute</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> dstId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> transitId, unsigned length)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#98d20541b7bd16eda9b8d5277a000c79">RoutingNew</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> **ppThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#5dc6b17950313ace34eca75cc0b0a076">RoutingGetExpirationTime</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *pThis, double *pTime)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#0a4c059cd6835406522dfc3a63735c0d">RoutingNew</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> **ppThis, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings, <a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pTimeLine)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#9722e6e80fbfd3c6855bfedd2c71bc38">RoutingDelete</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> **ppThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#4717358d43062e8c983bcb9dcf48b448">RoutingInit</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *pThis)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#8b71dded7e51b2c18afa8259522528ad">RoutingInit</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *pThis, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings, <a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pTimeLine)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_routing_8c.html#e32eaddf936fa807541973dbd29afddc">RoutingDestroy</a> (<a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *pThis)</td></tr>
 
@@ -147,6 +149,41 @@ Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="5dc6b17950313ace34eca75cc0b0a076"></a><!-- doxytag: member="Routing.c::RoutingGetExpirationTime" ref="5dc6b17950313ace34eca75cc0b0a076" args="(Routing *pThis, double *pTime)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> RoutingGetExpirationTime           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&nbsp;</td>
+          <td class="paramname"> <em>pTime</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Calculates entry expiration time <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pTime</em>&nbsp;</td><td>[out] routing entry expiration time will be stored at *pTime </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="56e5276107dd02f6f1610529c2d036e4"></a><!-- doxytag: member="Routing.c::RoutingHandleMessage" ref="56e5276107dd02f6f1610529c2d036e4" args="(Routing *pThis, Message *pMessage)" -->
 <div class="memitem">
 <div class="memproto">
@@ -182,7 +219,7 @@ Handles a message. Updates a routing table according to information found in a m
 
 </div>
 </div><p>
-<a class="anchor" name="4717358d43062e8c983bcb9dcf48b448"></a><!-- doxytag: member="Routing.c::RoutingInit" ref="4717358d43062e8c983bcb9dcf48b448" args="(Routing *pThis)" -->
+<a class="anchor" name="8b71dded7e51b2c18afa8259522528ad"></a><!-- doxytag: member="Routing.c::RoutingInit" ref="8b71dded7e51b2c18afa8259522528ad" args="(Routing *pThis, Settings *pSettings, TimeLine *pTimeLine)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -190,9 +227,24 @@ Handles a message. Updates a routing table according to information found in a m
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> RoutingInit           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> *&nbsp;</td>
-          <td class="paramname"> <em>pThis</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pSettings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pTimeLine</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -202,6 +254,8 @@ Handles a message. Updates a routing table according to information found in a m
 Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pSettings</em>&nbsp;</td><td>[in] pointer to settings instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pTimeLine</em>&nbsp;</td><td>[in] pointer to time line instance </td></tr>
   </table>
 </dl>
 
@@ -251,7 +305,7 @@ eSTATUS_LIST_NOT_FOUND if the route was not found </dd></dl>
 
 </div>
 </div><p>
-<a class="anchor" name="98d20541b7bd16eda9b8d5277a000c79"></a><!-- doxytag: member="Routing.c::RoutingNew" ref="98d20541b7bd16eda9b8d5277a000c79" args="(Routing **ppThis)" -->
+<a class="anchor" name="0a4c059cd6835406522dfc3a63735c0d"></a><!-- doxytag: member="Routing.c::RoutingNew" ref="0a4c059cd6835406522dfc3a63735c0d" args="(Routing **ppThis, Settings *pSettings, TimeLine *pTimeLine)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -259,9 +313,24 @@ eSTATUS_LIST_NOT_FOUND if the route was not found </dd></dl>
           <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> RoutingNew           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="_routing_8h.html#b81e3321e91806e6e2a296f09a93f2dc">Routing</a> **&nbsp;</td>
-          <td class="paramname"> <em>ppThis</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>ppThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pSettings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pTimeLine</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -271,6 +340,8 @@ eSTATUS_LIST_NOT_FOUND if the route was not found </dd></dl>
 Allocates &amp; initializes a new instance <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>ppThis</em>&nbsp;</td><td>[out] pointer to new instance will be stored at *ppThis </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pSettings</em>&nbsp;</td><td>[in] pointer to settings instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pTimeLine</em>&nbsp;</td><td>[in] pointer to time line instance </td></tr>
   </table>
 </dl>
 
@@ -302,7 +373,7 @@ Synchronizes a routing table with current time Actually removes expired entries 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 2 17:20:43 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jan 7 18:15:47 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

@@ -92,4 +92,10 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
  */
 EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
 
+/** Retrieves station location
+ * \param pThis [in] pointer to instance
+ * \param pLocation [out] location will be stored at *pLocation
+ */
+EStatus StationGetLocation(Station* pThis, Location* pLocation);
+
 #endif //_WIFI_MESH_STATION_H

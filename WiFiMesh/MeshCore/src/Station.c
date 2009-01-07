@@ -118,7 +118,7 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
 	if (pThis->silentTime > 0) return eSTATUS_COMMON_OK;
 
-	ret = QueuePop(pThis->pOutbox, (void**)ppMessage);
+	ret = QueuePop(pThis->pOutbox, ppMessage);
 	NCHECK(ret);
 
 	if (ret == eSTATUS_QUEUE_EMPTY)
@@ -189,4 +189,9 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage);
 	return SchedulerPutMessage(pThis->pScheduler, pMessage, time);
+}
+
+EStatus StationGetLocation(Station* pThis, Location* pLocation)
+{
+	GET_MEMBER(pLocation, pThis, location);
 }

@@ -92,7 +92,7 @@ EStatus SortedListGetPrevious(ListEntry** ppEntry)
 	return ListGetPrevious(ppEntry);
 }
 
-EStatus SortedListGetValue(ListEntry* pEntry, void** ppValue)
+EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue)
 {
 	return ListGetValue(pEntry, ppValue);
 }

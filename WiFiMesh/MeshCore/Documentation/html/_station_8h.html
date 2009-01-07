@@ -55,6 +55,8 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f92d3377e9a599b2c30bda5f8e0d629a">StationScheduleMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> *pMessage, double time)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#12d9b9b8eada1780f37376dd8d964578">StationGetLocation</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> *pLocation)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Station module<p>
@@ -142,6 +144,41 @@ Retrieves a station id <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pId</em>&nbsp;</td><td>[out] pointer to id </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="12d9b9b8eada1780f37376dd8d964578"></a><!-- doxytag: member="Station.h::StationGetLocation" ref="12d9b9b8eada1780f37376dd8d964578" args="(Station *pThis, Location *pLocation)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationGetLocation           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Location</a> *&nbsp;</td>
+          <td class="paramname"> <em>pLocation</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves station location <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pLocation</em>&nbsp;</td><td>[out] location will be stored at *pLocation </td></tr>
   </table>
 </dl>
 
@@ -484,7 +521,7 @@ Synchronizes a station with current time Moves the station <dl compact><dt><b>Pa
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 2 17:20:43 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jan 7 18:15:47 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

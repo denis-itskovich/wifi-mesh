@@ -99,7 +99,7 @@ EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage)
 		return RoutingAddRoute(pThis, dstId, transitId, pMessage->nodesCount);
 	}
 
-	CHECK(ListGetValue(pListEntry, (void**)&pRouteEntry));
+	CHECK(ListGetValue(pListEntry, &pRouteEntry));
 
 	if (pRouteEntry->length >= pMessage->nodesCount)
 	{
@@ -127,7 +127,7 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
 {
 	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && pTransitId);
-	return ListFind(pThis, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId);
+	return ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId);
 }
 
 EStatus RoutingSynchronize(Routing* pThis)
