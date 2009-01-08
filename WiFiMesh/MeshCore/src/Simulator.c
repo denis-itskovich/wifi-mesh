@@ -34,6 +34,13 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
  */
 EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
 
+/** Retrieves station list entry by id
+ * \param pThis [in] pointer to instance
+ * \param id [in] station id
+ * \param ppEntry [out] pointer to entry will be stored at *ppEntry
+ */
+EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry);
+
 EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings)
 {
 	CONSTRUCT(ppThis, Simulator, pSettings);
@@ -64,10 +71,25 @@ EStatus SimulatorDestroy(Simulator* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
+EStatus SimulatorAddStation(Simulator* pThis, Station** ppStation, StationId id, Location location, Velocity velocity)
 {
+	VALIDATE_ARGUMENTS(pThis && ppStation);
+	CHECK(StationNew(ppStation, velocity, location, pThis->pTimeLine, pThis->pSettings));
+	return ListInsert(pThis->pStations, *ppStation);
+}
+
+EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
+{
+	StationId id;
+	ListEntry* pEntry;
+
 	VALIDATE_ARGUMENTS(pThis && pStation);
-	return ListInsert(pThis->pStations, pStation);
+
+	CHECK(StationGetId(pStation, &id));
+	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
+	CHECK(ListRemove(pThis->pStations, pEntry));
+
+	return StationDelete(&pStation);
 }
 
 Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId, void* pUserArg)
@@ -79,15 +101,18 @@ Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId,
 		   (id < *pId) ? LESS : GREAT;
 }
 
+EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry)
+{
+	VALIDATE_ARGUMENTS(pThis && ppEntry);
+	CHECK(ListFind(pThis->pStations, ppEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
+	return eSTATUS_COMMON_OK;
+}
+
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 {
 	ListEntry* pEntry;
-
-	VALIDATE_ARGUMENTS(pThis && ppStation);
-
-	CHECK(ListFind(pThis->pStations, &pEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
+	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
 	CHECK(ListGetValue(pEntry, ppStation));
-
 	return eSTATUS_COMMON_OK;
 }
 

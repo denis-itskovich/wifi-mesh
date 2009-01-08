@@ -10,9 +10,9 @@
 #ifndef WIFI_MESH_SIMULATOR_H_
 #define WIFI_MESH_SIMULATOR_H_
 
-#include "Status.h"
-#include "Station.h"
-#include "Settings.h"
+#include <Status.h>
+#include <Station.h>
+#include <Settings.h>
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 
@@ -40,9 +40,18 @@ EStatus SimulatorDestroy(Simulator* pThis);
 
 /** Adds a station to simulator
  * \param pThis [in] pointer to instance
- * \param pStation [in] pointer to station
+ * \param id [in] station id
+ * \param location [in] station location
+ * \param velocity [in] station velocity vector
+ * \param ppStation [out] pointer to new station will be stored at *ppStation
  */
-EStatus SimulatorAddStation(Simulator* pThis, Station* pStation);
+EStatus SimulatorAddStation(Simulator* pThis, Station** ppStation, StationId id, Location location, Velocity velocity);
+
+/** Removes a station from simulator
+ * \param pThis [in] pointer to instance
+ * \param pStation [in] pointer to station to be removed
+ */
+EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation);
 
 /** Performs single simulation iteration
  * \param pThis [in] pointer to instance
