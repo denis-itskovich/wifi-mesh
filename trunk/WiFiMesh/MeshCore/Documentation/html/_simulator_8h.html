@@ -21,9 +21,9 @@
   </div>
 </div>
 <div class="contents">
-<h1>Simulator.h File Reference</h1><code>#include &quot;<a class="el" href="_status_8h.html">Status.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="_station_8h.html">Station.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="_settings_8h.html">Settings.h</a>&quot;</code><br>
+<h1>Simulator.h File Reference</h1><code>#include &lt;<a class="el" href="_status_8h.html">Status.h</a>&gt;</code><br>
+<code>#include &lt;<a class="el" href="_station_8h.html">Station.h</a>&gt;</code><br>
+<code>#include &lt;<a class="el" href="_settings_8h.html">Settings.h</a>&gt;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
@@ -40,7 +40,9 @@ typedef struct _Simulator&nbsp;</td><td class="memItemRight" valign="bottom"><a 
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#80a7531d725d155b00ad3349211ec12b">SimulatorDestroy</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#8ffd5d0ddaf34cbbcbfb30291ae63e09">SimulatorAddStation</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#aaddd0977099290f690dfc285c2e2d00">SimulatorAddStation</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **ppStation, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> id, <a class="el" href="struct_vector.html">Location</a> location, <a class="el" href="struct_vector.html">Velocity</a> velocity)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#06d3df73439bb283b5be7d6b7d0faf48">SimulatorRemoveStation</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#e7b35778496df09c674072b5a753986a">SimulatorProcess</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
 
@@ -50,7 +52,7 @@ Represents WiFi Mesh Simulator<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>06/12/2008 </dd></dl>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="8ffd5d0ddaf34cbbcbfb30291ae63e09"></a><!-- doxytag: member="Simulator.h::SimulatorAddStation" ref="8ffd5d0ddaf34cbbcbfb30291ae63e09" args="(Simulator *pThis, Station *pStation)" -->
+<a class="anchor" name="aaddd0977099290f690dfc285c2e2d00"></a><!-- doxytag: member="Simulator.h::SimulatorAddStation" ref="aaddd0977099290f690dfc285c2e2d00" args="(Simulator *pThis, Station **ppStation, StationId id, Location location, Velocity velocity)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -63,8 +65,26 @@ Represents WiFi Mesh Simulator<p>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
-          <td class="paramname"> <em>pStation</em></td><td>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **&nbsp;</td>
+          <td class="paramname"> <em>ppStation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Location</a>&nbsp;</td>
+          <td class="paramname"> <em>location</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Velocity</a>&nbsp;</td>
+          <td class="paramname"> <em>velocity</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -79,7 +99,10 @@ Represents WiFi Mesh Simulator<p>
 Adds a station to simulator <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>id</em>&nbsp;</td><td>[in] station id </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>location</em>&nbsp;</td><td>[in] station location </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>velocity</em>&nbsp;</td><td>[in] station velocity vector </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>ppStation</em>&nbsp;</td><td>[out] pointer to new station will be stored at *ppStation </td></tr>
   </table>
 </dl>
 
@@ -230,8 +253,43 @@ Performs single simulation iteration <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="06d3df73439bb283b5be7d6b7d0faf48"></a><!-- doxytag: member="Simulator.h::SimulatorRemoveStation" ref="06d3df73439bb283b5be7d6b7d0faf48" args="(Simulator *pThis, Station *pStation)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SimulatorRemoveStation           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pStation</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jan 7 18:26:56 2009 for MeshCore by&nbsp;
+<div class="memdoc">
+
+<p>
+Removes a station from simulator <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station to be removed </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 8 07:41:02 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>
