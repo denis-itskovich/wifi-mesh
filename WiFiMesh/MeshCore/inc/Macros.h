@@ -13,7 +13,9 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "Status.h"
+#include "Log.h"
 
 /** Used in other macros in order to allow usage of macros inside if/else block
  * \param operation Code block
@@ -29,7 +31,14 @@
  * \param condition boolean expression
  * \param error error code to be returned
  */
-#define VALIDATE(condition, error)				SAFE_OPERATION(if (!(condition)) return (error))
+#define VALIDATE(condition, error) \
+	SAFE_OPERATION( \
+			if (!(condition)) \
+			{ \
+				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetMessage(error)); \
+				return (error); \
+			} \
+	)
 
 /** Checks a condition and returns eSTATUS_COMMON_INVALID_ARGUMENT if a condition not satisfied
  * \param condition boolean expression
@@ -68,17 +77,24 @@
  */
 #define DELETE(ptr)								SAFE_OPERATION(free(ptr); ptr = NULL)
 
-/** Checks return code and exits function if <b>not successfull</b>
+/** Checks return code and exits function if <b>not successful</b>
  * \param rc return code to be checked
  */
-#define CHECK(rc)								SAFE_OPERATION(if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) return (s_lastStatus))
+#define CHECK(rc) \
+	SAFE_OPERATION( \
+		if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) \
+		{ \
+			ERROR_PRINT("Error '%s', in %s", StatusGetMessage(s_lastStatus), #rc); \
+			return (s_lastStatus); \
+		} \
+	)
 
-/** Checks return code and exits function if <b>successfull</b>
+/** Checks return code and exits function if <b>successful</b>
  * \param rc return code to be checked
  */
 #define NCHECK(rc)								SAFE_OPERATION(if ((rc) == eSTATUS_COMMON_OK) return (eSTATUS_COMMON_OK))
 
-/** Checks return code and breaks a loop if not successfull
+/** Checks return code and breaks a loop if not successful
  * \param rc return code to be checked
  */
 #define CHECK_STATUS_BREAK(rc)					{if ((rc) != eSTATUS_COMMON_OK) break;}
@@ -105,22 +121,26 @@
  * \param ...  additional parameters, provided to initializer
  * \sa NEW
  */
-#define CONSTRUCT(pptr, module, ...) 			SAFE_OPERATION ( \
-													VALIDATE_ARGUMENTS(pptr); \
-													*pptr = NEW(module); \
-													VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
-													return module ## Init (*pptr, ## __VA_ARGS__); \
-												)
+#define CONSTRUCT(pptr, module, ...) \
+	SAFE_OPERATION ( \
+		INFO_PRINT("Creating an instance of %s", #module); \
+		VALIDATE_ARGUMENTS(pptr); \
+		*pptr = NEW(module); \
+		VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
+		return module ## Init (*pptr, ## __VA_ARGS__); \
+	)
 
 /** Destroys and deallocates a structure
  * \param pptr *pptr must point to valid structure
  * \param module module name
  */
-#define DESTRUCT(pptr, module)					SAFE_OPERATION( \
-													VALIDATE_ARGUMENTS(pptr && *pptr); \
-													CHECK(module ## Destroy(*pptr)); \
-													DELETE(*pptr); \
-													return eSTATUS_COMMON_OK; \
-												)
+#define DESTRUCT(pptr, module) \
+	SAFE_OPERATION( \
+		INFO_PRINT("Destroying an instance of %s", #module); \
+		VALIDATE_ARGUMENTS(pptr && *pptr); \
+		CHECK(module ## Destroy(*pptr)); \
+		DELETE(*pptr); \
+		return eSTATUS_COMMON_OK; \
+	)
 
 #endif // _WIFI_MESH_MACROS_H
