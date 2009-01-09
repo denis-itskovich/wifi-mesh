@@ -19,6 +19,11 @@ struct _Simulator
 	List*		pStations;
 	TimeLine*	pTimeLine;
 	Settings*	pSettings;
+	struct
+	{
+		Sniffer callback;
+		void*	pArg;
+	} sniffer;
 };
 
 /** Looks for a station with specified id
@@ -148,9 +153,11 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 	ListEntry* pEntry = NULL;
 	Boolean bIsAdjacent = FALSE;
 	Station* pCurrent = NULL;
+	double time;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetMessage(pStation, &pMessage));
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 
 	if (!pMessage) return eSTATUS_COMMON_OK;
 
@@ -163,10 +170,19 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 		{
 			CHECK(MessageClone(&pNewMessage, pMessage));
 			CHECK(StationPutMessage(pCurrent, pNewMessage));
+			if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pCurrent, pThis->sniffer.pArg);
 		}
 		CHECK(ListGetNext(&pEntry));
 	}
 
 	CHECK(MessageDelete(&pMessage));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->sniffer.callback = sniffer;
+	pThis->sniffer.pArg = pUserArg;
 	return eSTATUS_COMMON_OK;
 }

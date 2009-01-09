@@ -25,6 +25,7 @@
 <code>#include &lt;stdlib.h&gt;</code><br>
 <code>#include &lt;string.h&gt;</code><br>
 <code>#include &quot;<a class="el" href="_status_8h.html">Status.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="_log_8h.html">Log.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
@@ -32,7 +33,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#0547b079e64c5a3d281dfb603f6d8533">ROUND</a>(val)&nbsp;&nbsp;&nbsp;(long)((val) + 0.5)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(condition, error)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if (!(condition)) return (error))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(condition, error)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(condition)&nbsp;&nbsp;&nbsp;VALIDATE(condition, eSTATUS_COMMON_INVALID_ARGUMENT)</td></tr>
 
@@ -46,7 +47,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(ptr)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(free(ptr); ptr = NULL)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(rc)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) return (s_lastStatus))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(rc)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_macros_8h.html#4d5edda0658ddddbec90571ba8dc3a9d">NCHECK</a>(rc)&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if ((rc) == eSTATUS_COMMON_OK) return (eSTATUS_COMMON_OK))</td></tr>
 
@@ -76,14 +77,21 @@ Functional macros<p>
           <td class="paramtype">rc&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) return (s_lastStatus))</td>
+          <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Checks return code and exits function if <b>not successfull</b> <dl compact><dt><b>Parameters:</b></dt><dd>
+<b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a>( \
+                <span class="keywordflow">if</span> ((s_lastStatus = rc) != <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>) \
+                { \
+                        ERROR_PRINT(<span class="stringliteral">"Error '%s', in %s"</span>, StatusGetMessage(s_lastStatus), #rc); \
+                        <span class="keywordflow">return</span> (s_lastStatus); \
+                } \
+        )
+</pre></div>Checks return code and exits function if <b>not successful</b> <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>rc</em>&nbsp;</td><td>return code to be checked </td></tr>
   </table>
@@ -108,7 +116,7 @@ Checks return code and exits function if <b>not successfull</b> <dl compact><dt>
 <div class="memdoc">
 
 <p>
-Checks return code and breaks a loop if not successfull <dl compact><dt><b>Parameters:</b></dt><dd>
+Checks return code and breaks a loop if not successful <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>rc</em>&nbsp;</td><td>return code to be checked </td></tr>
   </table>
@@ -196,11 +204,12 @@ Zeroes an array <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a> ( \
-                                                                                                        <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr); \
-                                                                                                        *pptr = <a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>(module); \
-                                                                                                        <a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(*pptr, <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14" title="Allocation failed due to memory shortage.">eSTATUS_COMMON_NO_MEMORY</a>); \
-                                                                                                        <span class="keywordflow">return</span> module ## Init (*pptr, ## __VA_ARGS__); \
-                                                                                                )
+                INFO_PRINT(<span class="stringliteral">"Creating an instance of %s"</span>, #module); \
+                <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr); \
+                *pptr = <a class="code" href="_macros_8h.html#c87b63e88a5955066fd7651c3fef2b2b">NEW</a>(module); \
+                <a class="code" href="_macros_8h.html#5ac24074a21cec61f8633d859c90d05b">VALIDATE</a>(*pptr, <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d8193a628895cd5934747d4136fe77b4e4b14" title="Allocation failed due to memory shortage.">eSTATUS_COMMON_NO_MEMORY</a>); \
+                <span class="keywordflow">return</span> module ## Init (*pptr, ## __VA_ARGS__); \
+        )
 </pre></div>Allocates and initializes a structure, validating a pointer <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pptr</em>&nbsp;</td><td>*pptr will be initialized with allocated structure </td></tr>
@@ -259,11 +268,12 @@ Frees previousely allocated variable <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a>( \
-                                                                                                        <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr &amp;&amp; *pptr); \
-                                                                                                        <a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(module ## Destroy(*pptr)); \
-                                                                                                        <a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(*pptr); \
-                                                                                                        <span class="keywordflow">return</span> <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>; \
-                                                                                                )
+                INFO_PRINT(<span class="stringliteral">"Destroying an instance of %s"</span>, #module); \
+                <a class="code" href="_macros_8h.html#7bdd99806b28c11fcddd03a845f9a855">VALIDATE_ARGUMENTS</a>(pptr &amp;&amp; *pptr); \
+                <a class="code" href="_macros_8h.html#21d67ad587afc797b526f602e409fadf">CHECK</a>(module ## Destroy(*pptr)); \
+                <a class="code" href="_macros_8h.html#8d43469fda8661fff77c9e10364d6228">DELETE</a>(*pptr); \
+                <span class="keywordflow">return</span> <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>; \
+        )
 </pre></div>Destroys and deallocates a structure <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pptr</em>&nbsp;</td><td>*pptr must point to valid structure </td></tr>
@@ -324,7 +334,7 @@ Retrieves structure member value, previously validating the pointers <dl compact
 <div class="memdoc">
 
 <p>
-Checks return code and exits function if <b>successfull</b> <dl compact><dt><b>Parameters:</b></dt><dd>
+Checks return code and exits function if <b>successful</b> <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>rc</em>&nbsp;</td><td>return code to be checked </td></tr>
   </table>
@@ -485,14 +495,21 @@ Sets structure member, previously validating a pointer <dl compact><dt><b>Parame
           <td class="paramtype">error&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;SAFE_OPERATION(if (!(condition)) return (error))</td>
+          <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Checks a condition and returns an error if a condition not satisfied <dl compact><dt><b>Parameters:</b></dt><dd>
+<b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="_macros_8h.html#1ff50a8fce57ffe4834ece4fc5888f61">SAFE_OPERATION</a>( \
+                        <span class="keywordflow">if</span> (!(condition)) \
+                        { \
+                                ERROR_PRINT(<span class="stringliteral">"Validation of '%s' failed: %s"</span>, #condition, StatusGetMessage(error)); \
+                                <span class="keywordflow">return</span> (error); \
+                        } \
+        )
+</pre></div>Checks a condition and returns an error if a condition not satisfied <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>condition</em>&nbsp;</td><td>boolean expression </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>error</em>&nbsp;</td><td>error code to be returned </td></tr>
@@ -527,7 +544,7 @@ Checks a condition and returns eSTATUS_COMMON_INVALID_ARGUMENT if a condition no
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 8 07:45:19 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 15:32:03 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

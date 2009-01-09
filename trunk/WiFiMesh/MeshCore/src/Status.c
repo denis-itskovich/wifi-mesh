@@ -38,6 +38,11 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 
 EStatus s_lastStatus;
 
+const char* StatusGetMessage(EStatus status)
+{
+	return s_statusMessages[_MIN(status, eSTATUS_LAST)].amsg;
+}
+
 const wchar_t* GetStatusMessageW(EStatus status)
 {
 	return s_statusMessages[_MIN(status, eSTATUS_LAST)].wmsg;

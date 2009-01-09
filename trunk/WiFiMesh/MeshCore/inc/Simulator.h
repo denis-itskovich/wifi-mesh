@@ -16,6 +16,14 @@
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 
+/** Message transfer callback
+ * \param time [in] current time
+ * \param pMessage [in] pointer to message
+ * \param pDest [in] pointer to destination station
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*Sniffer)(double time, const Message* pMessage, Station* pDest, void* pUserArg);
+
 /** Allocates and initializes new instance of Simulator
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param pSettings [in] pointer to settings instance
@@ -57,5 +65,12 @@ EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation);
  * \param pThis [in] pointer to instance
  */
 EStatus SimulatorProcess(Simulator* pThis);
+
+/** Sets sniffer callback
+ * \param pThis [in] pointer to instance
+ * \param sniffer [in] sniffer callback
+ * \param pUserArg [in] user defined argument of the sniffer
+ */
+EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg);
 
 #endif /* WIFI_MESH_SIMULATOR_H_ */
