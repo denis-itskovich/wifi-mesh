@@ -62,3 +62,8 @@ EStatus SettingsGetRoutingTTL(Settings* pThis, double* pTTL)
 {
 	GET_MEMBER(pTTL, pThis, routeTTL);
 }
+
+EStatus SettingsGetCoverage(Settings* pThis, double* pCoverage)
+{
+	GET_MEMBER(pCoverage, pThis, coverage);
+}

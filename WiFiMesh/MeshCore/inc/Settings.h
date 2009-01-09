@@ -56,4 +56,10 @@ EStatus SettingsGetTransmitTime(Settings* pThis, Message* pMessage, double* pTim
  */
 EStatus SettingsGetRoutingTTL(Settings* pThis, double* pTTL);
 
+/** Retrieves coverage
+ * \param pThis [in] pointer to instance
+ * \param pCoverage [out] coverage will be stored at *pCoverage
+ */
+EStatus SettingsGetCoverage(Settings* pThis, double* pCoverage);
+
 #endif /* SETTINGS_H_ */

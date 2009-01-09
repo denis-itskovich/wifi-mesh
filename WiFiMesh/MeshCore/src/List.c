@@ -122,7 +122,7 @@ EStatus ListRemove(List* pThis, ListEntry* pEntry)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetBegin(List* pThis, ListEntry** ppIterator)
+EStatus ListGetHead(List* pThis, ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pHead;
@@ -130,7 +130,7 @@ EStatus ListGetBegin(List* pThis, ListEntry** ppIterator)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListGetEnd(List* pThis, ListEntry** ppIterator)
+EStatus ListGetTail(List* pThis, ListEntry** ppIterator)
 {
 	VALIDATE_ARGUMENTS(pThis && ppIterator);
 	*ppIterator = pThis->pTail;
@@ -175,7 +175,7 @@ EStatus ListEnumerateEntries(List* pThis, ListEntry** ppEntry, EntryEnumerator e
 {
 	ListEntry* pNextEntry;
 	VALIDATE_ARGUMENTS(pThis && ppEntry);
-	CHECK(ListGetBegin(pThis, ppEntry));
+	CHECK(ListGetHead(pThis, ppEntry));
 
 	while (*ppEntry)
 	{

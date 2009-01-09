@@ -96,6 +96,6 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
  * \param pThis [in] pointer to instance
  * \param pLocation [out] location will be stored at *pLocation
  */
-EStatus StationGetLocation(Station* pThis, Location* pLocation);
+EStatus StationGetLocation(const Station* pThis, Location* pLocation);
 
 #endif //_WIFI_MESH_STATION_H

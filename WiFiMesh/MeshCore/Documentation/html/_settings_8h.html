@@ -43,6 +43,8 @@ typedef struct _Settings&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#8a2265829112946a25e381083c703eca">SettingsGetRoutingTTL</a> (<a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, double *pTTL)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#a25e1517a927343c0da31f10e772762d">SettingsGetCoverage</a> (<a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, double *pCoverage)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Project: MeshCore (C) Copyright 2008 Denis Itskovich<p>
@@ -94,6 +96,41 @@ Destroys and deallocates an instance <dl compact><dt><b>Parameters:</b></dt><dd>
 Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="a25e1517a927343c0da31f10e772762d"></a><!-- doxytag: member="Settings.h::SettingsGetCoverage" ref="a25e1517a927343c0da31f10e772762d" args="(Settings *pThis, double *pCoverage)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SettingsGetCoverage           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&nbsp;</td>
+          <td class="paramname"> <em>pCoverage</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves coverage <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pCoverage</em>&nbsp;</td><td>[out] coverage will be stored at *pCoverage </td></tr>
   </table>
 </dl>
 
@@ -275,7 +312,7 @@ Allocates and initializes new instance <dl compact><dt><b>Parameters:</b></dt><d
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 15:32:03 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 20:49:41 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>
