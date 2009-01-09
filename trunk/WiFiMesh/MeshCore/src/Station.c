@@ -177,11 +177,29 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage)
 	return MessageDelete(&pMessage);
 }
 
+EStatus StationHandleData(Station* pThis, Message* pMessage)
+{
+	VALIDATE_ARGUMENTS(pThis && pMessage);
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationHandleAck(Station* pThis, Message* pMessage)
+{
+	VALIDATE_ARGUMENTS(pThis && pMessage);
+	return eSTATUS_COMMON_OK;
+}
+
 EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 {
 	StationId dst;
 	VALIDATE_ARGUMENTS(pThis && pMessage);
 	dst = pMessage->originalSrcId;
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationHandleSearchResponse(Station* pThis, Message* pMessage)
+{
+	VALIDATE_ARGUMENTS(pThis && pMessage);
 	return eSTATUS_COMMON_OK;
 }
 
@@ -191,7 +209,20 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)
 	return SchedulerPutMessage(pThis->pScheduler, pMessage, time);
 }
 
-EStatus StationGetLocation(Station* pThis, Location* pLocation)
+EStatus StationGetLocation(const Station* pThis, Location* pLocation)
 {
 	GET_MEMBER(pLocation, pThis, location);
+}
+
+EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent)
+{
+	double coverage;
+	double dx, dy;
+	VALIDATE_ARGUMENTS(pThis && pStation && pIsAdjacent);
+	SettingsGetCoverage(pThis->pSettings, &coverage);
+	dx = pThis->location.x - pStation->location.x;
+	dy = pThis->location.y - pStation->location.y;
+	*pIsAdjacent = (coverage*coverage <= dx*dx + dy*dy) ? TRUE : FALSE;
+
+	return eSTATUS_COMMON_OK;
 }

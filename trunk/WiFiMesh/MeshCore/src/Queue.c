@@ -41,14 +41,6 @@ EStatus QueuePush(Queue* pThis, void* pItem)
 	return ListInsertAfter(pThis->pList, pTail, pItem);
 }
 
-EStatus QueuePop(Queue* pThis, void* pItem)
-{
-	ListEntry* pHead;
-	CHECK(QueuePeek(pThis, pItem));
-	CHECK(ListGetHead(pThis->pList, &pHead));
-	return ListRemove(pThis->pList, pHead);
-}
-
 EStatus QueuePeek(Queue* pThis, void* pItem)
 {
 	ListEntry* pHead;
@@ -56,4 +48,12 @@ EStatus QueuePeek(Queue* pThis, void* pItem)
 	if (!pHead) return eSTATUS_QUEUE_EMPTY;
 
 	return ListGetValue(pHead, pItem);
+}
+
+EStatus QueuePop(Queue* pThis, void* pItem)
+{
+	ListEntry* pHead;
+	CHECK(QueuePeek(pThis, pItem));
+	CHECK(ListGetHead(pThis->pList, &pHead));
+	return ListRemove(pThis->pList, pHead);
 }
