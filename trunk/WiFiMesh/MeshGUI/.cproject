@@ -120,6 +120,8 @@
 </scannerInfoProvider>
 </profile>
 </storageModule>
+
+
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 <buildTargets>
 <target name="Qt Release Build" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
@@ -161,6 +163,8 @@
 <pathentry base-path="D:/Qt/4.4.3/include" include="QtWebKit" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.4.3/include" include="QtXml" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.4.3/include" include="QtXmlPatterns" kind="inc" path="" system="true"/>
+<pathentry kind="src" path=""/>
+<pathentry kind="out" path=""/>
 </storageModule>
 </cconfiguration>
 </storageModule>

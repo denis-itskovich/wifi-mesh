@@ -7,8 +7,9 @@
 
 #include "MeshStation.h"
 
-MeshStation::MeshStation()
+MeshStation::MeshStation(MeshSimulator& simulator, StationId id, Velocity velocity, Location location)
 {
+	CHECK(SimulatorAddStation(simulator.GetSimulator(), &m_pStation, id, location, velocity));
 }
 
 MeshStation::~MeshStation()
@@ -17,5 +18,7 @@ MeshStation::~MeshStation()
 
 unsigned long MeshStation::id()
 {
-	return 0;
+	StationId id;
+	StationGetId(m_pStation, &id);
+	return id;
 }
