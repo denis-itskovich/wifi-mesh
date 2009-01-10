@@ -42,7 +42,7 @@ EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime);
 
 Boolean RoutingCleaner(RoutingEntry* pEntry, double* pTime)
 {
-	if (pEntry->expires > *pTime) return TRUE;
+	if (pTime && (pEntry->expires > *pTime)) return TRUE;
 	DELETE(pEntry);
 	return FALSE;
 }
@@ -80,6 +80,7 @@ EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine)
 EStatus RoutingDestroy(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
+	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, NULL));
 	return ListDelete(&pThis->pEntries);
 }
 
@@ -146,5 +147,12 @@ EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 	CHECK(SettingsGetRoutingTTL(pThis->pSettings, &ttl));
 	*pTime = time + ttl;
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus RoutingClear(Routing* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, NULL));
 	return eSTATUS_COMMON_OK;
 }

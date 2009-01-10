@@ -17,16 +17,18 @@ extern "C"
 	#include "../../MeshCore/inc/Station.h"
 	#include "../../MeshCore/inc/Simulator.h"
 	#include "../../MeshCore/inc/Settings.h"
+	#include "../../MeshCore/inc/Log.h"
 }
 
 #include "MeshException.h"
+#include <QtGui>
 
 #define CHECK(res) \
 	do { \
 		EStatus status = res; \
 		if (status != eSTATUS_COMMON_OK) \
 		{ \
-			throw new MeshException("MeshCore failure: %s (%s:%d)", GetStatusMessage(status), __FILE__, __LINE__); \
+			QMessageBox::critical(0, "MeshCore failure", QString(StatusGetMessage(status)) + "\nin function " + __PRETTY_FUNCTION__ ); \
 		} \
 	} while (0)
 

@@ -46,6 +46,12 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
  */
 EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry);
 
+Boolean SimulatorCleaner(Station* pStation, void* pUserArg)
+{
+	StationReset(pStation);
+	return TRUE;
+}
+
 EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings)
 {
 	CONSTRUCT(ppThis, Simulator, pSettings);
@@ -127,6 +133,9 @@ EStatus SimulatorProcess(Simulator* pThis)
 	Station* pStation;
 	double oldTime;
 	double newTime;
+
+	BEGIN_FUNCTION;
+
 	VALIDATE_ARGUMENTS(pThis);
 
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
@@ -143,6 +152,7 @@ EStatus SimulatorProcess(Simulator* pThis)
 		CHECK(ListGetNext(&pEntry));
 	}
 
+	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -185,4 +195,18 @@ EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg)
 	pThis->sniffer.callback = sniffer;
 	pThis->sniffer.pArg = pUserArg;
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorReset(Simulator* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorCleaner, NULL));
+	CHECK(TimeLineClear(pThis->pTimeLine));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorEnumerateStations(Simulator* pThis, StationsEnumerator enumerator, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis && enumerator);
+	return ListEnumerate(pThis->pStations, (ItemEnumerator)enumerator, pUserArg);
 }

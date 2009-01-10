@@ -20,17 +20,25 @@
  */
 typedef enum
 {
-	eSEVERITY_INFO,		///< Info message
+	eSEVERITY_ERROR,	///< Error message
 	eSEVERITY_WARNING,	///< Warning message
-	eSEVERITY_ERROR		///< Error message
+	eSEVERITY_INFO,		///< Info message
+	eSEVERITY_TRACE,	///< Trace message
+	eSEVERITY_DUMP,		///< Dump message
+
+	eSEVERITY_LAST		///< terminator
 } ELogSeverity;
 
-#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
-#define INFO_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_INFO, fmt, ##__VA_ARGS__)
-#define WARNING_PRINT(fmt, ...) 		LOG_PRINT(eSEVERITY_WARNING, fmt, ##__VA_ARGS__)
+#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+
 #define ERROR_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_ERROR, fmt, ##__VA_ARGS__)
-#define BEGIN_FUNCTION					INFO_PRINT(">> %s", __FUNCTION__)
-#define END_FUNCTION					INFO_PRINT("<< %s", __FUNCTION__)
+#define WARNING_PRINT(fmt, ...) 		LOG_PRINT(eSEVERITY_WARNING, fmt, ##__VA_ARGS__)
+#define INFO_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_INFO, fmt, ##__VA_ARGS__)
+#define TRACE_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_TRACE, fmt, ##__VA_ARGS__)
+#define DUMP_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_DUMP, fmt, ##__VA_ARGS__)
+
+#define BEGIN_FUNCTION					TRACE_PRINT(">> %s", __FUNCTION__)
+#define END_FUNCTION					TRACE_PRINT("<< %s", __FUNCTION__)
 
 /** Log output callback
  * \param severity [in] log entry severity

@@ -33,6 +33,8 @@ typedef struct _Simulator&nbsp;</td><td class="memItemRight" valign="bottom"><a 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Simulator forward declaration. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#b7cea23de085416b8fdd9940b3cc9b9d">Sniffer</a> )(double time, const <a class="el" href="struct_message.html">Message</a> *pMessage, <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pDest, void *pUserArg)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#6ddfed97c2e8d71325ea0753ebfba30e">StationsEnumerator</a> )(<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, void *pUserArg)</td></tr>
+
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#8dbb69cb748e372f20500bfaab5fb310">SimulatorNew</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> **ppThis, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings)</td></tr>
 
@@ -49,6 +51,10 @@ typedef struct _Simulator&nbsp;</td><td class="memItemRight" valign="bottom"><a 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#e7b35778496df09c674072b5a753986a">SimulatorProcess</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#d1096ca8f9622746e84d65e4d423e387">SimulatorSetSniffer</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_simulator_8h.html#b7cea23de085416b8fdd9940b3cc9b9d">Sniffer</a> sniffer, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#86f399fe1a69dc45046050de716ae5fd">SimulatorReset</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simulator_8h.html#3adb1c88261e57af0d6bf0cf81cd3718">SimulatorEnumerateStations</a> (<a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *pThis, <a class="el" href="_simulator_8h.html#6ddfed97c2e8d71325ea0753ebfba30e">StationsEnumerator</a> enumerator, void *pUserArg)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -73,6 +79,27 @@ Represents WiFi Mesh Simulator<p>
     <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] current time </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to message </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pDest</em>&nbsp;</td><td>[in] pointer to destination station </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="6ddfed97c2e8d71325ea0753ebfba30e"></a><!-- doxytag: member="Simulator.h::StationsEnumerator" ref="6ddfed97c2e8d71325ea0753ebfba30e" args=")(Station *pStation, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* <a class="el" href="_simulator_8h.html#6ddfed97c2e8d71325ea0753ebfba30e">StationsEnumerator</a>)(<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, void *pUserArg)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Stations enumerator <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
   </table>
 </dl>
@@ -181,6 +208,48 @@ Destroys and deallocates an instance of Simulator <dl compact><dt><b>Parameters:
 Destroys an instance <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to valid instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="3adb1c88261e57af0d6bf0cf81cd3718"></a><!-- doxytag: member="Simulator.h::SimulatorEnumerateStations" ref="3adb1c88261e57af0d6bf0cf81cd3718" args="(Simulator *pThis, StationsEnumerator enumerator, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SimulatorEnumerateStations           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_simulator_8h.html#6ddfed97c2e8d71325ea0753ebfba30e">StationsEnumerator</a>&nbsp;</td>
+          <td class="paramname"> <em>enumerator</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Enumerates all stations <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>enumerator</em>&nbsp;</td><td>[in] enumerator callback </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
   </table>
 </dl>
 
@@ -316,6 +385,31 @@ Removes a station from simulator <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="86f399fe1a69dc45046050de716ae5fd"></a><!-- doxytag: member="Simulator.h::SimulatorReset" ref="86f399fe1a69dc45046050de716ae5fd" args="(Simulator *pThis)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SimulatorReset           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_simulator_8h.html#b341cd44c22f7ea8bfdd743b8f2f565e">Simulator</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Resets simulator <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="d1096ca8f9622746e84d65e4d423e387"></a><!-- doxytag: member="Simulator.h::SimulatorSetSniffer" ref="d1096ca8f9622746e84d65e4d423e387" args="(Simulator *pThis, Sniffer sniffer, void *pUserArg)" -->
 <div class="memitem">
 <div class="memproto">
@@ -359,7 +453,7 @@ Sets sniffer callback <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 20:49:41 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

@@ -207,7 +207,7 @@ EStatus ListFind(List* pThis, ListEntry** ppEntry, ItemComparator comparator, co
 Boolean ListEnumeratorCleaner(List* pThis, ListEntry* pEntry, void* pFilter, void* pUserArg, void* pUnused)
 {
 	ItemFilter filter = (ItemFilter)pFilter;
-	if (filter(pEntry->pValue, pUserArg) == FALSE)
+	if (!filter || (filter(pEntry->pValue, pUserArg) == FALSE))
 	{
 		ListRemove(pThis, pEntry);
 	}
@@ -217,7 +217,7 @@ Boolean ListEnumeratorCleaner(List* pThis, ListEntry* pEntry, void* pFilter, voi
 EStatus ListCleanUp(List* pThis, ItemFilter filter, void* pUserArg)
 {
 	ListEntry* pEntry;
-	VALIDATE_ARGUMENTS(pThis && filter);
+	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListEnumerateEntries(pThis, &pEntry, &ListEnumeratorCleaner, filter, pUserArg, NULL));
 
 	return eSTATUS_COMMON_OK;

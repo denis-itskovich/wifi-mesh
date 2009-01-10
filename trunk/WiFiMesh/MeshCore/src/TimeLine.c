@@ -8,6 +8,12 @@ struct _TimeLine
 	double		time;
 };
 
+Boolean TimeLineCleaner(double *pTime, void* pUserArg)
+{
+	if (pTime) DELETE(pTime);
+	return FALSE;
+}
+
 Comparison TimeLineComparator(const double* pLeft, const double* pRight, const void* pUserArg)
 {
 	return (*pLeft < *pRight) ? LESS :
@@ -74,4 +80,27 @@ EStatus TimeLineNext(TimeLine* pThis)
 EStatus TimeLineGetTime(TimeLine* pThis, double* pTime)
 {
 	GET_MEMBER(pTime, pThis, time);
+}
+
+EStatus TimeLineClear(TimeLine* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(SortedListCleanUp(pThis->pMilestones, (ItemFilter)&TimeLineCleaner, NULL));
+	pThis->time = 0;
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
+{
+	double* pResult;
+	ListEntry* pEntry;
+	VALIDATE_ARGUMENTS(pThis && pLength);
+	CHECK(SortedListGetTail(pThis->pMilestones, &pEntry));
+	*pLength = 0;
+	if (pEntry)
+	{
+		CHECK(ListGetValue(pEntry, &pResult));
+		if (pResult) *pLength = *pResult;
+	}
+	return eSTATUS_COMMON_OK;
 }

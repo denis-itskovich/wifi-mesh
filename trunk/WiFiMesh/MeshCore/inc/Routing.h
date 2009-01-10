@@ -64,4 +64,9 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId);
  */
 EStatus RoutingSynchronize(Routing* pThis);
 
+/** Clear routing table
+ * \param pThis [in] pointer to instance
+ */
+EStatus RoutingClear(Routing* pThis);
+
 #endif /* ROUTING_H_ */

@@ -57,3 +57,9 @@ EStatus QueuePop(Queue* pThis, void* pItem)
 	CHECK(ListGetHead(pThis->pList, &pHead));
 	return ListRemove(pThis->pList, pHead);
 }
+
+EStatus QueueCleanUp(Queue* pThis, ItemFilter filter, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	return ListCleanUp(pThis->pList, filter, pUserArg);
+}

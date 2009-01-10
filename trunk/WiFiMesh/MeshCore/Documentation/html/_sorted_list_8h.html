@@ -53,6 +53,8 @@ typedef struct _SortedList&nbsp;</td><td class="memItemRight" valign="bottom"><a
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#64dbb77f5c741b9e9bde32eec3d09da2">SortedListGetValue</a> (<a class="el" href="_list_8h.html#4a610d5dd47a320a536cbe7fdf79183c">ListEntry</a> *pEntry, void *ppValue)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sorted_list_8h.html#dab76bfa4cb88f40e084cb1d28514b00">SortedListCleanUp</a> (<a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *pThis, <a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> filter, void *pUserArg)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Sorted Linked List module<p>
@@ -92,6 +94,49 @@ Adds a new item into the sorted list <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>pValue</em>&nbsp;</td><td>[in] pointer to new item </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="dab76bfa4cb88f40e084cb1d28514b00"></a><!-- doxytag: member="SortedList.h::SortedListCleanUp" ref="dab76bfa4cb88f40e084cb1d28514b00" args="(SortedList *pThis, ItemFilter filter, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SortedListCleanUp           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_sorted_list_8h.html#cd455f1cfdf1557e291d540e9c51b774">SortedList</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a>&nbsp;</td>
+          <td class="paramname"> <em>filter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Cleans a list according to filter function <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>filter</em>&nbsp;</td><td>[in] pointer to item filter function </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument of filter function </td></tr>
+  </table>
+</dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="_list_8h.html#d018a30283785fa8e2b7ba396d274202">ItemFilter</a> </dd></dl>
 
 </div>
 </div><p>
@@ -420,7 +465,7 @@ Removes an item from the list <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 20:49:41 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

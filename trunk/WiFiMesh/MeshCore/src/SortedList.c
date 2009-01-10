@@ -96,3 +96,9 @@ EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue)
 {
 	return ListGetValue(pEntry, ppValue);
 }
+
+EStatus SortedListCleanUp(SortedList* pThis, ItemFilter filter, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	return ListCleanUp(pThis->pList, filter, pUserArg);
+}
