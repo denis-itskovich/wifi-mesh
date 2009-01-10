@@ -31,9 +31,15 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef Boolean(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_log_8h.html#1fb0b4907402ff649cdecd6e5d09d2ce">Filter</a> )(<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8">ELogSeverity</a> severity, const char *file, const char *function, int line, void *pUserArg)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8">ELogSeverity</a> { <a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4">eSEVERITY_INFO</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8">ELogSeverity</a> { <br>
+&nbsp;&nbsp;<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8a9405bbff1a55f7c4748200d52d4bf96">eSEVERITY_ERROR</a>, 
 <a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a804a39df9f94097ddd69ce27d3c810c29">eSEVERITY_WARNING</a>, 
-<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8a9405bbff1a55f7c4748200d52d4bf96">eSEVERITY_ERROR</a>
+<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4">eSEVERITY_INFO</a>, 
+<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a8b6fc35c0fcde5bac17f61710569779d8">eSEVERITY_TRACE</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a85a5a0ce2f6dfa0a051431339d12b91de">eSEVERITY_DUMP</a>, 
+<a class="el" href="_log_8h.html#90268abc9709e4a399771f79503731a89527cdd043869ae27c56bad9fda1afa4">eSEVERITY_LAST</a>
+<br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
@@ -113,12 +119,18 @@ Log output callback <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Log entry severity <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4"></a><!-- doxytag: member="eSEVERITY_INFO" ref="90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4" args="" -->eSEVERITY_INFO</em>&nbsp;</td><td>
-Info message. </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a804a39df9f94097ddd69ce27d3c810c29"></a><!-- doxytag: member="eSEVERITY_WARNING" ref="90268abc9709e4a399771f79503731a804a39df9f94097ddd69ce27d3c810c29" args="" -->eSEVERITY_WARNING</em>&nbsp;</td><td>
-Warning message. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a8a9405bbff1a55f7c4748200d52d4bf96"></a><!-- doxytag: member="eSEVERITY_ERROR" ref="90268abc9709e4a399771f79503731a8a9405bbff1a55f7c4748200d52d4bf96" args="" -->eSEVERITY_ERROR</em>&nbsp;</td><td>
 Error message. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a804a39df9f94097ddd69ce27d3c810c29"></a><!-- doxytag: member="eSEVERITY_WARNING" ref="90268abc9709e4a399771f79503731a804a39df9f94097ddd69ce27d3c810c29" args="" -->eSEVERITY_WARNING</em>&nbsp;</td><td>
+Warning message. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4"></a><!-- doxytag: member="eSEVERITY_INFO" ref="90268abc9709e4a399771f79503731a844d227b09210cc4f11a70aee53977aa4" args="" -->eSEVERITY_INFO</em>&nbsp;</td><td>
+Info message. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a8b6fc35c0fcde5bac17f61710569779d8"></a><!-- doxytag: member="eSEVERITY_TRACE" ref="90268abc9709e4a399771f79503731a8b6fc35c0fcde5bac17f61710569779d8" args="" -->eSEVERITY_TRACE</em>&nbsp;</td><td>
+Trace message. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a85a5a0ce2f6dfa0a051431339d12b91de"></a><!-- doxytag: member="eSEVERITY_DUMP" ref="90268abc9709e4a399771f79503731a85a5a0ce2f6dfa0a051431339d12b91de" args="" -->eSEVERITY_DUMP</em>&nbsp;</td><td>
+Dump message. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="90268abc9709e4a399771f79503731a89527cdd043869ae27c56bad9fda1afa4"></a><!-- doxytag: member="eSEVERITY_LAST" ref="90268abc9709e4a399771f79503731a89527cdd043869ae27c56bad9fda1afa4" args="" -->eSEVERITY_LAST</em>&nbsp;</td><td>
+terminator </td></tr>
 </table>
 </dl>
 
@@ -259,7 +271,7 @@ Set log output callback <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 20:49:41 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

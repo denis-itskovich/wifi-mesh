@@ -4,6 +4,7 @@
 #include "../DockWidgets/DockRandomizer.h"
 #include "../DockWidgets/DockStationProperties.h"
 #include "../DockWidgets/DockStations.h"
+#include "../Document/MeshLog.h"
 
 MeshApp::MeshApp(QWidget *parent)
     : QMainWindow(parent)
@@ -13,17 +14,20 @@ MeshApp::MeshApp(QWidget *parent)
 
 MeshApp::~MeshApp()
 {
-
+	if (m_simulator) delete m_simulator;
 }
 
 void MeshApp::init()
 {
+	m_simulator = new MeshSimulator();
+
 	createActions();
 	createMenus();
 	createWidgets();
 	createToolBars();
 	createStatusBar();
 	createDocks();
+	createTabs();
 }
 
 void MeshApp::createActions()
@@ -78,10 +82,12 @@ void MeshApp::createActions()
 	m_actSimulationRun = new QAction(QIcon(":/run.png"), tr("&Run"), this);
 	m_actSimulationRun->setShortcut(tr("F5"));
 	m_actSimulationRun->setStatusTip(tr("Run simulation"));
+	connect(m_actSimulationRun, SIGNAL(triggered()), m_simulator, SLOT(run()));
 
 	m_actSimulationBreak = new QAction(QIcon(":/break.png"), tr("&Break"), this);
 	m_actSimulationBreak->setShortcut(tr("Shift+F5"));
 	m_actSimulationBreak->setStatusTip(tr("Break simulation"));
+	connect(m_actSimulationBreak, SIGNAL(triggered()), m_simulator, SLOT(stop()));
 
 	m_actHelpAbout = new QAction(QIcon(":/about.png"), tr("&About..."), this);
 	m_actHelpAbout->setStatusTip(tr("About WiFi Mesh simulator"));
@@ -155,8 +161,13 @@ void MeshApp::createDocks()
 	addDockWidget(Qt::RightDockWidgetArea, dockStations);
 	tabifyDockWidget(dockStations, dockRandomizer);
 	addDockWidget(Qt::RightDockWidgetArea, dockStationProperties);
+}
 
-	setCentralWidget(new QMdiArea(this));
+void MeshApp::createTabs()
+{
+	m_tabs = new QTabWidget(this);
+	setCentralWidget(m_tabs);
+	m_tabs->addTab(new MeshLog(m_tabs), tr("Log"));
 }
 
 QDockWidget* MeshApp::createDock(const QString& title, QWidget* widget)

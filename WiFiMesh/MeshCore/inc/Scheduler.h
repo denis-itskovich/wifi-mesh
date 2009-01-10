@@ -54,4 +54,9 @@ EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time);
  */
 EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage);
 
+/** Removes all scheduled messages
+ * \param pThis [in] pointer to instance
+ */
+EStatus SchedulerClear(Scheduler* pThis);
+
 #endif /* SCHEDULER_H_ */

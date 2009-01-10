@@ -59,4 +59,11 @@ EStatus QueuePop(Queue* pThis, void* ppItem);
  */
 EStatus QueuePeek(Queue* pThis, void* ppItem);
 
+/** Cleans a queue up according to filter
+ * \param pThis [in] pointer to instance
+ * \param filter [in] filter, which decide whether an item should be removed or not
+ * \param pUserArg [in] user defined argument of the filter
+ */
+EStatus QueueCleanUp(Queue* pThis, ItemFilter filter, void* pUserArg);
+
 #endif /* WIFI_MESH_QUEUE_H_ */

@@ -25,6 +25,9 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	// Queue
 	STATUS_MESSAGE("Queue is empty"),
 
+	// TimeLine
+	STATUS_MESSAGE("Time line finished"),
+
 	// Simulator
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),

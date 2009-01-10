@@ -14,7 +14,8 @@ struct _Station
 {
 	StationId	id;
 	Velocity	velocity;
-	Location	location;
+	Location	curLocation;
+	Location	orgLocation;
 
 	Routing*	pRouting;
 	Queue*		pInbox;
@@ -62,7 +63,8 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 	VALIDATE_ARGUMENTS(pThis && pTimeLine && pSettings);
 	CLEAR(pThis);
 
-	pThis->location = location;
+	pThis->orgLocation = location;
+	pThis->curLocation = location;
 	pThis->velocity = velocity;
 	pThis->id = s_nextId++;
 	pThis->pSettings = pSettings;
@@ -94,15 +96,16 @@ EStatus StationSynchronize(Station* pThis, double timeDelta)
 	if (pThis->silentTime <= timeDelta) pThis->silentTime = 0;
 	else pThis->silentTime -= timeDelta;
 
-	pThis->location.x += pThis->velocity.x * timeDelta;
-	pThis->location.y += pThis->velocity.y * timeDelta;
+	pThis->curLocation.x += pThis->velocity.x * timeDelta;
+	pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
 	return RoutingSynchronize(pThis->pRouting);
 }
 
-EStatus StationMoveTo(Station* pThis, Location newLocation)
+EStatus StationSetLocation(Station* pThis, Location newLocation)
 {
-	SET_MEMBER(newLocation, pThis, location);
+	SET_MEMBER(newLocation, pThis, curLocation);
+	SET_MEMBER(newLocation, pThis, orgLocation);
 }
 
 EStatus StationGetId(const Station* pThis, StationId* pId)
@@ -211,7 +214,7 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)
 
 EStatus StationGetLocation(const Station* pThis, Location* pLocation)
 {
-	GET_MEMBER(pLocation, pThis, location);
+	GET_MEMBER(pLocation, pThis, curLocation);
 }
 
 EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent)
@@ -220,9 +223,21 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
 	double dx, dy;
 	VALIDATE_ARGUMENTS(pThis && pStation && pIsAdjacent);
 	SettingsGetCoverage(pThis->pSettings, &coverage);
-	dx = pThis->location.x - pStation->location.x;
-	dy = pThis->location.y - pStation->location.y;
+	dx = pThis->curLocation.x - pStation->curLocation.x;
+	dy = pThis->curLocation.y - pStation->curLocation.y;
 	*pIsAdjacent = (coverage*coverage <= dx*dx + dy*dy) ? TRUE : FALSE;
+
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationReset(Station* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->curLocation = pThis->orgLocation;
+	CHECK(QueueCleanUp(pThis->pInbox, NULL, NULL));
+	CHECK(QueueCleanUp(pThis->pOutbox, NULL, NULL));
+	CHECK(SchedulerClear(pThis->pScheduler));
+	CHECK(RoutingClear(pThis->pRouting));
 
 	return eSTATUS_COMMON_OK;
 }

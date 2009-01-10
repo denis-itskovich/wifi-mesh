@@ -58,7 +58,7 @@ EStatus StationSynchronize(Station* pThis, double timeDelta);
  * \param pThis [in] pointer to instance
  * \param newLocation [in] new location
  */
-EStatus StationMoveTo(Station* pThis, Location newLocation);
+EStatus StationSetLocation(Station* pThis, Location newLocation);
 
 /** Retrieves a station id
  * \param pThis [in] pointer to instance
@@ -97,5 +97,10 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
  * \param pLocation [out] location will be stored at *pLocation
  */
 EStatus StationGetLocation(const Station* pThis, Location* pLocation);
+
+/** Resets station state
+ * \param pThis [in] pointer to instance
+ */
+EStatus StationReset(Station* pThis);
 
 #endif //_WIFI_MESH_STATION_H

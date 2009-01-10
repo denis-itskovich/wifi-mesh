@@ -2,6 +2,7 @@
 #define MESHAPP_H
 
 #include <QtGui>
+#include "../CoreWrappers/MeshSimulator.h"
 
 class MeshApp : public QMainWindow
 {
@@ -19,6 +20,7 @@ private:
 	void createToolBars();
 	void createStatusBar();
 	void createDocks();
+	void createTabs();
 
 	QDockWidget* createDock(const QString& title, QWidget* widget);
 
@@ -27,7 +29,6 @@ private slots:
 	void aboutQt();
 
 private:
-
 	QToolBar*	m_toolbarFile;
 	QToolBar*	m_toolbarSimulation;
 
@@ -55,6 +56,10 @@ private:
 
 	QAction*	m_actHelpAbout;
 	QAction*	m_actHelpAboutQt;
+
+	QTabWidget*	m_tabs;
+
+	MeshSimulator*	m_simulator;
 };
 
 #endif // MESHAPP_H

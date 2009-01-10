@@ -14,13 +14,14 @@
 class MeshStation
 {
 public:
-	MeshStation(MeshSimulator& simulator, StationId id, Velocity velocity, Location location);
+	MeshStation(StationId id, Velocity velocity, Location location);
 	virtual ~MeshStation();
 
-	unsigned long id();
-
+	StationId id();
+	Location location();
 private:
-	Station* m_pStation;
+	Location	m_location;
+	Station*	m_pStation;
 };
 
 #endif /* MESHSTATION_H_ */

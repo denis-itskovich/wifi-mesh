@@ -58,4 +58,15 @@ EStatus TimeLineNext(TimeLine* pThis);
  */
 EStatus TimeLineGetTime(TimeLine* pThis, double* pTime);
 
+/** Clear time line
+ * \param pThis [in] pointer to instance
+ */
+EStatus TimeLineClear(TimeLine* pThis);
+
+/** Retrieves time line length
+ * \param pThis [in] pointer to instance
+ * \param pLength [out] length will be stored at *pLength
+ */
+EStatus TimeLineGetLength(TimeLine* pThis, double* pLength);
+
 #endif // _WIFI_MESH_TIMELINE_H

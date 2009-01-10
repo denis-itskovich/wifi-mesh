@@ -17,21 +17,15 @@ public:
 	DockRandomizer(QWidget* parent = 0);
 	virtual ~DockRandomizer();
 
-private slots:
-	void setMinVelocity(double);
-	void setMinDataAmount(int);
-
 private:
 	void init();
 
 	QSlider*			m_sliderStationsCount;
 	QSpinBox*			m_spinStationsCount;
 
-	QDoubleSpinBox*		m_spinMinVelocity;
-	QDoubleSpinBox*		m_spinMaxVelocity;
-
-	QSpinBox*			m_spinMinDataAmount;
-	QSpinBox*			m_spinMaxDataAmount;
+	QDoubleSpinBox*		m_spinAvgVelocity;
+	QSpinBox*			m_spinAvgDataSize;
+	QSpinBox*			m_spinAvgMessagesCount;
 
 	QPushButton*		m_buttonGenerate;
 };

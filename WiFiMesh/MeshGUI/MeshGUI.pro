@@ -2,7 +2,8 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += CoreWrappers/MeshSimulator.h \
+HEADERS += Document/MeshLog.h \
+    CoreWrappers/MeshSimulator.h \
     CoreWrappers/MeshException.h \
     CoreWrappers/MeshCore.h \
     DockWidgets/DockTimeLine.h \
@@ -14,7 +15,8 @@ HEADERS += CoreWrappers/MeshSimulator.h \
     CoreWrappers/MeshStation.h \
     Dialogs/MeshAboutDlg.h \
     App/MeshApp.h
-SOURCES += CoreWrappers/MeshSimulator.cpp \
+SOURCES += Document/MeshLog.cpp \
+    CoreWrappers/MeshSimulator.cpp \
     DockWidgets/DockTimeLine.cpp \
     DockWidgets/DockFrame.cpp \
     DockWidgets/DockStations.cpp \
@@ -28,6 +30,5 @@ SOURCES += CoreWrappers/MeshSimulator.cpp \
 FORMS += 
 RESOURCES += MeshApp.qrc
 LIBS += -lMeshCore
-
 debug:LIBS += -L../MeshCore/Debug
 release:LIBS += -L../MeshCore/Release

@@ -82,4 +82,12 @@ EStatus SortedListGetPrevious(ListEntry** ppEntry);
  */
 EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue);
 
+/** Cleans a list according to filter function
+ * \param pThis [in] pointer to instance
+ * \param filter [in] pointer to item filter function
+ * \param pUserArg [in] user defined argument of filter function
+ * \sa ItemFilter
+ */
+EStatus SortedListCleanUp(SortedList* pThis, ItemFilter filter, void* pUserArg);
+
 #endif /* WIFI_MESH_SORTEDLIST_H_ */

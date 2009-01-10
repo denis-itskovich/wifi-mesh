@@ -46,6 +46,10 @@ typedef struct _TimeLine&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#fb60801c55be82e6d21681d5b82b3ebe">TimeLineGetTime</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, double *pTime)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#3a91471e1397d69ab0c78ec37729907e">TimeLineClear</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_time_line_8h.html#c4bc4c58acd483728a54b574caf603d1">TimeLineGetLength</a> (<a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pThis, double *pLength)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 TimeLine module<p>
@@ -53,6 +57,31 @@ Represents a time line - events collection<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>12/12/2008 </dd></dl>
 <hr><h2>Function Documentation</h2>
+<a class="anchor" name="3a91471e1397d69ab0c78ec37729907e"></a><!-- doxytag: member="TimeLine.h::TimeLineClear" ref="3a91471e1397d69ab0c78ec37729907e" args="(TimeLine *pThis)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineClear           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Clear time line <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="9b30b50de316d4b7d79077be59fe33ad"></a><!-- doxytag: member="TimeLine.h::TimeLineDelete" ref="9b30b50de316d4b7d79077be59fe33ad" args="(TimeLine **ppThis)" -->
 <div class="memitem">
 <div class="memproto">
@@ -98,6 +127,41 @@ Destroys and deallocates an instance of TimeLine <dl compact><dt><b>Parameters:<
 Destroys an instance of TimeLine <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="c4bc4c58acd483728a54b574caf603d1"></a><!-- doxytag: member="TimeLine.h::TimeLineGetLength" ref="c4bc4c58acd483728a54b574caf603d1" args="(TimeLine *pThis, double *pLength)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> TimeLineGetLength           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&nbsp;</td>
+          <td class="paramname"> <em>pLength</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves time line length <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pLength</em>&nbsp;</td><td>[out] length will be stored at *pLength </td></tr>
   </table>
 </dl>
 
@@ -284,7 +348,7 @@ Add a new relative milestone to time line <dl compact><dt><b>Parameters:</b></dt
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Jan 9 20:49:41 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

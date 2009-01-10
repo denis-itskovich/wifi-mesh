@@ -100,3 +100,15 @@ EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
 
 	return SortedListRemove(pThis->pEntries, pListEntry);
 }
+
+Boolean SchedulerCleaner(Message* pMessage, Scheduler* pScheduler)
+{
+	MessageDelete(&pMessage);
+	return FALSE;
+}
+
+EStatus SchedulerClear(Scheduler* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	return SortedListCleanUp(pThis->pEntries, (ItemFilter)&SchedulerCleaner, pThis);
+}
