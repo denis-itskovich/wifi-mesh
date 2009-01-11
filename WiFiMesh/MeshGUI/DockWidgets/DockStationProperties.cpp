@@ -11,6 +11,7 @@ DockStationProperties::DockStationProperties(MeshDocument* doc, QWidget* parent)
 	DockFrame(doc, parent)
 {
 	init();
+	if (doc) setDocument(doc);
 }
 
 DockStationProperties::~DockStationProperties()

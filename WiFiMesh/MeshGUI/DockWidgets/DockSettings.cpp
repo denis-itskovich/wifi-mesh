@@ -14,6 +14,7 @@ DockSettings::DockSettings(MeshDocument* doc, QWidget* parent) :
 	DockFrame(doc, parent)
 {
 	init();
+	if (doc) setDocument(doc);
 }
 
 DockSettings::~DockSettings()

@@ -11,6 +11,7 @@ DockStations::DockStations(MeshDocument* doc, QWidget* parent) :
 	DockFrame(doc, parent)
 {
 	init();
+	if (doc) setDocument(doc);
 }
 
 DockStations::~DockStations()
@@ -23,6 +24,7 @@ void DockStations::init()
 	QBoxLayout* buttonsLayout = new QHBoxLayout();
 	m_treeStations = new QTreeWidget(this);
 	m_treeStations->setColumnCount(2);
+	m_treeStations->setHeaderLabels(QStringList() << tr("Station") << tr("Properties"));
 
 	m_buttonAdd = new QPushButton(tr("&Add"), this);
 	m_buttonRemove = new QPushButton(tr("&Remove"), this);
@@ -36,6 +38,10 @@ void DockStations::init()
 	layout->addItem(buttonsLayout);
 
 	this->setLayout(layout);
+
+	connect(m_treeStations, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
+			this, SLOT(currentChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+
 }
 
 void DockStations::addStation(Station* pStation)
@@ -56,15 +62,13 @@ void DockStations::addStation(Station* pStation)
 	item->addChild(locationItem);
 	item->addChild(velocityItem);
 	m_treeStations->insertTopLevelItem(m_treeStations->topLevelItemCount(), item);
-
-	connect(m_treeStations, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-			this, SLOT(currentChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+	m_itemToStation.insert(item, pStation);
 }
 
 void DockStations::currentChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	ItemToStation::const_iterator i = m_itemToStation.find(current);
-	if (i != m_itemToStation.constEnd()) return;
+	if (i == m_itemToStation.end()) return;
 	emit currentChanged(*i);
 }
 
@@ -88,7 +92,12 @@ void DockStations::setCurrent(Station* pStation)
 
 void DockStations::removeStation(Station* pStation)
 {
-	m_treeStations->invisibleRootItem()->removeChild(findItem(pStation));
+	QTreeWidgetItem* item = findItem(pStation);
+	if (item)
+	{
+		m_treeStations->invisibleRootItem()->removeChild(item);
+		m_itemToStation.remove(item);
+	}
 }
 
 void DockStations::updateStation(Station* pStation)
