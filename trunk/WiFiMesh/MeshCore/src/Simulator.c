@@ -52,16 +52,17 @@ Boolean SimulatorCleaner(Station* pStation, void* pUserArg)
 	return TRUE;
 }
 
-EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings)
+EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings, TimeLine* pTimeLine)
 {
-	CONSTRUCT(ppThis, Simulator, pSettings);
+	CONSTRUCT(ppThis, Simulator, pSettings, pTimeLine);
 }
 
-EStatus SimulatorInit(Simulator* pThis, Settings* pSettings)
+EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine)
 {
 	VALIDATE_ARGUMENTS(pThis && pSettings);
 	CHECK(ListNew(&pThis->pStations));
-	CHECK(TimeLineNew(&pThis->pTimeLine));
+
+	pThis->pTimeLine = pTimeLine;
 	pThis->pSettings = pSettings;
 
 	return eSTATUS_COMMON_OK;
@@ -76,17 +77,15 @@ EStatus SimulatorDestroy(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(TimeLineDelete(&pThis->pTimeLine));
 	CHECK(ListDelete(&pThis->pStations));
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorAddStation(Simulator* pThis, Station** ppStation, StationId id, Location location, Velocity velocity)
+EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 {
-	VALIDATE_ARGUMENTS(pThis && ppStation);
-	CHECK(StationNew(ppStation, velocity, location, pThis->pTimeLine, pThis->pSettings));
-	return ListInsert(pThis->pStations, *ppStation);
+	VALIDATE_ARGUMENTS(pThis && pStation);
+	return ListInsert(pThis->pStations, pStation);
 }
 
 EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
@@ -98,9 +97,7 @@ EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
 
 	CHECK(StationGetId(pStation, &id));
 	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
-	CHECK(ListRemove(pThis->pStations, pEntry));
-
-	return StationDelete(&pStation);
+	return ListRemove(pThis->pStations, pEntry);
 }
 
 Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId, void* pUserArg)

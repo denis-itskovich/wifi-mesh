@@ -14,8 +14,10 @@ class DockRandomizer : public DockFrame
 {
 	Q_OBJECT
 public:
-	DockRandomizer(QWidget* parent = 0);
+	DockRandomizer(MeshDocument* document = 0, QWidget* parent = 0);
 	virtual ~DockRandomizer();
+
+	virtual void setDocument(MeshDocument* document);
 
 private:
 	void init();

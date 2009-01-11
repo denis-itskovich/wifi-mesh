@@ -14,7 +14,7 @@ class DockStationProperties : public DockFrame
 {
 	Q_OBJECT
 public:
-	DockStationProperties(QWidget* parent = 0);
+	DockStationProperties(MeshDocument* doc = 0, QWidget* parent = 0);
 	virtual ~DockStationProperties();
 
 private slots:

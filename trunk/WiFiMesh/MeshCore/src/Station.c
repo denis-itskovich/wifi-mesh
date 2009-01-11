@@ -217,6 +217,11 @@ EStatus StationGetLocation(const Station* pThis, Location* pLocation)
 	GET_MEMBER(pLocation, pThis, curLocation);
 }
 
+EStatus StationGetVelocity(const Station* pThis, Velocity* pVelocity)
+{
+	GET_MEMBER(pVelocity, pThis, velocity);
+}
+
 EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent)
 {
 	double coverage;

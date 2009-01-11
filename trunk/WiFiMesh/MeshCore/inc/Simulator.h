@@ -33,8 +33,9 @@ typedef void (*StationsEnumerator)(Station* pStation, void* pUserArg);
 /** Allocates and initializes new instance of Simulator
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param pSettings [in] pointer to settings instance
+ * \param pTimeLine [in] pointer to time line instance
  */
-EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings);
+EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings, TimeLine* pTimeLine);
 
 /** Destroys and deallocates an instance of Simulator
  * \param ppThis [in, out] *ppThis must point to valid instance
@@ -44,8 +45,9 @@ EStatus SimulatorDelete(Simulator** ppThis);
 /** Initializes an instance
  * \param pThis [in] pointer to instance
  * \param pSettings [in] pointer to settings instance
+ * \param pTimeLine [in] pointer to time line instance
  */
-EStatus SimulatorInit(Simulator* pThis, Settings* pSettings);
+EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine);
 
 /** Destroys an instance
  * \param pThis [in] pointer to valid instance
@@ -54,12 +56,9 @@ EStatus SimulatorDestroy(Simulator* pThis);
 
 /** Adds a station to simulator
  * \param pThis [in] pointer to instance
- * \param id [in] station id
- * \param location [in] station location
- * \param velocity [in] station velocity vector
- * \param ppStation [out] pointer to new station will be stored at *ppStation
+ * \param pStation [in] pointer to station
  */
-EStatus SimulatorAddStation(Simulator* pThis, Station** ppStation, StationId id, Location location, Velocity velocity);
+EStatus SimulatorAddStation(Simulator* pThis, Station* pStation);
 
 /** Removes a station from simulator
  * \param pThis [in] pointer to instance

@@ -85,6 +85,7 @@
 		if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) \
 		{ \
 			ERROR_PRINT("Error '%s', in %s", StatusGetMessage(s_lastStatus), #rc); \
+			END_FUNCTION; \
 			return (s_lastStatus); \
 		} \
 	)

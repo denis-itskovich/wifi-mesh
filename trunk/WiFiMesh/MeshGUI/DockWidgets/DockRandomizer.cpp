@@ -7,7 +7,8 @@
 
 #include "DockRandomizer.h"
 
-DockRandomizer::DockRandomizer(QWidget* parent) : DockFrame(parent)
+DockRandomizer::DockRandomizer(MeshDocument* document, QWidget* parent) :
+	DockFrame(document, parent)
 {
 	init();
 }
@@ -27,9 +28,6 @@ void DockRandomizer::init()
 	connect(m_sliderStationsCount, SIGNAL(valueChanged(int)), m_spinStationsCount, SLOT(setValue(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), m_sliderStationsCount, SLOT(setValue(int)));
 
-	connect(m_sliderStationsCount, SIGNAL(rangeChanged(int,int)), m_spinStationsCount, SLOT(setRange(int,int)));
-	connect(m_spinStationsCount, SIGNAL(rangeChanged(int,int)), m_sliderStationsCount, SLOT(setRange(int,int)));
-
 	m_spinAvgVelocity = new QDoubleSpinBox(this);
 	m_spinAvgVelocity->setSingleStep(0.05);
 
@@ -48,4 +46,17 @@ void DockRandomizer::init()
 	mainLayout->addRow(m_buttonGenerate);
 
 	setLayout(mainLayout);
+}
+
+void DockRandomizer::setDocument(MeshDocument* doc)
+{
+	disconnect(document());
+
+	connect(m_spinAvgVelocity, SIGNAL(valueChanged(double)), doc, SLOT(setAvgVelocity(double)));
+	connect(m_spinAvgDataSize, SIGNAL(valueChanged(int)), doc, SLOT(setAvgDataSize(int)));
+	connect(m_spinAvgMessagesCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgMessagesCount(int)));
+	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
+	connect(m_buttonGenerate, SIGNAL(clicked()), doc, SLOT(generate()));
+
+	DockFrame::setDocument(doc);
 }

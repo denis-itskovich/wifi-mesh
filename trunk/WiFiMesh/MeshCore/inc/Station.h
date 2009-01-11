@@ -98,6 +98,12 @@ EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
  */
 EStatus StationGetLocation(const Station* pThis, Location* pLocation);
 
+/** Retrieves station velocity
+ * \param pThis [in] pointer to instance
+ * \param pVelocity [out] velocity will be stored at *pVelocity
+ */
+EStatus StationGetVelocity(const Station* pThis, Velocity* pVelocity);
+
 /** Resets station state
  * \param pThis [in] pointer to instance
  */
