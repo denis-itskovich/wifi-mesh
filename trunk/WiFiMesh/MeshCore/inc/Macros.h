@@ -36,6 +36,7 @@
 			if (!(condition)) \
 			{ \
 				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetMessage(error)); \
+				END_FUNCTION; \
 				return (error); \
 			} \
 	)

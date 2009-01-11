@@ -7,10 +7,11 @@
 
 #include "DockRandomizer.h"
 
-DockRandomizer::DockRandomizer(MeshDocument* document, QWidget* parent) :
-	DockFrame(document, parent)
+DockRandomizer::DockRandomizer(MeshDocument* doc, QWidget* parent) :
+	DockFrame(doc, parent)
 {
 	init();
+	if (doc) setDocument(doc);
 }
 
 DockRandomizer::~DockRandomizer()
