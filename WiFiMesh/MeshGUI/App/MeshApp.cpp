@@ -14,20 +14,18 @@ MeshApp::MeshApp(QWidget *parent)
 
 MeshApp::~MeshApp()
 {
-	if (m_simulator) delete m_simulator;
+	if (m_document) delete m_document;
 }
 
 void MeshApp::init()
 {
-	m_simulator = new MeshSimulator();
-
+	createTabs();
+	createDocks();
 	createActions();
 	createMenus();
 	createWidgets();
 	createToolBars();
 	createStatusBar();
-	createDocks();
-	createTabs();
 }
 
 void MeshApp::createActions()
@@ -82,12 +80,12 @@ void MeshApp::createActions()
 	m_actSimulationRun = new QAction(QIcon(":/run.png"), tr("&Run"), this);
 	m_actSimulationRun->setShortcut(tr("F5"));
 	m_actSimulationRun->setStatusTip(tr("Run simulation"));
-	connect(m_actSimulationRun, SIGNAL(triggered()), m_simulator, SLOT(run()));
+	connect(m_actSimulationRun, SIGNAL(triggered()), m_document, SLOT(start()));
 
 	m_actSimulationBreak = new QAction(QIcon(":/break.png"), tr("&Break"), this);
 	m_actSimulationBreak->setShortcut(tr("Shift+F5"));
 	m_actSimulationBreak->setStatusTip(tr("Break simulation"));
-	connect(m_actSimulationBreak, SIGNAL(triggered()), m_simulator, SLOT(stop()));
+	connect(m_actSimulationBreak, SIGNAL(triggered()), m_document, SLOT(stop()));
 
 	m_actHelpAbout = new QAction(QIcon(":/about.png"), tr("&About..."), this);
 	m_actHelpAbout->setStatusTip(tr("About WiFi Mesh simulator"));
@@ -154,9 +152,11 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
-	QDockWidget* dockStations = createDock(tr("Stations list"), new DockStations(this));
-	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new DockRandomizer(this));
-	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new DockStationProperties(this));
+	m_document = new MeshDocument();
+
+	QDockWidget* dockStations = createDock(tr("Stations list"), new DockStations(m_document, this));
+	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new DockRandomizer(m_document, this));
+	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new DockStationProperties(m_document, this));
 
 	addDockWidget(Qt::RightDockWidgetArea, dockStations);
 	tabifyDockWidget(dockStations, dockRandomizer);

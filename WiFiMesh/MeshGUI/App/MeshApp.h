@@ -2,7 +2,7 @@
 #define MESHAPP_H
 
 #include <QtGui>
-#include "../CoreWrappers/MeshSimulator.h"
+#include "../Document/MeshDocument.h"
 
 class MeshApp : public QMainWindow
 {
@@ -59,7 +59,7 @@ private:
 
 	QTabWidget*	m_tabs;
 
-	MeshSimulator*	m_simulator;
+	MeshDocument*	m_document;
 };
 
 #endif // MESHAPP_H

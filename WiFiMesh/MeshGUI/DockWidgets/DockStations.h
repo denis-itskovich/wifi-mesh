@@ -12,20 +12,37 @@
 
 class DockStations : public DockFrame
 {
+	Q_OBJECT
 public:
-	DockStations(QWidget* parent = 0);
+	DockStations(MeshDocument* doc = 0, QWidget* parent = 0);
 	virtual ~DockStations();
 
-	void addStation(MeshStation* station);
-	void clear();
+	virtual void setDocument(MeshDocument* document);
+
+signals:
+	void currentChanged(Station* pStation);
+
+private slots:
+	void currentChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
+	void addStation(Station* pStation);
+	void setCurrent(Station* pStation);
+	void removeStation(Station* pStation);
+	void updateStation(Station* pStation);
 
 private:
-	void init();
+	typedef QMap<QTreeWidgetItem*, Station*> ItemToStation;
 
-	QListWidget*	m_listWidget;
+	void init();
+	QTreeWidgetItem* findItem(Station* pStation);
+	static QString stationName(Station* pStation);
+	static StationId stationId(Station* pStation);
+	static Location stationLocation(Station* pStation);
+	static Velocity stationVelocity(Station* pStation);
+
+	QTreeWidget*	m_treeStations;
 	QPushButton*	m_buttonAdd;
 	QPushButton*	m_buttonRemove;
-	QPushButton*	m_buttonProperties;
+	ItemToStation	m_itemToStation;
 };
 
 #endif /* MESHDOCKSTATIONS_H_ */

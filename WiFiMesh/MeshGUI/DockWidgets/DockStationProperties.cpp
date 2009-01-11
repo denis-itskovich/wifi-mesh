@@ -7,7 +7,8 @@
 
 #include "DockStationProperties.h"
 
-DockStationProperties::DockStationProperties(QWidget* parent) : DockFrame(parent)
+DockStationProperties::DockStationProperties(MeshDocument* doc, QWidget* parent) :
+	DockFrame(doc, parent)
 {
 	init();
 }

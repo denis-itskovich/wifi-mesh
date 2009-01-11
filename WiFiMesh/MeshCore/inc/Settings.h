@@ -23,7 +23,7 @@ typedef struct _Settings Settings;	///< forward declaration
  * \param dataRate [in] data rate, in bits per time unit
  * \param routeTTL [in] routing entry time to live
  */
-EStatus SettingsNew(Settings** ppThis, double coverage, unsigned dataRate, double routeTTL);
+EStatus SettingsNew(Settings** ppThis);
 
 /** Destroys and deallocates an instance
  * \param ppThis [in, out] *ppThis should point to valid instance
@@ -36,30 +36,54 @@ EStatus SettingsDelete(Settings** ppThis);
  * \param dataRate [in] data rate, in bits per time unit
  * \param routeTTL [in] routing entry time to live
  */
-EStatus SettingsInit(Settings* pThis, double coverage, unsigned dataRate, double routeTTL);
+EStatus SettingsInit(Settings* pThis);
 
 /** Destroys an instance
  * \param pThis [in] pointer to instance
  */
 EStatus SettingsDestroy(Settings* pThis);
 
+/** Sets routing table entry time to live
+ * \param pThis [in] pointer to instance
+ * \param ttl [in] new routing time to live
+ */
+EStatus SettingsSetRoutingTTL(Settings* pThis, double ttl);
+
+/** Sets coverage
+ * \param pThis [in] pointer to instance
+ * \param coverage [in] new coverage radius
+ */
+EStatus SettingsSetCoverage(Settings* pThis, double coverage);
+
+/** Sets data rate
+ * \param pThis [in] pointer to instance
+ * \param dataRate [in] data rate
+ */
+EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate);
+
 /** Calculates transmit time
  * \param pThis [in] pointer to instance
  * \param pMessage [in] pointer to message
  * \param pTime [out] transmit time will be stored at *pTime
  */
-EStatus SettingsGetTransmitTime(Settings* pThis, Message* pMessage, double* pTime);
+EStatus SettingsGetTransmitTime(const Settings* pThis, const Message* pMessage, double* pTime);
 
 /** Retrieves routing table entry time to live
  * \param pThis [in] pointer to instance
  * \param pTTL [out] time to live will be stored at *pTTL
  */
-EStatus SettingsGetRoutingTTL(Settings* pThis, double* pTTL);
+EStatus SettingsGetRoutingTTL(const Settings* pThis, double* pTTL);
 
 /** Retrieves coverage
  * \param pThis [in] pointer to instance
  * \param pCoverage [out] coverage will be stored at *pCoverage
  */
-EStatus SettingsGetCoverage(Settings* pThis, double* pCoverage);
+EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage);
+
+/** Retrieves data rate
+ * \param pThis [in] pointer to instance
+ * \param pDataRate [out] data rate will be stored at *pDataRate
+ */
+EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate);
 
 #endif /* SETTINGS_H_ */

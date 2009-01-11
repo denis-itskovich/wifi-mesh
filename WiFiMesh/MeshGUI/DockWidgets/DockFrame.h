@@ -9,20 +9,22 @@
 #define MESHFRAME_H_
 
 #include <QtGui>
-#include "../CoreWrappers/MeshStation.h"
 #include "../Document/MeshDocument.h"
 
 class DockFrame : public QWidget
 {
+	Q_OBJECT
 public:
-	void setDocument(MeshDocument* doc);
+	virtual void setDocument(MeshDocument* document);
 
 protected:
-	DockFrame(QWidget* parent = 0);
+	DockFrame(MeshDocument* doc = 0, QWidget* parent = 0);
 	virtual ~DockFrame();
 
-	void refresh() {};
 	MeshDocument* document();
+
+protected slots:
+	virtual void update() {}
 
 private:
 	void init();
