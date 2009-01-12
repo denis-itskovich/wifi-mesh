@@ -12,6 +12,6 @@ int main(int argc, char *argv[])
 
     // Q_INIT_RESOURCE(MeshApp);
     MeshApp w;
-    w.show();
+    w.showMaximized();
     return a.exec();
 }
