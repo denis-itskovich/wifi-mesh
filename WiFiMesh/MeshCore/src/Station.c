@@ -108,6 +108,11 @@ EStatus StationSetLocation(Station* pThis, Location newLocation)
 	SET_MEMBER(newLocation, pThis, orgLocation);
 }
 
+EStatus StationSetVelocity(Station* pThis, Velocity newVelocity)
+{
+	SET_MEMBER(newVelocity, pThis, velocity);
+}
+
 EStatus StationGetId(const Station* pThis, StationId* pId)
 {
 	GET_MEMBER(pId, pThis, id);

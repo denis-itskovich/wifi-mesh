@@ -88,6 +88,7 @@ Functional macros<p>
                 <span class="keywordflow">if</span> ((s_lastStatus = rc) != <a class="code" href="_status_8h.html#922429339fd6d14354fd7962155d81934dafa7276ebb0da04b90d99db0ee5d1f" title="Successful.">eSTATUS_COMMON_OK</a>) \
                 { \
                         ERROR_PRINT(<span class="stringliteral">"Error '%s', in %s"</span>, StatusGetMessage(s_lastStatus), #rc); \
+                        END_FUNCTION; \
                         <span class="keywordflow">return</span> (s_lastStatus); \
                 } \
         )
@@ -506,6 +507,7 @@ Sets structure member, previously validating a pointer <dl compact><dt><b>Parame
                         <span class="keywordflow">if</span> (!(condition)) \
                         { \
                                 ERROR_PRINT(<span class="stringliteral">"Validation of '%s' failed: %s"</span>, #condition, StatusGetMessage(error)); \
+                                END_FUNCTION; \
                                 <span class="keywordflow">return</span> (error); \
                         } \
         )
@@ -544,7 +546,7 @@ Checks a condition and returns eSTATUS_COMMON_INVALID_ARGUMENT if a condition no
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 15 01:42:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

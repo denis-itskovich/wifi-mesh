@@ -2,25 +2,35 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += DockWidgets/DockSettings.h \
-    Document/MeshLog.h \
+HEADERS += MeshViews/MeshGraphItemStation.h \
+    MeshViews/MeshTreeItemStation.h \
+    MeshViews/MeshItemStation.h \
+    MeshViews/MeshViewStationsGraph.h \
+    MeshViews/MeshViewStationsList.h \
+    MeshViews/MeshLog.h \
+    MeshViews/MeshViewTimeLine.h \
+    MeshViews/MeshViewStations.h \
+    MeshViews/MeshViewStationProperties.h \
+    MeshViews/MeshViewSettings.h \
+    MeshViews/MeshViewRandomizer.h \
+    MeshViews/MeshView.h \
     CoreWrappers/MeshException.h \
     CoreWrappers/MeshCore.h \
-    DockWidgets/DockTimeLine.h \
-    DockWidgets/DockStationProperties.h \
-    DockWidgets/DockFrame.h \
-    DockWidgets/DockStations.h \
-    DockWidgets/DockRandomizer.h \
     Document/MeshDocument.h \
     Dialogs/MeshAboutDlg.h \
     App/MeshApp.h
-SOURCES += DockWidgets/DockSettings.cpp \
-    Document/MeshLog.cpp \
-    DockWidgets/DockTimeLine.cpp \
-    DockWidgets/DockFrame.cpp \
-    DockWidgets/DockStations.cpp \
-    DockWidgets/DockStationProperties.cpp \
-    DockWidgets/DockRandomizer.cpp \
+SOURCES += MeshViews/MeshGraphItemStation.cpp \
+    MeshViews/MeshTreeItemStation.cpp \
+    MeshViews/MeshItemStation.cpp \
+    MeshViews/MeshViewStationsList.cpp \
+    MeshViews/MeshViewStationsGraph.cpp \
+    MeshViews/MeshLog.cpp \
+    MeshViews/MeshViewTimeLine.cpp \
+    MeshViews/MeshViewStations.cpp \
+    MeshViews/MeshViewStationProperties.cpp \
+    MeshViews/MeshViewSettings.cpp \
+    MeshViews/MeshViewRandomizer.cpp \
+    MeshViews/MeshView.cpp \
     Document/MeshDocument.cpp \
     Dialogs/MeshAboutDlg.cpp \
     App/MeshApp.cpp \

@@ -34,6 +34,7 @@ public slots:
 	void setCurrentStation(Station* pStation);
 
 	void addStation();
+	void addStation(Location loc);
 	void removeStation();
 	void generate();
 

@@ -19,9 +19,6 @@ typedef struct _Settings Settings;	///< forward declaration
 
 /** Allocates and initializes new instance
  * \param ppThis [out] new instance will be stored at *ppThis
- * \param coverage [in] station coverage range, in length units
- * \param dataRate [in] data rate, in bits per time unit
- * \param routeTTL [in] routing entry time to live
  */
 EStatus SettingsNew(Settings** ppThis);
 
@@ -32,9 +29,6 @@ EStatus SettingsDelete(Settings** ppThis);
 
 /** Initializes an instance
  * \param pThis [in] pointer to instance
- * \param coverage [in] station coverage range, in length units
- * \param dataRate [in] data rate, in bits per time unit
- * \param routeTTL [in] routing entry time to live
  */
 EStatus SettingsInit(Settings* pThis);
 
