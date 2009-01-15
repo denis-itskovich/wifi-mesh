@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "../Document/MeshDocument.h"
+#include "../MeshViews/MeshView.h"
 
 class MeshApp : public QMainWindow
 {
@@ -22,7 +23,7 @@ private:
 	void createDocks();
 	void createTabs();
 
-	QDockWidget* createDock(const QString& title, QWidget* widget);
+	QDockWidget* createDock(const QString& title, MeshView* view);
 
 private slots:
 	void about();

@@ -1,10 +1,11 @@
 #include "MeshApp.h"
 #include "../Dialogs/MeshAboutDlg.h"
 
-#include "../DockWidgets/DockRandomizer.h"
-#include "../DockWidgets/DockStationProperties.h"
-#include "../DockWidgets/DockStations.h"
-#include "../Document/MeshLog.h"
+#include "../MeshViews/MeshViewRandomizer.h"
+#include "../MeshViews/MeshViewStationProperties.h"
+#include "../MeshViews/MeshViewStationsList.h"
+#include "../MeshViews/MeshViewStationsGraph.h"
+#include "../MeshViews/MeshLog.h"
 
 MeshApp::MeshApp(QWidget *parent)
     : QMainWindow(parent)
@@ -154,13 +155,17 @@ void MeshApp::createDocks()
 {
 	m_document = new MeshDocument();
 
-	QDockWidget* dockStations = createDock(tr("Stations list"), new DockStations(m_document, this));
-	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new DockRandomizer(m_document, this));
-	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new DockStationProperties(m_document, this));
+	QDockWidget* dockStations = createDock(tr("Stations list"), new MeshViewStationsList(this));
+	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new MeshViewRandomizer(this));
+	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new MeshViewStationProperties(this));
 
 	addDockWidget(Qt::RightDockWidgetArea, dockStations);
 	tabifyDockWidget(dockStations, dockRandomizer);
 	addDockWidget(Qt::RightDockWidgetArea, dockStationProperties);
+
+	MeshView* view = new MeshViewStationsGraph(m_tabs);
+	view->setDocument(m_document);
+	m_tabs->addTab(view, tr("Graph"));
 }
 
 void MeshApp::createTabs()
@@ -170,10 +175,11 @@ void MeshApp::createTabs()
 	m_tabs->addTab(new MeshLog(m_tabs), tr("Log"));
 }
 
-QDockWidget* MeshApp::createDock(const QString& title, QWidget* widget)
+QDockWidget* MeshApp::createDock(const QString& title, MeshView* view)
 {
+	view->setDocument(m_document);
 	QDockWidget* dock = new QDockWidget(title, this);
-	dock->setWidget(widget);
+	dock->setWidget(view);
 	return dock;
 }
 

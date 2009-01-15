@@ -45,6 +45,8 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#fbe22939cec14b72b2dcb68656578996">StationSetLocation</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> newLocation)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#1b6162709000fd7305c91d17b686c072">StationSetVelocity</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Velocity</a> newVelocity)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e64346ba8f4421f4555cc44664629088">StationGetId</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> *pId)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#0ce09f7a94caed2958cee1ed09aa5f76">StationGetMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> **ppMessage)</td></tr>
@@ -56,6 +58,8 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f92d3377e9a599b2c30bda5f8e0d629a">StationScheduleMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> *pMessage, double time)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#2a76df3d0852c3d719e6c1479fb45f58">StationGetLocation</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> *pLocation)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#d042a7c4ccf1f04b6073f86973bdb6bd">StationGetVelocity</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Velocity</a> *pVelocity)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#ea86810c52a9f20ae034d64c2e87a319">StationReset</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis)</td></tr>
 
@@ -216,6 +220,41 @@ Retrieves next outgoing message <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>ppMessage</em>&nbsp;</td><td>[out] pointer to message will be stored at *ppMessage. NULL will be stored if no outgoing messages are available </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="d042a7c4ccf1f04b6073f86973bdb6bd"></a><!-- doxytag: member="Station.h::StationGetVelocity" ref="d042a7c4ccf1f04b6073f86973bdb6bd" args="(const Station *pThis, Velocity *pVelocity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationGetVelocity           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Velocity</a> *&nbsp;</td>
+          <td class="paramname"> <em>pVelocity</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves station velocity <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pVelocity</em>&nbsp;</td><td>[out] velocity will be stored at *pVelocity </td></tr>
   </table>
 </dl>
 
@@ -503,10 +542,45 @@ Enqueues a message for delayed transmit <dl compact><dt><b>Parameters:</b></dt><
 <div class="memdoc">
 
 <p>
-Moves a station to new location <dl compact><dt><b>Parameters:</b></dt><dd>
+Sets a new station location <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>newLocation</em>&nbsp;</td><td>[in] new location </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="1b6162709000fd7305c91d17b686c072"></a><!-- doxytag: member="Station.h::StationSetVelocity" ref="1b6162709000fd7305c91d17b686c072" args="(Station *pThis, Velocity newVelocity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationSetVelocity           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Velocity</a>&nbsp;</td>
+          <td class="paramname"> <em>newVelocity</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a new velocity <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>newVelocity</em>&nbsp;</td><td>[in] new velocity </td></tr>
   </table>
 </dl>
 
@@ -548,7 +622,7 @@ Synchronizes a station with current time Moves the station <dl compact><dt><b>Pa
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jan 10 22:33:24 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 15 01:42:24 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

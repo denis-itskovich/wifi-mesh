@@ -65,9 +65,14 @@ void MeshDocument::setCurrentStation(Station* pStation)
 
 void MeshDocument::addStation()
 {
+	Location location = {0};
+	addStation(location);
+}
+
+void MeshDocument::addStation(Location location)
+{
 	Station* pStation;
 	Velocity velocity = {0};
-	Location location = {0};
 	CHECK(StationNew(&pStation, velocity, location, m_pTimeLine, m_pSettings));
 	CHECK(SimulatorAddStation(m_pSimulator, pStation));
 	emit stationAdded(pStation);

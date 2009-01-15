@@ -54,11 +54,17 @@ EStatus StationDestroy(Station* pThis);
  */
 EStatus StationSynchronize(Station* pThis, double timeDelta);
 
-/** Moves a station to new location
+/** Sets a new station location
  * \param pThis [in] pointer to instance
  * \param newLocation [in] new location
  */
 EStatus StationSetLocation(Station* pThis, Location newLocation);
+
+/** Sets a new velocity
+ * \param pThis [in] pointer to instance
+ * \param newVelocity [in] new velocity
+ */
+EStatus StationSetVelocity(Station* pThis, Velocity newVelocity);
 
 /** Retrieves a station id
  * \param pThis [in] pointer to instance
