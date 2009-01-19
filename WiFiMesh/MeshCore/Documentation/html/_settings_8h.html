@@ -45,6 +45,8 @@ typedef struct _Settings&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#ce5eb7ceb7b75f81671ca06287610447">SettingsSetDataRate</a> (<a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, unsigned long dataRate)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#f2d369bff671ada5355c2b6cc3a7f7c6">SettingsSetWorldSize</a> (<a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, <a class="el" href="struct_vector.html">Size</a> size)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#e8da2eee9baa60e1b6b559487d37d0fa">SettingsGetTransmitTime</a> (const <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, const <a class="el" href="struct_message.html">Message</a> *pMessage, double *pTime)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#7a9ffc82191945d02df23afdab5f67e6">SettingsGetRoutingTTL</a> (const <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, double *pTTL)</td></tr>
@@ -52,6 +54,8 @@ typedef struct _Settings&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#23827108f960c481446a7e66ff5fb540">SettingsGetCoverage</a> (const <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, double *pCoverage)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#c08ceb9b4311f762593fb1ef3dd46ace">SettingsGetDataRate</a> (const <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, unsigned long *pDataRate)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_settings_8h.html#3d86ce38c8253d1885eda57038aef14b">SettingsGetWorldSize</a> (<a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pThis, <a class="el" href="struct_vector.html">Size</a> *pSize)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -256,6 +260,41 @@ Calculates transmit time <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="3d86ce38c8253d1885eda57038aef14b"></a><!-- doxytag: member="Settings.h::SettingsGetWorldSize" ref="3d86ce38c8253d1885eda57038aef14b" args="(Settings *pThis, Size *pSize)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SettingsGetWorldSize           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Size</a> *&nbsp;</td>
+          <td class="paramname"> <em>pSize</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves world size <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pSize</em>&nbsp;</td><td>[out] size will be stored at *pSize </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="f08fb37ccfdb3d0185c20a720dfdd9a1"></a><!-- doxytag: member="Settings.h::SettingsInit" ref="f08fb37ccfdb3d0185c20a720dfdd9a1" args="(Settings *pThis)" -->
 <div class="memitem">
 <div class="memproto">
@@ -411,8 +450,43 @@ Sets routing table entry time to live <dl compact><dt><b>Parameters:</b></dt><dd
 
 </div>
 </div><p>
+<a class="anchor" name="f2d369bff671ada5355c2b6cc3a7f7c6"></a><!-- doxytag: member="Settings.h::SettingsSetWorldSize" ref="f2d369bff671ada5355c2b6cc3a7f7c6" args="(Settings *pThis, Size size)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> SettingsSetWorldSize           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_vector.html">Size</a>&nbsp;</td>
+          <td class="paramname"> <em>size</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 15 01:42:24 2009 for MeshCore by&nbsp;
+<div class="memdoc">
+
+<p>
+Sets world size <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>size</em>&nbsp;</td><td>[in] new world size </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Jan 19 08:19:28 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

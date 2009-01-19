@@ -6,8 +6,16 @@
  */
 
 #include "MeshDocument.h"
+#include <cmath>
+#include <cstdlib>
 
-MeshDocument::MeshDocument()
+static const int RND_RESOLUTION = 10000;
+
+MeshDocument::MeshDocument() :
+	m_stationsCount(0),
+	m_avgDataSize(0),
+	m_avgMsgCount(0),
+	m_avgVelocity(0.0)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
@@ -21,6 +29,10 @@ MeshDocument::~MeshDocument()
 	CHECK(SettingsDelete(&m_pSettings));
 }
 
+Station* MeshDocument::currentStation() const
+{
+	return m_pCurStation;
+}
 
 void MeshDocument::setCoverage(double cov)
 {
@@ -35,6 +47,39 @@ void MeshDocument::setDataRate(int rate)
 void MeshDocument::setRouteTTL(double ttl)
 {
 	CHECK(SettingsSetRoutingTTL(m_pSettings, ttl));
+}
+
+void MeshDocument::setWorldSize(Size size)
+{
+	CHECK(SettingsSetWorldSize(m_pSettings, size));
+}
+
+int MeshDocument::dataRate() const
+{
+	unsigned long rate;
+	CHECK(SettingsGetDataRate(m_pSettings, &rate));
+	return (int)rate;
+}
+
+double MeshDocument::coverage() const
+{
+	double coverage;
+	CHECK(SettingsGetCoverage(m_pSettings, &coverage));
+	return coverage;
+}
+
+double MeshDocument::routeTTL() const
+{
+	double ttl;
+	CHECK(SettingsGetRoutingTTL(m_pSettings, &ttl));
+	return ttl;
+}
+
+Size MeshDocument::worldSize() const
+{
+	Size size;
+	CHECK(SettingsGetWorldSize(m_pSettings, &size));
+	return size;
 }
 
 void MeshDocument::setStationsCount(int count)
@@ -63,6 +108,11 @@ void MeshDocument::setCurrentStation(Station* pStation)
 	emit currentStationChanged(pStation);
 }
 
+void MeshDocument::updateStation(Station* pStation)
+{
+	emit stationUpdated(pStation);
+}
+
 void MeshDocument::addStation()
 {
 	Location location = {0};
@@ -72,7 +122,7 @@ void MeshDocument::addStation()
 void MeshDocument::addStation(Location location)
 {
 	Station* pStation;
-	Velocity velocity = {0};
+	Velocity velocity = generateVelocity();
 	CHECK(StationNew(&pStation, velocity, location, m_pTimeLine, m_pSettings));
 	CHECK(SimulatorAddStation(m_pSimulator, pStation));
 	emit stationAdded(pStation);
@@ -119,4 +169,18 @@ void MeshDocument::step()
 	{
 		CHECK(SimulatorProcess(m_pSimulator));
 	}
+}
+
+double MeshDocument::rand(double limit)
+{
+	return (double)(::rand() % RND_RESOLUTION) * limit / (double)RND_RESOLUTION;
+}
+
+Velocity MeshDocument::generateVelocity() const
+{
+	Velocity vel;
+	double limit = m_avgVelocity * 4.0 / sqrt(2.0);
+	vel.x = rand(limit) - limit / 2.0;
+	vel.y = rand(limit) - limit / 2.0;
+	return vel;
 }

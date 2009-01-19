@@ -18,7 +18,7 @@ MeshView::~MeshView()
 {
 }
 
-MeshDocument* MeshView::document()
+MeshDocument* MeshView::document() const
 {
 	return m_document;
 }

@@ -30,6 +30,7 @@ protected:
 	virtual void keyPressEvent(QKeyEvent* event);
     virtual void wheelEvent(QWheelEvent* event);
     virtual void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void drawBackground(QPainter *painter, const QRectF &rect);
 };
 
 class MeshViewStationsGraph : public MeshViewStations
@@ -46,18 +47,19 @@ signals:
 
 protected:
 	virtual void addStation(Station* pStation);
-	virtual void setCurrent(Station* pStation);
 	virtual void removeStation(Station* pStation);
-	virtual void updateStation(Station* pStation);
+	virtual void setCurrent(Station* pStation);
 
 private slots:
 	void addStation(QPointF pos);
 
 private:
 	void init();
-	MeshGraphItemStation* findItem(Station* pStation);
+	MeshGraphItemStation* findItem(Station* pStation) const;
+	MeshGraphItemStation* currentItem() const;
 
 	MeshGraphics*	m_graphStations;
+	QGraphicsItem*	m_resizeGaps[4];
 };
 
 #endif /* MESHVIEWCANVAS_H_ */

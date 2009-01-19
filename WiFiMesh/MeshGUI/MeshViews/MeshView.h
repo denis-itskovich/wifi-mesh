@@ -21,7 +21,7 @@ protected:
 	MeshView(QWidget* parent = 0);
 	virtual ~MeshView();
 
-	MeshDocument* document();
+	MeshDocument* document() const;
 
 protected slots:
 	virtual void update() {}

@@ -55,6 +55,8 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#50179ecb66f67d586cc205dac5ca870f">StationIsAdjacent</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, Boolean *pIsAdjacent)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e1934aa001d9bd25af5b8c21ca7d74be">StationIsActive</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, Boolean *pIsActive)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#f92d3377e9a599b2c30bda5f8e0d629a">StationScheduleMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> *pMessage, double time)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#2a76df3d0852c3d719e6c1479fb45f58">StationGetLocation</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Location</a> *pLocation)</td></tr>
@@ -311,6 +313,41 @@ Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"></td><td valign="top"><em>location</em>&nbsp;</td><td>[in] station location vector </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pTimeLine</em>&nbsp;</td><td>[in] pointer to TimeLine instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pSettings</em>&nbsp;</td><td>[in] pointer to simulation settings </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="e1934aa001d9bd25af5b8c21ca7d74be"></a><!-- doxytag: member="Station.h::StationIsActive" ref="e1934aa001d9bd25af5b8c21ca7d74be" args="(const Station *pThis, Boolean *pIsActive)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationIsActive           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Boolean *&nbsp;</td>
+          <td class="paramname"> <em>pIsActive</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Checks whether a station is active <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pIsActive</em>&nbsp;</td><td>[out] result will be stored at *pIsActive </td></tr>
   </table>
 </dl>
 
@@ -622,7 +659,7 @@ Synchronizes a station with current time Moves the station <dl compact><dt><b>Pa
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jan 15 01:42:24 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Jan 19 08:19:28 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

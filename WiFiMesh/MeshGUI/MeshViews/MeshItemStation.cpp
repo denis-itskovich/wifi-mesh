@@ -60,5 +60,27 @@ void MeshItemStation::setVelocity(QPointF vel)
 
 void MeshItemStation::stationChanged()
 {
-	m_pContainer->updateStation(m_pStation);
+	m_pContainer->updateItem(this);
+}
+
+Station* MeshItemStation::station() const
+{
+	return m_pStation;
+}
+
+bool MeshItemStation::isActive() const
+{
+	Boolean bIsActive;
+	CHECK(StationIsActive(m_pStation, &bIsActive));
+	return bIsActive != FALSE;
+}
+
+bool MeshItemStation::isCurrent() const
+{
+	return m_pContainer->isCurrent(this);
+}
+
+void MeshItemStation::makeCurrent()
+{
+	m_pContainer->currentChanged(this);
 }

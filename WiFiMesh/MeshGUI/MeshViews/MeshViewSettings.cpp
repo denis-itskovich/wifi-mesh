@@ -23,8 +23,6 @@ MeshViewSettings::~MeshViewSettings()
 
 void MeshViewSettings::init()
 {
-	QFormLayout* layout = new QFormLayout(this);
-
 	m_spinCoverage = new QDoubleSpinBox;
 	m_spinCoverage->setSingleStep(0.5);
 
@@ -37,13 +35,33 @@ void MeshViewSettings::init()
 	connect(m_spinDataRate, SIGNAL(valueChanged(int)), this, SLOT(setDataRate(int)));
 	connect(m_comboDataUnits, SIGNAL(currentIndexChanged(int)), this, SLOT(setDataRate(int)));
 
+	m_spinHeight = new QSpinBox;
+	m_spinWidth = new QSpinBox;
+
 	QLayout* dataRateLayout = new QHBoxLayout;
 	dataRateLayout->addWidget(m_spinDataRate);
 	dataRateLayout->addWidget(m_comboDataUnits);
 
-	layout->addRow(tr("Coverage:"), m_spinCoverage);
-	layout->addRow(tr("Route TTL:"), m_spinRouteTTL);
-	layout->addRow(tr("Data rate:"), dataRateLayout);
+	QFormLayout* sizeLayout = new QFormLayout;
+
+	sizeLayout->addRow(tr("Width:"), m_spinWidth);
+	sizeLayout->addRow(tr("Height:"), m_spinHeight);
+
+	QFormLayout* settingsLayout = new QFormLayout;
+	settingsLayout->addRow(tr("Coverage:"), m_spinCoverage);
+	settingsLayout->addRow(tr("Route TTL:"), m_spinRouteTTL);
+	settingsLayout->addRow(tr("Data rate:"), dataRateLayout);
+
+	QGroupBox* settingsGroup = new QGroupBox(tr("Simulator settings"));
+	QGroupBox* sizeGroup = new QGroupBox(tr("World size"));
+
+	settingsGroup->setLayout(settingsLayout);
+	sizeGroup->setLayout(sizeLayout);
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->addWidget(settingsGroup);
+	layout->addWidget(sizeGroup);
+	layout->addStretch();
 
 	setLayout(layout);
 }

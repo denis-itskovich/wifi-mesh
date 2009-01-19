@@ -19,12 +19,18 @@ public:
 	MeshDocument();
 	virtual ~MeshDocument();
 
-	Station* currentStation();
+	Station* currentStation() const;
 
 public slots:
 	void setDataRate(int dataRate);
 	void setCoverage(double coverage);
 	void setRouteTTL(double routeTTL);
+	void setWorldSize(Size size);
+
+	int dataRate() const;
+	double coverage() const;
+	double routeTTL() const;
+	Size worldSize() const;
 
 	void setStationsCount(int count);
 	void setAvgDataSize(int dataSize);
@@ -32,6 +38,7 @@ public slots:
 	void setAvgMessagesCount(int avgMsgCount);
 
 	void setCurrentStation(Station* pStation);
+	void updateStation(Station* pStation);
 
 	void addStation();
 	void addStation(Location loc);
@@ -54,6 +61,9 @@ signals:
 	void updatedTimeLine();
 
 private:
+	static double rand(double limit);
+	Velocity generateVelocity() const;
+
 	Simulator*	m_pSimulator;
 	Settings*	m_pSettings;
 	TimeLine*	m_pTimeLine;

@@ -19,33 +19,40 @@ MeshViewRandomizer::~MeshViewRandomizer()
 
 void MeshViewRandomizer::init()
 {
-	QFormLayout* mainLayout = new QFormLayout();
-
-	m_sliderStationsCount = new QSlider(Qt::Horizontal, this);
+	m_sliderStationsCount = new QSlider(Qt::Horizontal);
 	m_sliderStationsCount->setTickPosition(QSlider::TicksBelow);
-	m_spinStationsCount = new QSpinBox(this);
+	m_spinStationsCount = new QSpinBox;
 
 	connect(m_sliderStationsCount, SIGNAL(valueChanged(int)), m_spinStationsCount, SLOT(setValue(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), m_sliderStationsCount, SLOT(setValue(int)));
 
-	m_spinAvgVelocity = new QDoubleSpinBox(this);
+	m_spinAvgVelocity = new QDoubleSpinBox;
 	m_spinAvgVelocity->setSingleStep(0.05);
 
-	m_spinAvgDataSize = new QSpinBox(this);
-	m_spinAvgMessagesCount = new QSpinBox(this);
-	m_buttonGenerate = new QPushButton(tr("Generate"), this);
+	m_spinAvgDataSize = new QSpinBox;
+	m_spinAvgMessagesCount = new QSpinBox;
+	m_buttonGenerate = new QPushButton(tr("Generate"));
 
-	QHBoxLayout* hlayout = new QHBoxLayout();
+	QHBoxLayout* hlayout = new QHBoxLayout;
 	hlayout->addWidget(m_sliderStationsCount);
 	hlayout->addWidget(m_spinStationsCount);
+
+	QFormLayout* mainLayout = new QFormLayout;
 
 	mainLayout->addRow(tr("Stations count:"), hlayout);
 	mainLayout->addRow(tr("Average velocity:"), m_spinAvgVelocity);
 	mainLayout->addRow(tr("Average data size:"), m_spinAvgDataSize);
 	mainLayout->addRow(tr("Average messages count:"), m_spinAvgMessagesCount);
-	mainLayout->addRow(m_buttonGenerate);
 
-	setLayout(mainLayout);
+	QGroupBox* group = new QGroupBox("Randomization parameters");
+	group->setLayout(mainLayout);
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->addWidget(group);
+	layout->addStretch();
+	layout->addWidget(m_buttonGenerate);
+
+	setLayout(layout);
 }
 
 void MeshViewRandomizer::setDocument(MeshDocument* doc)
