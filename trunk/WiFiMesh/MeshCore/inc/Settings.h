@@ -55,6 +55,12 @@ EStatus SettingsSetCoverage(Settings* pThis, double coverage);
  */
 EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate);
 
+/** Sets world size
+ * \param pThis [in] pointer to instance
+ * \param size [in] new world size
+ */
+EStatus SettingsSetWorldSize(Settings* pThis, Size size);
+
 /** Calculates transmit time
  * \param pThis [in] pointer to instance
  * \param pMessage [in] pointer to message
@@ -79,5 +85,11 @@ EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage);
  * \param pDataRate [out] data rate will be stored at *pDataRate
  */
 EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate);
+
+/** Retrieves world size
+ * \param pThis [in] pointer to instance
+ * \param pSize [out] size will be stored at *pSize
+ */
+EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize);
 
 #endif /* SETTINGS_H_ */

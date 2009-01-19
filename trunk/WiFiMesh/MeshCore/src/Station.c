@@ -232,11 +232,23 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
 	double coverage;
 	double dx, dy;
 	VALIDATE_ARGUMENTS(pThis && pStation && pIsAdjacent);
-	SettingsGetCoverage(pThis->pSettings, &coverage);
+	CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
 	dx = pThis->curLocation.x - pStation->curLocation.x;
 	dy = pThis->curLocation.y - pStation->curLocation.y;
 	*pIsAdjacent = (coverage*coverage <= dx*dx + dy*dy) ? TRUE : FALSE;
 
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationIsActive(const Station* pThis, Boolean* pIsActive)
+{
+	Size size;
+	Location loc;
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(SettingsGetWorldSize(pThis->pSettings, &size));
+	loc = pThis->curLocation;
+	*pIsActive = (loc.x >= -size.x/2.0 && loc.x <= size.x/2.0) &&
+				 (loc.y >= -size.y/2.0 && loc.y <= size.y/2.0) ? TRUE : FALSE;
 	return eSTATUS_COMMON_OK;
 }
 

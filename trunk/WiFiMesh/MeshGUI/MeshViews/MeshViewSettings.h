@@ -36,6 +36,8 @@ private:
 	QDoubleSpinBox*	m_spinRouteTTL;
 	QSpinBox*		m_spinDataRate;
 	QComboBox*		m_comboDataUnits;
+	QSpinBox*		m_spinHeight;
+	QSpinBox*		m_spinWidth;
 };
 
 #endif /* DOCKSETTINGS_H_ */

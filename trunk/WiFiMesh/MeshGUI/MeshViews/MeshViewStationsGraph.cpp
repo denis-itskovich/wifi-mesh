@@ -25,11 +25,13 @@ void MeshViewStationsGraph::init()
 {
 	QGraphicsScene* scene = new QGraphicsScene();
 	m_graphStations = new MeshGraphics();
-	setLayout(new QGridLayout(this));
-	layout()->addWidget(m_graphStations);
+	QLayout* layout = new QHBoxLayout;
+
+	layout->setMargin(0);
+	layout->addWidget(m_graphStations);
+	setLayout(layout);
 
 	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 400, 400);
 
 	m_graphStations->setScene(scene);
     m_graphStations->setCacheMode(QGraphicsView::CacheBackground);
@@ -41,15 +43,14 @@ void MeshViewStationsGraph::init()
     connect(m_graphStations, SIGNAL(doubleClicked(QPointF)), this, SLOT(addStation(QPointF)));
 }
 
-MeshGraphItemStation* MeshViewStationsGraph::findItem(Station* pStation)
+MeshGraphItemStation* MeshViewStationsGraph::findItem(Station* pStation) const
 {
 	return dynamic_cast<MeshGraphItemStation*>(MeshViewStations::findItem(pStation));
 }
 
-void MeshViewStationsGraph::updateStation(Station *pStation)
+MeshGraphItemStation* MeshViewStationsGraph::currentItem() const
 {
-	MeshGraphItemStation* item = findItem(pStation);
-	item->updateStation();
+	return dynamic_cast<MeshGraphItemStation*>(MeshViewStations::currentItem());
 }
 
 void MeshViewStationsGraph::addStation(QPointF pos)
@@ -65,25 +66,32 @@ void MeshViewStationsGraph::addStation(Station *pStation)
 	MeshGraphItemStation* item = new MeshGraphItemStation(this, pStation);
 	registerStation(pStation, item);
 	m_graphStations->addItem(item);
-}
-
-void MeshViewStationsGraph::setCurrent(Station *pStation)
-{
-	MeshGraphItemStation* item = findItem(pStation);
-	if (!item) return;
-	item->setSelected(true);
+	MeshViewStations::addStation(pStation);
 }
 
 void MeshViewStationsGraph::removeStation(Station *pStation)
 {
 	m_graphStations->removeItem(findItem(pStation));
-	unregisterStation(pStation);
+	MeshViewStations::removeStation(pStation);
+}
+
+void MeshViewStationsGraph::setCurrent(Station* pStation)
+{
+	MeshGraphItemStation* item = findItem(pStation);
+	if (item) item->setFocus();
 }
 
 void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 {
 	MeshViewStations::setDocument(doc);
 	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
+
+	QGraphicsScene* scene = m_graphStations->scene();
+	if (scene)
+	{
+		Size size = document()->worldSize();
+	    scene->setSceneRect(-size.x/2.0, -size.y/2.0, size.x, size.y);
+	}
 }
 
 MeshGraphics::MeshGraphics(QWidget* parent) :
@@ -93,13 +101,13 @@ MeshGraphics::MeshGraphics(QWidget* parent) :
 
 void MeshGraphics::wheelEvent(QWheelEvent* event)
 {
-	qreal scaleFactor = pow(2.0, -event->delta() / 240);
+	qreal scaleFactor = pow(1.2, -event->delta() / 240.0);
 	scale(scaleFactor, scaleFactor);
 }
 
 void MeshGraphics::mouseDoubleClickEvent(QMouseEvent* event)
 {
-	emit doubleClicked(event->posF());
+	emit doubleClicked(mapToScene(event->pos()));
 }
 
 void MeshGraphics::keyPressEvent(QKeyEvent* event)
@@ -108,12 +116,14 @@ void MeshGraphics::keyPressEvent(QKeyEvent* event)
 
 	switch (event->key())
 	{
-	case Qt::Key_Plus: scaleFactor = 1.2;
-	case Qt::Key_Minus: scaleFactor = 1/1.2;
+	case Qt::Key_Plus: scaleFactor = 1.2; break;
+	case Qt::Key_Minus: scaleFactor = 1/1.2; break;
 	default: break;
 	}
 
-	if (scaleFactor != 1.0) scale(scaleFactor, scaleFactor);
+	if (scaleFactor != 1.0)
+		scale(scaleFactor, scaleFactor);
+    QGraphicsView::keyPressEvent(event);
 }
 
 void MeshGraphics::addItem(MeshGraphItemStation* item)
@@ -124,4 +134,12 @@ void MeshGraphics::addItem(MeshGraphItemStation* item)
 void MeshGraphics::removeItem(MeshGraphItemStation* item)
 {
 	if (item && scene()) scene()->removeItem(item);
+}
+
+void MeshGraphics::drawBackground(QPainter *painter, const QRectF &rect)
+{
+	QRectF sceneRect = this->sceneRect();
+	painter->setPen(QColor(Qt::black));
+	painter->fillRect(sceneRect, QBrush(QColor(Qt::lightGray)));
+	painter->drawRect(sceneRect);
 }

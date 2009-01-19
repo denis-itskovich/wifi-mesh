@@ -24,7 +24,6 @@ protected:
 	virtual void addStation(Station* pStation);
 	virtual void setCurrent(Station* pStation);
 	virtual void removeStation(Station* pStation);
-	virtual void updateStation(Station* pStation);
 
 private slots:
 	virtual void currentChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
@@ -32,6 +31,7 @@ private slots:
 private:
 	void init();
 	MeshTreeItemStation* findItem(Station* pStation);
+	MeshTreeItemStation* currentItem() const;
 
 	QTreeWidget*	m_treeStations;
 	QPushButton*	m_buttonAdd;

@@ -91,6 +91,12 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage);
  */
 EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent);
 
+/** Checks whether a station is active
+ * \param pThis [in] pointer to instance
+ * \param pIsActive [out] result will be stored at *pIsActive
+ */
+EStatus StationIsActive(const Station* pThis, Boolean* pIsActive);
+
 /** Enqueues a message for delayed transmit
  * \param pThis [in] pointer to instance
  * \param pMessage [in] pointer to message to be sent

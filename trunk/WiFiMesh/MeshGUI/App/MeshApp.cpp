@@ -3,6 +3,7 @@
 
 #include "../MeshViews/MeshViewRandomizer.h"
 #include "../MeshViews/MeshViewStationProperties.h"
+#include "../MeshViews/MeshViewSettings.h"
 #include "../MeshViews/MeshViewStationsList.h"
 #include "../MeshViews/MeshViewStationsGraph.h"
 #include "../MeshViews/MeshLog.h"
@@ -158,14 +159,17 @@ void MeshApp::createDocks()
 	QDockWidget* dockStations = createDock(tr("Stations list"), new MeshViewStationsList(this));
 	QDockWidget* dockRandomizer = createDock(tr("Stations randomizer"), new MeshViewRandomizer(this));
 	QDockWidget* dockStationProperties = createDock(tr("Station properties"), new MeshViewStationProperties(this));
+	QDockWidget* dockSettings = createDock(tr("Simulator settings"), new MeshViewSettings(this));
 
 	addDockWidget(Qt::RightDockWidgetArea, dockStations);
-	tabifyDockWidget(dockStations, dockRandomizer);
 	addDockWidget(Qt::RightDockWidgetArea, dockStationProperties);
+	addDockWidget(Qt::RightDockWidgetArea, dockRandomizer);
+	tabifyDockWidget(dockStations, dockSettings);
 
 	MeshView* view = new MeshViewStationsGraph(m_tabs);
 	view->setDocument(m_document);
-	m_tabs->addTab(view, tr("Graph"));
+	m_tabs->insertTab(0, view, QIcon(), tr("Graph"));
+	m_tabs->setCurrentIndex(0);
 }
 
 void MeshApp::createTabs()

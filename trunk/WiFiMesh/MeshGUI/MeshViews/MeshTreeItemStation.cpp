@@ -42,9 +42,9 @@ void MeshTreeItemStation::updateStation()
 	QPointF loc = location();
 	QPointF vel = velocity();
 
-	locItem->child(0)->setText(1, QString::number(loc.x(), 'g', 2));
-	locItem->child(1)->setText(1, QString::number(loc.y(), 'g', 2));
+	locItem->child(0)->setText(1, QString::number(loc.x(), 'f', 2));
+	locItem->child(1)->setText(1, QString::number(loc.y(), 'f', 2));
 
-	velItem->child(0)->setText(1, QString::number(vel.x(), 'g', 2));
-	velItem->child(1)->setText(1, QString::number(vel.y(), 'g', 2));
+	velItem->child(0)->setText(1, QString::number(vel.x(), 'f', 2));
+	velItem->child(1)->setText(1, QString::number(vel.y(), 'f', 2));
 }

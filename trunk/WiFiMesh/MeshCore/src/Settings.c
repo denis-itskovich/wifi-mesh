@@ -21,6 +21,7 @@ struct _Settings
 	double		coverage;
 	unsigned	dataRate;
 	double		routeTTL;
+	Size		size;
 };
 
 EStatus SettingsNew(Settings** ppThis)
@@ -36,9 +37,12 @@ EStatus SettingsDelete(Settings** ppThis)
 EStatus SettingsInit(Settings* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
+	CLEAR(pThis);
 	pThis->coverage = DEFAULT_COVERAGE;
 	pThis->dataRate = DEFAULT_DATA_RATE;
 	pThis->routeTTL = DEFAULT_ROUTE_TTL;
+	pThis->size.x = 400.0;
+	pThis->size.y = 400.0;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -77,6 +81,11 @@ EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate)
 	GET_MEMBER(pDataRate, pThis, dataRate);
 }
 
+EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize)
+{
+	GET_MEMBER(pSize, pThis, size);
+}
+
 EStatus SettingsSetRoutingTTL(Settings* pThis, double ttl)
 {
 	SET_MEMBER(ttl, pThis, routeTTL);
@@ -90,4 +99,9 @@ EStatus SettingsSetCoverage(Settings* pThis, double coverage)
 EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate)
 {
 	SET_MEMBER(dataRate, pThis, dataRate);
+}
+
+EStatus SettingsSetWorldSize(Settings* pThis, Size size)
+{
+	SET_MEMBER(size, pThis, size);
 }

@@ -32,6 +32,7 @@ void MeshViewStationsList::init()
 	m_buttonRemove = new QPushButton(tr("&Remove"), this);
 
 	layout->addWidget(m_treeStations);
+	layout->setStretchFactor(m_treeStations, 99);
 
 	buttonsLayout->addWidget(m_buttonAdd);
 	buttonsLayout->addSpacing(8);
@@ -50,13 +51,22 @@ void MeshViewStationsList::addStation(Station* pStation)
 	MeshTreeItemStation* item = new MeshTreeItemStation(this, pStation);
 	m_treeStations->insertTopLevelItem(m_treeStations->topLevelItemCount(), item);
 	registerStation(pStation, item);
+	MeshViewStations::addStation(pStation);
 }
 
 void MeshViewStationsList::currentChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
+	while (current->parent()) current = current->parent();
 	MeshTreeItemStation* cur = dynamic_cast<MeshTreeItemStation*>(current);
-	Station* pStation = findStation(cur);
-	if (pStation) emit MeshViewStations::currentChanged(pStation);
+	MeshViewStations::currentChanged(cur);
+}
+
+MeshTreeItemStation* MeshViewStationsList::currentItem() const
+{
+	QTreeWidgetItem* item = m_treeStations->currentItem();
+	if (!item) return NULL;
+	while (item->parent()) item = item->parent();
+	return dynamic_cast<MeshTreeItemStation*>(item);
 }
 
 void MeshViewStationsList::setDocument(MeshDocument* doc)
@@ -68,7 +78,9 @@ void MeshViewStationsList::setDocument(MeshDocument* doc)
 
 void MeshViewStationsList::setCurrent(Station* pStation)
 {
-	m_treeStations->setCurrentItem(findItem(pStation));
+	MeshTreeItemStation* newCur = findItem(pStation);
+	if (newCur == currentItem()) return;
+	m_treeStations->setCurrentItem(newCur);
 }
 
 void MeshViewStationsList::removeStation(Station* pStation)
@@ -77,14 +89,8 @@ void MeshViewStationsList::removeStation(Station* pStation)
 	if (item)
 	{
 		m_treeStations->invisibleRootItem()->removeChild(item);
-		unregisterStation(pStation);
 	}
-}
-
-void MeshViewStationsList::updateStation(Station* pStation)
-{
-	MeshItemStation* item = findItem(pStation);
-	if (item) item->updateStation();
+	MeshViewStations::removeStation(pStation);
 }
 
 MeshTreeItemStation* MeshViewStationsList::findItem(Station* pStation)

@@ -69,9 +69,8 @@ void MeshViewStationProperties::init()
 
 	layout->addWidget(groupLocation);
 	layout->addWidget(groupVelocity);
-	layout->addWidget(new QPushButton(tr("Apply"), this));
-
 	layout->addStretch();
+	layout->addWidget(new QPushButton(tr("Apply"), this));
 }
 
 void MeshViewStationProperties::dialAngleChanged(int angle)
