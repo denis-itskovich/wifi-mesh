@@ -28,14 +28,13 @@ void MeshViewStationsList::init()
 	m_treeStations->setColumnCount(2);
 	m_treeStations->setHeaderLabels(QStringList() << tr("Station") << tr("Properties"));
 
-	m_buttonAdd = new QPushButton(tr("&Add"), this);
-	m_buttonRemove = new QPushButton(tr("&Remove"), this);
+	m_buttonAdd = new QPushButton(QIcon(":/add.png"), tr("&Add"), this);
+	m_buttonRemove = new QPushButton(QIcon(":/remove.png"), tr("&Remove"), this);
 
 	layout->addWidget(m_treeStations);
-	layout->setStretchFactor(m_treeStations, 99);
 
+	buttonsLayout->addStretch();
 	buttonsLayout->addWidget(m_buttonAdd);
-	buttonsLayout->addSpacing(8);
 	buttonsLayout->addWidget(m_buttonRemove);
 
 	layout->addItem(buttonsLayout);

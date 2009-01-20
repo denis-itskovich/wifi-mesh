@@ -24,13 +24,17 @@ public:
 
 signals:
 	void updateDataRate(int dataRate);
+	void updateSize(Size size);
 
 private slots:
 	void setDataRate(int dataRate);
+	void setUnits(int units);
+	void setHeight(int height);
+	void setWidth(int width);
 
 private:
 	void init();
-	int dataRate() const;
+	int dataRate();
 
 	QDoubleSpinBox*	m_spinCoverage;
 	QDoubleSpinBox*	m_spinRouteTTL;
@@ -38,6 +42,7 @@ private:
 	QComboBox*		m_comboDataUnits;
 	QSpinBox*		m_spinHeight;
 	QSpinBox*		m_spinWidth;
+	int				m_dataRate;
 };
 
 #endif /* DOCKSETTINGS_H_ */
