@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/" >
+        <file alias="add.png" >Images/addbutton.png</file>
+        <file alias="remove.png" >Images/closebutton.png</file>
         <file>Images/configure.png</file>
         <file alias="exit.png" >Images/exit.png</file>
         <file alias="close.png" >Images/fileclose.png</file>
@@ -11,25 +13,8 @@
         <file>Images/network.png</file>
         <file>Images/new.png</file>
         <file>Images/open.png</file>
-        <file>Images/qt-logo.png</file>
-        <file alias="qt.png" >Images/qt.png</file>
-        <file alias="run.png" >Images/right-32.png</file>
-        <file>Images/save.png</file>
-        <file>Images/standardbutton-close-32.png</file>
-        <file>Images/standardbutton-delete-32.png</file>
-        <file>Images/standardbutton-help-32.png</file>
-        <file>Images/standardbutton-open-32.png</file>
-        <file>Images/standardbutton-save-32.png</file>
-        <file alias="break.png" >Images/stop-32.png</file>
-        <file alias="close.png" >Images/fileclose.png</file>
-        <file alias="about.png" >Images/fileinfo-32.png</file>
-        <file alias="new.png" >Images/filenew.png</file>
-        <file alias="open.png" >Images/fileopen.png</file>
-        <file alias="save.png" >Images/filesave.png</file>
-        <file>Images/network.png</file>
-        <file>Images/new.png</file>
-        <file>Images/open.png</file>
         <file alias="qt_logo.png" >Images/qt-logo.png</file>
+        <file alias="qt.png" >Images/qt.png</file>
         <file alias="run.png" >Images/right-32.png</file>
         <file>Images/save.png</file>
         <file>Images/standardbutton-close-32.png</file>
