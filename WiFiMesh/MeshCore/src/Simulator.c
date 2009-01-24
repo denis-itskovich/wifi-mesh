@@ -160,6 +160,8 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 
+	INFO_PRINT("Performing simulation step: [time delta: %.2f]", newTime-oldTime);
+
 	while (pEntry)
 	{
 		CHECK(ListGetValue(pEntry, &pStation));

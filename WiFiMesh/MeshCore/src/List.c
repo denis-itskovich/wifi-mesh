@@ -85,24 +85,24 @@ EStatus ListInsertAt(List* pThis, ListEntry* pPrev, ListEntry* pNext, void* pVal
 	pNewItem->pNext = pNext;
 
 	if (pNewItem->pPrev) pPrev->pNext = pNewItem;
-	if (pNewItem->pNext) pNext->pPrev = pNewItem;
+	else pThis->pHead = pNewItem;
 
-	if (pNewItem->pNext == pThis->pHead) pThis->pHead = pNewItem;
-	if (pNewItem->pPrev == pThis->pTail) pThis->pTail = pNewItem;
+	if (pNewItem->pNext) pNext->pPrev = pNewItem;
+	else pThis->pTail = pNewItem;
 
 	++pThis->count;
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus ListInsertAfter(List* pThis, ListEntry* pItem, void* pValue)
+EStatus ListInsertAfter(List* pThis, ListEntry* pAfter, void* pValue)
 {
-	return ListInsertAt(pThis, pItem, (pItem) ? pItem->pNext : pThis->pHead, pValue);
+	return ListInsertAt(pThis, pAfter, (pAfter) ? pAfter->pNext : pThis->pHead, pValue);
 }
 
-EStatus ListInsertBefore(List* pThis, ListEntry* pItem, void* pValue)
+EStatus ListInsertBefore(List* pThis, ListEntry* pBefore, void* pValue)
 {
-	return ListInsertAt(pThis, (pItem) ? pItem->pPrev : pThis->pTail, pItem, pValue);
+	return ListInsertAt(pThis, (pBefore) ? pBefore->pPrev : pThis->pTail, pBefore, pValue);
 }
 
 EStatus ListRemove(List* pThis, ListEntry* pEntry)

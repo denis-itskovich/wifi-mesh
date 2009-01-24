@@ -30,10 +30,10 @@ Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 	return FALSE;
 }
 
-Comparison TimeLineComparator(const double* pLeft, const double* pRight, const void* pUserArg)
+Comparison TimeLineComparator(const Event* pLeft, const Event* pRight, const void* pUserArg)
 {
-	return (*pLeft < *pRight) ? LESS :
-		   (*pLeft > *pRight) ? GREAT : EQUAL;
+	return (pLeft->time < pRight->time) ? LESS :
+		   (pLeft->time > pRight->time) ? GREAT : EQUAL;
 }
 
 EStatus TimeLineNew(TimeLine** ppThis)
@@ -133,8 +133,17 @@ EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
 
 EStatus TimeLineReset(TimeLine* pThis)
 {
+	Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
+
+	if (pThis->pCurrent)
+	{
+		CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
+		pThis->time = pEvent->time;
+	}
+	else pThis->time = 0.0;
+
 	return eSTATUS_COMMON_OK;
 }
 
