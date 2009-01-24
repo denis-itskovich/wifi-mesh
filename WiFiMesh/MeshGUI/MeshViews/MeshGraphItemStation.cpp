@@ -16,7 +16,7 @@ MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsFocusable);
-    setCacheMode(DeviceCoordinateCache);
+//    setCacheMode(DeviceCoordinateCache);
     setPos(location());
     setZValue(1);
 }
@@ -47,13 +47,13 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     if (option->state & QStyle::State_HasFocus)
     {
-        QPointF vel = velocity();
-        qreal len = sqrt(pow(vel.x(), 2.0) + pow(vel.y(), 2.0));
-        if (len > 0)
-        {
-            QPointF srcPnt(vel.x() / len, vel.y() / len);
-            painter->drawLine(srcPnt, srcPnt + vel);
-        }
+//        QPointF vel = velocity();
+//        qreal len = sqrt(pow(vel.x(), 2.0) + pow(vel.y(), 2.0));
+//        if (len > 0)
+//        {
+//            QPointF srcPnt(vel.x() / len, vel.y() / len);
+//            painter->drawLine(srcPnt, srcPnt + vel);
+//        }
         colIn = Qt::darkGreen;
         colOut = Qt::green;
     }

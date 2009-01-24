@@ -16,13 +16,31 @@
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 
+/** Event type, handled by station tracker
+ * \see StationTracker
+ */
+typedef enum
+{
+	eSTATION_ADDED,			///< Station was added to simulator
+	eSTATION_REMOVED,		///< Station was removed from simulator
+	eSTATION_UPDATED		///< Station was updated
+} StationEventType;
+
+/** Station tracker
+ * \param pStation [in] pointer to station
+ * \param eventType [in] station event type
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*StationTracker)(Station* pStation, StationEventType eventType, void* pUserArg);
+
 /** Message transfer callback
  * \param time [in] current time
  * \param pMessage [in] pointer to message
+ * \param pSrc [in] pointer to source station
  * \param pDest [in] pointer to destination station
  * \param pUserArg [in] user defined argument
  */
-typedef void (*Sniffer)(double time, const Message* pMessage, Station* pDest, void* pUserArg);
+typedef void (*Sniffer)(double time, const Message* pMessage, const Station* pSrc, const Station* pDest, void* pUserArg);
 
 /** Stations enumerator
  * \param pStation [in] pointer to station
@@ -78,10 +96,22 @@ EStatus SimulatorProcess(Simulator* pThis);
  */
 EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg);
 
+/** Sets station tracker callback
+ * \param pThis [in] pointer to instance
+ * \param tracker [in] tracker callback
+ * \param pUserArg [in] user defined argument of the tracker
+ */
+EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, void* pUserArg);
+
 /** Resets simulator
  * \param pThis [in] pointer to instance
  */
 EStatus SimulatorReset(Simulator* pThis);
+
+/** Clears simulator
+ * \param pThis [in] pointer to instance
+ */
+EStatus SimulatorClear(Simulator* pThis);
 
 /** Enumerates all stations
  * \param pThis [in] pointer to instance

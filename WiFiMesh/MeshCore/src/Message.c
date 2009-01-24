@@ -15,6 +15,7 @@
 		CLEAR(ptr); \
 		ptr->originalSrcId = _srcId; \
 		ptr->originalDstId = _dstId; \
+		ptr->type = _msgtype; \
 	)
 
 EStatus MessageNew(Message** ppThis, EMessageType msgType, StationId srcId, StationId dstId)

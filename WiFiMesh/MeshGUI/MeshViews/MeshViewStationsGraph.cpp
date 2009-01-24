@@ -84,13 +84,21 @@ void MeshViewStationsGraph::setCurrent(Station* pStation)
 void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 {
 	MeshViewStations::setDocument(doc);
-	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 
+	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
+	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
+
+	updateWorldSize();
+}
+
+void MeshViewStationsGraph::updateWorldSize()
+{
 	QGraphicsScene* scene = m_graphStations->scene();
 	if (scene)
 	{
 		Size size = document()->worldSize();
 	    scene->setSceneRect(-size.x/2.0, -size.y/2.0, size.x, size.y);
+		scene->update();
 	}
 }
 

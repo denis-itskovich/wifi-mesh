@@ -109,12 +109,14 @@ EStatus ListRemove(List* pThis, ListEntry* pEntry);
 /** Gets a \a head position
  * \param pThis [in] pointer to instance
  * \param ppEntry [out] head position will be stored at *ppEntry
+ * \return NULL if a list is empty, otherwise proper list entry
  */
 EStatus ListGetHead(List* pThis, ListEntry** ppEntry);
 
-/** Gets a \a tail position
+/** Gets a \a tail entry
  * \param pThis [in] pointer to instance
  * \param ppEntry [out] tail position will be stored at *ppEntry
+ * \return NULL if a list is empty, otherwise proper list entry
  */
 EStatus ListGetTail(List* pThis, ListEntry** ppEntry);
 

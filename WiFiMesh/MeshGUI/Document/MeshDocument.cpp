@@ -12,14 +12,19 @@
 static const int RND_RESOLUTION = 10000;
 
 MeshDocument::MeshDocument() :
-	m_stationsCount(0),
-	m_avgDataSize(0),
-	m_avgMsgCount(0),
-	m_avgVelocity(0.0)
+	m_pCurStation(NULL),
+	m_stationsCount(100),
+	m_avgDataSize(65536),
+	m_avgMsgCount(256),
+	m_avgVelocity(20.0),
+	m_duration(60)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
 	CHECK(SimulatorNew(&m_pSimulator, m_pSettings, m_pTimeLine));
+	CHECK(SimulatorSetStationTracker(m_pSimulator, (StationTracker)&MeshDocument::stationTracker, this));
+	CHECK(SimulatorSetSniffer(m_pSimulator, (Sniffer)&MeshDocument::messageSniffer, this));
+	CHECK(TimeLineSetEventTracker(m_pTimeLine, (EventTracker)&MeshDocument::eventTracker, this));
 }
 
 MeshDocument::~MeshDocument()
@@ -52,6 +57,7 @@ void MeshDocument::setRouteTTL(double ttl)
 void MeshDocument::setWorldSize(Size size)
 {
 	CHECK(SettingsSetWorldSize(m_pSettings, size));
+	emit worldSizeChanged();
 }
 
 int MeshDocument::dataRate() const
@@ -108,6 +114,11 @@ void MeshDocument::setCurrentStation(Station* pStation)
 	emit currentStationChanged(pStation);
 }
 
+void MeshDocument::setDuration(double duration)
+{
+	m_duration = duration;
+}
+
 void MeshDocument::updateStation(Station* pStation)
 {
 	emit stationUpdated(pStation);
@@ -125,26 +136,58 @@ void MeshDocument::addStation(Location location)
 	Velocity velocity = generateVelocity();
 	CHECK(StationNew(&pStation, velocity, location, m_pTimeLine, m_pSettings));
 	CHECK(SimulatorAddStation(m_pSimulator, pStation));
-	emit stationAdded(pStation);
 }
 
 void MeshDocument::removeStation()
 {
 	if (!m_pCurStation) return;
 
-	emit stationRemoved(m_pCurStation);
 	CHECK(SimulatorRemoveStation(m_pSimulator, m_pCurStation));
 	CHECK(StationDelete(&m_pCurStation));
 }
 
 void MeshDocument::generate()
 {
+	CHECK(SimulatorClear(m_pSimulator));
+	std::vector<Station*> stations;
 
+	for (int i = 0; i < m_stationsCount; ++i)
+	{
+		Station* pStation;
+		Velocity v = generateVelocity();
+		Location l = generateLocation();
+
+		CHECK(StationNew(&pStation, v, l, m_pTimeLine, m_pSettings));
+		CHECK(SimulatorAddStation(m_pSimulator, pStation));
+
+		stations.push_back(pStation);
+	}
+
+	int msgCount = m_avgMsgCount * m_stationsCount * 2 + 1;
+
+	for (int i = 0; i < msgCount; ++i)
+	{
+		StationId src, dst;
+		int srcIdx = rand(m_stationsCount);
+		int dstIdx = rand(m_stationsCount - 1);
+		if (dstIdx >= srcIdx) ++dstIdx;
+
+		CHECK(StationGetId(stations[srcIdx], &src));
+		CHECK(StationGetId(stations[dstIdx], &dst));
+
+		int dataSize = rand(m_avgDataSize * 2 / msgCount + 1);
+		double time = rand(m_duration);
+
+		Message* pMessage;
+		CHECK(MessageNewData(&pMessage, src, dst, dataSize));
+		CHECK(StationScheduleMessage(stations[srcIdx], pMessage, time));
+	}
 }
 
 void MeshDocument::start()
 {
 	if (m_bStarted) step();
+	CHECK(SimulatorReset(m_pSimulator));
 	m_bStarted = true;
 }
 
@@ -176,6 +219,11 @@ double MeshDocument::rand(double limit)
 	return (double)(::rand() % RND_RESOLUTION) * limit / (double)RND_RESOLUTION;
 }
 
+int MeshDocument::rand(int limit)
+{
+	return ::rand() % limit;
+}
+
 Velocity MeshDocument::generateVelocity() const
 {
 	Velocity vel;
@@ -183,4 +231,58 @@ Velocity MeshDocument::generateVelocity() const
 	vel.x = rand(limit) - limit / 2.0;
 	vel.y = rand(limit) - limit / 2.0;
 	return vel;
+}
+
+Location MeshDocument::generateLocation() const
+{
+	Location l;
+	Size s = worldSize();
+	l.x = rand(s.x) - s.x / 2.0;
+	l.y = rand(s.y) - s.y / 2.0;
+	return l;
+}
+
+int MeshDocument::stationsCount() const
+{
+	return m_stationsCount;
+}
+
+int MeshDocument::avgMessagesCount() const
+{
+	return m_avgMsgCount;
+}
+
+int MeshDocument::avgDataSize() const
+{
+	return m_avgDataSize;
+}
+
+double MeshDocument::avgVelocity() const
+{
+	return m_avgVelocity;
+}
+
+double MeshDocument::duration() const
+{
+	return m_duration;
+}
+
+void MeshDocument::stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis)
+{
+	switch (eventType)
+	{
+	case eSTATION_ADDED: emit pThis->stationAdded(pStation); break;
+	case eSTATION_REMOVED: emit pThis->stationRemoved(pStation); break;
+	case eSTATION_UPDATED: emit pThis->stationUpdated(pStation); break;
+	}
+}
+
+void MeshDocument::messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis)
+{
+
+}
+
+void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)
+{
+
 }

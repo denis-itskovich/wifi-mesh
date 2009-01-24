@@ -16,14 +16,19 @@
 
 struct _Simulator
 {
-	List*		pStations;
-	TimeLine*	pTimeLine;
-	Settings*	pSettings;
+	List*			pStations;
+	TimeLine*		pTimeLine;
+	Settings*		pSettings;
 	struct
 	{
 		Sniffer callback;
 		void*	pArg;
-	} sniffer;
+	} 				sniffer;
+	struct
+	{
+		StationTracker	callback;
+		void*			pArg;
+	} 				tracker;
 };
 
 /** Looks for a station with specified id
@@ -46,7 +51,18 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
  */
 EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry);
 
-Boolean SimulatorCleaner(Station* pStation, void* pUserArg)
+Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
+{
+	if (pThis)
+	{
+		if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_REMOVED, pThis->tracker.pArg);
+	}
+
+	StationDelete(&pStation);
+	return FALSE;
+}
+
+Boolean SimulatorResetter(Station* pStation, void* pUserArg)
 {
 	StationReset(pStation);
 	return TRUE;
@@ -85,6 +101,7 @@ EStatus SimulatorDestroy(Simulator* pThis)
 EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 {
 	VALIDATE_ARGUMENTS(pThis && pStation);
+	if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_ADDED, pThis->tracker.pArg);
 	return ListInsert(pThis->pStations, pStation);
 }
 
@@ -97,6 +114,7 @@ EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
 
 	CHECK(StationGetId(pStation, &id));
 	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
+	SimulatorCleaner(pStation, pThis);
 	return ListRemove(pThis->pStations, pEntry);
 }
 
@@ -130,6 +148,7 @@ EStatus SimulatorProcess(Simulator* pThis)
 	Station* pStation;
 	double oldTime;
 	double newTime;
+	Boolean isActive;
 
 	BEGIN_FUNCTION;
 
@@ -144,8 +163,15 @@ EStatus SimulatorProcess(Simulator* pThis)
 	while (pEntry)
 	{
 		CHECK(ListGetValue(pEntry, &pStation));
-		CHECK(StationSynchronize(pStation, newTime-oldTime));
-		CHECK(SimulatorDispatchMessages(pThis, pStation));
+		CHECK(StationIsActive(pStation, &isActive));
+
+		if (isActive)
+		{
+			CHECK(StationSynchronize(pStation, newTime-oldTime));
+			if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
+			CHECK(SimulatorDispatchMessages(pThis, pStation));
+		}
+
 		CHECK(ListGetNext(&pEntry));
 	}
 
@@ -177,7 +203,7 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 		{
 			CHECK(MessageClone(&pNewMessage, pMessage));
 			CHECK(StationPutMessage(pCurrent, pNewMessage));
-			if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pCurrent, pThis->sniffer.pArg);
+			if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pStation, pCurrent, pThis->sniffer.pArg);
 		}
 		CHECK(ListGetNext(&pEntry));
 	}
@@ -194,10 +220,26 @@ EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg)
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->tracker.callback = tracker;
+	pThis->tracker.pArg = pUserArg;
+	return eSTATUS_COMMON_OK;
+}
+
 EStatus SimulatorReset(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorCleaner, NULL));
+	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
+	CHECK(TimeLineReset(pThis->pTimeLine));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorClear(Simulator* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(ListCleanUp(pThis->pStations, (ItemFilter)&SimulatorCleaner, pThis));
 	CHECK(TimeLineClear(pThis->pTimeLine));
 	return eSTATUS_COMMON_OK;
 }

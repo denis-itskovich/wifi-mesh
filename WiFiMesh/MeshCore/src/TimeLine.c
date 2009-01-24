@@ -2,15 +2,31 @@
 #include "Macros.h"
 #include "SortedList.h"
 
+typedef struct _Event
+{
+	double 			time;
+	const Message*	pMessage;
+} Event;
+
 struct _TimeLine
 {
-	SortedList*	pMilestones;
-	double		time;
+	SortedList*		pEvents;
+	ListEntry*		pCurrent;
+	double			time;
+	struct
+	{
+		EventTracker 	callback;
+		void*			pArg;
+	}				tracker;
 };
 
-Boolean TimeLineCleaner(double *pTime, void* pUserArg)
+Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 {
-	if (pTime) DELETE(pTime);
+	if (pEvent)
+	{
+		if (pThis->tracker.callback) pThis->tracker.callback(pEvent->time, pEvent->pMessage, FALSE, pThis->tracker.pArg);
+		DELETE(pEvent);
+	}
 	return FALSE;
 }
 
@@ -34,46 +50,55 @@ EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	return SortedListNew(&pThis->pMilestones, (ItemComparator)&TimeLineComparator, NULL);
+	return SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL);
 }
 
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	return SortedListDelete(&pThis->pMilestones);
+	return SortedListDelete(&pThis->pEvents);
 }
 
-EStatus TimeLineMilestone(TimeLine* pThis, double time)
+EStatus TimeLineEvent(TimeLine* pThis, double time, const Message* pMessage)
 {
-	double* pTime;
+	Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis && (time >= 0));
-	pTime = NEW(double);
-	*pTime = time;
-	return SortedListAdd(pThis->pMilestones, pTime);
+	pEvent = NEW(Event);
+
+	if (pThis->tracker.callback) pThis->tracker.callback(time, pMessage, TRUE, pThis->tracker.pArg);
+
+	pEvent->time = time;
+	pEvent->pMessage = pMessage;
+
+	CHECK(SortedListAdd(pThis->pEvents, pEvent));
+	return eSTATUS_COMMON_OK;
 }
 
-EStatus TimeLineRelativeMilestone(TimeLine* pThis, double timeDelta)
+EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
-	return TimeLineMilestone(pThis, pThis->time + timeDelta);
+	return TimeLineEvent(pThis, pThis->time + timeDelta, pMessage);
 }
 
 EStatus TimeLineNext(TimeLine* pThis)
 {
-	double* pTime;
-	ListEntry* pEntry;
+	Event* pEvent;
+	double time;
 	VALIDATE_ARGUMENTS(pThis);
+
+	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
 
 	do
 	{
-		CHECK(SortedListGetHead(pThis->pMilestones, &pEntry));
-		SortedListGetValue(pEntry, &pTime);
-	} while (pEntry && (*pTime == pThis->time));
+		CHECK(SortedListGetNext(&pThis->pCurrent));
+		if (pThis->pCurrent)
+		{
+			CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
+			time = pEvent->time;
+		}
+	} while (pThis->pCurrent && (time == pThis->time));
+	pThis->time = time;
 
-	if (!pEntry) return eSTATUS_TIME_LINE_FINISHED;
-	pThis->time = *pTime;
-
-	DELETE(pTime);
 	return eSTATUS_COMMON_OK;
 }
 
@@ -85,8 +110,9 @@ EStatus TimeLineGetTime(TimeLine* pThis, double* pTime)
 EStatus TimeLineClear(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(SortedListCleanUp(pThis->pMilestones, (ItemFilter)&TimeLineCleaner, NULL));
+	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->time = 0;
+	pThis->pCurrent = 0;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -95,12 +121,27 @@ EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
 	double* pResult;
 	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && pLength);
-	CHECK(SortedListGetTail(pThis->pMilestones, &pEntry));
+	CHECK(SortedListGetTail(pThis->pEvents, &pEntry));
 	*pLength = 0;
 	if (pEntry)
 	{
 		CHECK(ListGetValue(pEntry, &pResult));
 		if (pResult) *pLength = *pResult;
 	}
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus TimeLineReset(TimeLine* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus TimeLineSetEventTracker(TimeLine* pThis, EventTracker tracker, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->tracker.callback = tracker;
+	pThis->tracker.pArg = pUserArg;
 	return eSTATUS_COMMON_OK;
 }
