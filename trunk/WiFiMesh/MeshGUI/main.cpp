@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     a.setApplicationVersion("0.1.0");
     a.setApplicationName("WiFi Mesh Simulator");
 
-    // Q_INIT_RESOURCE(MeshApp);
     MeshApp w;
     w.showMaximized();
     return a.exec();

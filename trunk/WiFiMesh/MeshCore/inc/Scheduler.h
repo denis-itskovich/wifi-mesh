@@ -59,4 +59,9 @@ EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage);
  */
 EStatus SchedulerClear(Scheduler* pThis);
 
+/** Resets a scheduler
+ * \param pThis [in]
+ */
+EStatus SchedulerReset(Scheduler* pThis);
+
 #endif /* SCHEDULER_H_ */

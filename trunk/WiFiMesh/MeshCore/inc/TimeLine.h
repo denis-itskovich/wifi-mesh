@@ -12,8 +12,18 @@
 #define _WIFI_MESH_TIMELINE_H
 
 #include "Status.h"
+#include "Message.h"
 
 typedef struct _TimeLine TimeLine; ///< TimeLine forward declaration
+
+/** Time line callback
+ * Callback is called each time an event is added to or removed from the time line
+ * \param time [in] event time
+ * \param pMessage [in] associated message
+ * \param isAdded [in] determines whether an event is being added or removed
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*EventTracker)(double time, const Message* pMessage, Boolean isAdded, void* pUserArg);
 
 /** Allocates and initializes a new instance of TimeLine
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -38,14 +48,16 @@ EStatus TimeLineDestroy(TimeLine* pThis);
 /** Add a new milestone to time line
  * \param pThis [in] pointer to instance
  * \param time [in] time of event, in time units
+ * \param pMessage [in] message, associated with an event
  */
-EStatus TimeLineMilestone(TimeLine* pThis, double time);
+EStatus TimeLineEvent(TimeLine* pThis, double time, const Message* pMessage);
 
 /** Add a new relative milestone to time line
  * \param pThis [in] pointer to instance
  * \param timeDelta [in] delta time
+ * \param pMessage [in] message, associated with an event
  */
-EStatus TimeLineRelativeMilestone(TimeLine* pThis, double timeDelta);
+EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Message* pMessage);
 
 /** Switches to next milestone
  * \param pThis [in] pointer to instance
@@ -63,10 +75,23 @@ EStatus TimeLineGetTime(TimeLine* pThis, double* pTime);
  */
 EStatus TimeLineClear(TimeLine* pThis);
 
+/** Reset time line
+ * \param pThis [in] pointer to instance
+ */
+EStatus TimeLineReset(TimeLine* pThis);
+
 /** Retrieves time line length
  * \param pThis [in] pointer to instance
  * \param pLength [out] length will be stored at *pLength
  */
 EStatus TimeLineGetLength(TimeLine* pThis, double* pLength);
+
+/** Sets time line event tracker
+ * \param pThis [in] pointer to instance
+ * \param tracker [in] event tracker
+ * \param pUserArg [in] user defined argument
+ * \see EventTracker
+ */
+EStatus TimeLineSetEventTracker(TimeLine* pThis, EventTracker tracker, void* pUserArg);
 
 #endif // _WIFI_MESH_TIMELINE_H

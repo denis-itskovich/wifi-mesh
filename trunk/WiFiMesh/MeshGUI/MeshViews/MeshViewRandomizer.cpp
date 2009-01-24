@@ -21,16 +21,25 @@ void MeshViewRandomizer::init()
 {
 	m_sliderStationsCount = new QSlider(Qt::Horizontal);
 	m_sliderStationsCount->setTickPosition(QSlider::TicksBelow);
+	m_sliderStationsCount->setRange(1, 1000);
+	m_sliderStationsCount->setTickInterval(100);
+
 	m_spinStationsCount = new QSpinBox;
+	m_spinStationsCount->setRange(1, 1000);
 
 	connect(m_sliderStationsCount, SIGNAL(valueChanged(int)), m_spinStationsCount, SLOT(setValue(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), m_sliderStationsCount, SLOT(setValue(int)));
 
 	m_spinAvgVelocity = new QDoubleSpinBox;
 	m_spinAvgVelocity->setSingleStep(0.05);
+	m_spinAvgVelocity->setRange(0.01, 99.99);
 
 	m_spinAvgDataSize = new QSpinBox;
+	m_spinAvgDataSize->setRange(1, 1 << 30);
+
 	m_spinAvgMessagesCount = new QSpinBox;
+	m_spinAvgMessagesCount->setRange(1, 100000);
+
 	m_buttonGenerate = new QPushButton(tr("Generate"));
 
 	QHBoxLayout* hlayout = new QHBoxLayout;
@@ -64,6 +73,11 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(m_spinAvgMessagesCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgMessagesCount(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
 	connect(m_buttonGenerate, SIGNAL(clicked()), doc, SLOT(generate()));
+
+	m_spinAvgVelocity->setValue(doc->avgVelocity());
+	m_spinAvgDataSize->setValue(doc->avgDataSize());
+	m_spinAvgMessagesCount->setValue(doc->avgMessagesCount());
+	m_spinStationsCount->setValue(doc->stationsCount());
 
 	MeshView::setDocument(doc);
 }

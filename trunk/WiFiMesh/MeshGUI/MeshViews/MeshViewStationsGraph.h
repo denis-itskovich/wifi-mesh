@@ -52,6 +52,7 @@ protected:
 
 private slots:
 	void addStation(QPointF pos);
+	void updateWorldSize();
 
 private:
 	void init();

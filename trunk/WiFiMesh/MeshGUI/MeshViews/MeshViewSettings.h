@@ -27,7 +27,7 @@ signals:
 	void updateSize(Size size);
 
 private slots:
-	void setDataRate(int dataRate);
+	void setDataRate(double dataRate);
 	void setUnits(int units);
 	void setHeight(int height);
 	void setWidth(int width);
@@ -38,7 +38,8 @@ private:
 
 	QDoubleSpinBox*	m_spinCoverage;
 	QDoubleSpinBox*	m_spinRouteTTL;
-	QSpinBox*		m_spinDataRate;
+	QDoubleSpinBox*	m_spinDataRate;
+	QDoubleSpinBox*	m_spinDuration;
 	QComboBox*		m_comboDataUnits;
 	QSpinBox*		m_spinHeight;
 	QSpinBox*		m_spinWidth;

@@ -29,7 +29,9 @@ void MeshViewStationsList::init()
 	m_treeStations->setHeaderLabels(QStringList() << tr("Station") << tr("Properties"));
 
 	m_buttonAdd = new QPushButton(QIcon(":/add.png"), tr("&Add"), this);
+	m_buttonAdd->setFlat(true);
 	m_buttonRemove = new QPushButton(QIcon(":/remove.png"), tr("&Remove"), this);
+	m_buttonRemove->setFlat(true);
 
 	layout->addWidget(m_treeStations);
 
@@ -55,6 +57,7 @@ void MeshViewStationsList::addStation(Station* pStation)
 
 void MeshViewStationsList::currentChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
+	if (!current) return;
 	while (current->parent()) current = current->parent();
 	MeshTreeItemStation* cur = dynamic_cast<MeshTreeItemStation*>(current);
 	MeshViewStations::currentChanged(cur);

@@ -22,6 +22,7 @@ struct _Scheduler
 {
 	TimeLine* 	pTimeLine;
 	SortedList*	pEntries;
+	ListEntry*	pCurrent;
 };
 
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg)
@@ -50,21 +51,8 @@ EStatus SchedulerInit(Scheduler* pThis, TimeLine* pTimeLine)
 
 EStatus SchedulerDestroy(Scheduler* pThis)
 {
-	Message* pMessage;
-	ListEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis);
-
-	do
-	{
-		CHECK(SortedListGetHead(pThis->pEntries, &pEntry));
-		if (pEntry)
-		{
-			CHECK(SortedListGetValue(pEntry, &pMessage));
-			CHECK(MessageDelete(&pMessage));
-			CHECK(SortedListRemove(pThis->pEntries, pEntry));
-		}
-	} while (pEntry);
-
+	CHECK(SchedulerClear(pThis));
 	return SortedListDelete(&pThis->pEntries);
 }
 
@@ -76,39 +64,48 @@ EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time)
 	pEntry->time = time;
 	pEntry->pMessage = pMessage;
 	CHECK(SortedListAdd(pThis->pEntries, pEntry));
-	return TimeLineMilestone(pThis->pTimeLine, time);
+	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
+	return TimeLineEvent(pThis->pTimeLine, time, pMessage);
 }
 
 EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
 {
 	SchedulerEntry* pSchedulerEntry;
-	ListEntry* pListEntry;
 	double time;
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
 
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 
 	*ppMessage = NULL;
-	CHECK(SortedListGetHead(pThis->pEntries, &pListEntry));
-	if (!pListEntry) return eSTATUS_SCHEDULER_NO_MESSAGES;
+	if (!pThis->pCurrent) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
-	CHECK(SortedListGetValue(pListEntry, &pSchedulerEntry));
+	CHECK(SortedListGetValue(pThis->pCurrent, &pSchedulerEntry));
 	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_MESSAGES;
 
-	*ppMessage = pSchedulerEntry->pMessage;
-	DELETE(pSchedulerEntry);
+	CHECK(MessageClone(ppMessage, pSchedulerEntry->pMessage));
+	CHECK(SortedListGetNext(&pThis->pCurrent));
 
-	return SortedListRemove(pThis->pEntries, pListEntry);
+	return eSTATUS_COMMON_OK;
 }
 
-Boolean SchedulerCleaner(Message* pMessage, Scheduler* pScheduler)
+Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pScheduler)
 {
-	MessageDelete(&pMessage);
+	MessageDelete(&pEntry->pMessage);
+	DELETE(pEntry);
 	return FALSE;
 }
 
 EStatus SchedulerClear(Scheduler* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	return SortedListCleanUp(pThis->pEntries, (ItemFilter)&SchedulerCleaner, pThis);
+	CHECK(SortedListCleanUp(pThis->pEntries, (ItemFilter)&SchedulerCleaner, pThis));
+	pThis->pCurrent = NULL;
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SchedulerReset(Scheduler* pThis)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
+	return eSTATUS_COMMON_OK;
 }

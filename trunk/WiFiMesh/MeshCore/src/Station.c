@@ -141,7 +141,7 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage && (pMessage->type < eMSG_TYPE_LAST));
 	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
-	CHECK(TimeLineRelativeMilestone(pThis->pTimeLine, pThis->silentTime));
+	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pMessage));
 	if (!StationIsAccepted(pThis, pMessage)) return eSTATUS_COMMON_OK;
 
 	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
@@ -256,10 +256,11 @@ EStatus StationReset(Station* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	pThis->curLocation = pThis->orgLocation;
+
 	CHECK(QueueCleanUp(pThis->pInbox, NULL, NULL));
 	CHECK(QueueCleanUp(pThis->pOutbox, NULL, NULL));
-	CHECK(SchedulerClear(pThis->pScheduler));
 	CHECK(RoutingClear(pThis->pRouting));
+	CHECK(SchedulerReset(pThis->pScheduler));
 
 	return eSTATUS_COMMON_OK;
 }

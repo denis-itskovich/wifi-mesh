@@ -21,16 +21,24 @@ public:
 
 	Station* currentStation() const;
 
+	int dataRate() const;
+	double coverage() const;
+	double routeTTL() const;
+	Size worldSize() const;
+	double duration() const;
+
+	int stationsCount() const;
+	double avgVelocity() const;
+	int avgDataSize() const;
+	int avgMessagesCount() const;
+
+
 public slots:
 	void setDataRate(int dataRate);
 	void setCoverage(double coverage);
 	void setRouteTTL(double routeTTL);
 	void setWorldSize(Size size);
-
-	int dataRate() const;
-	double coverage() const;
-	double routeTTL() const;
-	Size worldSize() const;
+	void setDuration(double duration);
 
 	void setStationsCount(int count);
 	void setAvgDataSize(int dataSize);
@@ -56,13 +64,22 @@ signals:
 	void stationRemoved(Station* pStation);
 	void stationAdded(Station* pStation);
 	void stationUpdated(Station* pStation);
+	void worldSizeChanged();
 
 	void updatedStations();
 	void updatedTimeLine();
 
 private:
-	static double rand(double limit);
 	Velocity generateVelocity() const;
+	Location generateLocation() const;
+
+	static double rand(double limit);
+	static int rand(int limit);
+
+	// callbacks
+	static void stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis);
+	static void messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis);
+	static void eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis);
 
 	Simulator*	m_pSimulator;
 	Settings*	m_pSettings;
@@ -72,6 +89,7 @@ private:
 	int			m_avgDataSize;
 	int			m_avgMsgCount;
 	double		m_avgVelocity;
+	double		m_duration;
 	bool		m_bStarted;
 	bool		m_bPaused;
 };
