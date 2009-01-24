@@ -54,7 +54,7 @@ EStatus SortedListAdd(SortedList* pThis, void* pValue)
 	while (pEntry)
 	{
 		CHECK(SortedListGetValue(pEntry, &pRight));
-		if (pThis->comparator(pRight, pValue, pThis->pUserArg) != GREAT)
+		if (pThis->comparator(pValue, pRight, pThis->pUserArg) != GREAT)
 		{
 			return ListInsertBefore(pThis->pList, pEntry, pValue);
 		}

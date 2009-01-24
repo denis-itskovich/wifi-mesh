@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstdlib>
 
-static const int RND_RESOLUTION = 10000;
+static const int RND_RESOLUTION = RAND_MAX;
 
 MeshDocument::MeshDocument() :
 	m_pCurStation(NULL),
@@ -17,7 +17,9 @@ MeshDocument::MeshDocument() :
 	m_avgDataSize(65536),
 	m_avgMsgCount(256),
 	m_avgVelocity(20.0),
-	m_duration(60)
+	m_duration(60),
+	m_bStarted(false),
+	m_bPaused(false)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
@@ -187,8 +189,11 @@ void MeshDocument::generate()
 void MeshDocument::start()
 {
 	if (m_bStarted) step();
-	CHECK(SimulatorReset(m_pSimulator));
-	m_bStarted = true;
+	else
+	{
+		CHECK(SimulatorReset(m_pSimulator));
+		m_bStarted = true;
+	}
 }
 
 void MeshDocument::stop()
