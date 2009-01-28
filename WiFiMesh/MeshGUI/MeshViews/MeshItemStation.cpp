@@ -84,3 +84,8 @@ void MeshItemStation::makeCurrent()
 {
 	m_pContainer->currentChanged(this);
 }
+
+MeshDocument* MeshItemStation::document() const
+{
+	return m_pContainer->document();
+}

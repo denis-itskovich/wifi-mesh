@@ -38,7 +38,6 @@ class MeshViewStationsGraph : public MeshViewStations
 	Q_OBJECT
 public:
 	MeshViewStationsGraph(QWidget* parent = 0);
-	virtual ~MeshViewStationsGraph();
 
 	virtual void setDocument(MeshDocument* document);
 

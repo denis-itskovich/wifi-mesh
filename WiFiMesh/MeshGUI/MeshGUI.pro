@@ -2,7 +2,8 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += MeshViews/MeshGraphItemStation.h \
+HEADERS += MeshViews/MeshViewMessagesList.h \
+    MeshViews/MeshGraphItemStation.h \
     MeshViews/MeshTreeItemStation.h \
     MeshViews/MeshItemStation.h \
     MeshViews/MeshViewStationsGraph.h \
@@ -19,7 +20,8 @@ HEADERS += MeshViews/MeshGraphItemStation.h \
     Document/MeshDocument.h \
     Dialogs/MeshAboutDlg.h \
     App/MeshApp.h
-SOURCES += MeshViews/MeshGraphItemStation.cpp \
+SOURCES += MeshViews/MeshViewMessagesList.cpp \
+    MeshViews/MeshGraphItemStation.cpp \
     MeshViews/MeshTreeItemStation.cpp \
     MeshViews/MeshItemStation.cpp \
     MeshViews/MeshViewStationsList.cpp \

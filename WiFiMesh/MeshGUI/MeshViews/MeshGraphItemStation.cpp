@@ -9,6 +9,7 @@
  */
 
 #include "MeshGraphItemStation.h"
+#include "../Document/MeshDocument.h"
 #include <cmath>
 
 MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station* pStation) :
@@ -16,16 +17,18 @@ MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsFocusable);
+    setAcceptHoverEvents(true);
 //    setCacheMode(DeviceCoordinateCache);
     setPos(location());
     setZValue(1);
+    setCursor(Qt::OpenHandCursor);
 }
 
 QRectF MeshGraphItemStation::boundingRect() const
 {
+	qreal size = std::max(document()->coverage(), 10.0);
     qreal adjust = 2;
-    return QRectF(-10 - adjust, -10 - adjust,
-                  23 + adjust, 23 + adjust);
+    return QRectF(- size - adjust, - size - adjust, size * 2.0 + adjust, size * 2.0 + adjust);
 }
 
 QPainterPath MeshGraphItemStation::shape() const
@@ -68,18 +71,38 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
     }
     else
     {
-        colOut.light(200);
         gradient.setColorAt(0, colOut);
         gradient.setColorAt(1, colIn);
     }
+
+    painter->setPen(QPen(Qt::NoPen));
+
+    if (option->state & QStyle::State_MouseOver)
+    {
+        colOut.lighter(100);
+        colOut.setAlpha(100);
+        qreal coverage = document()->coverage();
+        QRectF ellipseBounds(-coverage, -coverage, coverage * 2.0, coverage * 2.0);
+        QRadialGradient gradient(0, 0, coverage);
+        gradient.setColorAt(10.0 / coverage, colOut);
+        colOut.setAlpha(20);
+        gradient.setColorAt(1.0, colOut);
+        painter->setBrush(gradient);
+        painter->drawEllipse(ellipseBounds);
+    }
+
     painter->setBrush(gradient);
-    painter->setPen(QPen(Qt::black, 0));
     painter->drawEllipse(-10, -10, 20, 20);
+    painter->setPen(QColor(Qt::white));
+    QRectF rect(-10.0, -10.0, 20.0, 20.0);
+    painter->setFont(QFont("Tahoma"));
+    painter->drawText(rect, Qt::AlignCenter, QString("%1").arg(id()));
 }
 
 void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::update();
+    setCursor(Qt::ClosedHandCursor);
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -87,6 +110,7 @@ void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void MeshGraphItemStation::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	QGraphicsItem::update();
+    setCursor(Qt::OpenHandCursor);
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -104,7 +128,6 @@ void MeshGraphItemStation::focusOutEvent(QFocusEvent *event)
 	QGraphicsItem::focusOutEvent(event);
 	QGraphicsItem::update();
 }
-
 
 QVariant MeshGraphItemStation::itemChange(GraphicsItemChange change, const QVariant &value)
 {

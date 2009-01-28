@@ -16,11 +16,6 @@ MeshViewStationsGraph::MeshViewStationsGraph(QWidget *parent) :
 	init();
 }
 
-MeshViewStationsGraph::~MeshViewStationsGraph()
-{
-
-}
-
 void MeshViewStationsGraph::init()
 {
 	QGraphicsScene* scene = new QGraphicsScene();

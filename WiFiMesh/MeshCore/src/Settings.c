@@ -12,7 +12,7 @@
 #include "Macros.h"
 #include <stdlib.h>
 
-#define DEFAULT_COVERAGE	10
+#define DEFAULT_COVERAGE	50
 #define	DEFAULT_DATA_RATE	1048576
 #define DEFAULT_ROUTE_TTL	2000
 
