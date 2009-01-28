@@ -15,7 +15,6 @@ class MeshViewStationProperties : public MeshView
 	Q_OBJECT
 public:
 	MeshViewStationProperties(QWidget* parent = 0);
-	virtual ~MeshViewStationProperties();
 
 private slots:
 	void dialAngleChanged(int angle);

@@ -13,10 +13,6 @@ MeshViewStationProperties::MeshViewStationProperties(QWidget* parent) :
 	init();
 }
 
-MeshViewStationProperties::~MeshViewStationProperties()
-{
-}
-
 void MeshViewStationProperties::init()
 {
 	QBoxLayout* layout = new QVBoxLayout(this);

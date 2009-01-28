@@ -90,6 +90,13 @@ Size MeshDocument::worldSize() const
 	return size;
 }
 
+double MeshDocument::time() const
+{
+	double t;
+	CHECK(TimeLineGetTime(m_pTimeLine, &t));
+	return t;
+}
+
 void MeshDocument::setStationsCount(int count)
 {
 	m_stationsCount = count;
@@ -193,6 +200,7 @@ void MeshDocument::start()
 	{
 		CHECK(SimulatorReset(m_pSimulator));
 		m_bStarted = true;
+		emit simulationStarted();
 	}
 }
 
@@ -284,7 +292,7 @@ void MeshDocument::stationTracker(Station* pStation, StationEventType eventType,
 
 void MeshDocument::messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis)
 {
-
+	emit pThis->messageDispatched(pMessage);
 }
 
 void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)

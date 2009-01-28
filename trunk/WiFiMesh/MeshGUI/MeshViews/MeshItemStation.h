@@ -15,6 +15,7 @@
 #include "../CoreWrappers/MeshCore.h"
 
 class MeshViewStations;
+class MeshDocument;
 
 class MeshItemStation
 {
@@ -36,6 +37,8 @@ protected:
 
 	void setLocation(QPointF loc);
 	void setVelocity(QPointF vel);
+
+	MeshDocument* document() const;
 
 private:
 	MeshViewStations*	m_pContainer;

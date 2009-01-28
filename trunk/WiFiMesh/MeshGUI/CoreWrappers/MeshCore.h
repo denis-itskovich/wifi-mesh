@@ -18,6 +18,7 @@ extern "C"
 	#include "../../MeshCore/inc/Simulator.h"
 	#include "../../MeshCore/inc/Settings.h"
 	#include "../../MeshCore/inc/Log.h"
+	#include "../../MeshCore/inc/Message.h"
 }
 
 #include "MeshException.h"

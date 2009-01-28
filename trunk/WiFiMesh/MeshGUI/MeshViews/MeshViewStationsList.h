@@ -16,7 +16,6 @@ class MeshViewStationsList : public MeshViewStations
 	Q_OBJECT
 public:
 	MeshViewStationsList(QWidget* parent = 0);
-	virtual ~MeshViewStationsList();
 
 	virtual void setDocument(MeshDocument* document);
 

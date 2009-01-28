@@ -16,10 +16,6 @@ MeshViewStationsList::MeshViewStationsList(QWidget* parent) :
 	init();
 }
 
-MeshViewStationsList::~MeshViewStationsList()
-{
-}
-
 void MeshViewStationsList::init()
 {
 	QBoxLayout* layout = new QVBoxLayout(this);

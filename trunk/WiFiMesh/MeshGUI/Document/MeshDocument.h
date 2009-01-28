@@ -26,6 +26,7 @@ public:
 	double routeTTL() const;
 	Size worldSize() const;
 	double duration() const;
+	double time() const;
 
 	int stationsCount() const;
 	double avgVelocity() const;
@@ -64,7 +65,10 @@ signals:
 	void stationRemoved(Station* pStation);
 	void stationAdded(Station* pStation);
 	void stationUpdated(Station* pStation);
+
+	void messageDispatched(const Message* pMsg);
 	void worldSizeChanged();
+	void simulationStarted();
 
 	void updatedStations();
 	void updatedTimeLine();
