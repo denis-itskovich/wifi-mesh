@@ -19,6 +19,8 @@ struct _Simulator
 	List*			pStations;
 	TimeLine*		pTimeLine;
 	Settings*		pSettings;
+	StationId		minId;
+	StationId		maxId;
 	struct
 	{
 		Sniffer callback;
@@ -51,14 +53,30 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
  */
 EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry);
 
+/** Assigns unique station id
+ * \param pThis [in] pointer to instance
+ */
+StationId SimulatorAssignId(Simulator* pThis);
+
+/** Frees station id
+ * \param pThis [in] pointer to instance
+ * \param id [in] id to free
+ */
+void SimulatorFreeId(Simulator* pThis, StationId id);
+
 Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 {
+	StationId id;
+
 	if (pThis)
 	{
 		if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_REMOVED, pThis->tracker.pArg);
 	}
 
+	StationGetId(pStation, &id);
 	StationDelete(&pStation);
+	SimulatorFreeId(pThis, id);
+
 	return FALSE;
 }
 
@@ -76,8 +94,9 @@ EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings, TimeLine* pTimeLin
 EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine)
 {
 	VALIDATE_ARGUMENTS(pThis && pSettings);
-	CHECK(ListNew(&pThis->pStations));
+	CLEAR(pThis);
 
+	CHECK(ListNew(&pThis->pStations));
 	pThis->pTimeLine = pTimeLine;
 	pThis->pSettings = pSettings;
 
@@ -101,8 +120,9 @@ EStatus SimulatorDestroy(Simulator* pThis)
 EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 {
 	VALIDATE_ARGUMENTS(pThis && pStation);
+	CHECK(StationSetId(pStation, SimulatorAssignId(pThis)));
 	if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_ADDED, pThis->tracker.pArg);
-	return ListInsert(pThis->pStations, pStation);
+	return ListPushBack(pThis->pStations, pStation);
 }
 
 EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
@@ -115,6 +135,7 @@ EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
 	CHECK(StationGetId(pStation, &id));
 	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
 	SimulatorCleaner(pStation, pThis);
+
 	return ListRemove(pThis->pStations, pEntry);
 }
 
@@ -189,6 +210,7 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 	Boolean bIsAdjacent = FALSE;
 	Station* pCurrent = NULL;
 	double time;
+	EStatus ret;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetMessage(pStation, &pMessage));
@@ -204,8 +226,12 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 		if (bIsAdjacent)
 		{
 			CHECK(MessageClone(&pNewMessage, pMessage));
-			CHECK(StationPutMessage(pCurrent, pNewMessage));
-			if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pStation, pCurrent, pThis->sniffer.pArg);
+			ret = StationPutMessage(pCurrent, pNewMessage);
+			if (ret == eSTATUS_COMMON_OK)
+			{
+				if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pStation, pCurrent, pThis->sniffer.pArg);
+			}
+			else if (ret != eSTATUS_STATION_MESSAGE_NOT_ACCEPTED) return ret;
 		}
 		CHECK(ListGetNext(&pEntry));
 	}
@@ -250,4 +276,19 @@ EStatus SimulatorEnumerateStations(Simulator* pThis, StationsEnumerator enumerat
 {
 	VALIDATE_ARGUMENTS(pThis && enumerator);
 	return ListEnumerate(pThis->pStations, (ItemEnumerator)enumerator, pUserArg);
+}
+
+StationId SimulatorAssignId(Simulator* pThis)
+{
+	if (pThis->minId > 0) return --pThis->minId;
+	return ++pThis->maxId;
+}
+
+void SimulatorFreeId(Simulator* pThis, StationId id)
+{
+	int count = 0;
+	if (pThis->minId == id) ++pThis->minId;
+	if (pThis->maxId == id + 1) --pThis->maxId;
+	ListGetCount(pThis->pStations, &count);
+	if (count == 1) pThis->minId = pThis->maxId = 0;
 }

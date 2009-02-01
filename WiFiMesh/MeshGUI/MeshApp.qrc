@@ -23,5 +23,6 @@
         <file>Images/standardbutton-open-32.png</file>
         <file>Images/standardbutton-save-32.png</file>
         <file alias="break.png" >Images/stop-32.png</file>
+        <file alias="mesh.png" >Images/mesh.png</file>
     </qresource>
 </RCC>

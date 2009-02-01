@@ -16,10 +16,42 @@
 #include "Message.h"
 #include "Settings.h"
 #include "TimeLine.h"
+#include "Routing.h"
 
 typedef struct _Station Station; 	///< Station forward declaration
 
-/** Allocates and initializes new instance
+/** Message scheduler add/remove handler.
+ * Is called each time a message is scheduled/removed
+ * \param pStation [in] pointer to station
+ * \param time [in] time, when a message should be issued
+ * \param pMessage [in] pointer to message instance
+ * \param bAdded [in] if TRUE message is being added, otherwise removed
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*StationSchedulerHandler)(const Station* pStation,
+										double time,
+										const Message* pMessage,
+										Boolean bAdded,
+										void* pUserArg);
+
+/** Routing entry update handler.
+ * Is called each time routing entry is being added, updated or removed (expired)
+ * \param pStation [in] pointer to station
+ * \param destId [in] destination station id
+ * \param transId [in] transit station id
+ * \param expirationTime [in] entry expiration time
+ * \param updateAction [in] true if entry is being added or updated
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*StationRoutingHandler)(const Station* pStation,
+									  StationId destId,
+									  StationId transId,
+									  double expirationTime,
+									  int length,
+									  ERouteEntryUpdate updateAction,
+									  void *pUserArg);
+
+/** Allocates and initializes new instance.
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
@@ -28,12 +60,12 @@ typedef struct _Station Station; 	///< Station forward declaration
  */
 EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings);
 
-/** Destroys and deallocates an instance
+/** Destroys and deallocates an instance.
  * \param ppThis [in, out] *ppThis should point to valid instance
  */
 EStatus StationDelete(Station** ppThis);
 
-/** Initializes an instance
+/** Initializes an instance.
  * \param pThis [in] pointer to instance to initialize
  * \param velocity [in] station velocity vector
  * \param location [in] station location vector
@@ -72,6 +104,12 @@ EStatus StationSetVelocity(Station* pThis, Velocity newVelocity);
  */
 EStatus StationGetId(const Station* pThis, StationId* pId);
 
+/** Sets an id
+ * \param pThis [in] pointer to instance
+ * \param id [in] new id
+ */
+EStatus StationSetId(Station* pThis, StationId id);
+
 /** Retrieves next outgoing message
  * \param pThis [in] pointer to instance
  * \param ppMessage [out] pointer to message will be stored at *ppMessage. NULL will be stored if no outgoing messages are available
@@ -81,6 +119,8 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage);
 /** Deliveries a message
  * \param pThis [in] pointer to instance
  * \param pMessage [in] pointer to message
+ * \return eSTATUS_MESSAGE_NOT_ACCEPTED if the massage was not handled by station
+ * \return eSTATUS_COMMON_OK if the message was handled
  */
 EStatus StationPutMessage(Station* pThis, Message* pMessage);
 
@@ -126,5 +166,19 @@ EStatus StationGetVelocity(const Station* pThis, Velocity* pVelocity);
  * \param pThis [in] pointer to instance
  */
 EStatus StationReset(Station* pThis);
+
+/** Registers scheduler handler.
+ * \param pThis [in] pointer to instance
+ * \param handler [in] pointer to handler
+ * \param pUserArg [in] user defined argument
+ */
+EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg);
+
+/** Registers routing handler
+ * \param pThis [in] pointer to instance
+ * \param handler [in] pointer to handler
+ * \param pUserArg [in] user defined argument
+ */
+EStatus StationRegisterRoutingHandler(Station* pThis, StationRoutingHandler handler, void* pUserArg);
 
 #endif //_WIFI_MESH_STATION_H

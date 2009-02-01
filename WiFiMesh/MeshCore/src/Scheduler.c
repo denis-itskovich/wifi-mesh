@@ -23,6 +23,11 @@ struct _Scheduler
 	TimeLine* 	pTimeLine;
 	SortedList*	pEntries;
 	ListEntry*	pCurrent;
+	struct
+	{
+		SchedulerHandler	callback;
+		void*				pArg;
+	}			handler;
 };
 
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg)
@@ -65,6 +70,10 @@ EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time)
 	pEntry->pMessage = pMessage;
 	CHECK(SortedListAdd(pThis->pEntries, pEntry));
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
+	if (pThis->handler.callback)
+	{
+		pThis->handler.callback(time, pMessage, TRUE, pThis->handler.pArg);
+	}
 	return TimeLineEvent(pThis->pTimeLine, time, pMessage);
 }
 
@@ -88,9 +97,13 @@ EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
 	return eSTATUS_COMMON_OK;
 }
 
-Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pScheduler)
+Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis)
 {
 	MessageDelete(&pEntry->pMessage);
+	if (pThis->handler.callback)
+	{
+		pThis->handler.callback(pEntry->time, pEntry->pMessage, FALSE, pThis->handler.pArg);
+	}
 	DELETE(pEntry);
 	return FALSE;
 }
@@ -108,4 +121,11 @@ EStatus SchedulerReset(Scheduler* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->handler.callback = handler;
+	pThis->handler.pArg = pUserArg;
 }

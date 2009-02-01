@@ -80,11 +80,19 @@ EStatus ListDestroy(List* pThis);
  */
 EStatus ListGetCount(List* pThis, unsigned* pCount);
 
-/** Inserts new item to the tail
+
+
+/** Inserts new item after the tail
  * \param pThis [in] pointer to instance
  * \param pValue [in] pointer to abstract value
  */
-EStatus ListInsert(List* pThis, void* pValue);
+EStatus ListPushBack(List* pThis, void* pValue);
+
+/** Inserts new item before the head
+ * \param pThis [in] pointer to instance
+ * \param pValue [in] pointer to abstract value
+ */
+EStatus ListPushFront(List* pThis, void* pValue);
 
 /** Inserts new item \a after specified position
  * \param pThis [in] pointer to instance
@@ -99,6 +107,16 @@ EStatus ListInsertAfter(List* pThis, ListEntry* pEntry, void* pValue);
  * \param pValue [in] pointer to abstract value
  */
 EStatus ListInsertBefore(List* pThis, ListEntry* pEntry, void* pValue);
+
+/** Removes tail item from the list
+ * \param pThis [in] pointer to instance
+ */
+EStatus ListPopBack(List* pThis);
+
+/** Removes head item from the list
+ * \param pThis [in] pointer to instance
+ */
+EStatus ListPopFront(List* pThis);
 
 /** Removes an item from specified position
  * \param pThis [in] pointer to instance

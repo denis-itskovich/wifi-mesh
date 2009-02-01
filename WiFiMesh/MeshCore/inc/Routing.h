@@ -18,6 +18,24 @@
 
 typedef struct _Routing Routing; ///< forward declaration
 
+/// Routing entry modifying flag
+typedef enum _ERouteEntryUpdate
+{
+	eROUTE_ADD,			///< Entry is being added
+	eROUTE_UPDATE,		///< Entry is being modified
+	eROUTE_REMOVE		///< Entry is being removed
+} ERouteEntryUpdate;
+
+/** Route entry handler add/update/remove handler.
+ * Is called each time a routing entry is being added, updated or removed (expired)
+ * \param destId [in] destination station id
+ * \param transId [in] transit station id
+ * \param expirationTime [in] entry expiration time
+ * \param updateAction [in] true if entry is being added or updated
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*RoutingHandler)(StationId destId, StationId transId, double expirationTime, int length, ERouteEntryUpdate updateAction, void *pUserArg);
+
 /** Allocates & initializes a new instance
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param pSettings [in] pointer to settings instance
@@ -68,5 +86,12 @@ EStatus RoutingSynchronize(Routing* pThis);
  * \param pThis [in] pointer to instance
  */
 EStatus RoutingClear(Routing* pThis);
+
+/** Sets routing handler
+ * \param pThis [in] pointer to instance
+ * \param handler [in] handler
+ * \param pUserArg [in] user defined argument
+ */
+EStatus RoutingRegisterHandler(Routing* pThis, RoutingHandler handler, void* pUserArg);
 
 #endif /* ROUTING_H_ */
