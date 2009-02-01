@@ -151,4 +151,5 @@ void MeshGraphItemStation::updateStation()
 		setPos(location());
 	}
 	update();
+	MeshItemStation::updateStation();
 }

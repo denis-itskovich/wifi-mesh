@@ -6,7 +6,7 @@
 #include "../MeshViews/MeshViewSettings.h"
 #include "../MeshViews/MeshViewStationsList.h"
 #include "../MeshViews/MeshViewStationsGraph.h"
-#include "../MeshViews/MeshViewMessagesList.h"
+#include "../MeshViews/MeshViewSniffer.h"
 #include "../MeshViews/MeshLog.h"
 
 MeshApp::MeshApp(QWidget *parent)
@@ -22,6 +22,7 @@ MeshApp::~MeshApp()
 
 void MeshApp::init()
 {
+	setWindowIcon(QIcon(":/mesh.png"));
 	createTabs();
 	createDocks();
 	createActions();
@@ -159,19 +160,17 @@ void MeshApp::createDocks()
 
 	QDockWidget* dockStations = createDock(tr("Stations"), new MeshViewStationsList(this));
 	QDockWidget* dockRandomizer = createDock(tr("Randomizer"), new MeshViewRandomizer(this));
-	// QDockWidget* dockStationProperties = createDock(tr("Station properties"), new MeshViewStationProperties(this));
 	QDockWidget* dockSettings = createDock(tr("Settings"), new MeshViewSettings(this));
-	QDockWidget* dockMessages = createDock(tr("Messages"), new MeshViewMessagesList(this));
+	QDockWidget* dockMessages = createDock(tr("Sniffer"), new MeshViewSniffer(this));
 
 	addDockWidget(Qt::RightDockWidgetArea, dockStations);
-	// addDockWidget(Qt::RightDockWidgetArea, dockStationProperties);
 	addDockWidget(Qt::RightDockWidgetArea, dockRandomizer);
 	tabifyDockWidget(dockStations, dockSettings);
-	tabifyDockWidget(dockStations, dockMessages);
+	addDockWidget(Qt::BottomDockWidgetArea, dockMessages);
 
 	MeshView* view = new MeshViewStationsGraph(m_tabs);
 	view->setDocument(m_document);
-	m_tabs->insertTab(0, view, QIcon(), tr("Graph"));
+	m_tabs->insertTab(0, view, 	QIcon(), tr("Graph"));
 	m_tabs->setCurrentIndex(0);
 }
 

@@ -25,6 +25,25 @@
 <code>#include &quot;<a class="el" href="_message_8h.html">Message.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="_settings_8h.html">Settings.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="_time_line_8h.html">TimeLine.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="_routing_8h.html">Routing.h</a>&quot;</code><br>
+
+<p>
+<div class="dynheader">
+Include dependency graph for Station.h:</div>
+<div class="dynsection">
+<p><center><img src="_station_8h__incl.png" border="0" usemap="#Station.h_map" alt=""></center>
+<map name="Station.h_map">
+<area shape="rect" href="_common_types_8h.html" title="CommonTypes.h" alt="" coords="5,304,123,331"><area shape="rect" href="_message_8h.html" title="Message.h" alt="" coords="197,229,280,256"><area shape="rect" href="_settings_8h.html" title="Settings.h" alt="" coords="152,155,229,181"><area shape="rect" href="_time_line_8h.html" title="TimeLine.h" alt="" coords="355,155,437,181"><area shape="rect" href="_routing_8h.html" title="Routing.h" alt="" coords="228,80,303,107"><area shape="rect" href="_status_8h.html" title="Status.h" alt="" coords="244,304,311,331"></map>
+</div>
+
+<p>
+<div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dynsection">
+<p><center><img src="_station_8h__dep__incl.png" border="0" usemap="#Station.hdep_map" alt=""></center>
+<map name="Station.hdep_map">
+<area shape="rect" href="_simulator_8h.html" title="Simulator.h" alt="" coords="5,80,93,107"></map>
+</div>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
@@ -32,6 +51,10 @@
 typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Station forward declaration. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#45501de0929fefdd612a13a4b66efb6b">StationSchedulerHandler</a> )(const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, double time, const <a class="el" href="struct_message.html">Message</a> *pMessage, Boolean bAdded, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#0cfccace2ffc4de6ec4bd88ea37cb8af">StationRoutingHandler</a> )(const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> destId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> transId, double expirationTime, int length, <a class="el" href="_routing_8h.html#8ce229e02704cb74676735d7c7ef91e0">ERouteEntryUpdate</a> updateAction, void *pUserArg)</td></tr>
+
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#d33ff54df7b943ca1c5292d3ea43f16a">StationNew</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> **ppThis, <a class="el" href="struct_vector.html">Velocity</a> velocity, <a class="el" href="struct_vector.html">Location</a> location, <a class="el" href="_time_line_8h.html#943b73103108d95c799456e757e952ca">TimeLine</a> *pTimeLine, <a class="el" href="_settings_8h.html#9d13febf42a17b99aa12231ed4541c17">Settings</a> *pSettings)</td></tr>
 
@@ -48,6 +71,8 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#1b6162709000fd7305c91d17b686c072">StationSetVelocity</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_vector.html">Velocity</a> newVelocity)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e64346ba8f4421f4555cc44664629088">StationGetId</a> (const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> *pId)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#dbce577ceaf5404309e284b16b4c8d01">StationSetId</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> id)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#0ce09f7a94caed2958cee1ed09aa5f76">StationGetMessage</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="struct_message.html">Message</a> **ppMessage)</td></tr>
 
@@ -67,12 +92,66 @@ typedef struct _Station&nbsp;</td><td class="memItemRight" valign="bottom"><a cl
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#ea86810c52a9f20ae034d64c2e87a319">StationReset</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#38f69c54bc15fa89a7742a2c6a6c09ae">StationRegisterSchedulerHandler</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_station_8h.html#45501de0929fefdd612a13a4b66efb6b">StationSchedulerHandler</a> handler, void *pUserArg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="_station_8h.html#e01de6daeec0ef3b39d0d9330633cc22">StationRegisterRoutingHandler</a> (<a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pThis, <a class="el" href="_station_8h.html#0cfccace2ffc4de6ec4bd88ea37cb8af">StationRoutingHandler</a> handler, void *pUserArg)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Station module<p>
 Represents a Station<p>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>1/12/2008 </dd></dl>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Denis Itskovich </dd></dl>
+<hr><h2>Typedef Documentation</h2>
+<a class="anchor" name="0cfccace2ffc4de6ec4bd88ea37cb8af"></a><!-- doxytag: member="Station.h::StationRoutingHandler" ref="0cfccace2ffc4de6ec4bd88ea37cb8af" args=")(const Station *pStation, StationId destId, StationId transId, double expirationTime, int length, ERouteEntryUpdate updateAction, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* <a class="el" href="_station_8h.html#0cfccace2ffc4de6ec4bd88ea37cb8af">StationRoutingHandler</a>)(const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> destId, <a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a> transId, double expirationTime, int length, <a class="el" href="_routing_8h.html#8ce229e02704cb74676735d7c7ef91e0">ERouteEntryUpdate</a> updateAction, void *pUserArg)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Routing entry update handler. Is called each time routing entry is being added, updated or removed (expired) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>destId</em>&nbsp;</td><td>[in] destination station id </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>transId</em>&nbsp;</td><td>[in] transit station id </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>expirationTime</em>&nbsp;</td><td>[in] entry expiration time </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>updateAction</em>&nbsp;</td><td>[in] true if entry is being added or updated </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="45501de0929fefdd612a13a4b66efb6b"></a><!-- doxytag: member="Station.h::StationSchedulerHandler" ref="45501de0929fefdd612a13a4b66efb6b" args=")(const Station *pStation, double time, const Message *pMessage, Boolean bAdded, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* <a class="el" href="_station_8h.html#45501de0929fefdd612a13a4b66efb6b">StationSchedulerHandler</a>)(const <a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *pStation, double time, const <a class="el" href="struct_message.html">Message</a> *pMessage, Boolean bAdded, void *pUserArg)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<a class="el" href="struct_message.html" title="Message declaration.">Message</a> scheduler add/remove handler. Is called each time a message is scheduled/removed <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pStation</em>&nbsp;</td><td>[in] pointer to station </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] time, when a message should be issued </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to message instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>bAdded</em>&nbsp;</td><td>[in] if TRUE message is being added, otherwise removed </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <hr><h2>Function Documentation</h2>
 <a class="anchor" name="7926cbb1a751df1efe20b6ebe8cde53c"></a><!-- doxytag: member="Station.h::StationDelete" ref="7926cbb1a751df1efe20b6ebe8cde53c" args="(Station **ppThis)" -->
 <div class="memitem">
@@ -91,7 +170,7 @@ Represents a Station<p>
 <div class="memdoc">
 
 <p>
-Destroys and deallocates an instance <dl compact><dt><b>Parameters:</b></dt><dd>
+Destroys and deallocates an instance. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>ppThis</em>&nbsp;</td><td>[in, out] *ppThis should point to valid instance </td></tr>
   </table>
@@ -308,7 +387,7 @@ Retrieves station velocity <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Initializes an instance <dl compact><dt><b>Parameters:</b></dt><dd>
+Initializes an instance. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance to initialize </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>velocity</em>&nbsp;</td><td>[in] station velocity vector </td></tr>
@@ -476,7 +555,7 @@ Checks whether a station is transmitting <dl compact><dt><b>Parameters:</b></dt>
 <div class="memdoc">
 
 <p>
-Allocates and initializes new instance <dl compact><dt><b>Parameters:</b></dt><dd>
+Allocates and initializes new instance. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>ppThis</em>&nbsp;</td><td>[out] pointer to new instance will be stored at *ppThis </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>velocity</em>&nbsp;</td><td>[in] station velocity vector </td></tr>
@@ -518,6 +597,92 @@ Deliveries a message <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to message </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>eSTATUS_MESSAGE_NOT_ACCEPTED if the massage was not handled by station <p>
+eSTATUS_COMMON_OK if the message was handled </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="e01de6daeec0ef3b39d0d9330633cc22"></a><!-- doxytag: member="Station.h::StationRegisterRoutingHandler" ref="e01de6daeec0ef3b39d0d9330633cc22" args="(Station *pThis, StationRoutingHandler handler, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationRegisterRoutingHandler           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#0cfccace2ffc4de6ec4bd88ea37cb8af">StationRoutingHandler</a>&nbsp;</td>
+          <td class="paramname"> <em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Registers routing handler <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>handler</em>&nbsp;</td><td>[in] pointer to handler </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="38f69c54bc15fa89a7742a2c6a6c09ae"></a><!-- doxytag: member="Station.h::StationRegisterSchedulerHandler" ref="38f69c54bc15fa89a7742a2c6a6c09ae" args="(Station *pThis, StationSchedulerHandler handler, void *pUserArg)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationRegisterSchedulerHandler           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#45501de0929fefdd612a13a4b66efb6b">StationSchedulerHandler</a>&nbsp;</td>
+          <td class="paramname"> <em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>pUserArg</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Registers scheduler handler. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>handler</em>&nbsp;</td><td>[in] pointer to handler </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pUserArg</em>&nbsp;</td><td>[in] user defined argument </td></tr>
   </table>
 </dl>
 
@@ -585,6 +750,41 @@ Enqueues a message for delayed transmit <dl compact><dt><b>Parameters:</b></dt><
     <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>pMessage</em>&nbsp;</td><td>[in] pointer to message to be sent </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>time</em>&nbsp;</td><td>[in] time, when the message should be sent </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="dbce577ceaf5404309e284b16b4c8d01"></a><!-- doxytag: member="Station.h::StationSetId" ref="dbce577ceaf5404309e284b16b4c8d01" args="(Station *pThis, StationId id)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_status_8h.html#922429339fd6d14354fd7962155d8193">EStatus</a> StationSetId           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_station_8h.html#8eeba6a2f93bb5d4ef4040b2cf424d23">Station</a> *&nbsp;</td>
+          <td class="paramname"> <em>pThis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_common_types_8h.html#286238b4b58f0c608f2f3886a6737df4">StationId</a>&nbsp;</td>
+          <td class="paramname"> <em>id</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets an id <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pThis</em>&nbsp;</td><td>[in] pointer to instance </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>id</em>&nbsp;</td><td>[in] new id </td></tr>
   </table>
 </dl>
 
@@ -696,7 +896,7 @@ Synchronizes a station with current time Moves the station <dl compact><dt><b>Pa
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jan 28 08:04:25 2009 for MeshCore by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Feb 1 08:25:12 2009 for MeshCore by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.7.1 </small></address>
 </body>

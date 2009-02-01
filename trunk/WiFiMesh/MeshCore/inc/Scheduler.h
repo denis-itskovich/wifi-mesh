@@ -17,6 +17,14 @@
 
 typedef struct _Scheduler Scheduler;	///< forward declaration
 
+/** Scheduler adding/removing message handler
+ * \param time [in] time, when a message should be issued
+ * \param pMessage [in] pointer to message instance
+ * \param bAdded [in] if TRUE message is being added, otherwise removed
+ * \param pUserArg [in] user defined argument
+ */
+typedef void (*SchedulerHandler)(double time, const Message* pMessage, Boolean bAdded, void* pUserArg);
+
 /** Allocates and initializes new instance
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
  * \param pTimeLine [in] pointer to valid TimeLine instance
@@ -63,5 +71,12 @@ EStatus SchedulerClear(Scheduler* pThis);
  * \param pThis [in]
  */
 EStatus SchedulerReset(Scheduler* pThis);
+
+/** Registers scheduler handler
+ * \param pThis [in] pointer to instance
+ * \param handler [in] scheduler handler
+ * \param pUserArg [in] user defined argument
+ */
+EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, void* pUserArg);
 
 #endif /* SCHEDULER_H_ */

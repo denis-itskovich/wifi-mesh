@@ -15,6 +15,8 @@
 		CLEAR(ptr); \
 		ptr->originalSrcId = _srcId; \
 		ptr->originalDstId = _dstId; \
+		ptr->transitSrcId = _srcId; \
+		ptr->transitDstId = INVALID_STATION_ID; \
 		ptr->type = _msgtype; \
 	)
 
@@ -70,6 +72,7 @@ EStatus MessageInitData(Message* pThis, StationId srcId, StationId dstId, unsign
 EStatus MessageInitSearchRequest(Message* pThis, StationId srcId, StationId lookForId)
 {
 	INIT_MESSAGE(pThis, eMSG_TYPE_SEARCH_REQUEST, srcId, lookForId);
+	pThis->transitDstId = BROADCAST_STATION_ID;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -90,9 +93,7 @@ EStatus MessageClone(Message** ppDst, const Message* pSrc)
 	VALIDATE_ARGUMENTS(ppDst && pSrc);
 
 	CHECK(MessageNew(ppDst, pSrc->type, pSrc->originalSrcId, pSrc->originalDstId));
-	(*ppDst)->size = pSrc->size;
-	(*ppDst)->transitSrcId = pSrc->transitSrcId;
-	(*ppDst)->transitDstId = pSrc->transitDstId;
+	memcpy(*ppDst, pSrc, sizeof(*pSrc));
 
 	return eSTATUS_COMMON_OK;
 }

@@ -27,6 +27,8 @@ typedef enum
 
 	eSTATUS_TIME_LINE_FINISHED,						///< Last event was reached
 
+	eSTATUS_STATION_MESSAGE_NOT_ACCEPTED,			///< Message did not pass destination filter
+
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
 	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished
 

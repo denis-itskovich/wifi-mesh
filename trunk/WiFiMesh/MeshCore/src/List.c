@@ -67,11 +67,14 @@ EStatus ListGetCount(List* pThis, unsigned* pCount)
 	GET_MEMBER(pCount, pThis, count);
 }
 
-EStatus ListInsert(List* pThis, void* pValue)
+EStatus ListPushBack(List* pThis, void* pValue)
 {
-	ListEntry* pTail;
-	CHECK(ListGetTail(pThis, &pTail));
-	return ListInsertAfter(pThis, pTail, pValue);
+	return ListInsertAfter(pThis, pThis->pTail, pValue);
+}
+
+EStatus ListPushFront(List* pThis, void* pValue)
+{
+	return ListInsertBefore(pThis, pThis->pHead, pValue);
 }
 
 EStatus ListInsertAt(List* pThis, ListEntry* pPrev, ListEntry* pNext, void* pValue)
@@ -103,6 +106,16 @@ EStatus ListInsertAfter(List* pThis, ListEntry* pAfter, void* pValue)
 EStatus ListInsertBefore(List* pThis, ListEntry* pBefore, void* pValue)
 {
 	return ListInsertAt(pThis, (pBefore) ? pBefore->pPrev : pThis->pTail, pBefore, pValue);
+}
+
+EStatus ListPopBack(List* pThis)
+{
+	return ListRemove(pThis, pThis->pTail);
+}
+
+EStatus ListPopFront(List* pThis)
+{
+	return ListRemove(pThis, pThis->pHead);
 }
 
 EStatus ListRemove(List* pThis, ListEntry* pEntry)

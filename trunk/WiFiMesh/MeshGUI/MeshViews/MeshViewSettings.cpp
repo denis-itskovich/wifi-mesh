@@ -30,6 +30,7 @@ void MeshViewSettings::init()
 	m_spinRouteTTL = new QDoubleSpinBox;
 	m_spinRouteTTL->setSingleStep(1);
 	m_spinRouteTTL->setMaximum(3600);
+	m_spinRouteTTL->setSuffix(tr(" [sec]"));
 
 	m_spinDataRate = new QDoubleSpinBox;
 	m_spinDataRate->setRange(1, 1 << 30);

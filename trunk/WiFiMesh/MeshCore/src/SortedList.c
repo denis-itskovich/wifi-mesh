@@ -61,7 +61,7 @@ EStatus SortedListAdd(SortedList* pThis, void* pValue)
 		CHECK(SortedListGetNext(&pEntry));
 	}
 
-	return ListInsert(pThis->pList, pValue);
+	return ListPushBack(pThis->pList, pValue);
 }
 
 EStatus SortedListRemove(SortedList* pThis, ListEntry* pEntry)

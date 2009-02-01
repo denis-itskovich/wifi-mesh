@@ -14,10 +14,6 @@ MeshView::MeshView(QWidget* parent) :
 	init();
 }
 
-MeshView::~MeshView()
-{
-}
-
 MeshDocument* MeshView::document() const
 {
 	return m_document;

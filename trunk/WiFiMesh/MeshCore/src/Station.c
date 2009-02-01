@@ -1,14 +1,8 @@
 #include "Station.h"
 #include "Macros.h"
-#include "Queue.h"
+#include "List.h"
 #include "Routing.h"
 #include "Scheduler.h"
-
-typedef struct _SchedulerEntry
-{
-	double 		time;
-	Message*	pMessage;
-} SchedulerEntry;
 
 struct _Station
 {
@@ -18,17 +12,35 @@ struct _Station
 	Location	orgLocation;
 
 	Routing*	pRouting;
-	Queue*		pInbox;
-	Queue*		pOutbox;
+	List*		pOutbox;
 	Scheduler*	pScheduler;
 	Settings*	pSettings;
 	TimeLine*	pTimeLine;
 	double		silentTime;
+
+	struct
+	{
+		StationSchedulerHandler callback;
+		void*					pArg;
+	}			schedulerHandler;
+
+	struct
+	{
+		StationRoutingHandler 	callback;
+		void*					pArg;
+	}			routingHandler;
+
 };
 
-static unsigned long s_nextId = 0;
-
 typedef EStatus (*MessageHandler)(Station* pThis, Message* pMessage);
+
+void StationHandleRoutingChange(StationId destId,
+								StationId transId,
+								double expirationTime,
+								int length,
+								ERouteEntryUpdate updateAction,
+								Station* pThis);
+void StationHandleScheduleChange(double time, const Message* pMessage, Boolean bAdding, Station* pThis);
 
 EStatus StationHandleData(Station* pThis, Message* pMessage);
 EStatus StationHandleAck(Station* pThis, Message* pMessage);
@@ -39,6 +51,7 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage);
 
 Boolean StationIsDestination(Station* pThis, Message* pMessage);
 Boolean StationIsAccepted(Station* pThis, Message* pMessage);
+Boolean StationIsMessageReady(Station* pThis, Message* pMessage);
 
 static MessageHandler s_handlers[eMSG_TYPE_LAST] =
 {
@@ -66,13 +79,11 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 	pThis->orgLocation = location;
 	pThis->curLocation = location;
 	pThis->velocity = velocity;
-	pThis->id = s_nextId++;
 	pThis->pSettings = pSettings;
 	pThis->pTimeLine = pTimeLine;
 
 	CHECK(RoutingNew(&pThis->pRouting, pSettings, pTimeLine));
-	CHECK(QueueNew(&pThis->pInbox));
-	CHECK(QueueNew(&pThis->pOutbox));
+	CHECK(ListNew(&pThis->pOutbox));
 	CHECK(SchedulerNew(&pThis->pScheduler, pTimeLine));
 
 	return eSTATUS_COMMON_OK;
@@ -82,8 +93,7 @@ EStatus StationDestroy(Station* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(QueueDelete(&pThis->pInbox));
-	CHECK(QueueDelete(&pThis->pOutbox));
+	CHECK(ListDelete(&pThis->pOutbox));
 	CHECK(RoutingDelete(&pThis->pRouting));
 
 	return eSTATUS_COMMON_OK;
@@ -91,6 +101,7 @@ EStatus StationDestroy(Station* pThis)
 
 EStatus StationSynchronize(Station* pThis, double timeDelta)
 {
+	Message* pMessage;
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
 
 	if (pThis->silentTime <= timeDelta) pThis->silentTime = 0;
@@ -99,7 +110,12 @@ EStatus StationSynchronize(Station* pThis, double timeDelta)
 	pThis->curLocation.x += pThis->velocity.x * timeDelta;
 	pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
-	return RoutingSynchronize(pThis->pRouting);
+	CHECK(RoutingSynchronize(pThis->pRouting));
+	EStatus ret = SchedulerGetMessage(pThis->pScheduler, &pMessage);
+	if (ret == eSTATUS_SCHEDULER_NO_MESSAGES) return eSTATUS_COMMON_OK;
+	CHECK(ret);
+
+	return StationHandleTransits(pThis, pMessage);
 }
 
 EStatus StationSetLocation(Station* pThis, Location newLocation)
@@ -118,23 +134,34 @@ EStatus StationGetId(const Station* pThis, StationId* pId)
 	GET_MEMBER(pId, pThis, id);
 }
 
+EStatus StationSetId(Station* pThis, StationId id)
+{
+	SET_MEMBER(id, pThis, id);
+}
+
 EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 {
-	EStatus ret;
+	ListEntry* pEntry;
+	Message* pMessage;
 	*ppMessage = NULL;
 
 	VALIDATE_ARGUMENTS(pThis && ppMessage);
 	if (pThis->silentTime > 0) return eSTATUS_COMMON_OK;
 
-	ret = QueuePop(pThis->pOutbox, ppMessage);
-	NCHECK(ret);
-
-	if (ret == eSTATUS_QUEUE_EMPTY)
+	CHECK(ListGetHead(pThis->pOutbox, &pEntry));
+	while (pEntry)
 	{
-		*ppMessage = NULL;
-		return eSTATUS_COMMON_OK;
+		CHECK(ListGetValue(pEntry, &pMessage));
+		if (StationIsMessageReady(pThis, pMessage))
+		{
+			CHECK(ListRemove(pThis->pOutbox, pEntry));
+			*ppMessage = pMessage;
+			break;
+		}
+		CHECK(ListGetNext(&pEntry));
 	}
-	return ret;
+
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus StationPutMessage(Station* pThis, Message* pMessage)
@@ -142,7 +169,7 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 	VALIDATE_ARGUMENTS(pThis && pMessage && (pMessage->type < eMSG_TYPE_LAST));
 	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
 	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pMessage));
-	if (!StationIsAccepted(pThis, pMessage)) return eSTATUS_COMMON_OK;
+	if (!StationIsAccepted(pThis, pMessage)) return eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 
 	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
 	if (!StationIsDestination(pThis, pMessage)) return StationHandleTransits(pThis, pMessage);
@@ -165,16 +192,16 @@ EStatus StationHandleTransits(Station* pThis, Message* pMessage)
 
 	++pMessage->nodesCount;
 	pMessage->transitSrcId = pThis->id;
+	pMessage->transitDstId = INVALID_STATION_ID;
 
 	if (eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId))
 	{
-		return QueuePush(pThis->pOutbox, pMessage);
+		return ListPushFront(pThis->pOutbox, pMessage);
 	}
 
-	pMessage->transitDstId = INVALID_STATION_ID;
 	CHECK(MessageNewSearchRequest(&pNewMsg, pThis->id, pMessage->originalDstId));
-	CHECK(QueuePush(pThis->pOutbox, pNewMsg));
-	CHECK(QueuePush(pThis->pOutbox, pMessage));
+	CHECK(ListPushFront(pThis->pOutbox, pNewMsg));
+	CHECK(ListPushBack(pThis->pOutbox, pMessage));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -257,10 +284,56 @@ EStatus StationReset(Station* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	pThis->curLocation = pThis->orgLocation;
 
-	CHECK(QueueCleanUp(pThis->pInbox, NULL, NULL));
-	CHECK(QueueCleanUp(pThis->pOutbox, NULL, NULL));
+	CHECK(ListCleanUp(pThis->pOutbox, NULL, NULL));
 	CHECK(RoutingClear(pThis->pRouting));
 	CHECK(SchedulerReset(pThis->pScheduler));
 
 	return eSTATUS_COMMON_OK;
+}
+
+Boolean StationIsMessageReady(Station* pThis, Message* pMessage)
+{
+	if (pMessage->transitDstId != INVALID_STATION_ID) return TRUE;
+	return eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId);
+}
+
+EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->schedulerHandler.callback = handler;
+	pThis->schedulerHandler.pArg = pUserArg;
+	if (handler) CHECK(SchedulerRegisterHandler(pThis->pScheduler, (SchedulerHandler)&StationHandleScheduleChange, pThis));
+	else CHECK(SchedulerRegisterHandler(pThis->pScheduler, NULL, NULL));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationRegisterRoutingHandler(Station* pThis, StationRoutingHandler handler, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->routingHandler.callback = handler;
+	pThis->routingHandler.pArg = pUserArg;
+	if (handler) CHECK(RoutingRegisterHandler(pThis->pRouting, (RoutingHandler)&StationHandleRoutingChange, pThis));
+	else CHECK(RoutingRegisterHandler(pThis->pRouting, NULL, NULL));
+	return eSTATUS_COMMON_OK;
+}
+
+void StationHandleRoutingChange(StationId destId,
+								StationId transId,
+								double expirationTime,
+								int length,
+								ERouteEntryUpdate updateAction,
+								Station* pThis)
+{
+	if (pThis->routingHandler.callback)
+	{
+		pThis->routingHandler.callback(pThis, destId, transId, expirationTime, length, updateAction, pThis->routingHandler.pArg);
+	}
+}
+
+void StationHandleScheduleChange(double time, const Message* pMessage, Boolean bAdding, Station* pThis)
+{
+	if (pThis->schedulerHandler.callback)
+	{
+		pThis->schedulerHandler.callback(pThis, time, pMessage, bAdding, pThis->schedulerHandler.pArg);
+	}
 }

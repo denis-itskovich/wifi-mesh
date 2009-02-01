@@ -23,6 +23,11 @@ public:
 	virtual void updateStation();
 
 private:
+	void initLocationNode(QTreeWidgetItem* item);
+	void initVelocityNode(QTreeWidgetItem* item);
+	void initSchedulerNode(QTreeWidgetItem* item);
+	void initRoutingNode(QTreeWidgetItem* item);
+
 	void init();
 };
 

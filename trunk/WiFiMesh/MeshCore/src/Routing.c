@@ -24,6 +24,11 @@ struct _Routing
 	List*		pEntries;
 	Settings*	pSettings;
 	TimeLine*	pTimeLine;
+	struct
+	{
+		RoutingHandler	callback;
+		void*			pArg;
+	}			handler;
 };
 
 /** Adds a route
@@ -40,10 +45,28 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
  */
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime);
 
-Boolean RoutingCleaner(RoutingEntry* pEntry, double* pTime)
+/** Invokes routing handler (if exists)
+ * \param pThis [in] pointer to instance
+ * \param pEntry [in] pointer to routing entry
+ * \param flag [in] route entry update flag
+ */
+void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdate flag)
 {
-	if (pTime && (pEntry->expires > *pTime)) return TRUE;
+	if (pThis->handler.callback)
+	{
+		pThis->handler.callback(pEntry->dstId, pEntry->transitId, pEntry->expires, pEntry->length, flag, pThis->handler.pArg);
+	}
+}
+
+Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
+{
+	double time;
+	TimeLineGetTime(pThis->pTimeLine, &time);
+
+	if (pEntry->expires > time) return TRUE;
+
 	DELETE(pEntry);
+	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
 	return FALSE;
 }
 
@@ -107,6 +130,7 @@ EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage)
 		pRouteEntry->length = pMessage->nodesCount;
 		pRouteEntry->transitId = pMessage->transitSrcId;
 		CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
+		RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
 	}
 
 	return eSTATUS_COMMON_OK;
@@ -121,7 +145,8 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->transitId = transitId;
 	pEntry->length = length;
 	CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
-	return ListInsert(pThis->pEntries, pEntry);
+	RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
+	return ListPushBack(pThis->pEntries, pEntry);
 }
 
 EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
@@ -136,7 +161,7 @@ EStatus RoutingSynchronize(Routing* pThis)
 	double time;
 	VALIDATE_ARGUMENTS(pThis);
 	TimeLineGetTime(pThis->pTimeLine, &time);
-	return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, &time);
+	return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis);
 }
 
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
@@ -154,5 +179,14 @@ EStatus RoutingClear(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, NULL));
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus RoutingRegisterHandler(Routing* pThis, RoutingHandler handler, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->handler.callback = handler;
+	pThis->handler.pArg = pUserArg;
+
 	return eSTATUS_COMMON_OK;
 }

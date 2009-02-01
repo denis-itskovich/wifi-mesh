@@ -66,9 +66,18 @@ signals:
 	void stationAdded(Station* pStation);
 	void stationUpdated(Station* pStation);
 
+	void routeEntryAdded(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+	void routeEntryUpdated(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+	void routeEntryExpired(const Station* pStation, StationId dst);
+
+	void scheduleEntryAdded(const Station* pStation, double time, const Message* pMessage);
+	void scheduleEntryRemoved(const Station* pStation, double time, const Message* pMessage);
+
 	void messageDispatched(const Message* pMsg);
 	void worldSizeChanged();
+	void worldChanged();
 	void simulationStarted();
+	void simulationCleared();
 
 	void updatedStations();
 	void updatedTimeLine();
@@ -84,6 +93,20 @@ private:
 	static void stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis);
 	static void messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis);
 	static void eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis);
+
+	static void routingHandler(	const Station* pStation,
+								StationId destId,
+								StationId transId,
+								double expirationTime,
+								int length,
+								ERouteEntryUpdate updateAction,
+								MeshDocument *pThis);
+
+	static void schedulerHandler(	const Station* pStation,
+									double time,
+									const Message* pMessage,
+									Boolean bAdded,
+									MeshDocument* pThis);
 
 	Simulator*	m_pSimulator;
 	Settings*	m_pSettings;

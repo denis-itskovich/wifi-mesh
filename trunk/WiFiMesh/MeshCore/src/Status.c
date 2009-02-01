@@ -28,6 +28,9 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	// TimeLine
 	STATUS_MESSAGE("Time line finished"),
 
+	// Station
+	STATUS_MESSAGE("Message was not accepted"),
+
 	// Simulator
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),

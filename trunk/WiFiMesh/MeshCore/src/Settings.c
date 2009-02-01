@@ -14,7 +14,7 @@
 
 #define DEFAULT_COVERAGE	50
 #define	DEFAULT_DATA_RATE	1048576
-#define DEFAULT_ROUTE_TTL	2000
+#define DEFAULT_ROUTE_TTL	20
 
 struct _Settings
 {

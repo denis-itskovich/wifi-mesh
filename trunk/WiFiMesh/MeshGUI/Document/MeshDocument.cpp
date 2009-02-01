@@ -160,8 +160,22 @@ void MeshDocument::generate()
 	CHECK(SimulatorClear(m_pSimulator));
 	std::vector<Station*> stations;
 
+	int msgCount = m_avgMsgCount * m_stationsCount + 1;
+	int factor = 2;
+
+	QProgressDialog progress;
+	progress.setMinimumWidth(400);
+	progress.setLabel(new QLabel("Generating stations..."));
+	progress.setCancelButtonText("Abort");
+	progress.setRange(0, m_stationsCount * factor + msgCount / factor + 100);
+	progress.setWindowModality(Qt::WindowModal);
+	progress.setValue(0);
+
 	for (int i = 0; i < m_stationsCount; ++i)
 	{
+		progress.setValue(i * factor);
+		if (progress.wasCanceled()) break;
+
 		Station* pStation;
 		Velocity v = generateVelocity();
 		Location l = generateLocation();
@@ -172,10 +186,13 @@ void MeshDocument::generate()
 		stations.push_back(pStation);
 	}
 
-	int msgCount = m_avgMsgCount * m_stationsCount * 2 + 1;
+	progress.setLabelText("Generating messages...");
 
 	for (int i = 0; i < msgCount; ++i)
 	{
+		progress.setValue(i / factor + m_stationsCount * factor);
+		if (progress.wasCanceled()) break;
+
 		StationId src, dst;
 		int srcIdx = rand(m_stationsCount);
 		int dstIdx = rand(m_stationsCount - 1);
@@ -184,13 +201,18 @@ void MeshDocument::generate()
 		CHECK(StationGetId(stations[srcIdx], &src));
 		CHECK(StationGetId(stations[dstIdx], &dst));
 
-		int dataSize = rand(m_avgDataSize * 2 / msgCount + 1);
+		int dataSize = rand(m_avgDataSize * m_stationsCount * 2 / msgCount + 1);
 		double time = rand(m_duration);
 
 		Message* pMessage;
 		CHECK(MessageNewData(&pMessage, src, dst, dataSize));
 		CHECK(StationScheduleMessage(stations[srcIdx], pMessage, time));
 	}
+
+	progress.setLabelText("Updating views...");
+	progress.setValue(m_stationsCount * factor + msgCount / factor);
+	emit worldChanged();
+	progress.setValue(m_stationsCount * factor + msgCount + 100);
 }
 
 void MeshDocument::start()
@@ -284,8 +306,16 @@ void MeshDocument::stationTracker(Station* pStation, StationEventType eventType,
 {
 	switch (eventType)
 	{
-	case eSTATION_ADDED: emit pThis->stationAdded(pStation); break;
-	case eSTATION_REMOVED: emit pThis->stationRemoved(pStation); break;
+	case eSTATION_ADDED:
+		emit pThis->stationAdded(pStation);
+		CHECK(StationRegisterRoutingHandler(pStation, (StationRoutingHandler)&MeshDocument::routingHandler, pThis));
+		CHECK(StationRegisterSchedulerHandler(pStation, (StationSchedulerHandler)&MeshDocument::schedulerHandler, pThis));
+		break;
+	case eSTATION_REMOVED:
+		CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
+		CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
+		emit pThis->stationRemoved(pStation);
+		break;
 	case eSTATION_UPDATED: emit pThis->stationUpdated(pStation); break;
 	}
 }
@@ -298,4 +328,30 @@ void MeshDocument::messageSniffer(double time, const Message* pMessage, const St
 void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)
 {
 
+}
+
+void MeshDocument::routingHandler(	const Station* pStation,
+									StationId destId,
+									StationId transId,
+									double expirationTime,
+									int length,
+									ERouteEntryUpdate updateAction,
+									MeshDocument *pThis)
+{
+	switch (updateAction)
+	{
+	case eROUTE_ADD: emit pThis->routeEntryAdded(pStation, destId, transId, expirationTime, length); break;
+	case eROUTE_UPDATE: emit pThis->routeEntryUpdated(pStation, destId, transId, expirationTime, length); break;
+	case eROUTE_REMOVE: emit pThis->routeEntryExpired(pStation, destId); break;
+	}
+}
+
+void MeshDocument::schedulerHandler(	const Station* pStation,
+										double time,
+										const Message* pMessage,
+										Boolean bAdded,
+										MeshDocument* pThis)
+{
+	if (bAdded) emit pThis->scheduleEntryAdded(pStation, time, pMessage);
+	else emit pThis->scheduleEntryRemoved(pStation, time, pMessage);
 }

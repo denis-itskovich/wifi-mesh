@@ -19,7 +19,6 @@ public:
 
 protected:
 	MeshView(QWidget* parent = 0);
-	virtual ~MeshView();
 
 	MeshDocument* document() const;
 
