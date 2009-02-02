@@ -128,4 +128,5 @@ EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, voi
 	VALIDATE_ARGUMENTS(pThis);
 	pThis->handler.callback = handler;
 	pThis->handler.pArg = pUserArg;
+	return eSTATUS_COMMON_OK;
 }

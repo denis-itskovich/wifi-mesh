@@ -13,10 +13,10 @@ static const int RND_RESOLUTION = RAND_MAX;
 
 MeshDocument::MeshDocument() :
 	m_pCurStation(NULL),
-	m_stationsCount(100),
+	m_stationsCount(3),
 	m_avgDataSize(65536),
-	m_avgMsgCount(256),
-	m_avgVelocity(20.0),
+	m_avgMsgCount(5),
+	m_avgVelocity(1.0),
 	m_duration(60),
 	m_bStarted(false),
 	m_bPaused(false)

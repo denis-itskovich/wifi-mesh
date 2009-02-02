@@ -83,7 +83,7 @@ EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Message* 
 EStatus TimeLineNext(TimeLine* pThis)
 {
 	Event* pEvent;
-	double time;
+	double time = 0;
 	VALIDATE_ARGUMENTS(pThis);
 
 	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
