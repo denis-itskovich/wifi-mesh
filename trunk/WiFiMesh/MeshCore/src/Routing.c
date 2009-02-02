@@ -62,11 +62,9 @@ Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
 {
 	double time;
 	TimeLineGetTime(pThis->pTimeLine, &time);
-
 	if (pEntry->expires > time) return TRUE;
-
-	DELETE(pEntry);
 	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
+	DELETE(pEntry);
 	return FALSE;
 }
 
@@ -158,9 +156,7 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
 
 EStatus RoutingSynchronize(Routing* pThis)
 {
-	double time;
 	VALIDATE_ARGUMENTS(pThis);
-	TimeLineGetTime(pThis->pTimeLine, &time);
 	return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis);
 }
 

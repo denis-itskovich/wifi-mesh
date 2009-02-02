@@ -104,13 +104,14 @@ EStatus StationSynchronize(Station* pThis, double timeDelta)
 	Message* pMessage;
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
 
+	CHECK(RoutingSynchronize(pThis->pRouting));
+
 	if (pThis->silentTime <= timeDelta) pThis->silentTime = 0;
 	else pThis->silentTime -= timeDelta;
 
 	pThis->curLocation.x += pThis->velocity.x * timeDelta;
 	pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
-	CHECK(RoutingSynchronize(pThis->pRouting));
 	EStatus ret = SchedulerGetMessage(pThis->pScheduler, &pMessage);
 	if (ret == eSTATUS_SCHEDULER_NO_MESSAGES) return eSTATUS_COMMON_OK;
 	CHECK(ret);
@@ -169,16 +170,21 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 	VALIDATE_ARGUMENTS(pThis && pMessage && (pMessage->type < eMSG_TYPE_LAST));
 	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
 	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pMessage));
-	if (!StationIsAccepted(pThis, pMessage)) return eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 
 	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
+	if (!StationIsAccepted(pThis, pMessage))
+	{
+		MessageDelete(&pMessage);
+		return eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
+	}
+
 	if (!StationIsDestination(pThis, pMessage)) return StationHandleTransits(pThis, pMessage);
 	return StationHandleLocals(pThis, pMessage);
 }
 
 Boolean StationIsDestination(Station* pThis, Message* pMessage)
 {
-	return (IS_BROADCAST(pMessage->originalDstId)) || (pMessage->originalDstId == pThis->id) ? TRUE : FALSE;
+	return (IS_BROADCAST(pMessage->transitDstId)) || (pMessage->transitDstId == pThis->id) ? TRUE : FALSE;
 }
 
 Boolean StationIsAccepted(Station* pThis, Message* pMessage)
@@ -226,9 +232,12 @@ EStatus StationHandleAck(Station* pThis, Message* pMessage)
 
 EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 {
-	StationId dst;
+	StationId dstId;
+	Message* pResponse;
 	VALIDATE_ARGUMENTS(pThis && pMessage);
-	dst = pMessage->originalSrcId;
+	dstId = pMessage->originalSrcId;
+	CHECK(MessageNewSearchResponse(&pResponse, pThis->id, dstId));
+	CHECK(ListPushFront(pThis->pOutbox, pResponse));
 	return eSTATUS_COMMON_OK;
 }
 
@@ -259,10 +268,11 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
 	double coverage;
 	double dx, dy;
 	VALIDATE_ARGUMENTS(pThis && pStation && pIsAdjacent);
+	if (pStation == pThis) return FALSE;
 	CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
 	dx = pThis->curLocation.x - pStation->curLocation.x;
 	dy = pThis->curLocation.y - pStation->curLocation.y;
-	*pIsAdjacent = (coverage*coverage <= dx*dx + dy*dy) ? TRUE : FALSE;
+	*pIsAdjacent = (coverage*coverage >= dx*dx + dy*dy) ? TRUE : FALSE;
 
 	return eSTATUS_COMMON_OK;
 }
