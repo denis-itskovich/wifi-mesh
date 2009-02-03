@@ -28,15 +28,24 @@ MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
 void MeshViewSniffer::init()
 {
 	m_messages = new QTreeWidget;
-	m_messages->setColumnCount(8);
-	m_messages->setHeaderLabels(QStringList() << tr("Time") << tr("Type") << tr("From") << tr("To") << tr("Source") << tr("Destination") << tr("Size") << tr("Hops count"));
+	m_messages->setColumnCount(9);
+	m_messages->setHeaderLabels(QStringList()
+			<< tr("Time")
+			<< tr("Type")
+			<< tr("From")
+			<< tr("To")
+			<< tr("Source")
+			<< tr("Destination")
+			<< tr("Arrived to")
+			<< tr("Size")
+			<< tr("Hops count"));
 	setLayout(new QVBoxLayout(this));
 	layout()->addWidget(m_messages);
 }
 
-void MeshViewSniffer::addMessage(const Message* pMessage)
+void MeshViewSniffer::addMessage(const Message* pMessage, StationId deliveredId)
 {
-	m_messages->addTopLevelItem(createItem(pMessage));
+	m_messages->addTopLevelItem(createItem(pMessage, deliveredId));
 }
 
 void MeshViewSniffer::clear()
@@ -46,12 +55,12 @@ void MeshViewSniffer::clear()
 
 QString MeshViewSniffer::stationId(StationId id)
 {
-	if (id == INVALID_STATION_ID) return "invalid";
-	if (id == BROADCAST_STATION_ID) return "broadcast";
-	return QString::number(id);
+	if (id == INVALID_STATION_ID) return "Invalid";
+	if (id == BROADCAST_STATION_ID) return "Broadcast";
+	return QString("Station %1").arg(id);
 }
 
-QTreeWidgetItem* MeshViewSniffer::createItem(const Message* pMessage)
+QTreeWidgetItem* MeshViewSniffer::createItem(const Message* pMessage, StationId deliveredId)
 {
 	QStringList columns;
 	columns << QString::number(document()->time())
@@ -60,6 +69,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Message* pMessage)
 			<< stationId(pMessage->originalDstId)
 			<< stationId(pMessage->transitSrcId)
 	        << stationId(pMessage->transitDstId)
+	        << stationId(deliveredId)
 			<< QString::number(pMessage->size + sizeof(*pMessage))
 			<< QString::number(pMessage->nodesCount);
 
@@ -71,7 +81,7 @@ void MeshViewSniffer::setDocument(MeshDocument* doc)
 {
 	disconnect(doc);
 
-	connect(doc, SIGNAL(messageDispatched(const Message*)), this, SLOT(addMessage(const Message*)));
+	connect(doc, SIGNAL(messageDispatched(const Message*, StationId)), this, SLOT(addMessage(const Message*, StationId)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(clear()));
 
 	MeshView::setDocument(doc);

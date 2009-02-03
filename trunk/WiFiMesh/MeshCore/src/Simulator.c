@@ -183,6 +183,19 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	INFO_PRINT("Performing simulation step: [time delta: %.2f]", newTime-oldTime);
 
+	CHECK(ListGetHead(pThis->pStations, &pEntry));
+	while (pEntry)
+	{
+		CHECK(ListGetValue(pEntry, &pStation));
+		CHECK(StationIsActive(pStation, &isActive));
+		if (isActive)
+		{
+			CHECK(StationSynchronize(pStation, newTime-oldTime));
+		}
+		CHECK(ListGetNext(&pEntry));
+	}
+
+	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)
 	{
 		CHECK(ListGetValue(pEntry, &pStation));
@@ -190,7 +203,6 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 		if (isActive)
 		{
-			CHECK(StationSynchronize(pStation, newTime-oldTime));
 			if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
 			CHECK(SimulatorDispatchMessages(pThis, pStation));
 		}
@@ -217,6 +229,8 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 
 	if (!pMessage) return eSTATUS_COMMON_OK;
+	++pMessage->nodesCount;
+
 
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)

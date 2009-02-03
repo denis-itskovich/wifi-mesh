@@ -121,6 +121,7 @@ void MeshItemStation::updateRouteEntry(StationId dst, StationId trans, double ex
 void MeshItemStation::removeRouteEntry(StationId dst)
 {
 	assert(m_routing.count(dst) != 0);
+	m_routing.remove(dst);
 	invalidate(RoutingFlag);
 }
 

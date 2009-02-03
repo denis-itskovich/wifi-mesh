@@ -23,13 +23,13 @@ public:
 	void setDocument(MeshDocument* doc);
 
 protected slots:
-	void addMessage(const Message* pMessage);
+	void addMessage(const Message* pMessage, StationId deliveredId);
 	void clear();
 
 private:
 	void init();
 	static QString stationId(StationId id);
-	QTreeWidgetItem* createItem(const Message* pMessage);
+	QTreeWidgetItem* createItem(const Message* pMessage, StationId deliveredId);
 
 	QTreeWidget*	m_messages;
 };

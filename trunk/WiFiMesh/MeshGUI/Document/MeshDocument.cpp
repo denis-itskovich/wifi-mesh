@@ -322,7 +322,9 @@ void MeshDocument::stationTracker(Station* pStation, StationEventType eventType,
 
 void MeshDocument::messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis)
 {
-	emit pThis->messageDispatched(pMessage);
+	StationId id;
+	CHECK(StationGetId(pDst, &id));
+	emit pThis->messageDispatched(pMessage, id);
 }
 
 void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)
