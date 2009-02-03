@@ -52,6 +52,7 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage);
 Boolean StationIsDestination(Station* pThis, Message* pMessage);
 Boolean StationIsAccepted(Station* pThis, Message* pMessage);
 Boolean StationIsMessageReady(Station* pThis, Message* pMessage);
+Boolean StationIsMessageValid(Station* pThis, Message* pMessage);
 
 static MessageHandler s_handlers[eMSG_TYPE_LAST] =
 {
@@ -121,8 +122,9 @@ EStatus StationSynchronize(Station* pThis, double timeDelta)
 
 EStatus StationSetLocation(Station* pThis, Location newLocation)
 {
-	SET_MEMBER(newLocation, pThis, curLocation);
-	SET_MEMBER(newLocation, pThis, orgLocation);
+	VALIDATE_ARGUMENTS(pThis);
+	pThis->curLocation = pThis->orgLocation = newLocation;
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus StationSetVelocity(Station* pThis, Velocity newVelocity)
@@ -142,7 +144,7 @@ EStatus StationSetId(Station* pThis, StationId id)
 
 EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 {
-	ListEntry* pEntry;
+	ListEntry *pEntry, *pNext;
 	Message* pMessage;
 	*ppMessage = NULL;
 
@@ -152,14 +154,24 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 	CHECK(ListGetHead(pThis->pOutbox, &pEntry));
 	while (pEntry)
 	{
+		pNext = pEntry;
+		CHECK(ListGetNext(&pNext));
 		CHECK(ListGetValue(pEntry, &pMessage));
-		if (StationIsMessageReady(pThis, pMessage))
+
+		if (StationIsMessageValid(pThis, pMessage))
+		{
+			if (StationIsMessageReady(pThis, pMessage))
+			{
+				CHECK(ListRemove(pThis->pOutbox, pEntry));
+				*ppMessage = pMessage;
+				break;
+			}
+		}
+		else
 		{
 			CHECK(ListRemove(pThis->pOutbox, pEntry));
-			*ppMessage = pMessage;
-			break;
 		}
-		CHECK(ListGetNext(&pEntry));
+		pEntry = pNext;
 	}
 
 	return eSTATUS_COMMON_OK;
@@ -171,7 +183,8 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
 	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pMessage));
 
-	CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
+	if (pMessage->originalSrcId != pThis->id) CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
+
 	if (!StationIsAccepted(pThis, pMessage))
 	{
 		MessageDelete(&pMessage);
@@ -184,19 +197,19 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 
 Boolean StationIsDestination(Station* pThis, Message* pMessage)
 {
-	return (IS_BROADCAST(pMessage->transitDstId)) || (pMessage->transitDstId == pThis->id) ? TRUE : FALSE;
+	return (IS_BROADCAST(pMessage->originalDstId)) || (pMessage->originalDstId == pThis->id) ? TRUE : FALSE;
 }
 
 Boolean StationIsAccepted(Station* pThis, Message* pMessage)
 {
-	return ((pMessage->transitDstId == pThis->id) || StationIsDestination(pThis, pMessage)) ? TRUE : FALSE;
+	if (pMessage->transitSrcId == pThis->id) return FALSE;
+	return (IS_BROADCAST(pMessage->transitDstId)) || (pMessage->transitDstId == pThis->id) ? TRUE : FALSE;
 }
 
 EStatus StationHandleTransits(Station* pThis, Message* pMessage)
 {
 	Message* pNewMsg = NULL;
 
-	++pMessage->nodesCount;
 	pMessage->transitSrcId = pThis->id;
 	pMessage->transitDstId = INVALID_STATION_ID;
 
@@ -268,7 +281,6 @@ EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean
 	double coverage;
 	double dx, dy;
 	VALIDATE_ARGUMENTS(pThis && pStation && pIsAdjacent);
-	if (pStation == pThis) return FALSE;
 	CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
 	dx = pThis->curLocation.x - pStation->curLocation.x;
 	dy = pThis->curLocation.y - pStation->curLocation.y;
@@ -305,6 +317,13 @@ Boolean StationIsMessageReady(Station* pThis, Message* pMessage)
 {
 	if (pMessage->transitDstId != INVALID_STATION_ID) return TRUE;
 	return eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId);
+}
+
+Boolean StationIsMessageValid(Station* pThis, Message* pMessage)
+{
+	if (pMessage->type != eMSG_TYPE_SEARCH_REQUEST) return TRUE;
+	if (pMessage->originalSrcId != pThis->id) return TRUE;
+	return RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId) != eSTATUS_COMMON_OK ? TRUE : FALSE;
 }
 
 EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg)

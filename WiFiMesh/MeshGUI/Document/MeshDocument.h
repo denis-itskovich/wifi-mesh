@@ -73,7 +73,7 @@ signals:
 	void scheduleEntryAdded(const Station* pStation, double time, const Message* pMessage);
 	void scheduleEntryRemoved(const Station* pStation, double time, const Message* pMessage);
 
-	void messageDispatched(const Message* pMsg);
+	void messageDispatched(const Message* pMsg, StationId deliveredId);
 	void worldSizeChanged();
 	void worldChanged();
 	void simulationStarted();
