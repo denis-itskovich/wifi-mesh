@@ -40,7 +40,7 @@ void MeshViewRandomizer::init()
 	m_spinAvgMessagesCount = new QSpinBox;
 	m_spinAvgMessagesCount->setRange(1, 100000);
 
-	m_buttonGenerate = new QPushButton(tr("Generate"));
+	m_buttonGenerate = new QPushButton(QIcon(":/configure.png"), tr("Generate mesh"));
 
 	QHBoxLayout* hlayout = new QHBoxLayout;
 	hlayout->addWidget(m_sliderStationsCount);
@@ -59,7 +59,10 @@ void MeshViewRandomizer::init()
 	QVBoxLayout* layout = new QVBoxLayout;
 	layout->addWidget(group);
 	layout->addStretch();
-	layout->addWidget(m_buttonGenerate);
+	QHBoxLayout* buttonLayout = new QHBoxLayout;
+	buttonLayout->addWidget(m_buttonGenerate, 0, Qt::AlignHCenter);
+
+	layout->addItem(buttonLayout);
 
 	setLayout(layout);
 }

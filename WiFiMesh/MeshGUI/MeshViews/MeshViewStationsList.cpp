@@ -25,12 +25,12 @@ void MeshViewStationsList::init()
 	m_treeStations->setHeaderLabels(QStringList() << tr("Station") << tr("Properties"));
 
 	m_buttonAdd = new QPushButton(QIcon(":/add.png"), tr("&Add"), this);
-	m_buttonAdd->setFlat(true);
 	m_buttonRemove = new QPushButton(QIcon(":/remove.png"), tr("&Remove"), this);
-	m_buttonRemove->setFlat(true);
+	m_buttonMessage = new QPushButton(QIcon(":/message.png"), tr("&Add message"), this);
 
 	layout->addWidget(m_treeStations);
 
+	buttonsLayout->addWidget(m_buttonMessage);
 	buttonsLayout->addStretch();
 	buttonsLayout->addWidget(m_buttonAdd);
 	buttonsLayout->addWidget(m_buttonRemove);

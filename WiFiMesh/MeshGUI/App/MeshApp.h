@@ -22,6 +22,7 @@ private:
 	void createStatusBar();
 	void createDocks();
 	void createTabs();
+	void setDocument(MeshDocument* doc);
 
 	QDockWidget* createDock(const QString& title, MeshView* view);
 
@@ -53,6 +54,7 @@ private:
 	QAction*	m_actViewShowCoverage;
 
 	QAction*	m_actSimulationRun;
+	QAction*	m_actSimulationPause;
 	QAction*	m_actSimulationBreak;
 
 	QAction*	m_actHelpAbout;

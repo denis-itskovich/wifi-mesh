@@ -134,8 +134,8 @@ QVariant MeshGraphItemStation::itemChange(GraphicsItemChange change, const QVari
 	switch (change)
     {
     case QGraphicsItem::ItemPositionHasChanged:
-		setLocation(value.toPointF());
-		stationChanged();
+		// setLocation(value.toPointF());
+		// stationChanged();
         break;
     default:
         break;

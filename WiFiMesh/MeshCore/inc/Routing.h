@@ -71,10 +71,11 @@ EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage);
  * \param pThis [in] pointer to instance
  * \param dstId [in] destination station id
  * \param pTransitId [out] transit station id will be stored in *pTransitId
+ * \param pHopsCount [out] route length
  * \return eSTATUS_COMMON_OK if the route was found and *pTransit was filled with valid station id
  * \return eSTATUS_LIST_NOT_FOUND if the route was not found
  */
-EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId);
+EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount);
 
 /** Synchronizes a routing table with current time
  * Actually removes expired entries

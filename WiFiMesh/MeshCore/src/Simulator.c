@@ -80,9 +80,10 @@ Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 	return FALSE;
 }
 
-Boolean SimulatorResetter(Station* pStation, void* pUserArg)
+Boolean SimulatorResetter(Station* pStation, Simulator* pThis)
 {
 	StationReset(pStation);
+	if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
 	return TRUE;
 }
 
@@ -203,8 +204,8 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 		if (isActive)
 		{
-			if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
 			CHECK(SimulatorDispatchMessages(pThis, pStation));
+			if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
 		}
 
 		CHECK(ListGetNext(&pEntry));

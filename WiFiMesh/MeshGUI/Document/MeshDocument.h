@@ -76,13 +76,16 @@ signals:
 	void messageDispatched(const Message* pMsg, StationId deliveredId);
 	void worldSizeChanged();
 	void worldChanged();
+
 	void simulationStarted();
 	void simulationCleared();
+	void simulationStopped();
 
 	void updatedStations();
 	void updatedTimeLine();
 
 private:
+	virtual void timerEvent(QTimerEvent* event);
 	Velocity generateVelocity() const;
 	Location generateLocation() const;
 
@@ -119,6 +122,8 @@ private:
 	double		m_duration;
 	bool		m_bStarted;
 	bool		m_bPaused;
+	int			m_timerId;
+	int			m_messages;
 };
 
 #endif /* MESHDOCUMENT_H_ */

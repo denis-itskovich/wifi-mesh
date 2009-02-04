@@ -19,7 +19,8 @@ MeshDocument::MeshDocument() :
 	m_avgVelocity(1.0),
 	m_duration(60),
 	m_bStarted(false),
-	m_bPaused(false)
+	m_bPaused(false),
+	m_timerId(0)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
@@ -217,35 +218,51 @@ void MeshDocument::generate()
 
 void MeshDocument::start()
 {
-	if (m_bStarted) step();
-	else
-	{
-		CHECK(SimulatorReset(m_pSimulator));
-		m_bStarted = true;
-		emit simulationStarted();
-	}
+	CHECK(SimulatorReset(m_pSimulator));
+	m_bStarted = true;
+	emit simulationStarted();
+	resume();
 }
 
 void MeshDocument::stop()
 {
+	pause();
+	emit simulationStopped();
 	m_bStarted = false;
+	CHECK(SimulatorReset(m_pSimulator));
 }
 
 void MeshDocument::pause()
 {
-	m_bPaused = true;
+	if ((m_bPaused = !m_bPaused))
+	{
+		killTimer(m_timerId);
+		m_timerId = 0;
+	}
+	else
+	{
+		resume();
+	}
 }
 
 void MeshDocument::resume()
 {
-	m_bPaused = false;
+	m_timerId = startTimer(50);
 }
 
 void MeshDocument::step()
 {
 	if (m_bStarted && !m_bPaused)
 	{
-		CHECK(SimulatorProcess(m_pSimulator));
+		m_messages = 0;
+		while (!m_messages)
+		{
+			if (SimulatorProcess(m_pSimulator) != eSTATUS_COMMON_OK)
+			{
+				stop();
+				break;
+			}
+		}
 	}
 }
 
@@ -325,6 +342,7 @@ void MeshDocument::messageSniffer(double time, const Message* pMessage, const St
 	StationId id;
 	CHECK(StationGetId(pDst, &id));
 	emit pThis->messageDispatched(pMessage, id);
+	++pThis->m_messages;
 }
 
 void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)
@@ -356,4 +374,9 @@ void MeshDocument::schedulerHandler(	const Station* pStation,
 {
 	if (bAdded) emit pThis->scheduleEntryAdded(pStation, time, pMessage);
 	else emit pThis->scheduleEntryRemoved(pStation, time, pMessage);
+}
+
+void MeshDocument::timerEvent(QTimerEvent*)
+{
+	step();
 }

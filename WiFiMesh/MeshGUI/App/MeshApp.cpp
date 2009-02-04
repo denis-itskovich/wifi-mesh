@@ -23,13 +23,21 @@ MeshApp::~MeshApp()
 void MeshApp::init()
 {
 	setWindowIcon(QIcon(":/mesh.png"));
+	createActions();
 	createTabs();
 	createDocks();
-	createActions();
 	createMenus();
 	createWidgets();
 	createToolBars();
 	createStatusBar();
+}
+
+void MeshApp::setDocument(MeshDocument* doc)
+{
+	m_document = doc;
+	connect(m_actSimulationRun, SIGNAL(triggered()), doc, SLOT(start()));
+	connect(m_actSimulationPause, SIGNAL(triggered()), doc, SLOT(pause()));
+	connect(m_actSimulationBreak, SIGNAL(triggered()), doc, SLOT(stop()));
 }
 
 void MeshApp::createActions()
@@ -81,15 +89,17 @@ void MeshApp::createActions()
 	m_actViewShowCoverage->setShortcut(tr("Ctrl+7"));
 	m_actViewShowCoverage->setStatusTip(tr("Show coverage"));
 
-	m_actSimulationRun = new QAction(QIcon(":/run.png"), tr("&Run"), this);
+	m_actSimulationRun = new QAction(QIcon(":/play.png"), tr("&Run"), this);
 	m_actSimulationRun->setShortcut(tr("F5"));
 	m_actSimulationRun->setStatusTip(tr("Run simulation"));
-	connect(m_actSimulationRun, SIGNAL(triggered()), m_document, SLOT(start()));
 
-	m_actSimulationBreak = new QAction(QIcon(":/break.png"), tr("&Break"), this);
+	m_actSimulationPause = new QAction(QIcon(":/pause.png"), tr("&Pause"), this);
+	m_actSimulationPause->setShortcut(tr("F5"));
+	m_actSimulationPause->setStatusTip(tr("Pause simulation"));
+
+	m_actSimulationBreak = new QAction(QIcon(":/stop.png"), tr("&Break"), this);
 	m_actSimulationBreak->setShortcut(tr("Shift+F5"));
 	m_actSimulationBreak->setStatusTip(tr("Break simulation"));
-	connect(m_actSimulationBreak, SIGNAL(triggered()), m_document, SLOT(stop()));
 
 	m_actHelpAbout = new QAction(QIcon(":/about.png"), tr("&About..."), this);
 	m_actHelpAbout->setStatusTip(tr("About WiFi Mesh simulator"));
@@ -146,6 +156,7 @@ void MeshApp::createToolBars()
 	m_toolbarFile->addAction(m_actFileClose);
 
 	m_toolbarSimulation->addAction(m_actSimulationRun);
+	m_toolbarSimulation->addAction(m_actSimulationPause);
 	m_toolbarSimulation->addAction(m_actSimulationBreak);
 }
 
@@ -156,7 +167,7 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
-	m_document = new MeshDocument();
+	setDocument(new MeshDocument());
 
 	QDockWidget* dockStations = createDock(tr("Stations"), new MeshViewStationsList(this));
 	QDockWidget* dockRandomizer = createDock(tr("Randomizer"), new MeshViewRandomizer(this));

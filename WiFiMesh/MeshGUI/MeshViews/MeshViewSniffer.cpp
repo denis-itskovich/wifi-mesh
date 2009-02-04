@@ -45,7 +45,9 @@ void MeshViewSniffer::init()
 
 void MeshViewSniffer::addMessage(const Message* pMessage, StationId deliveredId)
 {
-	m_messages->addTopLevelItem(createItem(pMessage, deliveredId));
+	QTreeWidgetItem* item = createItem(pMessage, deliveredId);
+	m_messages->addTopLevelItem(item);
+	m_messages->setCurrentItem(item);
 }
 
 void MeshViewSniffer::clear()
