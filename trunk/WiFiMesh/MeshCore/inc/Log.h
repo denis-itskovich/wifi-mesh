@@ -29,7 +29,11 @@ typedef enum
 	eSEVERITY_LAST		///< terminator
 } ELogSeverity;
 
-#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#if 0
+	#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#else
+	#define LOG_PRINT(severity, fmt, ...) {}
+#endif
 
 #define ERROR_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_ERROR, fmt, ##__VA_ARGS__)
 #define WARNING_PRINT(fmt, ...) 		LOG_PRINT(eSEVERITY_WARNING, fmt, ##__VA_ARGS__)

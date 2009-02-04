@@ -101,7 +101,7 @@ EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine)
 EStatus RoutingDestroy(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, NULL));
+	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis));
 	return ListDelete(&pThis->pEntries);
 }
 
@@ -147,11 +147,15 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	return ListPushBack(pThis->pEntries, pEntry);
 }
 
-EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId)
+EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount)
 {
 	ListEntry* pEntry;
+	RoutingEntry* pRouteEntry;
 	VALIDATE_ARGUMENTS(pThis && pTransitId);
-	return ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId);
+	CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId));
+	CHECK(ListGetValue(pEntry, &pRouteEntry));
+	*pHopsCount = pRouteEntry->length;
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus RoutingSynchronize(Routing* pThis)
@@ -174,7 +178,7 @@ EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 EStatus RoutingClear(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, NULL));
+	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis));
 	return eSTATUS_COMMON_OK;
 }
 

@@ -183,7 +183,11 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 	CHECK(SettingsGetTransmitTime(pThis->pSettings, pMessage, &pThis->silentTime));
 	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pMessage));
 
-	if (pMessage->originalSrcId != pThis->id) CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
+	if (pMessage->transitSrcId != pThis->id &&
+		pMessage->originalSrcId != pThis->id)
+	{
+		CHECK(RoutingHandleMessage(pThis->pRouting, pMessage));
+	}
 
 	if (!StationIsAccepted(pThis, pMessage))
 	{
@@ -191,8 +195,11 @@ EStatus StationPutMessage(Station* pThis, Message* pMessage)
 		return eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 	}
 
-	if (!StationIsDestination(pThis, pMessage)) return StationHandleTransits(pThis, pMessage);
-	return StationHandleLocals(pThis, pMessage);
+	if (StationHandleLocals(pThis, pMessage) != eSTATUS_COMMON_OK)
+	{
+		return StationHandleTransits(pThis, pMessage);
+	}
+	return eSTATUS_COMMON_OK;
 }
 
 Boolean StationIsDestination(Station* pThis, Message* pMessage)
@@ -203,17 +210,19 @@ Boolean StationIsDestination(Station* pThis, Message* pMessage)
 Boolean StationIsAccepted(Station* pThis, Message* pMessage)
 {
 	if (pMessage->transitSrcId == pThis->id) return FALSE;
+	if (pMessage->originalSrcId == pThis->id) return FALSE;
 	return (IS_BROADCAST(pMessage->transitDstId)) || (pMessage->transitDstId == pThis->id) ? TRUE : FALSE;
 }
 
 EStatus StationHandleTransits(Station* pThis, Message* pMessage)
 {
 	Message* pNewMsg = NULL;
+	unsigned length = 0;
 
 	pMessage->transitSrcId = pThis->id;
 	pMessage->transitDstId = INVALID_STATION_ID;
 
-	if (eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId))
+	if (eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length))
 	{
 		return ListPushFront(pThis->pOutbox, pMessage);
 	}
@@ -234,30 +243,41 @@ EStatus StationHandleLocals(Station* pThis, Message* pMessage)
 EStatus StationHandleData(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage);
-	return eSTATUS_COMMON_OK;
+	return (StationIsDestination(pThis, pMessage)) ? eSTATUS_COMMON_OK : eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 }
 
 EStatus StationHandleAck(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage);
-	return eSTATUS_COMMON_OK;
+	return (StationIsDestination(pThis, pMessage)) ? eSTATUS_COMMON_OK : eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 }
 
 EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 {
 	StationId dstId;
 	Message* pResponse;
+	unsigned length = 0;
 	VALIDATE_ARGUMENTS(pThis && pMessage);
+
+	if (pMessage->originalDstId != pThis->id)
+	{
+		CHECK(RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &dstId, &length));
+	}
+
 	dstId = pMessage->originalSrcId;
 	CHECK(MessageNewSearchResponse(&pResponse, pThis->id, dstId));
+	pResponse->nodesCount = length;
+	pResponse->transitDstId = pMessage->transitSrcId;
+	pResponse->originalSrcId = pMessage->originalDstId;
 	CHECK(ListPushFront(pThis->pOutbox, pResponse));
+
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus StationHandleSearchResponse(Station* pThis, Message* pMessage)
 {
 	VALIDATE_ARGUMENTS(pThis && pMessage);
-	return eSTATUS_COMMON_OK;
+	return (StationIsDestination(pThis, pMessage)) ? eSTATUS_COMMON_OK : eSTATUS_STATION_MESSAGE_NOT_ACCEPTED;
 }
 
 EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time)
@@ -315,15 +335,17 @@ EStatus StationReset(Station* pThis)
 
 Boolean StationIsMessageReady(Station* pThis, Message* pMessage)
 {
+	unsigned length = 0;
 	if (pMessage->transitDstId != INVALID_STATION_ID) return TRUE;
-	return eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId);
+	return eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length);
 }
 
 Boolean StationIsMessageValid(Station* pThis, Message* pMessage)
 {
+	unsigned length = 0;
 	if (pMessage->type != eMSG_TYPE_SEARCH_REQUEST) return TRUE;
 	if (pMessage->originalSrcId != pThis->id) return TRUE;
-	return RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId) != eSTATUS_COMMON_OK ? TRUE : FALSE;
+	return RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length) != eSTATUS_COMMON_OK ? TRUE : FALSE;
 }
 
 EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg)
