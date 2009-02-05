@@ -76,6 +76,8 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(m_spinAvgMessagesCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgMessagesCount(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
 	connect(m_buttonGenerate, SIGNAL(clicked()), doc, SLOT(generate()));
+	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
+	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
 	m_spinAvgVelocity->setValue(doc->avgVelocity());
 	m_spinAvgDataSize->setValue(doc->avgDataSize());

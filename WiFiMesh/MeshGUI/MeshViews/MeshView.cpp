@@ -27,3 +27,13 @@ void MeshView::setDocument(MeshDocument* doc)
 void MeshView::init()
 {
 }
+
+void MeshView::enable()
+{
+	setEnabled(true);
+}
+
+void MeshView::disable()
+{
+	setEnabled(false);
+}

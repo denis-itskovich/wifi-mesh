@@ -30,6 +30,11 @@ private slots:
 	void about();
 	void aboutQt();
 
+	void simulationStarted();
+	void simulationStopped();
+	void simulationPaused(bool isPaused);
+	void simulationEmpty(bool isEmpty);
+
 private:
 	QToolBar*	m_toolbarFile;
 	QToolBar*	m_toolbarSimulation;
@@ -45,13 +50,13 @@ private:
 	QAction*	m_actFileClose;
 	QAction*	m_actFileExit;
 
-	QAction*	m_actViewShowBackground;
-	QAction*	m_actViewShowGrid;
-	QAction*	m_actViewShowRules;
-	QAction*	m_actViewShowStations;
-	QAction*	m_actViewShowDataFlow;
-	QAction*	m_actViewShowRouting;
-	QAction*	m_actViewShowCoverage;
+//	QAction*	m_actViewShowBackground;
+//	QAction*	m_actViewShowGrid;
+//	QAction*	m_actViewShowRules;
+//	QAction*	m_actViewShowStations;
+//	QAction*	m_actViewShowDataFlow;
+//	QAction*	m_actViewShowRouting;
+//	QAction*	m_actViewShowCoverage;
 
 	QAction*	m_actSimulationRun;
 	QAction*	m_actSimulationPause;

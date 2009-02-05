@@ -12,15 +12,17 @@
 #include "Macros.h"
 #include <stdlib.h>
 
-#define DEFAULT_COVERAGE	50
-#define	DEFAULT_DATA_RATE	1048576
-#define DEFAULT_ROUTE_TTL	20
+#define DEFAULT_COVERAGE		50.0
+#define	DEFAULT_DATA_RATE		1048576
+#define DEFAULT_ROUTE_TTL		20.0
+#define DEFAULT_RETRY_TIMEOUT	0.5
 
 struct _Settings
 {
 	double		coverage;
 	unsigned	dataRate;
 	double		routeTTL;
+	double		retryTimeout;
 	Size		size;
 };
 
@@ -41,6 +43,7 @@ EStatus SettingsInit(Settings* pThis)
 	pThis->coverage = DEFAULT_COVERAGE;
 	pThis->dataRate = DEFAULT_DATA_RATE;
 	pThis->routeTTL = DEFAULT_ROUTE_TTL;
+	pThis->retryTimeout = DEFAULT_RETRY_TIMEOUT;
 	pThis->size.x = 400.0;
 	pThis->size.y = 400.0;
 	return eSTATUS_COMMON_OK;
@@ -86,6 +89,11 @@ EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize)
 	GET_MEMBER(pSize, pThis, size);
 }
 
+EStatus SettingsGetRetryTimeout(Settings* pThis, double* pTimeout)
+{
+	GET_MEMBER(pTimeout, pThis, retryTimeout);
+}
+
 EStatus SettingsSetRoutingTTL(Settings* pThis, double ttl)
 {
 	SET_MEMBER(ttl, pThis, routeTTL);
@@ -104,4 +112,9 @@ EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate)
 EStatus SettingsSetWorldSize(Settings* pThis, Size size)
 {
 	SET_MEMBER(size, pThis, size);
+}
+
+EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout)
+{
+	SET_MEMBER(timeout, pThis, retryTimeout);
 }

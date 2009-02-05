@@ -61,6 +61,12 @@ EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate);
  */
 EStatus SettingsSetWorldSize(Settings* pThis, Size size);
 
+/** Sets search retry timeout
+ * \param pThis [in] pointer to instance
+ * \param timeout [in] new timeout
+ */
+EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout);
+
 /** Calculates transmit time
  * \param pThis [in] pointer to instance
  * \param pMessage [in] pointer to message
@@ -91,5 +97,11 @@ EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate);
  * \param pSize [out] size will be stored at *pSize
  */
 EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize);
+
+/** Retrieves search retry timeout
+ * \param pThis [in] pointer to instance
+ * \param pTimeout [out] timeout will be stored at *pTimeout
+ */
+EStatus SettingsGetRetryTimeout(Settings* pThis, double* pTimeout);
 
 #endif /* SETTINGS_H_ */
