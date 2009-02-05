@@ -70,12 +70,25 @@ void MeshTreeItemStation::initRoutingNode(QTreeWidgetItem* item)
 	const RouteMap& routeMap = routing();
 	for (RouteMap::const_iterator i = routeMap.begin(); i != routeMap.end(); ++i)
 	{
-		QString brief = QString("(to: Station %1 via: Station %2, hops: %3, expires at: %4)").arg(i->destination).arg(i->transit).arg(i->length).arg(i->expires);
 		QString name = QString("Station %1").arg(i->destination);
-		QTreeWidgetItem* routeItem = new QTreeWidgetItem(QStringList() << name << brief);
-		routeItem->addChild(new QTreeWidgetItem(QStringList() << "transit" << QString("%1").arg(i->transit)));
-		routeItem->addChild(new QTreeWidgetItem(QStringList() << "hops" << QString("%1").arg(i->length)));
-		routeItem->addChild(new QTreeWidgetItem(QStringList() << "expiration" << QString("%1").arg(i->expires)));
+		QTreeWidgetItem* routeItem = NULL;
+		if (i->transit != INVALID_STATION_ID)
+		{
+			QString brief = QString("(to: %1 via: Station %2, hops: %3, expires at: %4)").arg(name).arg(i->transit).arg(i->length).arg(i->expires);
+			routeItem = new QTreeWidgetItem(QStringList() << name << brief);
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(i->destination)));
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "transit" << QString("%1").arg(i->transit)));
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "hops" << QString("%1").arg(i->length)));
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "expiration" << QString("%1").arg(i->expires)));
+
+		}
+		else
+		{
+			QString brief = QString("(pending to: %1, retry at: %2)").arg(name).arg(i->expires);
+			routeItem = new QTreeWidgetItem(QStringList() << name << brief);
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(i->destination)));
+			routeItem->addChild(new QTreeWidgetItem(QStringList() << "retry" << QString("%1").arg(i->expires)));
+		}
 		item->addChild(routeItem);
 	}
 

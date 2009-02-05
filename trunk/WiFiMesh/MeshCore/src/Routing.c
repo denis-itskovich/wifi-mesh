@@ -45,6 +45,12 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
  */
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime);
 
+/** Calculates retry time
+ * \param pThis [in] pointer to instance
+ * \param pTimeout [out] routing entry expiration time will be stored at *pTimeout
+ */
+EStatus RoutingGetRetryTime(Routing* pThis, double* pTime);
+
 /** Invokes routing handler (if exists)
  * \param pThis [in] pointer to instance
  * \param pEntry [in] pointer to routing entry
@@ -63,6 +69,13 @@ Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
 	double time;
 	TimeLineGetTime(pThis->pTimeLine, &time);
 	if (pEntry->expires > time) return TRUE;
+	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
+	DELETE(pEntry);
+	return FALSE;
+}
+
+Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis)
+{
 	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
 	DELETE(pEntry);
 	return FALSE;
@@ -101,7 +114,7 @@ EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine)
 EStatus RoutingDestroy(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis));
+	RoutingClear(pThis);
 	return ListDelete(&pThis->pEntries);
 }
 
@@ -134,6 +147,19 @@ EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage)
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus RoutingAddPending(Routing* pThis, StationId dstId)
+{
+	RoutingEntry* pEntry;
+	VALIDATE_ARGUMENTS(pThis);
+	pEntry = NEW(RoutingEntry);
+	pEntry->dstId = dstId;
+	pEntry->transitId = INVALID_STATION_ID;
+	pEntry->length = (unsigned)-1;
+	CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+	RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
+	return ListPushBack(pThis->pEntries, pEntry);
+}
+
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length)
 {
 	RoutingEntry* pEntry;
@@ -164,6 +190,17 @@ EStatus RoutingSynchronize(Routing* pThis)
 	return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis);
 }
 
+EStatus RoutingGetRetryTime(Routing* pThis, double* pTime)
+{
+	double time;
+	double timeout;
+	VALIDATE_ARGUMENTS(pThis && pTime);
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+	CHECK(SettingsGetRetryTimeout(pThis->pSettings, &timeout));
+	*pTime = time + timeout;
+	return eSTATUS_COMMON_OK;
+}
+
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 {
 	double time;
@@ -178,7 +215,7 @@ EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 EStatus RoutingClear(Routing* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingCleaner, pThis));
+	CHECK(ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingEraser, pThis));
 	return eSTATUS_COMMON_OK;
 }
 

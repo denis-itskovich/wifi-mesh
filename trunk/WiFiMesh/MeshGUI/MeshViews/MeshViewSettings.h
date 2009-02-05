@@ -40,6 +40,7 @@ private:
 	QDoubleSpinBox*	m_spinRouteTTL;
 	QDoubleSpinBox*	m_spinDataRate;
 	QDoubleSpinBox*	m_spinDuration;
+	QDoubleSpinBox*	m_spinRetryTimeout;
 	QComboBox*		m_comboDataUnits;
 	QSpinBox*		m_spinHeight;
 	QSpinBox*		m_spinWidth;

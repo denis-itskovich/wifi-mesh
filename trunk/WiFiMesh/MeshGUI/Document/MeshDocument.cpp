@@ -57,6 +57,11 @@ void MeshDocument::setRouteTTL(double ttl)
 	CHECK(SettingsSetRoutingTTL(m_pSettings, ttl));
 }
 
+void MeshDocument::setRetryTimeout(double timeout)
+{
+	CHECK(SettingsSetRetryTimeout(m_pSettings, timeout));
+}
+
 void MeshDocument::setWorldSize(Size size)
 {
 	CHECK(SettingsSetWorldSize(m_pSettings, size));
@@ -82,6 +87,13 @@ double MeshDocument::routeTTL() const
 	double ttl;
 	CHECK(SettingsGetRoutingTTL(m_pSettings, &ttl));
 	return ttl;
+}
+
+double MeshDocument::retryTimeout() const
+{
+	double timeout;
+	CHECK(SettingsGetRetryTimeout(m_pSettings, &timeout));
+	return timeout;
 }
 
 Size MeshDocument::worldSize() const
@@ -227,22 +239,24 @@ void MeshDocument::start()
 void MeshDocument::stop()
 {
 	pause();
-	emit simulationStopped();
+	if (m_bPaused) emit simulationPaused((m_bPaused = false));
 	m_bStarted = false;
+	emit simulationStopped();
 	CHECK(SimulatorReset(m_pSimulator));
+}
+
+void MeshDocument::triggerPause()
+{
+	m_bPaused = !m_bPaused;
+	if (!m_bPaused) resume();
+	else pause();
+	emit simulationPaused(m_bPaused);
 }
 
 void MeshDocument::pause()
 {
-	if ((m_bPaused = !m_bPaused))
-	{
-		killTimer(m_timerId);
-		m_timerId = 0;
-	}
-	else
-	{
-		resume();
-	}
+	killTimer(m_timerId);
+	m_timerId = 0;
 }
 
 void MeshDocument::resume()

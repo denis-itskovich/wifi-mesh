@@ -67,6 +67,12 @@ EStatus RoutingDestroy(Routing* pThis);
  */
 EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage);
 
+/** Adds pending route
+ * \param pThis [in] pointer to instance
+ * \param dstId [in] destination id
+ */
+EStatus RoutingAddPending(Routing* pThis, StationId dstId);
+
 /** Looks for a route to destination id
  * \param pThis [in] pointer to instance
  * \param dstId [in] destination station id

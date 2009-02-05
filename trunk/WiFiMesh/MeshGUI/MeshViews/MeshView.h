@@ -24,6 +24,8 @@ protected:
 
 protected slots:
 	virtual void update() {}
+	virtual void disable();
+	virtual void enable();
 
 private:
 	void init();

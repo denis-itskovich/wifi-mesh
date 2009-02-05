@@ -27,6 +27,7 @@ public:
 	Size worldSize() const;
 	double duration() const;
 	double time() const;
+	double retryTimeout() const;
 
 	int stationsCount() const;
 	double avgVelocity() const;
@@ -40,6 +41,7 @@ public slots:
 	void setRouteTTL(double routeTTL);
 	void setWorldSize(Size size);
 	void setDuration(double duration);
+	void setRetryTimeout(double timeout);
 
 	void setStationsCount(int count);
 	void setAvgDataSize(int dataSize);
@@ -59,6 +61,7 @@ public slots:
 	void pause();
 	void resume();
 	void step();
+	void triggerPause();
 
 signals:
 	void currentStationChanged(Station* pStation);
@@ -80,6 +83,7 @@ signals:
 	void simulationStarted();
 	void simulationCleared();
 	void simulationStopped();
+	void simulationPaused(bool isPaused);
 
 	void updatedStations();
 	void updatedTimeLine();

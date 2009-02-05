@@ -162,6 +162,11 @@ EStatus StationGetMessage(Station* pThis, Message** ppMessage)
 		{
 			if (StationIsMessageReady(pThis, pMessage))
 			{
+				if (pMessage->type == eMSG_TYPE_SEARCH_REQUEST)
+				{
+					CHECK(RoutingAddPending(pThis->pRouting, pMessage->originalDstId));
+				}
+
 				CHECK(ListRemove(pThis->pOutbox, pEntry));
 				*ppMessage = pMessage;
 				break;
@@ -222,15 +227,13 @@ EStatus StationHandleTransits(Station* pThis, Message* pMessage)
 	pMessage->transitSrcId = pThis->id;
 	pMessage->transitDstId = INVALID_STATION_ID;
 
-	if (eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length))
+	if (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length))
 	{
-		return ListPushFront(pThis->pOutbox, pMessage);
+		CHECK(MessageNewSearchRequest(&pNewMsg, pThis->id, pMessage->originalDstId));
+		CHECK(ListPushFront(pThis->pOutbox, pNewMsg));
 	}
 
-	CHECK(MessageNewSearchRequest(&pNewMsg, pThis->id, pMessage->originalDstId));
-	CHECK(ListPushFront(pThis->pOutbox, pNewMsg));
 	CHECK(ListPushBack(pThis->pOutbox, pMessage));
-
 	return eSTATUS_COMMON_OK;
 }
 
@@ -262,6 +265,7 @@ EStatus StationHandleSearchRequest(Station* pThis, Message* pMessage)
 	if (pMessage->originalDstId != pThis->id)
 	{
 		CHECK(RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &dstId, &length));
+		if (dstId == INVALID_STATION_ID) return eSTATUS_LIST_NOT_FOUND;
 	}
 
 	dstId = pMessage->originalSrcId;
@@ -337,14 +341,15 @@ Boolean StationIsMessageReady(Station* pThis, Message* pMessage)
 {
 	unsigned length = 0;
 	if (pMessage->transitDstId != INVALID_STATION_ID) return TRUE;
-	return eSTATUS_COMMON_OK == RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length);
+	if (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length))
+		return FALSE;
+	return pMessage->transitDstId != INVALID_STATION_ID ? TRUE : FALSE;
 }
 
 Boolean StationIsMessageValid(Station* pThis, Message* pMessage)
 {
 	unsigned length = 0;
 	if (pMessage->type != eMSG_TYPE_SEARCH_REQUEST) return TRUE;
-	if (pMessage->originalSrcId != pThis->id) return TRUE;
 	return RoutingLookFor(pThis->pRouting, pMessage->originalDstId, &pMessage->transitDstId, &length) != eSTATUS_COMMON_OK ? TRUE : FALSE;
 }
 
