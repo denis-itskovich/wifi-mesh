@@ -27,7 +27,8 @@ private:
 
 	QDoubleSpinBox*		m_spinAvgVelocity;
 	QSpinBox*			m_spinAvgDataSize;
-	QSpinBox*			m_spinAvgMessagesCount;
+	QSpinBox*			m_spinAvgPacketsCount;
+	QDoubleSpinBox*		m_spinDuration;
 
 	QPushButton*		m_buttonGenerate;
 };

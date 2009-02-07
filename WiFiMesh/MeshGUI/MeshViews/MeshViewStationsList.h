@@ -35,7 +35,7 @@ private:
 	QTreeWidget*	m_treeStations;
 	QPushButton*	m_buttonAdd;
 	QPushButton*	m_buttonRemove;
-	QPushButton*	m_buttonMessage;
+	QPushButton*	m_buttonPacket;
 };
 
 #endif /* MESHVIEWSTATIONSLIST_H_ */

@@ -90,4 +90,22 @@ EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue);
  */
 EStatus SortedListCleanUp(SortedList* pThis, ItemFilter filter, void* pUserArg);
 
+/** Looks for an item in a list
+ * \param pThis [in] pointer to instance
+ * \param ppEntry [out] found item position will be stored at *ppEntry
+ * \param comparator [in] pointer to item comparator function
+ * \param pValue [in] item to look for (pValueRight argument of ItemComparator)
+ * \param pUserArg [in] user defined argument of comparator function
+ * \sa ItemComparator
+ */
+EStatus SortedListFind(SortedList* pThis, ListEntry** ppEntry, ItemComparator comparator, const void* pValue, void* pUserArg);
+
+/** Cleans a list according to filter function
+ * \param pThis [in] pointer to instance
+ * \param enumerator [in] pointer to item enumerator function
+ * \param pUserArg [in] user defined argument of filter function
+ * \sa ItemEnumerator
+ */
+EStatus SortedListEnumerate(SortedList* pThis, ItemEnumerator enumerator, void* pUserArg);
+
 #endif /* WIFI_MESH_SORTEDLIST_H_ */

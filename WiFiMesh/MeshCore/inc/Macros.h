@@ -35,7 +35,7 @@
 	SAFE_OPERATION( \
 			if (!(condition)) \
 			{ \
-				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetMessage(error)); \
+				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetPacket(error)); \
 				END_FUNCTION; \
 				return (error); \
 			} \
@@ -85,7 +85,7 @@
 	SAFE_OPERATION( \
 		if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) \
 		{ \
-			ERROR_PRINT("Error '%s', in %s", StatusGetMessage(s_lastStatus), #rc); \
+			ERROR_PRINT("Error '%s', in %s", StatusGetPacket(s_lastStatus), #rc); \
 			END_FUNCTION; \
 			return (s_lastStatus); \
 		} \

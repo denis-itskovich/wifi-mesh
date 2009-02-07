@@ -1,33 +1,30 @@
-#include "MeshAboutDlg.h"
+#include "MeshDlgAbout.h"
 
 #define COPYRIGHT_STRING 	"<p>%1, <b>version %2</b></p>" 		\
 							"<p><b>(C) 2008 Denis Itskovich</b></p>"				\
 							"<p>Application is distributed 'as is'</p>"				\
-							"<p>Source code can be found at <a href=\"http://wifi-mesh.googlecode.com/svn/trunk/\">SVN repository</a></p>"
+							"<p>Source code can be found at:</p>" \
+							"<p><a href=\"http://wifi-mesh.googlecode.com/svn/trunk/\">SVN repository</a></p>"
 
 
-MeshAboutDlg::MeshAboutDlg(QWidget *parent)
+MeshDlgAbout::MeshDlgAbout(QWidget *parent)
     : QDialog(parent)
 {
 	init();
 }
 
-MeshAboutDlg::~MeshAboutDlg()
-{
-
-}
-
-void MeshAboutDlg::init()
+void MeshDlgAbout::init()
 {
 	setModal(true);
 	setWindowTitle(tr("About %1").arg(qApp->applicationName()));
+	setWindowIcon(QIcon(":/about.png"));
 
 	QLabel* copyright = new QLabel(tr(COPYRIGHT_STRING).arg(qApp->applicationName()).arg(qApp->applicationVersion()), this);
 	QLabel* meshLogo = new QLabel(this);
 	copyright->setOpenExternalLinks(true);
 	meshLogo->setAlignment(Qt::AlignTop);
 
-	meshLogo->setPixmap(QPixmap(":/wifi.png"));
+	meshLogo->setPixmap(QPixmap(":/station.png"));
 
 	QPushButton* buttonOK = new QPushButton(tr("Close"));
 	QBoxLayout* vlayout = new QVBoxLayout(this);

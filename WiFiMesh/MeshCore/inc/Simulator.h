@@ -33,14 +33,13 @@ typedef enum
  */
 typedef void (*StationTracker)(Station* pStation, StationEventType eventType, void* pUserArg);
 
-/** Message transfer callback
- * \param time [in] current time
- * \param pMessage [in] pointer to message
+/** Packet transfer callback
+ * \param pPacket [in] pointer to packet
  * \param pSrc [in] pointer to source station
  * \param pDest [in] pointer to destination station
  * \param pUserArg [in] user defined argument
  */
-typedef void (*Sniffer)(double time, const Message* pMessage, const Station* pSrc, const Station* pDest, void* pUserArg);
+typedef void (*Sniffer)(const Packet* pPacket, const Station* pSrc, const Station* pDest, void* pUserArg);
 
 /** Stations enumerator
  * \param pStation [in] pointer to station
@@ -119,5 +118,18 @@ EStatus SimulatorClear(Simulator* pThis);
  * \param pUserArg [in] user defined argument
  */
 EStatus SimulatorEnumerateStations(Simulator* pThis, StationsEnumerator enumerator, void* pUserArg);
+
+/** Sets broadcast sniffing mode
+ * \param pThis [in] pointer to instance
+ * \param bSingle [in] determines whether sniffer will receive broadcast packets once,
+ * or multiple times (for each recipient)
+ */
+EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle);
+
+/** Retrieves broadcast sniffing mode
+ * \param pThis [in] pointer to instance
+ * \param pSingle [out] current mode will be stored at *pSingle
+ */
+EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle);
 
 #endif /* WIFI_MESH_SIMULATOR_H_ */

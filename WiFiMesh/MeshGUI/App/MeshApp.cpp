@@ -1,5 +1,5 @@
 #include "MeshApp.h"
-#include "../Dialogs/MeshAboutDlg.h"
+#include "../Dialogs/MeshDlgAbout.h"
 
 #include "../MeshViews/MeshViewRandomizer.h"
 #include "../MeshViews/MeshViewStationProperties.h"
@@ -22,13 +22,17 @@ MeshApp::~MeshApp()
 
 void MeshApp::init()
 {
-	setWindowIcon(QIcon(":/mesh.png"));
+	setWindowTitle(tr("WiFi Mesh Simulator - Professional Edition"));
+	setWindowIcon(QIcon(":/station.png"));
+
 	createActions();
+	setDocument(new MeshDocument());
+
+	createMenus();
+	createToolBars();
 	createTabs();
 	createDocks();
-	createMenus();
 	createWidgets();
-	createToolBars();
 	createStatusBar();
 }
 
@@ -95,6 +99,31 @@ void MeshApp::createActions()
 //	m_actViewShowCoverage->setShortcut(tr("Ctrl+7"));
 //	m_actViewShowCoverage->setStatusTip(tr("Show coverage"));
 
+//	m_actViewShowSettings = new QAction(QIcon(":/configure.png"), tr("Show &simulator settings"), this);
+//	m_actViewShowSettings->setStatusTip(tr("Show/hide simulator settings window"));
+//	m_actViewShowSettings->setCheckable(true);
+//	m_actViewShowSettings->setChecked(true);
+//
+//	m_actViewShowSniffer = new QAction(QIcon(":/packet.png"), tr("Show &packets sniffer"), this);
+//	m_actViewShowSniffer->setStatusTip(tr("Show/hide packets sniffer window"));
+//	m_actViewShowSniffer->setCheckable(true);
+//	m_actViewShowSniffer->setChecked(true);
+//
+//	m_actViewShowStations = new QAction(QIcon(":/station.png"), tr("Show s&tations view"), this);
+//	m_actViewShowStations->setStatusTip(tr("Show/hide stations view window"));
+//	m_actViewShowStations->setCheckable(true);
+//	m_actViewShowStations->setChecked(true);
+//
+//	m_actViewShowGenerator = new QAction(QIcon(":/generate.png"), tr("Show world &generator"), this);
+//	m_actViewShowGenerator->setStatusTip(tr("Show/hide world generator window"));
+//	m_actViewShowGenerator->setCheckable(true);
+//	m_actViewShowGenerator->setChecked(true);
+//
+//	m_actViewShowLog = new QAction(QIcon(":/log.png"), tr("Show world &generator"), this);
+//	m_actViewShowLog->setStatusTip(tr("Show/hide world generator window"));
+//	m_actViewShowLog->setCheckable(true);
+//	m_actViewShowLog->setChecked(true);
+
 	m_actSimulationRun = new QAction(QIcon(":/play.png"), tr("&Run"), this);
 	m_actSimulationRun->setShortcut(tr("F5"));
 	m_actSimulationRun->setStatusTip(tr("Run simulation"));
@@ -142,6 +171,11 @@ void MeshApp::createMenus()
 //	m_menuView->addAction(m_actViewShowRouting);
 //	m_menuView->addAction(m_actViewShowCoverage);
 
+//	m_menuView->addAction(m_actViewShowSettings);
+//	m_menuView->addAction(m_actViewShowSniffer);
+//	m_menuView->addAction(m_actViewShowStations);
+//	m_menuView->addAction(m_actViewShowGenerator);
+
 	m_menuSimulation->addAction(m_actSimulationRun);
 	m_menuSimulation->addAction(m_actSimulationPause);
 	m_menuSimulation->addAction(m_actSimulationBreak);
@@ -157,18 +191,26 @@ void MeshApp::createWidgets()
 void MeshApp::createToolBars()
 {
 	m_toolbarFile = addToolBar(tr("File"));
-	m_toolbarFile->setIconSize(QSize(20, 20));
+	m_toolbarFile->setIconSize(QSize(24, 24));
 	m_toolbarSimulation = addToolBar(tr("Simulation"));
-	m_toolbarSimulation->setIconSize(QSize(20, 20));
+	m_toolbarSimulation->setIconSize(QSize(24, 24));
+
+//	m_toolbarView = addToolBar(tr("View"));
+//	m_toolbarView->setIconSize(QSize(24, 24));
 
 	m_toolbarFile->addAction(m_actFileNew);
 	m_toolbarFile->addAction(m_actFileOpen);
 	m_toolbarFile->addAction(m_actFileSave);
-	m_toolbarFile->addAction(m_actFileClose);
+//	m_toolbarFile->addAction(m_actFileClose);
 
 	m_toolbarSimulation->addAction(m_actSimulationRun);
 	m_toolbarSimulation->addAction(m_actSimulationPause);
 	m_toolbarSimulation->addAction(m_actSimulationBreak);
+
+//	m_toolbarView->addAction(m_actViewShowSettings);
+//	m_toolbarView->addAction(m_actViewShowSniffer);
+//	m_toolbarView->addAction(m_actViewShowStations);
+//	m_toolbarView->addAction(m_actViewShowGenerator);
 }
 
 void MeshApp::createStatusBar()
@@ -178,21 +220,21 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
-	setDocument(new MeshDocument());
+	QDockWidget* dockStations = createDock(tr("Stations browser"), new MeshViewStationsList(this));
+	QDockWidget* dockRandomizer = createDock(tr("World generator"), new MeshViewRandomizer(this));
+	QDockWidget* dockSettings = createDock(tr("Simulator settings"), new MeshViewSettings(this));
+	QDockWidget* dockPackets = createDock(tr("Packet sniffer"), new MeshViewSniffer(this));
 
-	QDockWidget* dockStations = createDock(tr("Stations"), new MeshViewStationsList(this));
-	QDockWidget* dockRandomizer = createDock(tr("Randomizer"), new MeshViewRandomizer(this));
-	QDockWidget* dockSettings = createDock(tr("Settings"), new MeshViewSettings(this));
-	QDockWidget* dockMessages = createDock(tr("Sniffer"), new MeshViewSniffer(this));
+//	connect(m_actViewShowStations, SIGNAL(toggled(bool)), dockStations, SLOT(setVisible(bool)));
+//	connect(m_actViewShowSettings, SIGNAL(toggled(bool)), dockSettings, SLOT(setVisible(bool)));
+//	connect(m_actViewShowSniffer, SIGNAL(toggled(bool)), dockPackets, SLOT(setVisible(bool)));
+//	connect(m_actViewShowGenerator, SIGNAL(toggled(bool)), dockRandomizer, SLOT(setVisible(bool)));
 
-	addDockWidget(Qt::RightDockWidgetArea, dockStations);
+	addDockWidget(Qt::RightDockWidgetArea, dockSettings);
 	addDockWidget(Qt::RightDockWidgetArea, dockRandomizer);
-	tabifyDockWidget(dockStations, dockSettings);
-	addDockWidget(Qt::BottomDockWidgetArea, dockMessages);
+	addDockWidget(Qt::BottomDockWidgetArea, dockPackets);
+	addDockWidget(Qt::BottomDockWidgetArea, dockStations);
 
-	MeshView* view = new MeshViewStationsGraph(m_tabs);
-	view->setDocument(m_document);
-	m_tabs->insertTab(0, view, 	QIcon(), tr("Graph"));
 	m_tabs->setCurrentIndex(0);
 }
 
@@ -200,7 +242,10 @@ void MeshApp::createTabs()
 {
 	m_tabs = new QTabWidget(this);
 	setCentralWidget(m_tabs);
-	m_tabs->addTab(new MeshLog(m_tabs), tr("Log"));
+	MeshView* viewMap = new MeshViewStationsGraph(this);
+	viewMap->setDocument(m_document);
+	m_tabs->addTab(viewMap, QIcon(":/map.png"), tr("World map"));
+	m_tabs->addTab(new MeshLog(m_tabs), QIcon(":/log.png"), tr("Activity log"));
 }
 
 QDockWidget* MeshApp::createDock(const QString& title, MeshView* view)
@@ -208,14 +253,15 @@ QDockWidget* MeshApp::createDock(const QString& title, MeshView* view)
 	view->setDocument(m_document);
 	QDockWidget* dock = new QDockWidget(title, this);
 	dock->setWidget(view);
+	m_menuView->addAction(dock->toggleViewAction());
+//	m_toolbarView->addAction(dock->toggleViewAction());
 	return dock;
 }
 
 
 void MeshApp::about()
 {
-	MeshAboutDlg* aboutDlg = new MeshAboutDlg();
-	aboutDlg->show();
+	MeshDlgAbout().exec();
 }
 
 void MeshApp::aboutQt()
@@ -235,11 +281,7 @@ void MeshApp::simulationStopped()
 	 m_actSimulationRun->setEnabled(true);
 	 m_actSimulationBreak->setEnabled(false);
 	 m_actSimulationPause->setEnabled(false);
-}
-
-void MeshApp::simulationPaused(bool isPaused)
-{
-	m_actSimulationPause->setChecked(isPaused);
+	 m_actSimulationPause->setChecked(false);
 }
 
 void MeshApp::simulationEmpty(bool isEmpty)

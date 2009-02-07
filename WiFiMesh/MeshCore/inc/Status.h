@@ -10,8 +10,6 @@
 #ifndef _WIFI_MESH_STATUS_H
 #define _WIFI_MESH_STATUS_H
 
-#include <wchar.h>
-
 /// Global return codes
 typedef enum
 {
@@ -27,12 +25,12 @@ typedef enum
 
 	eSTATUS_TIME_LINE_FINISHED,						///< Last event was reached
 
-	eSTATUS_STATION_MESSAGE_NOT_ACCEPTED,			///< Message did not pass destination filter
+	eSTATUS_STATION_PACKET_NOT_ACCEPTED,			///< Packet did not pass destination filter
 
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
 	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished
 
-	eSTATUS_SCHEDULER_NO_MESSAGES,					///< No ready messages found
+	eSTATUS_SCHEDULER_NO_PACKETS,					///< No ready packets found
 
 	// terminator
 	eSTATUS_LAST
@@ -41,13 +39,5 @@ typedef enum
 extern EStatus s_lastStatus;
 
 const char* StatusGetMessage(EStatus status);
-const wchar_t* GetStatusMessageW(EStatus status);
-const char* GetStatusMessageA(EStatus status);
-
-#ifdef UNICODE
-	#define GetStatusMessage GetStatusMessageW
-#else
-	#define GetStatusMessage GetStatusMessageA
-#endif // UNICODE
 
 #endif // _WIFI_MESH_STATUS_H

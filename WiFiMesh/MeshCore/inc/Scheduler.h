@@ -12,18 +12,25 @@
 #define SCHEDULER_H_
 
 #include "Status.h"
-#include "Message.h"
+#include "Packet.h"
 #include "TimeLine.h"
 
 typedef struct _Scheduler Scheduler;	///< forward declaration
 
-/** Scheduler adding/removing message handler
- * \param time [in] time, when a message should be issued
- * \param pMessage [in] pointer to message instance
- * \param bAdded [in] if TRUE message is being added, otherwise removed
+typedef enum _ESchedulerEvent
+{
+	eSCHEDULE_ADDED,
+	eSCHEDULE_REMOVED,
+	eSCHEDULE_DELIVERED
+} ESchedulerEvent;
+
+/** Scheduler adding/removing packet handler
+ * \param time [in] time, when a packet should be issued
+ * \param pPacket [in] pointer to packet instance
+ * \param bAdded [in] if TRUE packet is being added, otherwise removed
  * \param pUserArg [in] user defined argument
  */
-typedef void (*SchedulerHandler)(double time, const Message* pMessage, Boolean bAdded, void* pUserArg);
+typedef void (*SchedulerHandler)(double time, const Packet* pPacket, ESchedulerEvent bAdded, void* pUserArg);
 
 /** Allocates and initializes new instance
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -47,22 +54,28 @@ EStatus SchedulerInit(Scheduler* pThis, TimeLine* pTimeLine);
  */
 EStatus SchedulerDestroy(Scheduler* pThis);
 
-/** Schedules a message
+/** Handles packet (currently - ACK only)
  * \param pThis [in] pointer to instance
- * \param pMessage [in] pointer to message
- * \param time [in] time, when the message should be issued, in time units
+ * \param pPacket [in] pointer to packet to handle
  */
-EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time);
+EStatus SchedulerHandlePacket(Scheduler* pThis, const Packet* pPacket);
 
-/** Retrieves available message and removes it from queue
+/** Schedules a packet
  * \param pThis [in] pointer to instance
- * \param ppMessage [out] pointer to message will be stored at *ppMessage
- * \return eSTATUS_SCHEDULER_NO_MESSAGES_AVAILABLE if there are no ready messages
- * \return eSTATUS_COMMON_OK if a message was retrieved
+ * \param pPacket [in] pointer to packet
+ * \param time [in] time, when the packet should be issued, in time units
  */
-EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage);
+EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time);
 
-/** Removes all scheduled messages
+/** Retrieves available packet and removes it from queue
+ * \param pThis [in] pointer to instance
+ * \param ppPacket [out] pointer to packet will be stored at *ppPacket
+ * \return eSTATUS_SCHEDULER_NO_PACKETS_AVAILABLE if there are no ready packets
+ * \return eSTATUS_COMMON_OK if a packet was retrieved
+ */
+EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket);
+
+/** Removes all scheduled packets
  * \param pThis [in] pointer to instance
  */
 EStatus SchedulerClear(Scheduler* pThis);

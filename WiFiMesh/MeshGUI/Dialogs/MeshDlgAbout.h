@@ -3,13 +3,12 @@
 
 #include <QtGui>
 
-class MeshAboutDlg : public QDialog
+class MeshDlgAbout : public QDialog
 {
     Q_OBJECT
 
 public:
-    MeshAboutDlg(QWidget *parent = 0);
-    ~MeshAboutDlg();
+    MeshDlgAbout(QWidget *parent = 0);
 
 private:
 	void init();

@@ -1,8 +1,9 @@
 #include "Status.h"
+#include <wchar.h>
 
 #define STATUS_MESSAGE(msg) { msg, L ## msg }
 #define DECLARE_STATUS_MESSAGES(name, count)	\
-	struct										\
+	static struct								\
 	{											\
 		const char* amsg;						\
 		const wchar_t* wmsg;					\
@@ -29,14 +30,14 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("Time line finished"),
 
 	// Station
-	STATUS_MESSAGE("Message was not accepted"),
+	STATUS_MESSAGE("Packet was not accepted"),
 
 	// Simulator
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),
 
 	// Scheduler
-	STATUS_MESSAGE("No available messages"),
+	STATUS_MESSAGE("No available packets"),
 
 	// Terminator
 	STATUS_MESSAGE("Unknown error")
@@ -45,16 +46,6 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 EStatus s_lastStatus;
 
 const char* StatusGetMessage(EStatus status)
-{
-	return s_statusMessages[_MIN(status, eSTATUS_LAST)].amsg;
-}
-
-const wchar_t* GetStatusMessageW(EStatus status)
-{
-	return s_statusMessages[_MIN(status, eSTATUS_LAST)].wmsg;
-}
-
-const char* GetStatusMessageA(EStatus status)
 {
 	return s_statusMessages[_MIN(status, eSTATUS_LAST)].amsg;
 }

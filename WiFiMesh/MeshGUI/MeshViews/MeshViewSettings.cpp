@@ -41,11 +41,6 @@ void MeshViewSettings::init()
 	connect(m_spinDataRate, SIGNAL(valueChanged(double)), this, SLOT(setDataRate(double)));
 	connect(m_comboDataUnits, SIGNAL(currentIndexChanged(int)), this, SLOT(setUnits(int)));
 
-	m_spinDuration = new QDoubleSpinBox;
-	m_spinDuration->setRange(0.1, 3600);
-	m_spinDuration->setDecimals(1);
-	m_spinDuration->setSuffix(tr(" [sec]"));
-
 	m_spinRetryTimeout = new QDoubleSpinBox;
 	m_spinRetryTimeout->setRange(0.0, 60.0);
 	m_spinRetryTimeout->setDecimals(1);
@@ -72,7 +67,6 @@ void MeshViewSettings::init()
 	settingsLayout->addRow(tr("Route TTL:"), m_spinRouteTTL);
 	settingsLayout->addRow(tr("Retry timeout:"), m_spinRetryTimeout);
 	settingsLayout->addRow(tr("Data rate:"), dataRateLayout);
-	settingsLayout->addRow(tr("Duration:"), m_spinDuration);
 
 	QGroupBox* settingsGroup = new QGroupBox(tr("Simulator settings"));
 	QGroupBox* sizeGroup = new QGroupBox(tr("World size"));
@@ -119,7 +113,6 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
 	connect(m_spinRouteTTL, SIGNAL(valueChanged(double)), doc, SLOT(setRouteTTL(double)));
 	connect(this, SIGNAL(updateDataRate(int)), doc, SLOT(setDataRate(int)));
 	connect(this, SIGNAL(updateSize(Size)), doc, SLOT(setWorldSize(Size)));
-	connect(m_spinDuration, SIGNAL(valueChanged(double)), doc, SLOT(setDuration(double)));
 	connect(m_spinRetryTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRetryTimeout(double)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
@@ -128,7 +121,6 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
 	m_spinRouteTTL->setValue(doc->routeTTL());
 	m_comboDataUnits->setCurrentIndex(2);
 	m_spinDataRate->setValue(doc->dataRate() * 8 / (1 << (10 * m_comboDataUnits->currentIndex())));
-	m_spinDuration->setValue(doc->duration());
 	m_spinRetryTimeout->setValue(doc->retryTimeout());
 
 	Size size = doc->worldSize();

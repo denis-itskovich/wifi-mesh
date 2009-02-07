@@ -26,11 +26,13 @@ void MeshViewStationsList::init()
 
 	m_buttonAdd = new QPushButton(QIcon(":/add.png"), tr("&Add"), this);
 	m_buttonRemove = new QPushButton(QIcon(":/remove.png"), tr("&Remove"), this);
-	m_buttonMessage = new QPushButton(QIcon(":/message.png"), tr("&Add message"), this);
+	m_buttonRemove->setEnabled(false);
+	m_buttonPacket = new QPushButton(QIcon(":/packet.png"), tr("&Add packet"), this);
+	m_buttonPacket->setEnabled(false);
 
 	layout->addWidget(m_treeStations);
 
-	buttonsLayout->addWidget(m_buttonMessage);
+	buttonsLayout->addWidget(m_buttonPacket);
 	buttonsLayout->addStretch();
 	buttonsLayout->addWidget(m_buttonAdd);
 	buttonsLayout->addWidget(m_buttonRemove);
@@ -41,6 +43,7 @@ void MeshViewStationsList::init()
 
 	connect(m_treeStations, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
 			this, SLOT(currentChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+
 }
 
 void MeshViewStationsList::addStation(Station* pStation)
@@ -53,6 +56,8 @@ void MeshViewStationsList::addStation(Station* pStation)
 
 void MeshViewStationsList::currentChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
+	m_buttonRemove->setEnabled(current != NULL);
+	m_buttonPacket->setEnabled(current != NULL);
 	if (!current) return;
 	while (current->parent()) current = current->parent();
 	MeshTreeItemStation* cur = dynamic_cast<MeshTreeItemStation*>(current);
@@ -72,6 +77,7 @@ void MeshViewStationsList::setDocument(MeshDocument* doc)
 	MeshViewStations::setDocument(doc);
 	connect(m_buttonAdd, SIGNAL(clicked()), doc, SLOT(addStation()));
 	connect(m_buttonRemove, SIGNAL(clicked()), doc, SLOT(removeStation()));
+	connect(m_buttonPacket, SIGNAL(clicked()), doc, SLOT(addPacket()));
 }
 
 void MeshViewStationsList::setCurrent(Station* pStation)

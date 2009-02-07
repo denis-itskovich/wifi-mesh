@@ -1,17 +1,28 @@
 <RCC>
     <qresource prefix="/" >
+        <file alias="generate.png" >Images/Automator-32.png</file>
+        <file alias="disconnected.png" >Images/Disconnected_32.png</file>
+        <file alias="connected.png" >Images/Internet_32.png</file>
         <file alias="message.png" >Images/Mail-envelope-32.png</file>
+        <file alias="packet.png" >Images/Package-32.png</file>
+        <file alias="accept.png" >Images/accept-32.png</file>
         <file alias="add.png" >Images/addbutton.png</file>
         <file alias="remove.png" >Images/closebutton.png</file>
         <file alias="configure.png" >Images/configure.png</file>
-        <file alias="generate.png" >Images/developer.png</file>
+        <file alias="cancel.png" >Images/delete-32.png</file>
+        <file alias="process.png" >Images/developer.png</file>
+        <file alias="excavator.png" >Images/excavator.png</file>
         <file alias="exit.png" >Images/exit.png</file>
         <file alias="close.png" >Images/fileclose.png</file>
         <file alias="about.png" >Images/fileinfo-32.png</file>
         <file alias="new.png" >Images/filenew.png</file>
         <file alias="open.png" >Images/fileopen.png</file>
         <file alias="save.png" >Images/filesave.png</file>
+        <file alias="folder.png" >Images/folder.png</file>
+        <file alias="package.png" >Images/gift box_32x32.png</file>
         <file alias="wifi.png" >Images/kwifimanager.png</file>
+        <file alias="log.png" >Images/log.png</file>
+        <file alias="map.png" >Images/map.png</file>
         <file alias="mesh.png" >Images/mesh.png</file>
         <file>Images/network.png</file>
         <file>Images/new.png</file>
@@ -23,6 +34,7 @@
         <file alias="qt.png" >Images/qt.png</file>
         <file alias="run.png" >Images/right-32.png</file>
         <file>Images/save.png</file>
+        <file alias="station.png" >Images/signal-Vista-48x48.png</file>
         <file>Images/standardbutton-close-32.png</file>
         <file>Images/standardbutton-delete-32.png</file>
         <file>Images/standardbutton-help-32.png</file>

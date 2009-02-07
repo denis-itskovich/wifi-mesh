@@ -85,7 +85,7 @@ Comparison RoutingFinder(RoutingEntry* pEntry, StationId* pId, StationId* pTrans
 {
 	if (pEntry->dstId == *pId)
 	{
-		*pTransitId = pEntry->transitId;
+		if (pTransitId) *pTransitId = pEntry->transitId;
 		return EQUAL;
 	}
 
@@ -118,28 +118,28 @@ EStatus RoutingDestroy(Routing* pThis)
 	return ListDelete(&pThis->pEntries);
 }
 
-EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage)
+EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 {
 	StationId dstId, transitId;
 	ListEntry* pListEntry;
 	RoutingEntry* pRouteEntry;
 
-	VALIDATE_ARGUMENTS(pThis && pMessage);
+	VALIDATE_ARGUMENTS(pThis && pPacket);
 
-	dstId = pMessage->originalSrcId;
+	dstId = pPacket->originalSrcId;
 
 	if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dstId, &transitId))
 	{
-		transitId = pMessage->transitSrcId;
-		return RoutingAddRoute(pThis, dstId, transitId, pMessage->nodesCount);
+		transitId = pPacket->transitSrcId;
+		return RoutingAddRoute(pThis, dstId, transitId, pPacket->nodesCount);
 	}
 
 	CHECK(ListGetValue(pListEntry, &pRouteEntry));
 
-	if (pRouteEntry->length >= pMessage->nodesCount)
+	if (pRouteEntry->length >= pPacket->nodesCount)
 	{
-		pRouteEntry->length = pMessage->nodesCount;
-		pRouteEntry->transitId = pMessage->transitSrcId;
+		pRouteEntry->length = pPacket->nodesCount;
+		pRouteEntry->transitId = pPacket->transitSrcId;
 		CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
 		RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
 	}
@@ -177,10 +177,10 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, u
 {
 	ListEntry* pEntry;
 	RoutingEntry* pRouteEntry;
-	VALIDATE_ARGUMENTS(pThis && pTransitId);
+	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId));
 	CHECK(ListGetValue(pEntry, &pRouteEntry));
-	*pHopsCount = pRouteEntry->length;
+	if (pHopsCount) *pHopsCount = pRouteEntry->length;
 	return eSTATUS_COMMON_OK;
 }
 
