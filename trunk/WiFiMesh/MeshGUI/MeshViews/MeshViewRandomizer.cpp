@@ -37,10 +37,15 @@ void MeshViewRandomizer::init()
 	m_spinAvgDataSize = new QSpinBox;
 	m_spinAvgDataSize->setRange(1, 1 << 30);
 
-	m_spinAvgMessagesCount = new QSpinBox;
-	m_spinAvgMessagesCount->setRange(1, 100000);
+	m_spinAvgPacketsCount = new QSpinBox;
+	m_spinAvgPacketsCount->setRange(1, 100000);
 
-	m_buttonGenerate = new QPushButton(QIcon(":/configure.png"), tr("Generate mesh"));
+	m_spinDuration = new QDoubleSpinBox;
+	m_spinDuration->setRange(0.1, 3600);
+	m_spinDuration->setDecimals(1);
+	m_spinDuration->setSuffix(tr(" [sec]"));
+
+	m_buttonGenerate = new QPushButton(QIcon(":/generate.png"), tr("Generate mesh"));
 
 	QHBoxLayout* hlayout = new QHBoxLayout;
 	hlayout->addWidget(m_sliderStationsCount);
@@ -51,7 +56,8 @@ void MeshViewRandomizer::init()
 	mainLayout->addRow(tr("Stations count:"), hlayout);
 	mainLayout->addRow(tr("Average velocity:"), m_spinAvgVelocity);
 	mainLayout->addRow(tr("Average data size:"), m_spinAvgDataSize);
-	mainLayout->addRow(tr("Average messages count:"), m_spinAvgMessagesCount);
+	mainLayout->addRow(tr("Average packets count:"), m_spinAvgPacketsCount);
+	mainLayout->addRow(tr("Duration:"), m_spinDuration);
 
 	QGroupBox* group = new QGroupBox("Randomization parameters");
 	group->setLayout(mainLayout);
@@ -73,16 +79,18 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 
 	connect(m_spinAvgVelocity, SIGNAL(valueChanged(double)), doc, SLOT(setAvgVelocity(double)));
 	connect(m_spinAvgDataSize, SIGNAL(valueChanged(int)), doc, SLOT(setAvgDataSize(int)));
-	connect(m_spinAvgMessagesCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgMessagesCount(int)));
+	connect(m_spinAvgPacketsCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgPacketsCount(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
 	connect(m_buttonGenerate, SIGNAL(clicked()), doc, SLOT(generate()));
+	connect(m_spinDuration, SIGNAL(valueChanged(double)), doc, SLOT(setDuration(double)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
 	m_spinAvgVelocity->setValue(doc->avgVelocity());
 	m_spinAvgDataSize->setValue(doc->avgDataSize());
-	m_spinAvgMessagesCount->setValue(doc->avgMessagesCount());
+	m_spinAvgPacketsCount->setValue(doc->avgPacketsCount());
 	m_spinStationsCount->setValue(doc->stationsCount());
+	m_spinDuration->setValue(doc->duration());
 
 	MeshView::setDocument(doc);
 }

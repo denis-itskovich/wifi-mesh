@@ -19,16 +19,22 @@ MeshTreeItemStation::MeshTreeItemStation(MeshViewStations* pContainer, Station* 
 
 void MeshTreeItemStation::init()
 {
+	setIcon(0, QIcon(":/station.png"));
+	QIcon folderIcon(QIcon(":/folder.png"));
 	QTreeWidgetItem* locItem = new QTreeWidgetItem(QStringList() << "Location");
 	locItem->addChild(new QTreeWidgetItem(QStringList() << "x"));
 	locItem->addChild(new QTreeWidgetItem(QStringList() << "y"));
+	locItem->setIcon(0, folderIcon);
 
 	QTreeWidgetItem* velItem = new QTreeWidgetItem(QStringList() << "Velocity");
 	velItem->addChild(new QTreeWidgetItem(QStringList() << "x"));
 	velItem->addChild(new QTreeWidgetItem(QStringList() << "y"));
+	velItem->setIcon(0, folderIcon);
 
 	QTreeWidgetItem* routeItem = new QTreeWidgetItem(QStringList() << "Routing");
+	routeItem->setIcon(0, folderIcon);
 	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Schedule");
+	scheduleItem->setIcon(0, folderIcon);
 
 	addChild(locItem);
 	addChild(velItem);
@@ -42,8 +48,6 @@ void MeshTreeItemStation::updateStation()
 {
 	if (!isLocationValid()) initLocationNode(child(0));
 	if (!isVelocityValid()) initVelocityNode(child(1));
-	if (!isRoutingValid()) initRoutingNode(child(2));
-	if (!isSchedulerValid()) initSchedulerNode(child(3));
 	MeshItemStation::updateStation();
 }
 
@@ -63,54 +67,97 @@ void MeshTreeItemStation::initVelocityNode(QTreeWidgetItem* item)
 	item->child(1)->setText(1, QString("%1").arg(vel.y()));
 }
 
-void MeshTreeItemStation::initRoutingNode(QTreeWidgetItem* item)
+QTreeWidgetItem* MeshTreeItemStation::createRouteItem(StationId dst, StationId transit, double expires, int length)
 {
-	item->takeChildren();
-
-	const RouteMap& routeMap = routing();
-	for (RouteMap::const_iterator i = routeMap.begin(); i != routeMap.end(); ++i)
+	QString name = QString("Station %1").arg(dst);
+	QTreeWidgetItem* routeItem = NULL;
+	if (transit != INVALID_STATION_ID)
 	{
-		QString name = QString("Station %1").arg(i->destination);
-		QTreeWidgetItem* routeItem = NULL;
-		if (i->transit != INVALID_STATION_ID)
-		{
-			QString brief = QString("(to: %1 via: Station %2, hops: %3, expires at: %4)").arg(name).arg(i->transit).arg(i->length).arg(i->expires);
-			routeItem = new QTreeWidgetItem(QStringList() << name << brief);
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(i->destination)));
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "transit" << QString("%1").arg(i->transit)));
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "hops" << QString("%1").arg(i->length)));
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "expiration" << QString("%1").arg(i->expires)));
+		QString brief = QString("(to: %1 via: Station %2, hops: %3, expires at: %4)").arg(name).arg(transit).arg(length).arg(expires);
+		routeItem = new QTreeWidgetItem(QStringList() << name << brief);
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(name)));
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "transit" << QString("Station %1").arg(transit)));
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "hops" << QString("%1").arg(length)));
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "expiration" << QString("%1").arg(expires)));
+		routeItem->setIcon(0, QIcon(":/connected.png"));
 
-		}
-		else
-		{
-			QString brief = QString("(pending to: %1, retry at: %2)").arg(name).arg(i->expires);
-			routeItem = new QTreeWidgetItem(QStringList() << name << brief);
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(i->destination)));
-			routeItem->addChild(new QTreeWidgetItem(QStringList() << "retry" << QString("%1").arg(i->expires)));
-		}
-		item->addChild(routeItem);
 	}
-
-	int count = routeMap.count();
-	item->setText(1, (count > 0) ? QString("(%1 entries)").arg(count) : "(empty)");
+	else
+	{
+		QString brief = QString("(pending to: %1, retry at: %2)").arg(name).arg(expires);
+		routeItem = new QTreeWidgetItem(QStringList() << name << brief);
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("%1").arg(name)));
+		routeItem->addChild(new QTreeWidgetItem(QStringList() << "retry" << QString("%1").arg(expires)));
+		routeItem->setIcon(0, QIcon(":/disconnected.png"));
+	}
+	return routeItem;
 }
 
-void MeshTreeItemStation::initSchedulerNode(QTreeWidgetItem* item)
+QTreeWidgetItem* MeshTreeItemStation::createScheduleItem(double time, const Packet* pPacket)
 {
-	item->takeChildren();
+	QString brief = QString("(at: %1, to: Station %2, size: %3 bytes)").arg(time).arg(pPacket->originalDstId).arg(pPacket->size);
+	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Packet" << brief);
+	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "time" << QString("%1").arg(time)));
+	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("Station %1").arg(pPacket->originalDstId)));
+	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "size" << QString("%1 bytes").arg(pPacket->size)));
+	scheduleItem->setIcon(0, QIcon(":/packet.png"));
+	return scheduleItem;
+}
 
-	const ScheduleList& scheduleList = schedule();
-	for (ScheduleList::const_iterator i = scheduleList.begin(); i != scheduleList.end(); ++i)
-	{
-		QString brief = QString("(at: %1, to: Station %2, size: %3 bytes)").arg(i->time).arg(i->destination).arg(i->size);
-		QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Message" << brief);
-		scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "time" << QString("%1").arg(i->time)));
-		scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("Station %1").arg(i->destination)));
-		scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "size" << QString("%1 bytes").arg(i->size)));
-		item->addChild(scheduleItem);
-	}
+void MeshTreeItemStation::addRouteEntry(StationId dst, StationId trans, double expires, int length)
+{
+	assert(m_routeMap.count(dst) == 0);
+	QTreeWidgetItem* item = createRouteItem(dst, trans, expires, length);
+	m_routeMap[dst] = item;
+	child(2)->addChild(item);
+	child(2)->setText(1, QString("(%1 entries)").arg(m_routeMap.count()));
+}
 
-	int count = scheduleList.count();
-	item->setText(1, (count > 0) ? QString("(%1 messages)").arg(count) : "(empty)");
+void MeshTreeItemStation::updateRouteEntry(StationId dst, StationId trans, double expires, int length)
+{
+	assert(m_routeMap.count(dst) != 0);
+	QTreeWidgetItem* item = m_routeMap[dst];
+	int index = child(2)->indexOfChild(item);
+	delete item;
+	item = createRouteItem(dst, trans, expires, length);
+	m_routeMap[dst] = item;
+	child(2)->insertChild(index, item);
+}
+
+void MeshTreeItemStation::removeRouteEntry(StationId dst)
+{
+	assert(m_routeMap.count(dst) != 0);
+	delete m_routeMap[dst];
+	m_routeMap.remove(dst);
+	if (m_routeMap.isEmpty()) child(2)->setText(1, "(empty)");
+	else child(2)->setText(1, QString("(%1 entries)").arg(m_routeMap.count()));
+}
+
+void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
+{
+	unsigned seqNum = pPacket->sequenceNum;
+	assert(m_scheduleMap.count(seqNum) == 0);
+	QTreeWidgetItem* item = createScheduleItem(time, pPacket);
+	m_scheduleMap[seqNum] = item;
+	child(3)->addChild(item);
+	child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
+}
+
+void MeshTreeItemStation::removeScheduleEntry(const Packet* pPacket)
+{
+	unsigned seqNum = pPacket->sequenceNum;
+	assert(m_scheduleMap.count(seqNum) != 0);
+	delete m_scheduleMap[seqNum];
+	m_scheduleMap.remove(seqNum);
+	if (m_scheduleMap.isEmpty()) child(3)->setText(1, "(empty)");
+	else child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
+}
+
+void MeshTreeItemStation::deliverScheduleEntry(const Packet* pPacket)
+{
+
+}
+
+void MeshTreeItemStation::reset()
+{
 }

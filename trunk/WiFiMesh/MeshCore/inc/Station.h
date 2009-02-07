@@ -13,25 +13,26 @@
 #define _WIFI_MESH_STATION_H
 
 #include "CommonTypes.h"
-#include "Message.h"
+#include "Packet.h"
 #include "Settings.h"
 #include "TimeLine.h"
 #include "Routing.h"
+#include "Scheduler.h"
 
 typedef struct _Station Station; 	///< Station forward declaration
 
-/** Message scheduler add/remove handler.
- * Is called each time a message is scheduled/removed
+/** Packet scheduler add/remove handler.
+ * Is called each time a packet is scheduled/removed
  * \param pStation [in] pointer to station
- * \param time [in] time, when a message should be issued
- * \param pMessage [in] pointer to message instance
- * \param bAdded [in] if TRUE message is being added, otherwise removed
+ * \param time [in] time, when a packet should be issued
+ * \param pPacket [in] pointer to packet instance
+ * \param bAdded [in] if TRUE packet is being added, otherwise removed
  * \param pUserArg [in] user defined argument
  */
 typedef void (*StationSchedulerHandler)(const Station* pStation,
 										double time,
-										const Message* pMessage,
-										Boolean bAdded,
+										const Packet* pPacket,
+										ESchedulerEvent event,
 										void* pUserArg);
 
 /** Routing entry update handler.
@@ -110,19 +111,19 @@ EStatus StationGetId(const Station* pThis, StationId* pId);
  */
 EStatus StationSetId(Station* pThis, StationId id);
 
-/** Retrieves next outgoing message
+/** Retrieves next outgoing packet
  * \param pThis [in] pointer to instance
- * \param ppMessage [out] pointer to message will be stored at *ppMessage. NULL will be stored if no outgoing messages are available
+ * \param ppPacket [out] pointer to packet will be stored at *ppPacket. NULL will be stored if no outgoing packets are available
  */
-EStatus StationGetMessage(Station* pThis, Message** ppMessage);
+EStatus StationGetPacket(Station* pThis, Packet** ppPacket);
 
-/** Deliveries a message
+/** Deliveries a packet
  * \param pThis [in] pointer to instance
- * \param pMessage [in] pointer to message
- * \return eSTATUS_MESSAGE_NOT_ACCEPTED if the massage was not handled by station
- * \return eSTATUS_COMMON_OK if the message was handled
+ * \param pPacket [in] pointer to packet
+ * \return eSTATUS_PACKET_NOT_ACCEPTED if the massage was not handled by station
+ * \return eSTATUS_COMMON_OK if the packet was handled
  */
-EStatus StationPutMessage(Station* pThis, Message* pMessage);
+EStatus StationPutPacket(Station* pThis, const Packet* pPacket);
 
 /** Checks whether a station is adjacent to another one
  * \param pThis [in] pointer to instance
@@ -143,12 +144,12 @@ EStatus StationIsActive(const Station* pThis, Boolean* pIsActive);
  */
 EStatus StationIsTransmitting(const Station* pThis, Boolean* pIsTxing);
 
-/** Enqueues a message for delayed transmit
+/** Enqueues a packet for delayed transmit
  * \param pThis [in] pointer to instance
- * \param pMessage [in] pointer to message to be sent
- * \param time [in] time, when the message should be sent
+ * \param pPacket [in] pointer to packet to be sent
+ * \param time [in] time, when the packet should be sent
  */
-EStatus StationScheduleMessage(Station* pThis, Message* pMessage, double time);
+EStatus StationSchedulePacket(Station* pThis, Packet* pPacket, double time);
 
 /** Retrieves station location
  * \param pThis [in] pointer to instance

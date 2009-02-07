@@ -1,0 +1,74 @@
+/**
+ * \file MeshDlgAddPacket.cpp
+ *
+ * Project: MeshGUI
+ * (C) Copyright 2009 Denis Itskovich
+ *
+ * \date 07/02/2009
+ * \author Denis Itskovich
+ */
+
+#include "MeshDlgAddPacket.h"
+#include "../Document/MeshDocument.h"
+
+MeshDlgAddPacket::MeshDlgAddPacket(const QList<StationId>& destList, StationId src, QWidget* parent) :
+	QDialog(parent)
+{
+	init();
+	for (QList<StationId>::const_iterator i = destList.begin(); i != destList.end(); ++i)
+	{
+		if (*i != src) m_comboDestination->addItem(QString("Station %1").arg(*i), (unsigned int)*i);
+	}
+}
+
+void MeshDlgAddPacket::init()
+{
+	setModal(true);
+	setWindowTitle(tr("New packet"));
+	setWindowIcon(QIcon(":/packet.png"));
+
+	QGroupBox* mainGroup = new QGroupBox(tr("Packet parameters"));
+
+	m_buttonAdd = new QPushButton(QIcon(":/accept.png"), tr("Add"));
+	connect(m_buttonAdd, SIGNAL(clicked()), this, SLOT(accept()));
+
+	m_buttonCancel = new QPushButton(QIcon(":/cancel.png"), tr("Cancel"));
+	connect(m_buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+	m_comboDestination = new QComboBox;
+	m_spinTime = new QDoubleSpinBox;
+	m_spinSize = new QSpinBox;
+	m_spinSize->setRange(1, 65536);
+
+	QFormLayout* mainLayout = new QFormLayout;
+	mainLayout->addRow(tr("Destination:"), m_comboDestination);
+	mainLayout->addRow(tr("Time:"), m_spinTime);
+	mainLayout->addRow(tr("Size:"), m_spinSize);
+	mainGroup->setLayout(mainLayout);
+
+	QHBoxLayout* buttonsLayout = new QHBoxLayout;
+	buttonsLayout->addStretch(99);
+	buttonsLayout->addWidget(m_buttonAdd);
+	buttonsLayout->addWidget(m_buttonCancel);
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->addWidget(mainGroup);
+	layout->addItem(buttonsLayout);
+
+	setLayout(layout);
+}
+
+double MeshDlgAddPacket::time() const
+{
+	return m_spinTime->value();
+}
+
+StationId MeshDlgAddPacket::destination() const
+{
+	return m_comboDestination->itemData(m_comboDestination->currentIndex(), Qt::UserRole).toUInt();
+}
+
+unsigned long MeshDlgAddPacket::dataSize() const
+{
+	return (unsigned long)m_spinSize->value();
+}

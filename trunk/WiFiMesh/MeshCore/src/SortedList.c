@@ -102,3 +102,15 @@ EStatus SortedListCleanUp(SortedList* pThis, ItemFilter filter, void* pUserArg)
 	VALIDATE_ARGUMENTS(pThis);
 	return ListCleanUp(pThis->pList, filter, pUserArg);
 }
+
+EStatus SortedListFind(SortedList* pThis, ListEntry** ppEntry, ItemComparator comparator, const void* pValue, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	return ListFind(pThis->pList, ppEntry, comparator, pValue, pUserArg);
+}
+
+EStatus SortedListEnumerate(SortedList* pThis, ItemEnumerator enumerator, void* pUserArg)
+{
+	VALIDATE_ARGUMENTS(pThis);
+	return ListEnumerate(pThis->pList, enumerator, pUserArg);
+}

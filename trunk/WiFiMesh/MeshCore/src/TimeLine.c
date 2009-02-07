@@ -5,7 +5,7 @@
 typedef struct _Event
 {
 	double 			time;
-	const Message*	pMessage;
+	const Packet*	pPacket;
 } Event;
 
 struct _TimeLine
@@ -24,7 +24,7 @@ Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 {
 	if (pEvent)
 	{
-		if (pThis->tracker.callback) pThis->tracker.callback(pEvent->time, pEvent->pMessage, FALSE, pThis->tracker.pArg);
+		if (pThis->tracker.callback) pThis->tracker.callback(pEvent->time, pEvent->pPacket, FALSE, pThis->tracker.pArg);
 		DELETE(pEvent);
 	}
 	return FALSE;
@@ -59,25 +59,25 @@ EStatus TimeLineDestroy(TimeLine* pThis)
 	return SortedListDelete(&pThis->pEvents);
 }
 
-EStatus TimeLineEvent(TimeLine* pThis, double time, const Message* pMessage)
+EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 {
 	Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis && (time >= 0));
 	pEvent = NEW(Event);
 
-	if (pThis->tracker.callback) pThis->tracker.callback(time, pMessage, TRUE, pThis->tracker.pArg);
+	if (pThis->tracker.callback) pThis->tracker.callback(time, pPacket, TRUE, pThis->tracker.pArg);
 
 	pEvent->time = time;
-	pEvent->pMessage = pMessage;
+	pEvent->pPacket = pPacket;
 
 	CHECK(SortedListAdd(pThis->pEvents, pEvent));
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Message* pMessage)
+EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Packet* pPacket)
 {
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
-	return TimeLineEvent(pThis, pThis->time + timeDelta, pMessage);
+	return TimeLineEvent(pThis, pThis->time + timeDelta, pPacket);
 }
 
 EStatus TimeLineNext(TimeLine* pThis)

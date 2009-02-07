@@ -20,11 +20,11 @@
  */
 typedef enum
 {
-	eSEVERITY_ERROR,	///< Error message
-	eSEVERITY_WARNING,	///< Warning message
-	eSEVERITY_INFO,		///< Info message
-	eSEVERITY_TRACE,	///< Trace message
-	eSEVERITY_DUMP,		///< Dump message
+	eSEVERITY_ERROR,	///< Error packet
+	eSEVERITY_WARNING,	///< Warning packet
+	eSEVERITY_INFO,		///< Info packet
+	eSEVERITY_TRACE,	///< Trace packet
+	eSEVERITY_DUMP,		///< Dump packet
 
 	eSEVERITY_LAST		///< terminator
 } ELogSeverity;
@@ -53,15 +53,15 @@ typedef enum
 typedef void (*Logger)(ELogSeverity severity, const char* function, const char* msg, void* pUserArg);
 
 /** Log filter callback
- * this callback should decide whether the message
+ * this callback should decide whether the packet
  * should be printed or not
- * \param severity [in] message severity
+ * \param severity [in] packet severity
  * \param file [in] source file name
  * \param function [in] function name
  * \param line [in] line in a file name
  * \param pUserArg [in] user defined argument
- * \return TRUE if the message should be printed
- * \return FALSE if the message should not be printed
+ * \return TRUE if the packet should be printed
+ * \return FALSE if the packet should not be printed
  */
 typedef Boolean (*Filter)(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg);
 
@@ -77,10 +77,10 @@ EStatus LogSetLogger(Logger logger, void* pUserArg);
  */
 EStatus LogSetFilter(Filter filter, void* pUserArg);
 
-/** Output log message
+/** Output log packet
  * \param severity [in] log entry severity
- * \param file [in] source file name, initiated a log message
- * \param function [in] function name, initiated a log message
+ * \param file [in] source file name, initiated a log packet
+ * \param function [in] function name, initiated a log packet
  * \param line [in] line number in source file
  * \param fmt [in] format
  * \param ... [in] additional arguments

@@ -12,7 +12,7 @@
 
 #include "Status.h"
 #include "CommonTypes.h"
-#include "Message.h"
+#include "Packet.h"
 #include "Settings.h"
 #include "TimeLine.h"
 
@@ -60,12 +60,12 @@ EStatus RoutingInit(Routing* pThis, Settings* pSettings, TimeLine* pTimeLine);
  */
 EStatus RoutingDestroy(Routing* pThis);
 
-/** Handles a message.
- * Updates a routing table according to information found in a message
+/** Handles a packet.
+ * Updates a routing table according to information found in a packet
  * \param pThis [in] pointer to instance
- * \param pMessage [in] pointer to message
+ * \param pPacket [in] pointer to packet
  */
-EStatus RoutingHandleMessage(Routing* pThis, Message* pMessage);
+EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket);
 
 /** Adds pending route
  * \param pThis [in] pointer to instance

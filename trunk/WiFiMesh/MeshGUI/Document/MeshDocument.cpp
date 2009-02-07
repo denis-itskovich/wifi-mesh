@@ -6,6 +6,7 @@
  */
 
 #include "MeshDocument.h"
+#include "../Dialogs/MeshDlgAddPacket.h"
 #include <cmath>
 #include <cstdlib>
 
@@ -26,7 +27,7 @@ MeshDocument::MeshDocument() :
 	CHECK(TimeLineNew(&m_pTimeLine));
 	CHECK(SimulatorNew(&m_pSimulator, m_pSettings, m_pTimeLine));
 	CHECK(SimulatorSetStationTracker(m_pSimulator, (StationTracker)&MeshDocument::stationTracker, this));
-	CHECK(SimulatorSetSniffer(m_pSimulator, (Sniffer)&MeshDocument::messageSniffer, this));
+	CHECK(SimulatorSetSniffer(m_pSimulator, (Sniffer)&MeshDocument::packetSniffer, this));
 	CHECK(TimeLineSetEventTracker(m_pTimeLine, (EventTracker)&MeshDocument::eventTracker, this));
 }
 
@@ -125,7 +126,7 @@ void MeshDocument::setAvgVelocity(double avgVelocity)
 	m_avgVelocity = avgVelocity;
 }
 
-void MeshDocument::setAvgMessagesCount(int avgMsgCount)
+void MeshDocument::setAvgPacketsCount(int avgMsgCount)
 {
 	m_avgMsgCount = avgMsgCount;
 }
@@ -152,6 +153,18 @@ void MeshDocument::addStation()
 	addStation(location);
 }
 
+void MeshDocument::addPacket()
+{
+	StationId id;
+	if (!m_pCurStation) return;
+	CHECK(StationGetId(m_pCurStation, &id));
+
+	MeshDlgAddPacket addMsgDlg(m_stations, id);
+
+	if (addMsgDlg.exec() == QDialog::Rejected) return;
+	addPacket(m_pCurStation, addMsgDlg.time(), addMsgDlg.destination(), addMsgDlg.dataSize());
+}
+
 void MeshDocument::addStation(Location location)
 {
 	Station* pStation;
@@ -165,7 +178,8 @@ void MeshDocument::removeStation()
 	if (!m_pCurStation) return;
 
 	CHECK(SimulatorRemoveStation(m_pSimulator, m_pCurStation));
-	CHECK(StationDelete(&m_pCurStation));
+	m_pCurStation = NULL;
+	emit currentStationChanged(NULL);
 }
 
 void MeshDocument::generate()
@@ -199,7 +213,7 @@ void MeshDocument::generate()
 		stations.push_back(pStation);
 	}
 
-	progress.setLabelText("Generating messages...");
+	progress.setLabelText("Generating packets...");
 
 	for (int i = 0; i < msgCount; ++i)
 	{
@@ -211,21 +225,27 @@ void MeshDocument::generate()
 		int dstIdx = rand(m_stationsCount - 1);
 		if (dstIdx >= srcIdx) ++dstIdx;
 
-		CHECK(StationGetId(stations[srcIdx], &src));
 		CHECK(StationGetId(stations[dstIdx], &dst));
 
 		int dataSize = rand(m_avgDataSize * m_stationsCount * 2 / msgCount + 1);
 		double time = rand(m_duration);
 
-		Message* pMessage;
-		CHECK(MessageNewData(&pMessage, src, dst, dataSize));
-		CHECK(StationScheduleMessage(stations[srcIdx], pMessage, time));
+		addPacket(stations[srcIdx], time, dst, dataSize);
 	}
 
 	progress.setLabelText("Updating views...");
 	progress.setValue(m_stationsCount * factor + msgCount / factor);
 	emit worldChanged();
 	progress.setValue(m_stationsCount * factor + msgCount + 100);
+}
+
+void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsigned long size)
+{
+	StationId src;
+	CHECK(StationGetId(pStation, &src));
+	Packet* pPacket;
+	CHECK(PacketNewData(&pPacket, src, dst, size));
+	CHECK(StationSchedulePacket(pStation, pPacket, time));
 }
 
 void MeshDocument::start()
@@ -239,7 +259,6 @@ void MeshDocument::start()
 void MeshDocument::stop()
 {
 	pause();
-	if (m_bPaused) emit simulationPaused((m_bPaused = false));
 	m_bStarted = false;
 	emit simulationStopped();
 	CHECK(SimulatorReset(m_pSimulator));
@@ -250,7 +269,6 @@ void MeshDocument::triggerPause()
 	m_bPaused = !m_bPaused;
 	if (!m_bPaused) resume();
 	else pause();
-	emit simulationPaused(m_bPaused);
 }
 
 void MeshDocument::pause()
@@ -268,8 +286,8 @@ void MeshDocument::step()
 {
 	if (m_bStarted && !m_bPaused)
 	{
-		m_messages = 0;
-		while (!m_messages)
+		m_packets = 0;
+		while (!m_packets)
 		{
 			if (SimulatorProcess(m_pSimulator) != eSTATUS_COMMON_OK)
 			{
@@ -313,7 +331,7 @@ int MeshDocument::stationsCount() const
 	return m_stationsCount;
 }
 
-int MeshDocument::avgMessagesCount() const
+int MeshDocument::avgPacketsCount() const
 {
 	return m_avgMsgCount;
 }
@@ -335,14 +353,18 @@ double MeshDocument::duration() const
 
 void MeshDocument::stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis)
 {
+	StationId id;
+	CHECK(StationGetId(pStation, &id));
 	switch (eventType)
 	{
 	case eSTATION_ADDED:
+		pThis->m_stations.push_back(id);
 		emit pThis->stationAdded(pStation);
 		CHECK(StationRegisterRoutingHandler(pStation, (StationRoutingHandler)&MeshDocument::routingHandler, pThis));
 		CHECK(StationRegisterSchedulerHandler(pStation, (StationSchedulerHandler)&MeshDocument::schedulerHandler, pThis));
 		break;
 	case eSTATION_REMOVED:
+		pThis->m_stations.removeOne(id);
 		CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
 		CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
 		emit pThis->stationRemoved(pStation);
@@ -351,15 +373,22 @@ void MeshDocument::stationTracker(Station* pStation, StationEventType eventType,
 	}
 }
 
-void MeshDocument::messageSniffer(double time, const Message* pMessage, const Station* pSrc, const Station* pDst, MeshDocument* pThis)
+void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, const Station* pDst, MeshDocument* pThis)
 {
 	StationId id;
-	CHECK(StationGetId(pDst, &id));
-	emit pThis->messageDispatched(pMessage, id);
-	++pThis->m_messages;
+	if (pDst)
+	{
+		CHECK(StationGetId(pDst, &id));
+	}
+	else
+	{
+		id = pPacket->transitDstId;
+	}
+	emit pThis->packetDispatched(pPacket, id);
+	++pThis->m_packets;
 }
 
-void MeshDocument::eventTracker(double time, const Message* pMessage, bool isAdded, MeshDocument* pThis)
+void MeshDocument::eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis)
 {
 
 }
@@ -382,12 +411,16 @@ void MeshDocument::routingHandler(	const Station* pStation,
 
 void MeshDocument::schedulerHandler(	const Station* pStation,
 										double time,
-										const Message* pMessage,
-										Boolean bAdded,
+										const Packet* pPacket,
+										ESchedulerEvent event,
 										MeshDocument* pThis)
 {
-	if (bAdded) emit pThis->scheduleEntryAdded(pStation, time, pMessage);
-	else emit pThis->scheduleEntryRemoved(pStation, time, pMessage);
+	switch (event)
+	{
+	case eSCHEDULE_ADDED: emit pThis->scheduleEntryAdded(pStation, time, pPacket); break;
+	case eSCHEDULE_DELIVERED: emit pThis->scheduleEntryDelivered(pStation, pPacket); break;
+	case eSCHEDULE_REMOVED: emit pThis->scheduleEntryRemoved(pStation, pPacket); break;
+	}
 }
 
 void MeshDocument::timerEvent(QTimerEvent*)

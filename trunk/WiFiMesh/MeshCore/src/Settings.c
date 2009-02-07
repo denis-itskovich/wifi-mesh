@@ -55,16 +55,16 @@ EStatus SettingsDestroy(Settings* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SettingsGetTransmitTime(const Settings* pThis, const Message* pMessage, double* pTime)
+EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, double* pTime)
 {
 	unsigned size;
 	double variance;
 	double resolution;
-	VALIDATE_ARGUMENTS(pThis && pMessage && pTime);
+	VALIDATE_ARGUMENTS(pThis && pPacket && pTime);
 
 	resolution = 1000000;
-	size = sizeof(*pMessage) + pMessage->size;
-	variance = (((double)(rand() % sizeof(*pMessage)) * resolution) + 1) / resolution;
+	size = sizeof(*pPacket) + pPacket->size;
+	variance = (((double)(rand() % sizeof(*pPacket)) * resolution) + 1) / resolution;
 	*pTime = ((double)(size) + variance) / pThis->dataRate;
 	return eSTATUS_COMMON_OK;
 }

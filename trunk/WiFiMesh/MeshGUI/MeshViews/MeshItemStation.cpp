@@ -18,21 +18,6 @@ MeshItemStation::MeshItemStation(MeshViewStations* pContainer, Station* pStation
 {
 }
 
-MeshItemStation::RouteEntry::RouteEntry(StationId _dst, StationId _trans, double _expires, int _length) :
-	destination(_dst),
-	transit(_trans),
-	expires(_expires),
-	length(_length)
-{
-}
-
-MeshItemStation::ScheduleEntry::ScheduleEntry(double _time, StationId _dst, int _size) :
-	time(_time),
-	destination(_dst),
-	size(_size)
-{
-}
-
 QString MeshItemStation::name() const
 {
 	return QString("Station ") + QString::number(id());
@@ -102,44 +87,6 @@ bool MeshItemStation::isCurrent() const
 void MeshItemStation::makeCurrent()
 {
 	m_pContainer->currentChanged(this);
-}
-
-void MeshItemStation::addRouteEntry(StationId dst, StationId trans, double expires, int length)
-{
-	assert(m_routing.count(dst) == 0);
-	m_routing[dst] = RouteEntry(dst, trans, expires, length);
-	invalidate(RoutingFlag);
-}
-
-void MeshItemStation::updateRouteEntry(StationId dst, StationId trans, double expires, int length)
-{
-	assert(m_routing.count(dst) != 0);
-	m_routing[dst] = RouteEntry(dst, trans, expires, length);
-	invalidate(RoutingFlag);
-}
-
-void MeshItemStation::removeRouteEntry(StationId dst)
-{
-	assert(m_routing.count(dst) != 0);
-	m_routing.remove(dst);
-	invalidate(RoutingFlag);
-}
-
-void MeshItemStation::addScheduleEntry(double time, const Message* pMessage)
-{
-	m_schedule << ScheduleEntry(time, pMessage->originalDstId, pMessage->size);
-	invalidate(SchedulerFlag);
-}
-
-void MeshItemStation::removeScheduleEntry(double time, const Message* pMessage)
-{
-	invalidate(SchedulerFlag);
-}
-
-void MeshItemStation::reset()
-{
-	m_routing.clear();
-	updateStation();
 }
 
 void MeshItemStation::updateStation()

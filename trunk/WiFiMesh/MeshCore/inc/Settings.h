@@ -13,7 +13,7 @@
 #define SETTINGS_H_
 
 #include "Status.h"
-#include "Message.h"
+#include "Packet.h"
 
 typedef struct _Settings Settings;	///< forward declaration
 
@@ -69,10 +69,10 @@ EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout);
 
 /** Calculates transmit time
  * \param pThis [in] pointer to instance
- * \param pMessage [in] pointer to message
+ * \param pPacket [in] pointer to packet
  * \param pTime [out] transmit time will be stored at *pTime
  */
-EStatus SettingsGetTransmitTime(const Settings* pThis, const Message* pMessage, double* pTime);
+EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, double* pTime);
 
 /** Retrieves routing table entry time to live
  * \param pThis [in] pointer to instance

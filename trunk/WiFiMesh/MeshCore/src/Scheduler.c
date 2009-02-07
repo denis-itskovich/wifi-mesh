@@ -15,7 +15,9 @@
 typedef struct _SchedulerEntry
 {
 	double		time;
-	Message*	pMessage;
+	Packet*	pPacket;
+	Boolean		bWasIssued;
+	Boolean		bWasDelivered;
 } SchedulerEntry;
 
 struct _Scheduler
@@ -23,6 +25,7 @@ struct _Scheduler
 	TimeLine* 	pTimeLine;
 	SortedList*	pEntries;
 	ListEntry*	pCurrent;
+	unsigned	sequenceNum;
 	struct
 	{
 		SchedulerHandler	callback;
@@ -30,10 +33,28 @@ struct _Scheduler
 	}			handler;
 };
 
+EStatus SchedulerInvokeHandler(Scheduler* pThis, const SchedulerEntry* pEntry, ESchedulerEvent event);
+Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis);
+Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis);
+Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg);
+Comparison SchedulerFinder(const SchedulerEntry* pEntry, const Packet* pPacket, Scheduler* pThis);
+
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg)
 {
 	return (pLeft->time < pRight->time) ? LESS :
 		   (pLeft->time > pRight->time) ? GREAT : EQUAL;
+}
+
+Comparison SchedulerFinder(const SchedulerEntry* pEntry, const Packet* pPacket, Scheduler* pThis)
+{
+	return pEntry->pPacket->sequenceNum == pPacket->sequenceNum ? EQUAL : LESS;
+}
+
+Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
+{
+	pEntry->bWasIssued = FALSE;
+	pEntry->bWasDelivered = FALSE;
+	return TRUE;
 }
 
 EStatus SchedulerNew(Scheduler** ppThis, TimeLine* pTimeLine)
@@ -61,48 +82,70 @@ EStatus SchedulerDestroy(Scheduler* pThis)
 	return SortedListDelete(&pThis->pEntries);
 }
 
-EStatus SchedulerPutMessage(Scheduler* pThis, Message* pMessage, double time)
+EStatus SchedulerHandlePacket(Scheduler* pThis, const Packet* pPacket)
 {
-	SchedulerEntry* pEntry;
-	VALIDATE_ARGUMENTS(pThis && pMessage && (time >= 0));
-	pEntry = NEW(SchedulerEntry);
-	pEntry->time = time;
-	pEntry->pMessage = pMessage;
-	CHECK(SortedListAdd(pThis->pEntries, pEntry));
-	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
-	if (pThis->handler.callback)
-	{
-		pThis->handler.callback(time, pMessage, TRUE, pThis->handler.pArg);
-	}
-	return TimeLineEvent(pThis->pTimeLine, time, pMessage);
+	ListEntry* pListEntry;
+	SchedulerEntry* pScheduleEntry;
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type == eMSG_TYPE_ACK));
+	CHECK(SortedListFind(pThis->pEntries, &pListEntry, (ItemComparator)&SchedulerFinder, pPacket, pThis));
+	SortedListGetValue(pListEntry, &pScheduleEntry);
+	pScheduleEntry->bWasDelivered = TRUE;
+	return SchedulerInvokeHandler(pThis, pScheduleEntry, eSCHEDULE_DELIVERED);
 }
 
-EStatus SchedulerGetMessage(Scheduler* pThis, Message** ppMessage)
+EStatus SchedulerInvokeHandler(Scheduler* pThis, const SchedulerEntry* pEntry, ESchedulerEvent event)
+{
+	VALIDATE_ARGUMENTS(pThis && pEntry);
+	if (pThis->handler.callback)
+	{
+		pThis->handler.callback(pEntry->time, pEntry->pPacket, event, pThis->handler.pArg);
+	}
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time)
+{
+	SchedulerEntry* pEntry;
+	VALIDATE_ARGUMENTS(pThis && pPacket && (time >= 0));
+
+	pPacket->sequenceNum = pThis->sequenceNum++;
+	pEntry = NEW(SchedulerEntry);
+	pEntry->time = time;
+	pEntry->pPacket = pPacket;
+	CHECK(SortedListAdd(pThis->pEntries, pEntry));
+	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
+	CHECK(SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_ADDED));
+	return TimeLineEvent(pThis->pTimeLine, time, pPacket);
+}
+
+EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket)
 {
 	SchedulerEntry* pSchedulerEntry;
 	double time;
-	VALIDATE_ARGUMENTS(pThis && ppMessage);
+	VALIDATE_ARGUMENTS(pThis && ppPacket);
 
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 
-	*ppMessage = NULL;
-	if (!pThis->pCurrent) return eSTATUS_SCHEDULER_NO_MESSAGES;
+	*ppPacket = NULL;
+	if (!pThis->pCurrent) return eSTATUS_SCHEDULER_NO_PACKETS;
 
 	CHECK(SortedListGetValue(pThis->pCurrent, &pSchedulerEntry));
-	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_MESSAGES;
+	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_PACKETS;
 
-	CHECK(MessageClone(ppMessage, pSchedulerEntry->pMessage));
+	CHECK(PacketClone(ppPacket, pSchedulerEntry->pPacket));
 	CHECK(SortedListGetNext(&pThis->pCurrent));
+
+	pSchedulerEntry->bWasIssued = TRUE;
 
 	return eSTATUS_COMMON_OK;
 }
 
 Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis)
 {
-	MessageDelete(&pEntry->pMessage);
+	PacketDelete(&pEntry->pPacket);
 	if (pThis->handler.callback)
 	{
-		pThis->handler.callback(pEntry->time, pEntry->pMessage, FALSE, pThis->handler.pArg);
+		pThis->handler.callback(pEntry->time, pEntry->pPacket, eSCHEDULE_REMOVED, pThis->handler.pArg);
 	}
 	DELETE(pEntry);
 	return FALSE;
@@ -113,6 +156,7 @@ EStatus SchedulerClear(Scheduler* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEntries, (ItemFilter)&SchedulerCleaner, pThis));
 	pThis->pCurrent = NULL;
+	pThis->sequenceNum = 0;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -120,6 +164,7 @@ EStatus SchedulerReset(Scheduler* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
+	CHECK(SortedListEnumerate(pThis->pEntries, (ItemEnumerator)&SchedulerResetter, pThis));
 	return eSTATUS_COMMON_OK;
 }
 

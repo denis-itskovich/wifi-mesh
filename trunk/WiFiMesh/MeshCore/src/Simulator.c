@@ -21,6 +21,9 @@ struct _Simulator
 	Settings*		pSettings;
 	StationId		minId;
 	StationId		maxId;
+	Boolean			bDupBroadcast;
+	int				steps;
+
 	struct
 	{
 		Sniffer callback;
@@ -40,11 +43,12 @@ struct _Simulator
  */
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation);
 
-/** Dispatches outbound messages for specified station
+/** Dispatches outbound packets for specified station
  * \param pThis [in] pointer to instance
  * \param pStation [in] pointer to station
+ * \param pDelivered [out] delivered packets count will be stored at *pDelivered
  */
-EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation);
+EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDelivered);
 
 /** Retrieves station list entry by id
  * \param pThis [in] pointer to instance
@@ -63,6 +67,14 @@ StationId SimulatorAssignId(Simulator* pThis);
  * \param id [in] id to free
  */
 void SimulatorFreeId(Simulator* pThis, StationId id);
+
+/** Invokes sniffer callback (if exists)
+ * \param pThis [in] pointer to instance
+ * \param pPacket [in] pointer to packet
+ * \param pSrc [in] pointer to source station
+ * \param pDst [in] pointer to destination station
+ */
+EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst);
 
 Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 {
@@ -164,13 +176,34 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 	return eSTATUS_COMMON_OK;
 }
 
+Boolean SimulatorSynchronizer(Station* pStation, double* pTimeDelta)
+{
+	Boolean isActive;
+	StationIsActive(pStation, &isActive);
+	if (isActive)
+	{
+		StationSynchronize(pStation, *pTimeDelta);
+	}
+	return TRUE;
+}
+
+Boolean SimulatorDispatcher(Station* pStation, Simulator* pThis)
+{
+	Boolean isActive;
+	int delivered;
+	StationIsActive(pStation, &isActive);
+	if (isActive)
+	{
+		SimulatorDispatchPackets(pThis, pStation, &delivered);
+		if (!(pThis->steps % 10) && pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
+	}
+	return TRUE;
+}
+
 EStatus SimulatorProcess(Simulator* pThis)
 {
-	ListEntry* pEntry;
-	Station* pStation;
 	double oldTime;
-	double newTime;
-	Boolean isActive;
+	double timeDelta;
 
 	BEGIN_FUNCTION;
 
@@ -178,60 +211,46 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
 	CHECK(TimeLineNext(pThis->pTimeLine));
-	CHECK(TimeLineGetTime(pThis->pTimeLine, &newTime));
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &timeDelta));
+	timeDelta -= oldTime;
 
-	CHECK(ListGetHead(pThis->pStations, &pEntry));
+	INFO_PRINT("Performing simulation step: [time delta: %.2f]", timeDelta);
 
-	INFO_PRINT("Performing simulation step: [time delta: %.2f]", newTime-oldTime);
+	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, &timeDelta));
+	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
-	CHECK(ListGetHead(pThis->pStations, &pEntry));
-	while (pEntry)
-	{
-		CHECK(ListGetValue(pEntry, &pStation));
-		CHECK(StationIsActive(pStation, &isActive));
-		if (isActive)
-		{
-			CHECK(StationSynchronize(pStation, newTime-oldTime));
-		}
-		CHECK(ListGetNext(&pEntry));
-	}
-
-	CHECK(ListGetHead(pThis->pStations, &pEntry));
-	while (pEntry)
-	{
-		CHECK(ListGetValue(pEntry, &pStation));
-		CHECK(StationIsActive(pStation, &isActive));
-
-		if (isActive)
-		{
-			CHECK(SimulatorDispatchMessages(pThis, pStation));
-			if (pThis->tracker.callback) pThis->tracker.callback(pStation, eSTATION_UPDATED, pThis->tracker.pArg);
-		}
-
-		CHECK(ListGetNext(&pEntry));
-	}
-
+	pThis->steps++;
 	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
+EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst)
 {
-	Message* pMessage = NULL;
-	Message* pNewMessage = NULL;
+	if (pThis->sniffer.callback)
+	{
+		if ((pThis->bDupBroadcast && pDst) ||
+			(!pThis->bDupBroadcast && !pDst))
+		{
+			pThis->sniffer.callback(pPacket, pSrc, pDst, pThis->sniffer.pArg);
+		}
+	}
+	return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDelivered)
+{
+	Packet* pPacket = NULL;
 	ListEntry* pEntry = NULL;
 	Boolean bIsAdjacent = FALSE;
 	Station* pCurrent = NULL;
-	double time;
 	EStatus ret;
+	*pDelivered = 0;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
-	CHECK(StationGetMessage(pStation, &pMessage));
-	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+	CHECK(StationGetPacket(pStation, &pPacket));
 
-	if (!pMessage) return eSTATUS_COMMON_OK;
-	++pMessage->nodesCount;
-
+	if (!pPacket) return eSTATUS_COMMON_OK;
+	++pPacket->nodesCount;
 
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)
@@ -240,18 +259,19 @@ EStatus SimulatorDispatchMessages(Simulator* pThis, Station* pStation)
 		CHECK(StationIsAdjacent(pStation, pCurrent, &bIsAdjacent));
 		if (bIsAdjacent)
 		{
-			CHECK(MessageClone(&pNewMessage, pMessage));
-			ret = StationPutMessage(pCurrent, pNewMessage);
+			ret = StationPutPacket(pCurrent, pPacket);
 			if (ret == eSTATUS_COMMON_OK)
 			{
-				if (pThis->sniffer.callback) pThis->sniffer.callback(time, pMessage, pStation, pCurrent, pThis->sniffer.pArg);
+				CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent));
+				(*pDelivered)++;
 			}
-			else if (ret != eSTATUS_STATION_MESSAGE_NOT_ACCEPTED) return ret;
+			else if (ret != eSTATUS_STATION_PACKET_NOT_ACCEPTED) return ret;
 		}
 		CHECK(ListGetNext(&pEntry));
 	}
 
-	CHECK(MessageDelete(&pMessage));
+	if (*pDelivered) CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL));
+	CHECK(PacketDelete(&pPacket));
 	return eSTATUS_COMMON_OK;
 }
 
@@ -276,6 +296,7 @@ EStatus SimulatorReset(Simulator* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
 	CHECK(TimeLineReset(pThis->pTimeLine));
+	pThis->steps = 0;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -306,4 +327,14 @@ void SimulatorFreeId(Simulator* pThis, StationId id)
 	if (pThis->maxId == id + 1) --pThis->maxId;
 	ListGetCount(pThis->pStations, &count);
 	if (count == 1) pThis->minId = pThis->maxId = 0;
+}
+
+EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle)
+{
+	SET_MEMBER(bSingle, pThis, bDupBroadcast);
+}
+
+EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle)
+{
+	GET_MEMBER(pSingle, pThis, bDupBroadcast);
 }

@@ -2,7 +2,9 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += MeshViews/MeshViewSniffer.h \
+HEADERS += Dialogs/MeshDlgAddPacket.h \
+    Dialogs/MeshDlgAbout.h \
+    MeshViews/MeshViewSniffer.h \
     MeshViews/MeshGraphItemStation.h \
     MeshViews/MeshTreeItemStation.h \
     MeshViews/MeshItemStation.h \
@@ -18,9 +20,10 @@ HEADERS += MeshViews/MeshViewSniffer.h \
     CoreWrappers/MeshException.h \
     CoreWrappers/MeshCore.h \
     Document/MeshDocument.h \
-    Dialogs/MeshAboutDlg.h \
     App/MeshApp.h
-SOURCES += MeshViews/MeshViewSniffer.cpp \
+SOURCES += Dialogs/MeshDlgAddPacket.cpp \
+    Dialogs/MeshDlgAbout.cpp \
+    MeshViews/MeshViewSniffer.cpp \
     MeshViews/MeshGraphItemStation.cpp \
     MeshViews/MeshTreeItemStation.cpp \
     MeshViews/MeshItemStation.cpp \
@@ -34,7 +37,6 @@ SOURCES += MeshViews/MeshViewSniffer.cpp \
     MeshViews/MeshViewRandomizer.cpp \
     MeshViews/MeshView.cpp \
     Document/MeshDocument.cpp \
-    Dialogs/MeshAboutDlg.cpp \
     App/MeshApp.cpp \
     main.cpp
 FORMS += 

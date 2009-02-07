@@ -32,12 +32,12 @@ private slots:
 
 	void simulationStarted();
 	void simulationStopped();
-	void simulationPaused(bool isPaused);
 	void simulationEmpty(bool isEmpty);
 
 private:
 	QToolBar*	m_toolbarFile;
 	QToolBar*	m_toolbarSimulation;
+//	QToolBar*	m_toolbarView;
 
 	QMenu*		m_menuFile;
 	QMenu*		m_menuView;
@@ -49,6 +49,12 @@ private:
 	QAction*	m_actFileSave;
 	QAction*	m_actFileClose;
 	QAction*	m_actFileExit;
+
+	QAction*	m_actViewShowSettings;
+	QAction*	m_actViewShowSniffer;
+	QAction*	m_actViewShowStations;
+	QAction*	m_actViewShowGenerator;
+	QAction*	m_actViewShowLog;
 
 //	QAction*	m_actViewShowBackground;
 //	QAction*	m_actViewShowGrid;
