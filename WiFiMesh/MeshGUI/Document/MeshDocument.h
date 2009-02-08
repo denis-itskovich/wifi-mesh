@@ -62,7 +62,7 @@ public slots:
 	void pause();
 	void resume();
 	void step();
-	void triggerPause();
+	void togglePause(bool paused);
 
 signals:
 	void currentStationChanged(Station* pStation);
@@ -77,6 +77,9 @@ signals:
 	void scheduleEntryAdded(const Station* pStation, double time, const Packet* pPacket);
 	void scheduleEntryDelivered(const Station* pStation, const Packet* pPacket);
 	void scheduleEntryRemoved(const Station* pStation, const Packet* pPacket);
+
+	void beginTransmit(const Station* pFrom, const Station* pTo);
+	void endTransmit(const Station* pTo);
 
 	void packetDispatched(const Packet* pMsg, StationId deliveredId);
 
@@ -100,9 +103,10 @@ private:
 	static int rand(int limit);
 
 	// callbacks
-	static void stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis);
+	static void stationTracker(Station* pStation, EStationEvent event, MeshDocument* pThis);
 	static void packetSniffer(const Packet* pPacket, const Station* pSrc, const Station* pDst, MeshDocument* pThis);
 	static void eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis);
+	static void signalTracker( const Station* pSrc, const Station* pDst, MeshDocument* pThis);
 
 	static void routingHandler(	const Station* pStation,
 								StationId destId,

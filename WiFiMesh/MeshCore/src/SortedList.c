@@ -43,10 +43,11 @@ EStatus SortedListDestroy(SortedList* pThis)
 	return ListDelete(&pThis->pList);
 }
 
-EStatus SortedListAdd(SortedList* pThis, void* pValue)
+EStatus SortedListAdd(SortedList* pThis, void* pValue, Boolean unique)
 {
 	ListEntry* pEntry;
 	void* pRight;
+	Comparison rel;
 
 	VALIDATE_ARGUMENTS(pThis && pValue);
 
@@ -54,8 +55,10 @@ EStatus SortedListAdd(SortedList* pThis, void* pValue)
 	while (pEntry)
 	{
 		CHECK(SortedListGetValue(pEntry, &pRight));
-		if (pThis->comparator(pValue, pRight, pThis->pUserArg) != GREAT)
+		rel = pThis->comparator(pValue, pRight, pThis->pUserArg);
+		if (rel != GREAT)
 		{
+		    if (unique && (rel == EQUAL)) return eSTATUS_SORTED_LIST_ALREADY_EXISTS;
 			return ListInsertBefore(pThis->pList, pEntry, pValue);
 		}
 		CHECK(SortedListGetNext(&pEntry));

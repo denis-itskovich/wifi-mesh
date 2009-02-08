@@ -2,7 +2,8 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += Dialogs/MeshDlgAddPacket.h \
+HEADERS += MeshViews/MeshGraphItemLink.h \
+    Dialogs/MeshDlgAddPacket.h \
     Dialogs/MeshDlgAbout.h \
     MeshViews/MeshViewSniffer.h \
     MeshViews/MeshGraphItemStation.h \
@@ -21,7 +22,8 @@ HEADERS += Dialogs/MeshDlgAddPacket.h \
     CoreWrappers/MeshCore.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += Dialogs/MeshDlgAddPacket.cpp \
+SOURCES += MeshViews/MeshGraphItemLink.cpp \
+    Dialogs/MeshDlgAddPacket.cpp \
     Dialogs/MeshDlgAbout.cpp \
     MeshViews/MeshViewSniffer.cpp \
     MeshViews/MeshGraphItemStation.cpp \

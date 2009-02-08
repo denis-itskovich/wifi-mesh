@@ -45,8 +45,9 @@ EStatus SortedListDestroy(SortedList* pThis);
 /** Adds a new item into the sorted list
  * \param pThis [in] pointer to instance
  * \param pValue [in] pointer to new item
+ * \param unique [in] if TRUE adding non-unique item will fail with status eSTATUS_SORTED_LIST_ALREADY_EXISTS (see EStatus)
  */
-EStatus SortedListAdd(SortedList* pThis, void* pValue);
+EStatus SortedListAdd(SortedList* pThis, void* pValue, Boolean unique);
 
 /** Removes an item from the list
  * \param pThis [in] pointer to instance

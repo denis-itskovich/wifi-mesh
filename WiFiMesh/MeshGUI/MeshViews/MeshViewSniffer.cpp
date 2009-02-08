@@ -11,12 +11,20 @@
 #include "MeshViewSniffer.h"
 #include "../CoreWrappers/MeshCore.h"
 
-static const char* MSG_TYPES[] =
+static const char* PKT_TYPES_TEXT[ePKT_TYPE_LAST] =
 {
 		"Search request",
 		"Search response",
 		"Data",
 		"Ack"
+};
+
+static const QRgb PKT_TYPES_COLOR[ePKT_TYPE_LAST] =
+{
+		0x000000bf,
+		0x0000bf00,
+		0x00000000,
+		0x007f7f7f
 };
 
 MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
@@ -40,13 +48,45 @@ void MeshViewSniffer::init()
 			<< tr("Size")
 			<< tr("Hops count"));
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
+	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Filter"));
+
+	connect(buttonClear, SIGNAL(clicked()), m_packets, SLOT(clear()));
+
+	QMenu* menuVisibility = new QMenu;
+
+	menuVisibility->addAction(initAction(ePKT_TYPE_DATA, tr("Show &data packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_ACK, tr("Show &ack packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_REQUEST, tr("Show search &request packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_RESPONSE, tr("Show search r&esponse packets")));
+
+	buttonVisibility->setMenu(menuVisibility);
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	QHBoxLayout* buttonsLayout = new QHBoxLayout;
+
+	buttonsLayout->addWidget(buttonVisibility);
+	buttonsLayout->addWidget(buttonClear);
+	buttonsLayout->addStretch(99);
+
 	layout->addWidget(m_packets);
+	layout->addItem(buttonsLayout);
+
 	setLayout(layout);
+}
+
+QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
+{
+	QAction* action = new QAction(title, NULL);
+	action->setCheckable(true);
+	action->setChecked(true);
+	m_visActions[type] = action;
+	return action;
 }
 
 void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId)
 {
+	if (!m_visActions[pPacket->type]->isChecked()) return;
 	QTreeWidgetItem* item = createItem(pPacket, deliveredId);
 	m_packets->addTopLevelItem(item);
 	m_packets->setCurrentItem(item);
@@ -68,7 +108,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 {
 	QStringList columns;
 	columns << QString::number(document()->time())
-			<< MSG_TYPES[pPacket->type]
+			<< PKT_TYPES_TEXT[pPacket->type]
 			<< stationId(pPacket->originalSrcId)
 			<< stationId(pPacket->originalDstId)
 			<< stationId(pPacket->transitSrcId)
@@ -78,6 +118,9 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 			<< QString::number(pPacket->nodesCount);
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);
+	item->setIcon(0, QIcon(":/packet.png"));
+	QBrush brush(PKT_TYPES_COLOR[pPacket->type]);
+	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
 	return item;
 }
 

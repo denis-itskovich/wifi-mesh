@@ -5,6 +5,7 @@
         <file alias="connected.png" >Images/Internet_32.png</file>
         <file alias="message.png" >Images/Mail-envelope-32.png</file>
         <file alias="packet.png" >Images/Package-32.png</file>
+        <file alias="clear.png" >Images/RecycleBin-32.png</file>
         <file alias="accept.png" >Images/accept-32.png</file>
         <file alias="add.png" >Images/addbutton.png</file>
         <file alias="remove.png" >Images/closebutton.png</file>
@@ -18,6 +19,7 @@
         <file alias="new.png" >Images/filenew.png</file>
         <file alias="open.png" >Images/fileopen.png</file>
         <file alias="save.png" >Images/filesave.png</file>
+        <file alias="filter.png" >Images/filter-32.png</file>
         <file alias="folder.png" >Images/folder.png</file>
         <file alias="package.png" >Images/gift box_32x32.png</file>
         <file alias="wifi.png" >Images/kwifimanager.png</file>
@@ -26,6 +28,7 @@
         <file alias="mesh.png" >Images/mesh.png</file>
         <file>Images/network.png</file>
         <file>Images/new.png</file>
+        <file alias="disabledstation.png" >Images/nosignal-Vista-48x48.png</file>
         <file>Images/open.png</file>
         <file alias="pause.png" >Images/player_pause-32.png</file>
         <file alias="play.png" >Images/player_play-32.png</file>

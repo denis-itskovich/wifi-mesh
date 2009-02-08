@@ -32,6 +32,8 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event);
 
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+private:
+    bool m_isMoving;
 };
 
 #endif /* MESHGRAPHITEMSTATION_H_ */

@@ -90,11 +90,12 @@ void MeshViewStationsList::setCurrent(Station* pStation)
 void MeshViewStationsList::removeStation(Station* pStation)
 {
 	QTreeWidgetItem* item = findItem(pStation);
+    MeshViewStations::removeStation(pStation);
 	if (item)
 	{
 		m_treeStations->invisibleRootItem()->removeChild(item);
+		delete item;
 	}
-	MeshViewStations::removeStation(pStation);
 }
 
 MeshTreeItemStation* MeshViewStationsList::findItem(Station* pStation)

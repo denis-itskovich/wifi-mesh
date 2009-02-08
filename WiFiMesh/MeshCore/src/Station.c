@@ -6,18 +6,20 @@
 
 struct _Station
 {
-	StationId	id;
-	Velocity	velocity;
-	Location	curLocation;
-	Location	orgLocation;
+	StationId   id;
+	Velocity    velocity;
+	Location    curLocation;
+	Location    orgLocation;
 
-	Routing*	pRouting;
-	List*		pOutbox;
-	Scheduler*	pScheduler;
-	Settings*	pSettings;
-	TimeLine*	pTimeLine;
-	double		silentTime;
-	Packet*	pReadyPacket;
+	Routing*    pRouting;
+	List*       pOutbox;
+	Scheduler*  pScheduler;
+	Settings*   pSettings;
+	TimeLine*   pTimeLine;
+	double      silentTime;
+	double      receiveTime;
+    Packet*     pReadyPacket;
+    Boolean     bReceived;
 
 	struct
 	{
@@ -58,7 +60,7 @@ Boolean StationIsPacketValid(Station* pThis, const Packet* pPacket);
 Boolean StationPacketFilter(Packet* pPacket, Station* pThis);
 
 
-static PacketHandler s_handlers[eMSG_TYPE_LAST] =
+static PacketHandler s_handlers[ePKT_TYPE_LAST] =
 {
 		&StationHandleSearchRequest,
 		&StationHandleSearchResponse,
@@ -104,14 +106,28 @@ EStatus StationDestroy(Station* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus StationSynchronize(Station* pThis, double timeDelta)
+EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOver)
 {
 	Packet* pPacket;
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
 
 	CHECK(RoutingSynchronize(pThis->pRouting));
 
-	if (pThis->silentTime <= timeDelta) pThis->silentTime = 0;
+	if (pThis->receiveTime > 0)
+	{
+	    if (pThis->receiveTime <= timeDelta)
+        {
+            pThis->receiveTime = 0;
+            if (pReceiveOver) *pReceiveOver = TRUE;
+            pThis->bReceived = FALSE;
+        }
+        else pThis->receiveTime -= timeDelta;
+	}
+
+	if (pThis->silentTime <= timeDelta)
+	{
+		pThis->silentTime = 0;
+	}
 	else pThis->silentTime -= timeDelta;
 
 	pThis->curLocation.x += pThis->velocity.x * timeDelta;
@@ -192,9 +208,18 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 
 EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
 {
-	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type < eMSG_TYPE_LAST));
-	CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &pThis->silentTime));
-	CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
+	double receiveTime;
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type < ePKT_TYPE_LAST));
+	CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
+
+	if (pThis->silentTime < receiveTime)
+	{
+		pThis->silentTime = receiveTime;
+		CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
+	}
+
+	if (pThis->bReceived) return eSTATUS_STATION_PACKET_COLLISION;
+	pThis->bReceived = TRUE;
 
 	if (pPacket->transitSrcId != pThis->id &&
 		pPacket->originalSrcId != pThis->id)
@@ -203,6 +228,12 @@ EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
 	}
 
 	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_STATION_PACKET_NOT_ACCEPTED;
+
+	if (pThis->receiveTime == 0.0)
+    {
+        pThis->receiveTime = receiveTime;
+    }
+
 	if (StationHandleLocals(pThis, pPacket) != eSTATUS_COMMON_OK)
 	{
 		return StationHandleTransits(pThis, pPacket);
@@ -339,7 +370,7 @@ EStatus StationReset(Station* pThis)
 
 Boolean StationIsPacketValid(Station* pThis, const Packet* pPacket)
 {
-	if (pPacket->type != eMSG_TYPE_SEARCH_REQUEST) return TRUE;
+	if (pPacket->type != ePKT_TYPE_SEARCH_REQUEST) return TRUE;
 	return RoutingLookFor(pThis->pRouting, pPacket->originalDstId, NULL, NULL) != eSTATUS_COMMON_OK ? TRUE : FALSE;
 }
 

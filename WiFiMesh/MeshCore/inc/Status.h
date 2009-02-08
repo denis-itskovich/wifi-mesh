@@ -21,11 +21,14 @@ typedef enum
 	eSTATUS_LIST_NOT_FOUND,							///< Item was not found
 	eSTATUS_LIST_ENUMERATION_STOPPED,				///< Enumeration was stopped by enumerator
 
+	eSTATUS_SORTED_LIST_ALREADY_EXISTS,             ///< Could not add item into sorted list because an item was not unique
+
 	eSTATUS_QUEUE_EMPTY,							///< Attempt to get an item from the empty queue
 
 	eSTATUS_TIME_LINE_FINISHED,						///< Last event was reached
 
 	eSTATUS_STATION_PACKET_NOT_ACCEPTED,			///< Packet did not pass destination filter
+	eSTATUS_STATION_PACKET_COLLISION,               ///< Packet did not received due to collision
 
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
 	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished

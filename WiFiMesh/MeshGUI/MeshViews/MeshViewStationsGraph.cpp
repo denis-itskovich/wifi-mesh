@@ -66,8 +66,10 @@ void MeshViewStationsGraph::addStation(Station *pStation)
 
 void MeshViewStationsGraph::removeStation(Station *pStation)
 {
-	m_graphStations->removeItem(findItem(pStation));
+    MeshGraphItemStation* item = findItem(pStation);
+	m_graphStations->removeItem(item);
 	MeshViewStations::removeStation(pStation);
+	delete item;
 }
 
 void MeshViewStationsGraph::setCurrent(Station* pStation)
@@ -82,8 +84,49 @@ void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 
 	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
+	connect(doc, SIGNAL(beginTransmit(const Station*, const Station*)), this, SLOT(beginTransmit(const Station*, const Station*)));
+    connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
 
 	updateWorldSize();
+}
+
+void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pDst)
+{
+    MeshGraphItemStation* srcItem = findItem((Station*)pSrc);
+    MeshGraphItemStation* dstItem = findItem((Station*)pDst);
+    MeshGraphItemLink* link = new MeshGraphItemLink(srcItem, dstItem);
+    m_srcToLink.insert(pSrc, link);
+    m_dstToLink.insert(pDst, link);
+    m_graphStations->addItem(link);
+}
+
+void MeshViewStationsGraph::endTransmit(const Station* pDst)
+{
+    // assert(m_dstToLink.count(pDst) != 0);
+    if (!m_dstToLink.count(pDst)) return;
+    MeshGraphItemLink* link = m_dstToLink.value(pDst);
+    const Station* pSrc = m_srcToLink.key(link);
+    assert(m_srcToLink.count(pSrc) != 0);
+
+    m_graphStations->removeItem(link);
+    m_srcToLink.remove(pSrc, link);
+    m_dstToLink.remove(pDst, link);
+    delete link;
+}
+
+void MeshViewStationsGraph::updateLinks(const LinkList& links)
+{
+    for (LinkList::const_iterator i = links.begin(); i != links.end(); ++i)
+    {
+        (*i)->updateLink();
+    }
+}
+
+void MeshViewStationsGraph::updateStation(Station* pStation)
+{
+    MeshViewStations::updateStation(pStation);
+    if (m_srcToLink.count(pStation)) updateLinks(m_srcToLink.values(pStation));
+    if (m_dstToLink.count(pStation)) updateLinks(m_dstToLink.values(pStation));
 }
 
 void MeshViewStationsGraph::updateWorldSize()
@@ -129,12 +172,12 @@ void MeshGraphics::keyPressEvent(QKeyEvent* event)
     QGraphicsView::keyPressEvent(event);
 }
 
-void MeshGraphics::addItem(MeshGraphItemStation* item)
+void MeshGraphics::addItem(QGraphicsItem* item)
 {
 	if (item && scene()) scene()->addItem(item);
 }
 
-void MeshGraphics::removeItem(MeshGraphItemStation* item)
+void MeshGraphics::removeItem(QGraphicsItem* item)
 {
 	if (item && scene()) scene()->removeItem(item);
 }

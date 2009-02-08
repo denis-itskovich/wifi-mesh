@@ -45,12 +45,12 @@ public:
 	virtual void deliverScheduleEntry(const Packet* pPacket) {}
 
 	Station* station() const;
+    QString name() const;
+    StationId id() const;
+    QPointF location() const;
+    QPointF velocity() const;
 
 protected:
-	QString name() const;
-	StationId id() const;
-	QPointF location() const;
-	QPointF velocity() const;
 	bool isCurrent() const;
 	bool isActive() const;
 	bool isValid(ValidFlags flag) const { return m_validFlags & flag; }
