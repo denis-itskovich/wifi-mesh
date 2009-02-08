@@ -84,8 +84,9 @@ EStatus StationDestroy(Station* pThis);
  * Moves the station
  * \param pThis [in] pointer to instance
  * \param timeDelta [in] time, passed since last update
+ * \param pReceiveOver [out] allows caller to know when a receive is over
  */
-EStatus StationSynchronize(Station* pThis, double timeDelta);
+EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOver);
 
 /** Sets a new station location
  * \param pThis [in] pointer to instance

@@ -19,7 +19,9 @@ MeshTreeItemStation::MeshTreeItemStation(MeshViewStations* pContainer, Station* 
 
 void MeshTreeItemStation::init()
 {
-	setIcon(0, QIcon(":/station.png"));
+	m_bLastState = isActive();
+	updateIcon();
+
 	QIcon folderIcon(QIcon(":/folder.png"));
 	QTreeWidgetItem* locItem = new QTreeWidgetItem(QStringList() << "Location");
 	locItem->addChild(new QTreeWidgetItem(QStringList() << "x"));
@@ -44,10 +46,23 @@ void MeshTreeItemStation::init()
 	updateStation();
 }
 
+void MeshTreeItemStation::updateIcon()
+{
+	if (m_bLastState) setIcon(0, QIcon(":/station.png"));
+	else setIcon(0, QIcon(":/disabledstation.png"));
+}
+
 void MeshTreeItemStation::updateStation()
 {
 	if (!isLocationValid()) initLocationNode(child(0));
 	if (!isVelocityValid()) initVelocityNode(child(1));
+
+	if (m_bLastState != isActive())
+	{
+		m_bLastState = isActive();
+		updateIcon();
+	}
+
 	MeshItemStation::updateStation();
 }
 

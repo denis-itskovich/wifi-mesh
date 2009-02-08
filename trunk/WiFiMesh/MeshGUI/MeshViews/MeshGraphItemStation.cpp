@@ -77,7 +77,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     painter->setPen(QPen(Qt::NoPen));
 
-    if (option->state & QStyle::State_MouseOver)
+    if (isActive() && option->state & QStyle::State_MouseOver)
     {
         colOut.lighter(100);
         colOut.setAlpha(100);
@@ -101,6 +101,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
 void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    m_isMoving = true;
     QGraphicsItem::update();
     setCursor(Qt::ClosedHandCursor);
     QGraphicsItem::mousePressEvent(event);
@@ -109,6 +110,7 @@ void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void MeshGraphItemStation::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    m_isMoving = false;
 	QGraphicsItem::update();
     setCursor(Qt::OpenHandCursor);
     QGraphicsItem::mouseReleaseEvent(event);
@@ -134,8 +136,11 @@ QVariant MeshGraphItemStation::itemChange(GraphicsItemChange change, const QVari
 	switch (change)
     {
     case QGraphicsItem::ItemPositionHasChanged:
-		// setLocation(value.toPointF());
-		// stationChanged();
+		{
+			if (location() == value.toPointF()) break;
+			if (m_isMoving) setLocation(value.toPointF());
+			stationChanged();
+		}
         break;
     default:
         break;

@@ -30,8 +30,10 @@ private:
 	void init();
 	static QString stationId(StationId id);
 	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId);
+	QAction* initAction(EPacketType type, const QString& title);
 
 	QTreeWidget*	m_packets;
+	QAction*		m_visActions[ePKT_TYPE_LAST];
 };
 
 #endif /* MESHVIEWPACKETSLIST_H_ */

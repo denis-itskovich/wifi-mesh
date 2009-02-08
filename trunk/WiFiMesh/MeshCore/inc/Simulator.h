@@ -24,14 +24,14 @@ typedef enum
 	eSTATION_ADDED,			///< Station was added to simulator
 	eSTATION_REMOVED,		///< Station was removed from simulator
 	eSTATION_UPDATED		///< Station was updated
-} StationEventType;
+} EStationEvent;
 
 /** Station tracker
  * \param pStation [in] pointer to station
  * \param eventType [in] station event type
  * \param pUserArg [in] user defined argument
  */
-typedef void (*StationTracker)(Station* pStation, StationEventType eventType, void* pUserArg);
+typedef void (*StationTracker)(Station* pStation, EStationEvent eventType, void* pUserArg);
 
 /** Packet transfer callback
  * \param pPacket [in] pointer to packet
@@ -40,6 +40,14 @@ typedef void (*StationTracker)(Station* pStation, StationEventType eventType, vo
  * \param pUserArg [in] user defined argument
  */
 typedef void (*Sniffer)(const Packet* pPacket, const Station* pSrc, const Station* pDest, void* pUserArg);
+
+/** Signal radar callback.
+ * Is being called each a transmit begins or finishes between 2 stations
+ * \param pSrc [in] pointer to source station. If not NULL transmit begins, otherwise finishes
+ * \param pDst [in] pointer to destination station.
+ * \param pUserArg [in] user-defined argument
+ */
+typedef void (*SignalRadar)(const Station* pSrc, const Station* pDst, void* pUserArg);
 
 /** Stations enumerator
  * \param pStation [in] pointer to station
@@ -101,6 +109,13 @@ EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg);
  * \param pUserArg [in] user defined argument of the tracker
  */
 EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, void* pUserArg);
+
+/** Sets signal radar callback
+ * \param pThis [in] pointer to instance
+ * \param radar [in] signal radar callback
+ * \param pUserArg [in] user-defined argument
+ */
+EStatus SimulatorSetSignalRadar(Simulator* pThis, SignalRadar radar, void* pUserArg);
 
 /** Resets simulator
  * \param pThis [in] pointer to instance

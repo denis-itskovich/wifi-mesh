@@ -40,7 +40,7 @@ void MeshApp::setDocument(MeshDocument* doc)
 {
 	m_document = doc;
 	connect(m_actSimulationRun, SIGNAL(triggered()), doc, SLOT(start()));
-	connect(m_actSimulationPause, SIGNAL(triggered()), doc, SLOT(triggerPause()));
+	connect(m_actSimulationPause, SIGNAL(toggled(bool)), doc, SLOT(togglePause(bool)));
 	connect(m_actSimulationBreak, SIGNAL(triggered()), doc, SLOT(stop()));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(simulationStarted()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(simulationStopped()));
@@ -233,7 +233,7 @@ void MeshApp::createDocks()
 	addDockWidget(Qt::RightDockWidgetArea, dockSettings);
 	addDockWidget(Qt::RightDockWidgetArea, dockRandomizer);
 	addDockWidget(Qt::BottomDockWidgetArea, dockPackets);
-	addDockWidget(Qt::BottomDockWidgetArea, dockStations);
+	addDockWidget(Qt::LeftDockWidgetArea, dockStations);
 
 	m_tabs->setCurrentIndex(0);
 }

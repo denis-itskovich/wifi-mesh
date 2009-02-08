@@ -50,7 +50,8 @@ EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	return SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL);
+	CHECK(SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL));
+	return TimeLineEvent(pThis, 0.0, NULL);
 }
 
 EStatus TimeLineDestroy(TimeLine* pThis)
@@ -62,6 +63,7 @@ EStatus TimeLineDestroy(TimeLine* pThis)
 EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 {
 	Event* pEvent;
+	EStatus ret;
 	VALIDATE_ARGUMENTS(pThis && (time >= 0));
 	pEvent = NEW(Event);
 
@@ -70,8 +72,9 @@ EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 	pEvent->time = time;
 	pEvent->pPacket = pPacket;
 
-	CHECK(SortedListAdd(pThis->pEvents, pEvent));
-	return eSTATUS_COMMON_OK;
+	ret = SortedListAdd(pThis->pEvents, pEvent, TRUE);
+	if (ret == eSTATUS_SORTED_LIST_ALREADY_EXISTS) return eSTATUS_COMMON_OK;
+	return ret;
 }
 
 EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Packet* pPacket)
@@ -88,15 +91,12 @@ EStatus TimeLineNext(TimeLine* pThis)
 
 	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
 
-	do
-	{
-		CHECK(SortedListGetNext(&pThis->pCurrent));
-		if (pThis->pCurrent)
-		{
-			CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
-			time = pEvent->time;
-		}
-	} while (pThis->pCurrent && (time == pThis->time));
+    CHECK(SortedListGetNext(&pThis->pCurrent));
+    if (pThis->pCurrent)
+    {
+        CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
+        time = pEvent->time;
+    }
 	pThis->time = time;
 
 	return eSTATUS_COMMON_OK;

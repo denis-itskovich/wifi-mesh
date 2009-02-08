@@ -37,6 +37,7 @@ protected:
 private:
 	void initLocationNode(QTreeWidgetItem* item);
 	void initVelocityNode(QTreeWidgetItem* item);
+	void updateIcon();
 
 	void init();
 
@@ -45,6 +46,7 @@ private:
 
 	RouteMap	m_routeMap;
 	ScheduleMap	m_scheduleMap;
+	bool		m_bLastState;
 };
 
 #endif /* MESHTREEITEMSTATION_H_ */

@@ -23,6 +23,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	STATUS_MESSAGE("List item not found"),
 	STATUS_MESSAGE("List enumeration was stopped"),
 
+	STATUS_MESSAGE("Item was not added because was not unique"),
 	// Queue
 	STATUS_MESSAGE("Queue is empty"),
 
@@ -31,6 +32,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 
 	// Station
 	STATUS_MESSAGE("Packet was not accepted"),
+	STATUS_MESSAGE("Packet was not delivered due to collision"),
 
 	// Simulator
 	STATUS_MESSAGE("Station not found"),

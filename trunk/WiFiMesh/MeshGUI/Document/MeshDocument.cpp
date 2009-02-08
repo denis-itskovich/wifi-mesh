@@ -14,10 +14,10 @@ static const int RND_RESOLUTION = RAND_MAX;
 
 MeshDocument::MeshDocument() :
 	m_pCurStation(NULL),
-	m_stationsCount(3),
+	m_stationsCount(50),
 	m_avgDataSize(65536),
-	m_avgMsgCount(5),
-	m_avgVelocity(1.0),
+	m_avgMsgCount(100),
+	m_avgVelocity(30.0),
 	m_duration(60),
 	m_bStarted(false),
 	m_bPaused(false),
@@ -28,6 +28,7 @@ MeshDocument::MeshDocument() :
 	CHECK(SimulatorNew(&m_pSimulator, m_pSettings, m_pTimeLine));
 	CHECK(SimulatorSetStationTracker(m_pSimulator, (StationTracker)&MeshDocument::stationTracker, this));
 	CHECK(SimulatorSetSniffer(m_pSimulator, (Sniffer)&MeshDocument::packetSniffer, this));
+	CHECK(SimulatorSetSignalRadar(m_pSimulator, (SignalRadar)&MeshDocument::signalTracker, this));
 	CHECK(TimeLineSetEventTracker(m_pTimeLine, (EventTracker)&MeshDocument::eventTracker, this));
 }
 
@@ -220,7 +221,7 @@ void MeshDocument::generate()
 		progress.setValue(i / factor + m_stationsCount * factor);
 		if (progress.wasCanceled()) break;
 
-		StationId src, dst;
+		StationId dst;
 		int srcIdx = rand(m_stationsCount);
 		int dstIdx = rand(m_stationsCount - 1);
 		if (dstIdx >= srcIdx) ++dstIdx;
@@ -261,12 +262,13 @@ void MeshDocument::stop()
 	pause();
 	m_bStarted = false;
 	emit simulationStopped();
-	CHECK(SimulatorReset(m_pSimulator));
+//	CHECK(SimulatorReset(m_pSimulator));
 }
 
-void MeshDocument::triggerPause()
+void MeshDocument::togglePause(bool paused)
 {
-	m_bPaused = !m_bPaused;
+	if (m_bPaused == paused) return;
+	m_bPaused = paused;
 	if (!m_bPaused) resume();
 	else pause();
 }
@@ -279,7 +281,7 @@ void MeshDocument::pause()
 
 void MeshDocument::resume()
 {
-	m_timerId = startTimer(50);
+	m_timerId = startTimer(1);
 }
 
 void MeshDocument::step()
@@ -351,11 +353,11 @@ double MeshDocument::duration() const
 	return m_duration;
 }
 
-void MeshDocument::stationTracker(Station* pStation, StationEventType eventType, MeshDocument* pThis)
+void MeshDocument::stationTracker(Station* pStation, EStationEvent event, MeshDocument* pThis)
 {
 	StationId id;
 	CHECK(StationGetId(pStation, &id));
-	switch (eventType)
+	switch (event)
 	{
 	case eSTATION_ADDED:
 		pThis->m_stations.push_back(id);
@@ -386,6 +388,12 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
 	}
 	emit pThis->packetDispatched(pPacket, id);
 	++pThis->m_packets;
+}
+
+void MeshDocument::signalTracker( const Station* pSrc, const Station* pDst, MeshDocument* pThis)
+{
+    if (pSrc) emit pThis->beginTransmit(pSrc, pDst);
+    else emit pThis->endTransmit(pDst);
 }
 
 void MeshDocument::eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis)

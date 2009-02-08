@@ -18,12 +18,12 @@
 /// Packet type
 typedef enum
 {
-	eMSG_TYPE_SEARCH_REQUEST,		///< Search request - sent via broadcast in order to locate a route
-	eMSG_TYPE_SEARCH_RESPONSE,		///< Search response - response to search request
-	eMSG_TYPE_DATA,					///< Data packet
-	eMSG_TYPE_ACK,					///< Acknowledgment packet - response to data packet
+	ePKT_TYPE_SEARCH_REQUEST,		///< Search request - sent via broadcast in order to locate a route
+	ePKT_TYPE_SEARCH_RESPONSE,		///< Search response - response to search request
+	ePKT_TYPE_DATA,					///< Data packet
+	ePKT_TYPE_ACK,					///< Acknowledgment packet - response to data packet
 
-	eMSG_TYPE_LAST					///< Terminator item
+	ePKT_TYPE_LAST					///< Terminator item
 } EPacketType;
 
 /// Packet declaration

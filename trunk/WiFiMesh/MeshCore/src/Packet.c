@@ -63,7 +63,7 @@ EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationI
 
 EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size)
 {
-	INIT_PACKET(pThis, eMSG_TYPE_DATA, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_DATA, srcId, dstId);
 	pThis->size = size;
 
 	return eSTATUS_COMMON_OK;
@@ -71,20 +71,20 @@ EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned
 
 EStatus PacketInitSearchRequest(Packet* pThis, StationId srcId, StationId lookForId)
 {
-	INIT_PACKET(pThis, eMSG_TYPE_SEARCH_REQUEST, srcId, lookForId);
+	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_REQUEST, srcId, lookForId);
 	pThis->transitDstId = BROADCAST_STATION_ID;
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId)
 {
-	INIT_PACKET(pThis, eMSG_TYPE_SEARCH_RESPONSE, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_RESPONSE, srcId, dstId);
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus PacketInitAck(Packet* pThis, StationId srcId, StationId dstId)
 {
-	INIT_PACKET(pThis, eMSG_TYPE_ACK, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_ACK, srcId, dstId);
 	return eSTATUS_COMMON_OK;
 }
 

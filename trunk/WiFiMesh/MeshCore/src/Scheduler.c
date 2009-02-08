@@ -86,7 +86,7 @@ EStatus SchedulerHandlePacket(Scheduler* pThis, const Packet* pPacket)
 {
 	ListEntry* pListEntry;
 	SchedulerEntry* pScheduleEntry;
-	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type == eMSG_TYPE_ACK));
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type == ePKT_TYPE_ACK));
 	CHECK(SortedListFind(pThis->pEntries, &pListEntry, (ItemComparator)&SchedulerFinder, pPacket, pThis));
 	SortedListGetValue(pListEntry, &pScheduleEntry);
 	pScheduleEntry->bWasDelivered = TRUE;
@@ -112,7 +112,7 @@ EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time)
 	pEntry = NEW(SchedulerEntry);
 	pEntry->time = time;
 	pEntry->pPacket = pPacket;
-	CHECK(SortedListAdd(pThis->pEntries, pEntry));
+	CHECK(SortedListAdd(pThis->pEntries, pEntry, FALSE));
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
 	CHECK(SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_ADDED));
 	return TimeLineEvent(pThis->pTimeLine, time, pPacket);

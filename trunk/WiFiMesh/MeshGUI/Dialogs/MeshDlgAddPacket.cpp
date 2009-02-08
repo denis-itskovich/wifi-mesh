@@ -24,6 +24,7 @@ MeshDlgAddPacket::MeshDlgAddPacket(const QList<StationId>& destList, StationId s
 void MeshDlgAddPacket::init()
 {
 	setModal(true);
+	setMinimumWidth(minimumWidth() * 2);
 	setWindowTitle(tr("New packet"));
 	setWindowIcon(QIcon(":/packet.png"));
 
@@ -37,8 +38,13 @@ void MeshDlgAddPacket::init()
 
 	m_comboDestination = new QComboBox;
 	m_spinTime = new QDoubleSpinBox;
+	m_spinTime->setRange(0.01, 36000);
+	m_spinTime->setDecimals(1);
+	m_spinTime->setSuffix(" [sec]");
+
 	m_spinSize = new QSpinBox;
 	m_spinSize->setRange(1, 65536);
+	m_spinSize->setSuffix(" [Bytes]");
 
 	QFormLayout* mainLayout = new QFormLayout;
 	mainLayout->addRow(tr("Destination:"), m_comboDestination);
