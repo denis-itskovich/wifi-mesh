@@ -112,8 +112,9 @@ EStatus TimeLineClear(TimeLine* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->time = 0;
-	pThis->pCurrent = 0;
-	return eSTATUS_COMMON_OK;
+	CHECK(TimeLineEvent(pThis, 0.0, NULL));
+    CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
@@ -128,22 +129,6 @@ EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
 		CHECK(ListGetValue(pEntry, &pResult));
 		if (pResult) *pLength = *pResult;
 	}
-	return eSTATUS_COMMON_OK;
-}
-
-EStatus TimeLineReset(TimeLine* pThis)
-{
-	Event* pEvent;
-	VALIDATE_ARGUMENTS(pThis);
-	CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
-
-	if (pThis->pCurrent)
-	{
-		CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
-		pThis->time = pEvent->time;
-	}
-	else pThis->time = 0.0;
-
 	return eSTATUS_COMMON_OK;
 }
 

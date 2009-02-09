@@ -129,6 +129,7 @@ EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine
 	CHECK(ListNew(&pThis->pStations));
 	pThis->pTimeLine = pTimeLine;
 	pThis->pSettings = pSettings;
+	pThis->bDupBroadcast = TRUE;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -281,7 +282,8 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDeli
 {
 	Packet* pPacket = NULL;
 	ListEntry* pEntry = NULL;
-	Boolean bIsAdjacent = FALSE;
+	Boolean isAdjacent = FALSE;
+	Boolean isActive = FALSE;
 	Station* pCurrent = NULL;
 	EStatus ret;
 	*pDelivered = 0;
@@ -295,19 +297,29 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDeli
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)
 	{
-		CHECK(ListGetValue(pEntry, &pCurrent));
-		CHECK(StationIsAdjacent(pStation, pCurrent, &bIsAdjacent));
-		if (bIsAdjacent)
-		{
-			ret = StationPutPacket(pCurrent, pPacket);
-			if (ret == eSTATUS_COMMON_OK)
-			{
-				CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent));
-				CHECK(SimulatorInvokeRadar(pThis, pStation, pCurrent));
-				(*pDelivered)++;
-			}
-			else if (ret != eSTATUS_STATION_PACKET_NOT_ACCEPTED) return ret;
-		}
+        CHECK(ListGetValue(pEntry, &pCurrent));
+	    CHECK(StationIsActive(pCurrent, &isActive));
+	    if (isActive)
+	    {
+	        CHECK(StationIsAdjacent(pStation, pCurrent, &isAdjacent));
+	        if (isAdjacent)
+	        {
+	            ret = StationPutPacket(pCurrent, pPacket);
+	            switch (ret)
+	            {
+	            case eSTATUS_COMMON_OK:
+	                CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent));
+	                CHECK(SimulatorInvokeRadar(pThis, pStation, pCurrent));
+	                (*pDelivered)++;
+	            case eSTATUS_STATION_PACKET_NOT_ACCEPTED:
+	            case eSTATUS_STATION_PACKET_COLLISION:
+	                break;
+	            default:
+	                return ret;
+	            }
+	        }
+	    }
+
 		CHECK(ListGetNext(&pEntry));
 	}
 
@@ -343,8 +355,8 @@ EStatus SimulatorSetSignalRadar(Simulator* pThis, SignalRadar radar, void* pUser
 EStatus SimulatorReset(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
+    CHECK(TimeLineClear(pThis->pTimeLine));
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
-	CHECK(TimeLineReset(pThis->pTimeLine));
 	pThis->steps = 0;
 	return eSTATUS_COMMON_OK;
 }
@@ -373,7 +385,7 @@ void SimulatorFreeId(Simulator* pThis, StationId id)
 {
 	int count = 0;
 	if (pThis->minId == id) ++pThis->minId;
-	if (pThis->maxId == id + 1) --pThis->maxId;
+	if (pThis->maxId == id) --pThis->maxId;
 	ListGetCount(pThis->pStations, &count);
 	if (count == 1) pThis->minId = pThis->maxId = 0;
 }
