@@ -13,23 +13,27 @@
 #define MESHVIEWCANVAS_H_
 
 #include "MeshViewStations.h"
-#include "MeshGraphItemStation.h"
+#include "Items/MeshGraphItemStation.h"
+#include "Items/MeshGraphItemLink.h"
 
 class MeshGraphics : public QGraphicsView
 {
 	Q_OBJECT
+
 public:
 	MeshGraphics(QWidget* parent = 0);
-	void addItem(MeshGraphItemStation* item);
-	void removeItem(MeshGraphItemStation* item);
+	void addItem(QGraphicsItem* item);
+	void removeItem(QGraphicsItem* item);
 
 signals:
 	void doubleClicked(QPointF pos);
+	void focusCleared();
 
 protected:
 	virtual void keyPressEvent(QKeyEvent* event);
     virtual void wheelEvent(QWheelEvent* event);
     virtual void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event);
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
 };
 
@@ -48,18 +52,28 @@ protected:
 	virtual void addStation(Station* pStation);
 	virtual void removeStation(Station* pStation);
 	virtual void setCurrent(Station* pStation);
+	virtual void updateStation(Station* pStation);
 
 private slots:
+    void clearCurrent();
 	void addStation(QPointF pos);
 	void updateWorldSize();
+	void beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket);
+	void endTransmit(const Station* pDst);
 
 private:
-	void init();
+    typedef QMultiMap<const Station*, MeshGraphItemLink*>   LinkMap;
+    typedef QList<MeshGraphItemLink*>                       LinkList;
+
+    void init();
 	MeshGraphItemStation* findItem(Station* pStation) const;
 	MeshGraphItemStation* currentItem() const;
+	void updateLinks(const LinkList& links);
 
-	MeshGraphics*	m_graphStations;
-	QGraphicsItem*	m_resizeGaps[4];
+	MeshGraphics*	       m_graphStations;
+	QGraphicsItem*	       m_resizeGaps[4];
+	LinkMap                m_srcToLink;
+	LinkMap                m_dstToLink;
 };
 
 #endif /* MESHVIEWCANVAS_H_ */

@@ -36,6 +36,8 @@ void MeshViewStationsGraph::init()
     m_graphStations->setResizeAnchor(QGraphicsView::AnchorViewCenter);
 
     connect(m_graphStations, SIGNAL(doubleClicked(QPointF)), this, SLOT(addStation(QPointF)));
+    connect(m_graphStations, SIGNAL(focusCleared()), this, SLOT(clearCurrent()));
+//    connect(scene, SIGNAL(selectionChanged()), this, SLOT(clearCurrent()));
 }
 
 MeshGraphItemStation* MeshViewStationsGraph::findItem(Station* pStation) const
@@ -66,14 +68,17 @@ void MeshViewStationsGraph::addStation(Station *pStation)
 
 void MeshViewStationsGraph::removeStation(Station *pStation)
 {
-	m_graphStations->removeItem(findItem(pStation));
+    MeshGraphItemStation* item = findItem(pStation);
+	m_graphStations->removeItem(item);
 	MeshViewStations::removeStation(pStation);
+	delete item;
 }
 
 void MeshViewStationsGraph::setCurrent(Station* pStation)
 {
-	MeshGraphItemStation* item = findItem(pStation);
-	if (item) item->setFocus();
+	if (currentItem()) currentItem()->clearFocus();
+    MeshViewStations::setCurrent(pStation);
+    if (currentItem()) currentItem()->setFocus();
 }
 
 void MeshViewStationsGraph::setDocument(MeshDocument *doc)
@@ -82,8 +87,56 @@ void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 
 	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
+	connect(doc, SIGNAL(beginTransmit(const Station*, const Station*, const Packet*)), this, SLOT(beginTransmit(const Station*, const Station*, const Packet*)));
+    connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
 
 	updateWorldSize();
+}
+
+void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket)
+{
+    MeshGraphItemStation* srcItem = findItem((Station*)pSrc);
+    MeshGraphItemStation* dstItem = findItem((Station*)pDst);
+    MeshGraphItemLink* link = new MeshGraphItemLink(srcItem, dstItem, pPacket);
+    srcItem->beginTransmit();
+    m_srcToLink.insert(pSrc, link);
+    m_dstToLink.insert(pDst, link);
+    m_graphStations->addItem(link);
+}
+
+void MeshViewStationsGraph::endTransmit(const Station* pDst)
+{
+    assert(m_dstToLink.count(pDst) == 1);
+    if (!m_dstToLink.count(pDst)) return;
+    MeshGraphItemLink* link = m_dstToLink.value(pDst);
+    const Station* pSrc = m_srcToLink.key(link);
+    assert(m_srcToLink.count(pSrc) != 0);
+
+    findItem((Station*)pSrc)->endTransmit();
+    m_graphStations->removeItem(link);
+    m_srcToLink.remove(pSrc, link);
+    m_dstToLink.remove(pDst, link);
+    delete link;
+}
+
+void MeshViewStationsGraph::updateLinks(const LinkList& links)
+{
+    for (LinkList::const_iterator i = links.begin(); i != links.end(); ++i)
+    {
+        (*i)->updateLink();
+    }
+}
+
+void MeshViewStationsGraph::updateStation(Station* pStation)
+{
+    MeshViewStations::updateStation(pStation);
+    if (m_srcToLink.count(pStation)) updateLinks(m_srcToLink.values(pStation));
+    if (m_dstToLink.count(pStation)) updateLinks(m_dstToLink.values(pStation));
+}
+
+void MeshViewStationsGraph::clearCurrent()
+{
+    currentChanged((Station*)NULL);
 }
 
 void MeshViewStationsGraph::updateWorldSize()
@@ -113,6 +166,12 @@ void MeshGraphics::mouseDoubleClickEvent(QMouseEvent* event)
 	emit doubleClicked(mapToScene(event->pos()));
 }
 
+void MeshGraphics::mousePressEvent(QMouseEvent* event)
+{
+    if (itemAt(event->pos()) == NULL) emit focusCleared();
+    QGraphicsView::mousePressEvent(event);
+}
+
 void MeshGraphics::keyPressEvent(QKeyEvent* event)
 {
 	qreal scaleFactor = 1.0;
@@ -129,12 +188,12 @@ void MeshGraphics::keyPressEvent(QKeyEvent* event)
     QGraphicsView::keyPressEvent(event);
 }
 
-void MeshGraphics::addItem(MeshGraphItemStation* item)
+void MeshGraphics::addItem(QGraphicsItem* item)
 {
 	if (item && scene()) scene()->addItem(item);
 }
 
-void MeshGraphics::removeItem(MeshGraphItemStation* item)
+void MeshGraphics::removeItem(QGraphicsItem* item)
 {
 	if (item && scene()) scene()->removeItem(item);
 }

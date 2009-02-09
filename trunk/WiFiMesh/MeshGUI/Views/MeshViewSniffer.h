@@ -9,8 +9,8 @@
  */
 
 
-#ifndef MESHVIEWMESSAGESLIST_H_
-#define MESHVIEWMESSAGESLIST_H_
+#ifndef MESHVIEWPACKETSLIST_H_
+#define MESHVIEWPACKETSLIST_H_
 
 #include "MeshView.h"
 
@@ -23,15 +23,17 @@ public:
 	void setDocument(MeshDocument* doc);
 
 protected slots:
-	void addMessage(const Message* pMessage, StationId deliveredId);
+	void addPacket(const Packet* pPacket, StationId deliveredId);
 	void clear();
 
 private:
 	void init();
 	static QString stationId(StationId id);
-	QTreeWidgetItem* createItem(const Message* pMessage, StationId deliveredId);
+	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId);
+	QAction* initAction(EPacketType type, const QString& title);
 
-	QTreeWidget*	m_messages;
+	QTreeWidget*	m_packets;
+	QAction*		m_visActions[ePKT_TYPE_LAST];
 };
 
-#endif /* MESHVIEWMESSAGESLIST_H_ */
+#endif /* MESHVIEWPACKETSLIST_H_ */

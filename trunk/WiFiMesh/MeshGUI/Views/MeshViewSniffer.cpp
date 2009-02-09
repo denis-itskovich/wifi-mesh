@@ -9,14 +9,22 @@
  */
 
 #include "MeshViewSniffer.h"
-#include "../CoreWrappers/MeshCore.h"
+#include "../Core/MeshCore.h"
 
-static const char* MSG_TYPES[] =
+static const char* PKT_TYPES_TEXT[ePKT_TYPE_LAST] =
 {
 		"Search request",
 		"Search response",
 		"Data",
 		"Ack"
+};
+
+static const QRgb PKT_TYPES_COLOR[ePKT_TYPE_LAST] =
+{
+		0x000000bf,
+		0x0000bf00,
+		0x00000000,
+		0x007f7f7f
 };
 
 MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
@@ -27,9 +35,10 @@ MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
 
 void MeshViewSniffer::init()
 {
-	m_messages = new QTreeWidget;
-	m_messages->setColumnCount(9);
-	m_messages->setHeaderLabels(QStringList()
+	m_packets = new QTreeWidget;
+	m_packets->setMinimumSize(600, 144);
+	m_packets->setColumnCount(9);
+	m_packets->setHeaderLabels(QStringList()
 			<< tr("Time")
 			<< tr("Type")
 			<< tr("From")
@@ -39,20 +48,54 @@ void MeshViewSniffer::init()
 			<< tr("Arrived to")
 			<< tr("Size")
 			<< tr("Hops count"));
-	setLayout(new QVBoxLayout(this));
-	layout()->addWidget(m_messages);
+
+	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
+	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Filter"));
+
+	connect(buttonClear, SIGNAL(clicked()), m_packets, SLOT(clear()));
+
+	QMenu* menuVisibility = new QMenu;
+
+	menuVisibility->addAction(initAction(ePKT_TYPE_DATA, tr("Show &data packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_ACK, tr("Show &ack packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_REQUEST, tr("Show search &request packets")));
+	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_RESPONSE, tr("Show search r&esponse packets")));
+
+	buttonVisibility->setMenu(menuVisibility);
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	QHBoxLayout* buttonsLayout = new QHBoxLayout;
+
+	buttonsLayout->addWidget(buttonVisibility);
+	buttonsLayout->addWidget(buttonClear);
+	buttonsLayout->addStretch(99);
+
+	layout->addWidget(m_packets);
+	layout->addItem(buttonsLayout);
+
+	setLayout(layout);
 }
 
-void MeshViewSniffer::addMessage(const Message* pMessage, StationId deliveredId)
+QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 {
-	QTreeWidgetItem* item = createItem(pMessage, deliveredId);
-	m_messages->addTopLevelItem(item);
-	m_messages->setCurrentItem(item);
+	QAction* action = new QAction(title, NULL);
+	action->setCheckable(true);
+	action->setChecked(true);
+	m_visActions[type] = action;
+	return action;
+}
+
+void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId)
+{
+	if (!m_visActions[pPacket->type]->isChecked()) return;
+	QTreeWidgetItem* item = createItem(pPacket, deliveredId);
+	m_packets->addTopLevelItem(item);
+	m_packets->setCurrentItem(item);
 }
 
 void MeshViewSniffer::clear()
 {
-	m_messages->clear();
+	m_packets->clear();
 }
 
 QString MeshViewSniffer::stationId(StationId id)
@@ -62,20 +105,23 @@ QString MeshViewSniffer::stationId(StationId id)
 	return QString("Station %1").arg(id);
 }
 
-QTreeWidgetItem* MeshViewSniffer::createItem(const Message* pMessage, StationId deliveredId)
+QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId deliveredId)
 {
 	QStringList columns;
 	columns << QString::number(document()->time())
-			<< MSG_TYPES[pMessage->type]
-			<< stationId(pMessage->originalSrcId)
-			<< stationId(pMessage->originalDstId)
-			<< stationId(pMessage->transitSrcId)
-	        << stationId(pMessage->transitDstId)
+			<< PKT_TYPES_TEXT[pPacket->type]
+			<< stationId(pPacket->originalSrcId)
+			<< stationId(pPacket->originalDstId)
+			<< stationId(pPacket->transitSrcId)
+	        << stationId(pPacket->transitDstId)
 	        << stationId(deliveredId)
-			<< QString::number(pMessage->size + sizeof(*pMessage))
-			<< QString::number(pMessage->nodesCount);
+			<< QString::number(pPacket->size + sizeof(*pPacket))
+			<< QString::number(pPacket->nodesCount);
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);
+	item->setIcon(0, QIcon(":/packet.png"));
+	QBrush brush(PKT_TYPES_COLOR[pPacket->type]);
+	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
 	return item;
 }
 
@@ -83,7 +129,7 @@ void MeshViewSniffer::setDocument(MeshDocument* doc)
 {
 	disconnect(doc);
 
-	connect(doc, SIGNAL(messageDispatched(const Message*, StationId)), this, SLOT(addMessage(const Message*, StationId)));
+	connect(doc, SIGNAL(packetDispatched(const Packet*, StationId)), this, SLOT(addPacket(const Packet*, StationId)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(clear()));
 
 	MeshView::setDocument(doc);

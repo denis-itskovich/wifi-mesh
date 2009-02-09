@@ -8,7 +8,8 @@
 #include "MeshViewStations.h"
 
 MeshViewStations::MeshViewStations(QWidget* parent) :
-	MeshView(parent)
+	MeshView(parent),
+	m_currentItem(NULL)
 {
 }
 
@@ -42,8 +43,9 @@ void MeshViewStations::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(routeEntryUpdated(const Station*, StationId, StationId, double, int)), this, SLOT(updateRouteEntry(const Station*, StationId, StationId, double, int)));
 	connect(doc, SIGNAL(routeEntryExpired(const Station*, StationId)), this, SLOT(removeRouteEntry(const Station*, StationId)));
 
-	connect(doc, SIGNAL(scheduleEntryAdded(const Station*, double, const Message*)), this, SLOT(addScheduleEntry(const Station*, double, const Message*)));
-	connect(doc, SIGNAL(scheduleEntryRemoved(const Station*, double, const Message*)), this, SLOT(removeScheduleEntry(const Station*, double, const Message*)));
+	connect(doc, SIGNAL(scheduleEntryAdded(const Station*, double, const Packet*)), this, SLOT(addScheduleEntry(const Station*, double, const Packet*)));
+	connect(doc, SIGNAL(scheduleEntryDelivered(const Station*, const Packet*)), SLOT(deliverScheduleEntry(const Station*, const Packet*)));
+	connect(doc, SIGNAL(scheduleEntryRemoved(const Station*, const Packet*)), this, SLOT(removeScheduleEntry(const Station*, const Packet*)));
 
 	connect(doc, SIGNAL(worldChanged()), this, SLOT(updateAll()));
 
@@ -52,7 +54,7 @@ void MeshViewStations::setDocument(MeshDocument* doc)
 
 bool MeshViewStations::isCurrent(const MeshItemStation* item) const
 {
-	return document()->currentStation() == item->station();
+	return m_currentItem == item;
 }
 
 void MeshViewStations::updateItem(MeshItemStation* item)
@@ -79,6 +81,9 @@ void MeshViewStations::removeStation(Station* pStation)
 
 void MeshViewStations::setCurrent(Station* pStation)
 {
+    if (m_currentItem) m_currentItem->setCurrent(false);
+    m_currentItem = findItem(pStation);
+    if (m_currentItem) m_currentItem->setCurrent(true);
 }
 
 void MeshViewStations::updateStation(Station* pStation)
@@ -89,11 +94,14 @@ void MeshViewStations::updateStation(Station* pStation)
 
 MeshItemStation* MeshViewStations::currentItem() const
 {
-	return findItem(document()->currentStation());
+	return m_currentItem;
 }
 
 void MeshViewStations::currentChanged(MeshItemStation* item)
 {
+//    if (m_currentItem) m_currentItem->setCurrent(false);
+//    m_currentItem = item;
+//    if (m_currentItem) m_currentItem->setCurrent(true);
 	emit currentChanged(item->station());
 }
 
@@ -119,12 +127,17 @@ void MeshViewStations::removeRouteEntry(const Station* pStation, StationId dst)
 	findItem(pStation)->removeRouteEntry(dst);
 }
 
-void MeshViewStations::addScheduleEntry(const Station* pStation, double time, const Message* pMessage)
+void MeshViewStations::addScheduleEntry(const Station* pStation, double time, const Packet* pPacket)
 {
-	findItem(pStation)->addScheduleEntry(time, pMessage);
+	findItem(pStation)->addScheduleEntry(time, pPacket);
 }
 
-void MeshViewStations::removeScheduleEntry(const Station* pStation, double time, const Message* pMessage)
+void MeshViewStations::removeScheduleEntry(const Station* pStation, const Packet* pPacket)
 {
-	findItem(pStation)->removeScheduleEntry(time, pMessage);
+	findItem(pStation)->removeScheduleEntry(pPacket);
+}
+
+void MeshViewStations::deliverScheduleEntry(const Station* pStation, const Packet* pPacket)
+{
+	findItem(pStation)->deliverScheduleEntry(pPacket);
 }
