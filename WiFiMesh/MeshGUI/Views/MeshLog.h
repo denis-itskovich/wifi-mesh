@@ -2,7 +2,7 @@
 #define MESHLOG_H
 
 #include <QtGui>
-#include "../CoreWrappers/MeshCore.h"
+#include "../Core/MeshCore.h"
 
 class MeshLog : public QListWidget
 {

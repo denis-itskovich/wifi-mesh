@@ -9,7 +9,7 @@
 #define MESHDOCKSTATIONS_H_
 
 #include "MeshView.h"
-#include "MeshItemStation.h"
+#include "Items/MeshItemStation.h"
 #include <QtCore>
 
 class MeshViewStations : public MeshView
@@ -22,6 +22,7 @@ public:
 	virtual ~MeshViewStations();
 
 	virtual void setDocument(MeshDocument* document);
+
 signals:
 	virtual void currentChanged(Station* pStation);
 	virtual void stationChanged(Station* pStation);
@@ -40,8 +41,9 @@ public slots:
 	virtual void updateRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
 	virtual void removeRouteEntry(const Station* pStation, StationId dst);
 
-	virtual void addScheduleEntry(const Station* pStation, double time, const Message* pMessage);
-	virtual void removeScheduleEntry(const Station* pStation, double time, const Message* pMessage);
+	virtual void addScheduleEntry(const Station* pStation, double time, const Packet* pPacket);
+	virtual void deliverScheduleEntry(const Station* pStation, const Packet* pPacket);
+	virtual void removeScheduleEntry(const Station* pStation, const Packet* pPacket);
 
 protected:
 	virtual void currentChanged(MeshItemStation* item);
@@ -59,7 +61,8 @@ protected:
 private:
 	typedef QMap<Station*, MeshItemStation*> StationToItem;
 
-	StationToItem		m_stationToItem;
+	StationToItem      m_stationToItem;
+	MeshItemStation*   m_currentItem;
 };
 
 #endif /* MESHDOCKSTATIONS_H_ */
