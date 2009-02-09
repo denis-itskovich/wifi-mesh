@@ -8,7 +8,7 @@
 #ifndef MESHDOCUMENT_H_
 #define MESHDOCUMENT_H_
 
-#include "../CoreWrappers/MeshCore.h"
+#include "../Core/MeshCore.h"
 #include <QtCore>
 
 class MeshDocument : public QObject
@@ -33,6 +33,9 @@ public:
 	double avgVelocity() const;
 	int avgDataSize() const;
 	int avgPacketsCount() const;
+
+	int speed() const;
+	int maximumSpeed() const { return 200; }
 
 
 public slots:
@@ -63,6 +66,7 @@ public slots:
 	void resume();
 	void step();
 	void togglePause(bool paused);
+	void setSpeed(int speed);
 
 signals:
 	void currentStationChanged(Station* pStation);
@@ -78,7 +82,7 @@ signals:
 	void scheduleEntryDelivered(const Station* pStation, const Packet* pPacket);
 	void scheduleEntryRemoved(const Station* pStation, const Packet* pPacket);
 
-	void beginTransmit(const Station* pFrom, const Station* pTo);
+	void beginTransmit(const Station* pFrom, const Station* pTo, const Packet* pPacket);
 	void endTransmit(const Station* pTo);
 
 	void packetDispatched(const Packet* pMsg, StationId deliveredId);
@@ -136,6 +140,7 @@ private:
 	bool				m_bPaused;
 	int					m_timerId;
 	int					m_packets;
+	int                 m_delay;
 };
 
 #endif /* MESHDOCUMENT_H_ */

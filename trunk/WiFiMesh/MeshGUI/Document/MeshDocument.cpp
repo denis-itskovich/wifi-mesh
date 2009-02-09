@@ -21,7 +21,8 @@ MeshDocument::MeshDocument() :
 	m_duration(60),
 	m_bStarted(false),
 	m_bPaused(false),
-	m_timerId(0)
+	m_timerId(0),
+	m_delay(1)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
@@ -273,16 +274,33 @@ void MeshDocument::togglePause(bool paused)
 	else pause();
 }
 
+void MeshDocument::setSpeed(int speed)
+{
+    m_delay = maximumSpeed() + 1 - speed;
+    if (m_timerId)
+    {
+        pause();
+        resume();
+    }
+}
+
+int MeshDocument::speed() const
+{
+    return maximumSpeed() + 1 - m_delay;
+}
+
 void MeshDocument::pause()
 {
 	killTimer(m_timerId);
 	m_timerId = 0;
 }
 
+
 void MeshDocument::resume()
 {
-	m_timerId = startTimer(1);
+	m_timerId = startTimer(m_delay);
 }
+
 
 void MeshDocument::step()
 {
@@ -381,6 +399,7 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
 	if (pDst)
 	{
 		CHECK(StationGetId(pDst, &id));
+	    emit pThis->beginTransmit(pSrc, pDst, pPacket);
 	}
 	else
 	{
@@ -392,8 +411,7 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
 
 void MeshDocument::signalTracker( const Station* pSrc, const Station* pDst, MeshDocument* pThis)
 {
-    if (pSrc) emit pThis->beginTransmit(pSrc, pDst);
-    else emit pThis->endTransmit(pDst);
+    if (!pSrc) pThis->endTransmit(pDst);
 }
 
 void MeshDocument::eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis)

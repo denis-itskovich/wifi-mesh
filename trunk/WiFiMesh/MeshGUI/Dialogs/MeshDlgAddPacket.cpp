@@ -39,7 +39,7 @@ void MeshDlgAddPacket::init()
 	m_comboDestination = new QComboBox;
 	m_spinTime = new QDoubleSpinBox;
 	m_spinTime->setRange(0.01, 36000);
-	m_spinTime->setDecimals(1);
+	m_spinTime->setDecimals(2);
 	m_spinTime->setSuffix(" [sec]");
 
 	m_spinSize = new QSpinBox;

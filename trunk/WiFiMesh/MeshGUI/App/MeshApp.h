@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include "../Document/MeshDocument.h"
-#include "../MeshViews/MeshView.h"
+#include "../Views/MeshView.h"
 
 class MeshApp : public QMainWindow
 {
@@ -72,6 +72,7 @@ private:
 	QAction*	m_actHelpAboutQt;
 
 	QTabWidget*	m_tabs;
+	QSlider*    m_sliderSpeed;
 
 	MeshDocument*	m_document;
 };
