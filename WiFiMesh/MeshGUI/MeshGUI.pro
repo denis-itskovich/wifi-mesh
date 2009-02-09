@@ -2,42 +2,44 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += MeshViews/MeshGraphItemLink.h \
+HEADERS += Views/Items/MeshGraphItemVelocityHandle.h \
+    Views/Items/MeshGraphItemArrow.h \
+    Views/Items/MeshGraphItemLink.h \
+    Views/Items/MeshGraphItemStation.h \
+    Views/Items/MeshTreeItemStation.h \
+    Views/Items/MeshItemStation.h \
+    Views/MeshLog.h \
+    Views/MeshView.h \
+    Views/MeshViewRandomizer.h \
+    Views/MeshViewSettings.h \
+    Views/MeshViewSniffer.h \
+    Views/MeshViewStationProperties.h \
+    Views/MeshViewStations.h \
+    Views/MeshViewStationsGraph.h \
+    Views/MeshViewStationsList.h \
+    Views/MeshViewTimeLine.h \
     Dialogs/MeshDlgAddPacket.h \
     Dialogs/MeshDlgAbout.h \
-    MeshViews/MeshViewSniffer.h \
-    MeshViews/MeshGraphItemStation.h \
-    MeshViews/MeshTreeItemStation.h \
-    MeshViews/MeshItemStation.h \
-    MeshViews/MeshViewStationsGraph.h \
-    MeshViews/MeshViewStationsList.h \
-    MeshViews/MeshLog.h \
-    MeshViews/MeshViewTimeLine.h \
-    MeshViews/MeshViewStations.h \
-    MeshViews/MeshViewStationProperties.h \
-    MeshViews/MeshViewSettings.h \
-    MeshViews/MeshViewRandomizer.h \
-    MeshViews/MeshView.h \
-    CoreWrappers/MeshException.h \
-    CoreWrappers/MeshCore.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += MeshViews/MeshGraphItemLink.cpp \
+SOURCES += Views/Items/MeshGraphItemVelocityHandle.cpp \
+    Views/Items/MeshGraphItemArrow.cpp \
+    Views/Items/MeshGraphItemLink.cpp \
+    Views/Items/MeshGraphItemStation.cpp \
+    Views/Items/MeshTreeItemStation.cpp \
+    Views/Items/MeshItemStation.cpp \
+    Views/MeshLog.cpp \
+    Views/MeshView.cpp \
+    Views/MeshViewRandomizer.cpp \
+    Views/MeshViewSettings.cpp \
+    Views/MeshViewSniffer.cpp \
+    Views/MeshViewStationProperties.cpp \
+    Views/MeshViewStations.cpp \
+    Views/MeshViewStationsGraph.cpp \
+    Views/MeshViewStationsList.cpp \
+    Views/MeshViewTimeLine.cpp \
     Dialogs/MeshDlgAddPacket.cpp \
     Dialogs/MeshDlgAbout.cpp \
-    MeshViews/MeshViewSniffer.cpp \
-    MeshViews/MeshGraphItemStation.cpp \
-    MeshViews/MeshTreeItemStation.cpp \
-    MeshViews/MeshItemStation.cpp \
-    MeshViews/MeshViewStationsList.cpp \
-    MeshViews/MeshViewStationsGraph.cpp \
-    MeshViews/MeshLog.cpp \
-    MeshViews/MeshViewTimeLine.cpp \
-    MeshViews/MeshViewStations.cpp \
-    MeshViews/MeshViewStationProperties.cpp \
-    MeshViews/MeshViewSettings.cpp \
-    MeshViews/MeshViewRandomizer.cpp \
-    MeshViews/MeshView.cpp \
     Document/MeshDocument.cpp \
     App/MeshApp.cpp \
     main.cpp

@@ -1,13 +1,13 @@
 #include "MeshApp.h"
 #include "../Dialogs/MeshDlgAbout.h"
 
-#include "../MeshViews/MeshViewRandomizer.h"
-#include "../MeshViews/MeshViewStationProperties.h"
-#include "../MeshViews/MeshViewSettings.h"
-#include "../MeshViews/MeshViewStationsList.h"
-#include "../MeshViews/MeshViewStationsGraph.h"
-#include "../MeshViews/MeshViewSniffer.h"
-#include "../MeshViews/MeshLog.h"
+#include "../Views/MeshViewRandomizer.h"
+#include "../Views/MeshViewStationProperties.h"
+#include "../Views/MeshViewSettings.h"
+#include "../Views/MeshViewStationsList.h"
+#include "../Views/MeshViewStationsGraph.h"
+#include "../Views/MeshViewSniffer.h"
+#include "../Views/MeshLog.h"
 
 MeshApp::MeshApp(QWidget *parent)
     : QMainWindow(parent)
@@ -44,6 +44,7 @@ void MeshApp::setDocument(MeshDocument* doc)
 	connect(m_actSimulationBreak, SIGNAL(triggered()), doc, SLOT(stop()));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(simulationStarted()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(simulationStopped()));
+	connect(m_actFileNew, SIGNAL(triggered()), doc, SLOT(clear()));
 }
 
 void MeshApp::createActions()
@@ -51,17 +52,14 @@ void MeshApp::createActions()
 	m_actFileNew = new QAction(QIcon(":/new.png"), tr("&New"), this);
 	m_actFileNew->setShortcut(tr("Ctrl+N"));
 	m_actFileNew->setStatusTip(tr("Create new simulation"));
-	m_actFileNew->setEnabled(false);
 
 	m_actFileOpen = new QAction(QIcon(":/open.png"), tr("&Open..."), this);
 	m_actFileOpen->setShortcut(tr("Ctrl+O"));
 	m_actFileOpen->setStatusTip(tr("Open simulation"));
-	m_actFileOpen->setEnabled(false);
 
 	m_actFileSave = new QAction(QIcon(":/save.png"), tr("&Save..."), this);
 	m_actFileSave->setShortcut(tr("Ctrl+S"));
 	m_actFileSave->setStatusTip(tr("Save simulation"));
-	m_actFileSave->setEnabled(false);
 
 	m_actFileClose = new QAction(QIcon(":/close.png"), tr("&Close"), this);
 	m_actFileClose->setStatusTip(tr("Close simulation"));
@@ -206,6 +204,17 @@ void MeshApp::createToolBars()
 	m_toolbarSimulation->addAction(m_actSimulationRun);
 	m_toolbarSimulation->addAction(m_actSimulationPause);
 	m_toolbarSimulation->addAction(m_actSimulationBreak);
+
+	m_sliderSpeed = new QSlider(Qt::Horizontal);
+	m_sliderSpeed->setTickPosition(QSlider::TicksBelow);
+	m_sliderSpeed->setRange(1, m_document->maximumSpeed());
+	m_sliderSpeed->setMaximumWidth(400);
+	connect(m_sliderSpeed, SIGNAL(valueChanged(int)), m_document, SLOT(setSpeed(int)));
+	m_sliderSpeed->setValue(m_document->speed());
+
+	m_toolbarSimulation->addSeparator();
+	m_toolbarSimulation->addWidget(new QLabel(tr("Speed: ")));
+	m_toolbarSimulation->addWidget(m_sliderSpeed);
 
 //	m_toolbarView->addAction(m_actViewShowSettings);
 //	m_toolbarView->addAction(m_actViewShowSniffer);

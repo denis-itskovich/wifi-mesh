@@ -44,5 +44,6 @@
         <file>Images/standardbutton-open-32.png</file>
         <file>Images/standardbutton-save-32.png</file>
         <file alias="break.png" >Images/stop-32.png</file>
+        <file alias="txstation.png" >Images/txsignal.png</file>
     </qresource>
 </RCC>

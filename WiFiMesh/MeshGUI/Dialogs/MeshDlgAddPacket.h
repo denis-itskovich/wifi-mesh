@@ -13,7 +13,7 @@
 #define MESHDLGADDPACKET_H_
 
 #include <QtGui>
-#include "../CoreWrappers/MeshCore.h"
+#include "../Core/MeshCore.h"
 
 class MeshDlgAddPacket : public QDialog
 {
