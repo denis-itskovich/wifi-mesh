@@ -54,6 +54,7 @@ Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
 {
 	pEntry->bWasIssued = FALSE;
 	pEntry->bWasDelivered = FALSE;
+	TimeLineEvent(pThis->pTimeLine, pEntry->time, pEntry->pPacket);
 	return TRUE;
 }
 

@@ -75,11 +75,6 @@ EStatus TimeLineGetTime(TimeLine* pThis, double* pTime);
  */
 EStatus TimeLineClear(TimeLine* pThis);
 
-/** Reset time line
- * \param pThis [in] pointer to instance
- */
-EStatus TimeLineReset(TimeLine* pThis);
-
 /** Retrieves time line length
  * \param pThis [in] pointer to instance
  * \param pLength [out] length will be stored at *pLength

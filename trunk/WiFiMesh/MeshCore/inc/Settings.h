@@ -67,12 +67,19 @@ EStatus SettingsSetWorldSize(Settings* pThis, Size size);
  */
 EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout);
 
-/** Calculates transmit time
+/** Calculates transmit time for given packet
  * \param pThis [in] pointer to instance
  * \param pPacket [in] pointer to packet
  * \param pTime [out] transmit time will be stored at *pTime
  */
 EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, double* pTime);
+
+/** Calculates silence time for given packet
+ * \param pThis [in] pointer to instance
+ * \param pPacket [in] pointer to packet
+ * \param pTime [out] transmit time will be stored at *pTime
+ */
+EStatus SettingsGetSilenceTime(const Settings* pThis, const Packet* pPacket, double* pTime);
 
 /** Retrieves routing table entry time to live
  * \param pThis [in] pointer to instance

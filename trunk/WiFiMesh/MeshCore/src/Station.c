@@ -19,7 +19,9 @@ struct _Station
 	double      silentTime;
 	double      receiveTime;
     Packet*     pReadyPacket;
+    Boolean     bBusy;
     Boolean     bReceived;
+    Boolean     bTransmitting;
 
 	struct
 	{
@@ -109,17 +111,25 @@ EStatus StationDestroy(Station* pThis)
 EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOver)
 {
 	Packet* pPacket;
+	Boolean isActive;
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
 
 	CHECK(RoutingSynchronize(pThis->pRouting));
 
+    pThis->curLocation.x += pThis->velocity.x * timeDelta;
+    pThis->curLocation.y += pThis->velocity.y * timeDelta;
+
 	if (pThis->receiveTime > 0)
 	{
-	    if (pThis->receiveTime <= timeDelta)
+
+	    CHECK(StationIsActive(pThis, &isActive));
+	    if (!isActive || pThis->receiveTime <= timeDelta)
         {
             pThis->receiveTime = 0;
-            if (pReceiveOver) *pReceiveOver = TRUE;
+            if (pThis->bReceived && pReceiveOver) *pReceiveOver = TRUE;
             pThis->bReceived = FALSE;
+            pThis->bBusy = FALSE;
+            pThis->bTransmitting = FALSE;
         }
         else pThis->receiveTime -= timeDelta;
 	}
@@ -129,9 +139,6 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOv
 		pThis->silentTime = 0;
 	}
 	else pThis->silentTime -= timeDelta;
-
-	pThis->curLocation.x += pThis->velocity.x * timeDelta;
-	pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
 	EStatus ret = SchedulerGetPacket(pThis->pScheduler, &pPacket);
 	if (ret == eSTATUS_SCHEDULER_NO_PACKETS) return eSTATUS_COMMON_OK;
@@ -205,21 +212,43 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
+{
+    double receiveTime, silenceTime;
+    CHECK(SettingsGetSilenceTime(pThis->pSettings, pPacket, &silenceTime));
+
+    if (pThis->silentTime < silenceTime)
+    {
+        pThis->silentTime = silenceTime;
+        CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
+    }
+
+    if (pThis->id == pPacket->transitSrcId)
+    {
+        pThis->bTransmitting = TRUE;
+        CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
+        CHECK(TimeLineRelativeEvent(pThis->pTimeLine, receiveTime, pPacket));
+        pThis->bBusy = TRUE;
+        pThis->receiveTime = receiveTime;
+        return eSTATUS_COMMON_OK;
+    }
+
+    if (!pThis->bBusy)
+    {
+        CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
+        pThis->receiveTime = receiveTime;
+        pThis->bBusy = TRUE;
+    }
+    else return eSTATUS_STATION_PACKET_COLLISION;
+
+    return eSTATUS_COMMON_OK;
+}
 
 EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
 {
-	double receiveTime;
 	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type < ePKT_TYPE_LAST));
-	CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
 
-	if (pThis->silentTime < receiveTime)
-	{
-		pThis->silentTime = receiveTime;
-		CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
-	}
-
-	if (pThis->bReceived) return eSTATUS_STATION_PACKET_COLLISION;
-	pThis->bReceived = TRUE;
+	CHECK(StationUpdateTiming(pThis, pPacket));
 
 	if (pPacket->transitSrcId != pThis->id &&
 		pPacket->originalSrcId != pThis->id)
@@ -229,10 +258,7 @@ EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
 
 	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_STATION_PACKET_NOT_ACCEPTED;
 
-	if (pThis->receiveTime == 0.0)
-    {
-        pThis->receiveTime = receiveTime;
-    }
+	pThis->bReceived = TRUE;
 
 	if (StationHandleLocals(pThis, pPacket) != eSTATUS_COMMON_OK)
 	{
@@ -354,6 +380,13 @@ EStatus StationIsActive(const Station* pThis, Boolean* pIsActive)
 	*pIsActive = (loc.x >= -size.x/2.0 && loc.x <= size.x/2.0) &&
 				 (loc.y >= -size.y/2.0 && loc.y <= size.y/2.0) ? TRUE : FALSE;
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus StationIsTransmitting(const Station* pThis, Boolean* pIsTxing)
+{
+    VALIDATE_ARGUMENTS(pThis && pIsTxing);
+    *pIsTxing = pThis->bTransmitting;
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus StationReset(Station* pThis)
