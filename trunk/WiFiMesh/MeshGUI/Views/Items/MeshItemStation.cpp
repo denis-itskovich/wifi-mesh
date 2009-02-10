@@ -16,7 +16,8 @@
 MeshItemStation::MeshItemStation(MeshViewStations* pContainer, Station* pStation) :
 	m_pContainer(pContainer),
 	m_pStation(pStation),
-	m_validFlags(0)
+	m_validFlags(0),
+	m_transmitting(0)
 {
 }
 
@@ -81,9 +82,7 @@ bool MeshItemStation::isActive() const
 
 bool MeshItemStation::isTransmitting() const
 {
-    Boolean bIsTransmitting;
-    CHECK(StationIsTransmitting(m_pStation, &bIsTransmitting));
-    return bIsTransmitting != FALSE;
+    return m_transmitting > 0;
 }
 
 bool MeshItemStation::isCurrent() const
@@ -113,11 +112,19 @@ QString MeshItemStation::locationString() const
 
 QString MeshItemStation::velocityString() const
 {
-    qreal angle = 0.0;
-    qreal v = 0.0;
-    QPointF vel = velocity();
-    v = sqrt(pow(vel.x(), 2) + pow(vel.y(), 2));
-    if (v > 0) angle = asin(vel.y() / v);
-    angle = angle / 3.1415269 * 180;
-    return QString("%1, %2\xb0").arg(v, 0, 'f', 2).arg(angle, 0, 'f', 2);
+    QLineF line(QPointF(0, 0), velocity());
+    qreal angle = line.angle();
+    if (angle < 0) angle += 360;
+    return QString("%1, %2\xb0").arg(line.length(), 0, 'f', 2).arg(round(angle));
+}
+
+void MeshItemStation::beginTransmit()
+{
+    if (!m_transmitting++) updateStation();
+}
+
+void MeshItemStation::endTransmit()
+{
+    assert(m_transmitting > 0);
+    if (!--m_transmitting) updateStation();
 }

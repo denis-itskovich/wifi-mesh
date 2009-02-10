@@ -15,8 +15,7 @@
 
 MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station* pStation) :
 	MeshItemStation(pContainer, pStation),
-	m_handle(NULL),
-	m_transmitting(0)
+	m_handle(NULL)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsFocusable);
@@ -25,6 +24,11 @@ MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station
     setPos(location());
     setZValue(1);
     setCursor(Qt::OpenHandCursor);
+}
+
+MeshGraphItemStation::~MeshGraphItemStation()
+{
+    if (m_handle) delete m_handle;
 }
 
 QRectF MeshGraphItemStation::boundingRect() const
@@ -51,7 +55,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 		colIn = Qt::gray;
 	}
 
-	if (m_transmitting)
+	if (isTransmitting())
 	{
 	    colOut = Qt::red;
 	}
@@ -167,15 +171,4 @@ void MeshGraphItemStation::updateStation()
 		setPos(location());
 	}
 	MeshItemStation::updateStation();
-}
-
-void MeshGraphItemStation::beginTransmit()
-{
-    if (!m_transmitting++) update();
-}
-
-void MeshGraphItemStation::endTransmit()
-{
-    if (!m_transmitting) return;
-    if (!--m_transmitting) update();
 }

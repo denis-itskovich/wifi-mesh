@@ -35,6 +35,9 @@ public:
 	virtual void removeScheduleEntry(const Packet* pPacket) {}
 	virtual void deliverScheduleEntry(const Packet* pPacket) {}
 
+    virtual void beginTransmit();
+    virtual void endTransmit();
+
 	Station* station() const;
     QString name() const;
     StationId id() const;
@@ -57,9 +60,10 @@ protected:
 	MeshDocument* document() const;
 
 private:
-	MeshViewStations*	m_pContainer;
-	Station* 			m_pStation;
-	unsigned			m_validFlags;
+	MeshViewStations*  m_pContainer;
+	Station*           m_pStation;
+	unsigned           m_validFlags;
+	int                m_transmitting;
 };
 
 #endif /* MESHSTATIONITEM_H_ */
