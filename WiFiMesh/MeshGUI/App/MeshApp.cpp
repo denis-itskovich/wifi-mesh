@@ -229,6 +229,8 @@ void MeshApp::createStatusBar()
 
 void MeshApp::createDocks()
 {
+    setDockOptions(dockOptions() | AllowNestedDocks);
+
 	QDockWidget* dockStations = createDock(tr("Stations browser"), new MeshViewStationsList(this));
 	QDockWidget* dockRandomizer = createDock(tr("World generator"), new MeshViewRandomizer(this));
 	QDockWidget* dockSettings = createDock(tr("Simulator settings"), new MeshViewSettings(this));

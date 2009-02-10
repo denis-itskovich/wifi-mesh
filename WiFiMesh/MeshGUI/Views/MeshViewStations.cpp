@@ -48,6 +48,9 @@ void MeshViewStations::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(scheduleEntryRemoved(const Station*, const Packet*)), this, SLOT(removeScheduleEntry(const Station*, const Packet*)));
 
 	connect(doc, SIGNAL(worldChanged()), this, SLOT(updateAll()));
+    connect(doc, SIGNAL(beginTransmit(const Station*, const Station*, const Packet*)), this, SLOT(beginTransmit(const Station*, const Station*, const Packet*)));
+    connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
+
 
 	MeshView::setDocument(doc);
 }
@@ -140,4 +143,23 @@ void MeshViewStations::removeScheduleEntry(const Station* pStation, const Packet
 void MeshViewStations::deliverScheduleEntry(const Station* pStation, const Packet* pPacket)
 {
 	findItem(pStation)->deliverScheduleEntry(pPacket);
+}
+
+void MeshViewStations::beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket)
+{
+    assert(m_transmits.count(pDst) == 0);
+    m_transmits[pDst] = pSrc;
+    MeshItemStation* item = findItem(pSrc);
+    assert(item != NULL);
+    item->beginTransmit();
+}
+
+void MeshViewStations::endTransmit(const Station* pDst)
+{
+    assert(m_transmits.count(pDst) != 0);
+    const Station* pSrc = m_transmits.value(pDst);
+    m_transmits.remove(pDst);
+    MeshItemStation* item = findItem(pSrc);
+    assert(item != NULL);
+    item->endTransmit();
 }

@@ -55,12 +55,30 @@ void MeshTreeItemStation::updateIcon()
     m_isActive = isActive();
     m_isTransmitting = isTransmitting();
 
+    QIcon icon;
+    QColor color;
+
 	if (m_isActive)
     {
-	    if (m_isTransmitting) setIcon(0, QIcon(":/txstation.png"));
-	    else setIcon(0, QIcon(":/station.png"));
+	    if (m_isTransmitting)
+        {
+	        icon = QIcon(":/txstation.png");
+	        color = Qt::red;
+        }
+	    else
+        {
+	        icon = QIcon(":/station.png");
+	        color = Qt::black;
+        }
     }
-	else setIcon(0, QIcon(":/disabledstation.png"));
+	else
+    {
+	    icon = QIcon(":/disabledstation.png");
+	    color = Qt::gray;
+    }
+
+	setIcon(0, icon);
+	this->setForeground(0, QBrush(color));
 }
 
 void MeshTreeItemStation::updateStation()

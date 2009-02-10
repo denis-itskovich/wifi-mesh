@@ -19,13 +19,12 @@ class MeshGraphItemStation : public MeshItemStation, public QGraphicsItem
 {
 public:
 	MeshGraphItemStation(MeshViewStations* pContainer, Station* pStation);
+	~MeshGraphItemStation();
 
     virtual QRectF boundingRect() const;
     virtual QPainterPath shape() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void updateStation();
-    void beginTransmit();
-    void endTransmit();
 
 protected:
     virtual void setCurrent(bool isCurrent);
@@ -39,7 +38,6 @@ protected:
 private:
     QGraphicsItem*  m_handle;
     bool            m_isMoving;
-    int             m_transmitting;
 };
 
 #endif /* MESHGRAPHITEMSTATION_H_ */

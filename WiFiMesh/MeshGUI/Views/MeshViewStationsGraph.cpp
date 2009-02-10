@@ -87,9 +87,6 @@ void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 
 	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
-	connect(doc, SIGNAL(beginTransmit(const Station*, const Station*, const Packet*)), this, SLOT(beginTransmit(const Station*, const Station*, const Packet*)));
-    connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
-
 	updateWorldSize();
 }
 
@@ -98,21 +95,20 @@ void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pD
     MeshGraphItemStation* srcItem = findItem((Station*)pSrc);
     MeshGraphItemStation* dstItem = findItem((Station*)pDst);
     MeshGraphItemLink* link = new MeshGraphItemLink(srcItem, dstItem, pPacket);
-    srcItem->beginTransmit();
     m_srcToLink.insert(pSrc, link);
     m_dstToLink.insert(pDst, link);
     m_graphStations->addItem(link);
+    MeshViewStations::beginTransmit(pSrc, pDst, pPacket);
 }
 
 void MeshViewStationsGraph::endTransmit(const Station* pDst)
 {
+    MeshViewStations::endTransmit(pDst);
     assert(m_dstToLink.count(pDst) == 1);
     if (!m_dstToLink.count(pDst)) return;
     MeshGraphItemLink* link = m_dstToLink.value(pDst);
     const Station* pSrc = m_srcToLink.key(link);
     assert(m_srcToLink.count(pSrc) != 0);
-
-    findItem((Station*)pSrc)->endTransmit();
     m_graphStations->removeItem(link);
     m_srcToLink.remove(pSrc, link);
     m_dstToLink.remove(pDst, link);

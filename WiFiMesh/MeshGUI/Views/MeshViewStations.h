@@ -45,6 +45,9 @@ public slots:
 	virtual void deliverScheduleEntry(const Station* pStation, const Packet* pPacket);
 	virtual void removeScheduleEntry(const Station* pStation, const Packet* pPacket);
 
+    virtual void beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket);
+    virtual void endTransmit(const Station* pDst);
+
 protected:
 	virtual void currentChanged(MeshItemStation* item);
 	virtual bool isCurrent(const MeshItemStation* item) const;
@@ -59,10 +62,12 @@ protected:
 	static Velocity stationVelocity(Station* pStation);
 
 private:
-	typedef QMap<Station*, MeshItemStation*> StationToItem;
+	typedef QMap<Station*, MeshItemStation*>       StationToItem;
+	typedef QMap<const Station*, const Station*>   TransmitMap;
 
 	StationToItem      m_stationToItem;
 	MeshItemStation*   m_currentItem;
+	TransmitMap        m_transmits;
 };
 
 #endif /* MESHDOCKSTATIONS_H_ */

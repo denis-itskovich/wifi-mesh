@@ -387,6 +387,7 @@ void MeshDocument::stationTracker(Station* pStation, EStationEvent event, MeshDo
 		pThis->m_stations.removeOne(id);
 		CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
 		CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
+		emit pThis->currentStationChanged(NULL);
 		emit pThis->stationRemoved(pStation);
 		break;
 	case eSTATION_UPDATED: emit pThis->stationUpdated(pStation); break;

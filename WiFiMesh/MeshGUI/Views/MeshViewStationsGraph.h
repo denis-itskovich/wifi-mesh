@@ -53,13 +53,13 @@ protected:
 	virtual void removeStation(Station* pStation);
 	virtual void setCurrent(Station* pStation);
 	virtual void updateStation(Station* pStation);
+    virtual void beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket);
+    virtual void endTransmit(const Station* pDst);
 
 private slots:
     void clearCurrent();
 	void addStation(QPointF pos);
 	void updateWorldSize();
-	void beginTransmit(const Station* pSrc, const Station* pDst, const Packet* pPacket);
-	void endTransmit(const Station* pDst);
 
 private:
     typedef QMultiMap<const Station*, MeshGraphItemLink*>   LinkMap;
