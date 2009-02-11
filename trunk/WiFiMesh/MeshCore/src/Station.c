@@ -119,7 +119,7 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDelivere
 {
 	Packet* pPacket;
 	Boolean isActive;
-	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
+	VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
 	*ppDeliveredPacket = NULL;
 
 	CHECK(RoutingSynchronize(pThis->pRouting));
@@ -185,9 +185,9 @@ Boolean StationPacketFilter(Packet* pPacket, Station* pThis)
 	Packet* pNewMsg = NULL;
 
 	if (!StationIsPacketValid(pThis, pPacket)) return FALSE;
-	if (pPacket->header.transitDstId == BROADCAST_STATION_ID) return TRUE;
 
-	if (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &pPacket->header.transitDstId, NULL))
+	if ((pPacket->header.transitDstId != BROADCAST_STATION_ID) &&
+	    (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &pPacket->header.transitDstId, NULL)))
 	{
 		PacketNewSearchRequest(&pNewMsg, pThis->id, pPacket->header.originalDstId);
 		if (pThis->pOutPacket)
@@ -310,9 +310,15 @@ Boolean StationIsDestination(Station* pThis, const Packet* pPacket)
 
 Boolean StationIsAccepted(Station* pThis, const Packet* pPacket)
 {
-	if (pPacket->header.transitSrcId == pThis->id) return FALSE;
-	if (pPacket->header.originalSrcId == pThis->id) return FALSE;
-	return (IS_BROADCAST(pPacket->header.transitDstId)) || (pPacket->header.transitDstId == pThis->id) ? TRUE : FALSE;
+    int i;
+
+    for (i = 0; i < pPacket->routing.length; ++i)
+    {
+        if (pPacket->routing.path[i] == pThis->id) return FALSE;
+    }
+
+    return (IS_BROADCAST(pPacket->header.transitDstId) ||
+	       (pPacket->header.transitDstId == pThis->id)) ? TRUE : FALSE;
 }
 
 EStatus StationHandleTransits(Station* pThis, const Packet* pPacket)
@@ -321,7 +327,7 @@ EStatus StationHandleTransits(Station* pThis, const Packet* pPacket)
 
 	CHECK(PacketClone(&pNewMsg, pPacket));
 	pNewMsg->header.transitSrcId = pThis->id;
-	pNewMsg->header.transitDstId = INVALID_STATION_ID;
+	//pNewMsg->header.transitDstId = INVALID_STATION_ID;
 	CHECK(StationSendPacket(pThis, pNewMsg));
 	return eSTATUS_COMMON_OK;
 }
