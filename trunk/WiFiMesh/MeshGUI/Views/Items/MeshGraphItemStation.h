@@ -30,8 +30,6 @@ protected:
     virtual void setCurrent(bool isCurrent);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual void focusInEvent(QFocusEvent *event);
-    virtual void focusOutEvent(QFocusEvent *event);
 
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 

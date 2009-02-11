@@ -27,20 +27,14 @@ struct _Simulator
 
 	struct
 	{
-		Sniffer callback;
-		void*	    pArg;
+		PacketSniffer callback;
+		void*         pArg;
 	} 				sniffer;
 	struct
 	{
 		StationTracker    callback;
 		void*		      pArg;
 	} 				tracker;
-
-	struct
-	{
-	    SignalRadar        callback;
-	    void*              pArg;
-	}               radar;
 };
 
 /** Looks for a station with specified id
@@ -53,9 +47,8 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 /** Dispatches outbound packets for specified station
  * \param pThis [in] pointer to instance
  * \param pStation [in] pointer to station
- * \param pDelivered [out] delivered packets count will be stored at *pDelivered
  */
-EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDelivered);
+EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation);
 
 /** Retrieves station list entry by id
  * \param pThis [in] pointer to instance
@@ -81,7 +74,7 @@ void SimulatorFreeId(Simulator* pThis, StationId id);
  * \param pSrc [in] pointer to source station
  * \param pDst [in] pointer to destination station
  */
-EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst);
+EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst, EPacketStatus status);
 
 /** Invokes tracker callback (if exists)
  * \param pThis [in] pointer to instance
@@ -89,13 +82,6 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
  * \param event [in] event type /see EStationEvent
  */
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event);
-
-/** Invokes signal radar callback (if exists)
- * \param pThis [in] pointer to instance
- * \param pSrc [in] pointer to source station
- * \param pDst [in] pointer to destination station
- */
-EStatus SimulatorInvokeRadar(Simulator* pThis, const Station* pSrc, const Station* pDst);
 
 Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 {
@@ -196,15 +182,19 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 
 Boolean SimulatorSynchronizer(Station* pStation, Simulator* pThis)
 {
+    Packet* pDeliveredPacket;
 	Boolean isActive;
-	Boolean isReceiveOver = FALSE;
 	StationIsActive(pStation, &isActive);
 	if (isActive)
 	{
-		StationSynchronize(pStation, pThis->timeDelta, &isReceiveOver);
+		StationSynchronize(pStation, pThis->timeDelta, &pDeliveredPacket);
 		StationIsActive(pStation, &isActive);
-		if (!isActive) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
-		if (isReceiveOver) SimulatorInvokeRadar(pThis, NULL, pStation);
+		if (pDeliveredPacket)
+        {
+		    SimulatorInvokeSniffer(pThis, pDeliveredPacket, NULL, pStation, ePKT_STATUS_DELIVERED);
+		    PacketDelete(&pDeliveredPacket);
+        }
+        if (!isActive) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
 	}
 	return TRUE;
 }
@@ -212,11 +202,10 @@ Boolean SimulatorSynchronizer(Station* pStation, Simulator* pThis)
 Boolean SimulatorDispatcher(Station* pStation, Simulator* pThis)
 {
 	Boolean isActive;
-	int delivered;
 	StationIsActive(pStation, &isActive);
 	if (isActive)
 	{
-		SimulatorDispatchPackets(pThis, pStation, &delivered);
+		SimulatorDispatchPackets(pThis, pStation);
 		if (pThis->steps % 20 == 0) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
 	}
 	return TRUE;
@@ -231,30 +220,31 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	VALIDATE_ARGUMENTS(pThis);
 
-	CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
-	CHECK(TimeLineNext(pThis->pTimeLine));
-	CHECK(TimeLineGetTime(pThis->pTimeLine, &timeDelta));
-	timeDelta -= oldTime;
-	pThis->timeDelta = timeDelta;
-
 	INFO_PRINT("Performing simulation step: [time delta: %.2f]", timeDelta);
 
+    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
+
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
+    CHECK(TimeLineNext(pThis->pTimeLine));
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &timeDelta));
+    timeDelta -= oldTime;
+    pThis->timeDelta = timeDelta;
+
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
-	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
 	pThis->steps++;
 	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst)
+EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst, EPacketStatus status)
 {
 	if (pThis->sniffer.callback)
 	{
 		if ((pThis->bDupBroadcast && pDst) ||
 			(!pThis->bDupBroadcast && !pDst))
 		{
-			pThis->sniffer.callback(pPacket, pSrc, pDst, pThis->sniffer.pArg);
+			pThis->sniffer.callback(pPacket, pSrc, pDst, status, pThis->sniffer.pArg);
 		}
 	}
 	return eSTATUS_COMMON_OK;
@@ -269,30 +259,24 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
     return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorInvokeRadar(Simulator* pThis, const Station* pSrc, const Station* pDst)
-{
-    if (pThis->radar.callback)
-    {
-        pThis->radar.callback(pSrc, pDst, pThis->radar.pArg);
-    }
-    return eSTATUS_COMMON_OK;
-}
-
-EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDelivered)
+EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation)
 {
 	Packet* pPacket = NULL;
+	Packet* pAbortedPacket;
 	ListEntry* pEntry = NULL;
 	Boolean isAdjacent = FALSE;
 	Boolean isActive = FALSE;
 	Station* pCurrent = NULL;
 	EStatus ret;
-	*pDelivered = 0;
+	StationId id;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
+	CHECK(StationGetId(pStation, &id));
 	CHECK(StationGetPacket(pStation, &pPacket));
 
 	if (!pPacket) return eSTATUS_COMMON_OK;
-	++pPacket->nodesCount;
+	pPacket->routing.path[pPacket->routing.length++] = id;
+    pPacket->header.hopsCount++;
 
 	CHECK(ListGetHead(pThis->pStations, &pEntry));
 	while (pEntry)
@@ -304,15 +288,22 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDeli
 	        CHECK(StationIsAdjacent(pStation, pCurrent, &isAdjacent));
 	        if (isAdjacent)
 	        {
-	            ret = StationPutPacket(pCurrent, pPacket);
+	            ret = StationPutPacket(pCurrent, pPacket, &pAbortedPacket);
 	            switch (ret)
 	            {
 	            case eSTATUS_COMMON_OK:
-	                CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent));
-	                CHECK(SimulatorInvokeRadar(pThis, pStation, pCurrent));
-	                (*pDelivered)++;
+	                CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
+	                break;
+                case eSTATUS_STATION_PACKET_COLLISION:
+                    if (pAbortedPacket)
+                    {
+                        CHECK(SimulatorInvokeSniffer(pThis, pAbortedPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
+                        PacketDelete(&pAbortedPacket);
+                    }
+                    CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
+                    CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
+                    break;
 	            case eSTATUS_STATION_PACKET_NOT_ACCEPTED:
-	            case eSTATUS_STATION_PACKET_COLLISION:
 	                break;
 	            default:
 	                return ret;
@@ -323,12 +314,11 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation, int* pDeli
 		CHECK(ListGetNext(&pEntry));
 	}
 
-	if (*pDelivered) CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL));
 	CHECK(PacketDelete(&pPacket));
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg)
+EStatus SimulatorSetPacketSniffer(Simulator* pThis, PacketSniffer sniffer, void* pUserArg)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	pThis->sniffer.callback = sniffer;
@@ -342,14 +332,6 @@ EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, voi
 	pThis->tracker.callback = tracker;
 	pThis->tracker.pArg = pUserArg;
 	return eSTATUS_COMMON_OK;
-}
-
-EStatus SimulatorSetSignalRadar(Simulator* pThis, SignalRadar radar, void* pUserArg)
-{
-    VALIDATE_ARGUMENTS(pThis);
-    pThis->radar.callback = radar;
-    pThis->radar.pArg = pUserArg;
-    return eSTATUS_COMMON_OK;
 }
 
 EStatus SimulatorReset(Simulator* pThis)

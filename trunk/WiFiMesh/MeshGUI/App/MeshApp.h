@@ -32,6 +32,7 @@ private slots:
 
 	void simulationStarted();
 	void simulationStopped();
+	void simulationPaused(bool isPaused);
 	void simulationEmpty(bool isEmpty);
 
 private:
@@ -64,7 +65,9 @@ private:
 //	QAction*	m_actViewShowRouting;
 //	QAction*	m_actViewShowCoverage;
 
+	QAction*    m_actSimulationReset;
 	QAction*	m_actSimulationRun;
+	QAction*    m_actSimulationStep;
 	QAction*	m_actSimulationPause;
 	QAction*	m_actSimulationBreak;
 

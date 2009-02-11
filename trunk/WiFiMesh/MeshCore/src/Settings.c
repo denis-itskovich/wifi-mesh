@@ -58,7 +58,7 @@ EStatus SettingsDestroy(Settings* pThis)
 EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, double* pTime)
 {
     unsigned size;
-    size = sizeof(*pPacket) + pPacket->size;
+    CHECK(PacketGetSize(pPacket, &size));
     *pTime = ((double)size) / pThis->dataRate;
     return eSTATUS_COMMON_OK;
 }
@@ -70,10 +70,11 @@ EStatus SettingsGetSilenceTime(const Settings* pThis, const Packet* pPacket, dou
     double resolution;
     VALIDATE_ARGUMENTS(pThis && pPacket && pTime);
 
+    CHECK(PacketGetSize(pPacket, &size));
+    CHECK(SettingsGetTransmitTime(pThis, pPacket, pTime));
     resolution = RAND_MAX;
-    size = sizeof(*pPacket) + pPacket->size;
-    variance = (((double)(rand() % sizeof(*pPacket)) * resolution) + 1) / resolution / 2.0;
-    *pTime = ((double)(size) + variance) / pThis->dataRate;
+    variance = (((double)(rand() % sizeof(pPacket->header)) * resolution) + 1) / resolution / 2.0;
+    *pTime += variance / pThis->dataRate;
     return eSTATUS_COMMON_OK;
 }
 

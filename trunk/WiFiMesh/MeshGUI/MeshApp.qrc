@@ -30,8 +30,12 @@
         <file>Images/new.png</file>
         <file alias="disabledstation.png" >Images/nosignal-Vista-48x48.png</file>
         <file>Images/open.png</file>
+        <file alias="packet-broken.png" >Images/packet-broken.png</file>
+        <file alias="packet-delivered.png" >Images/packet-delivered.png</file>
         <file alias="pause.png" >Images/player_pause-32.png</file>
         <file alias="play.png" >Images/player_play-32.png</file>
+        <file alias="reset.png" >Images/player_start-32.png</file>
+        <file alias="step.png" >Images/player_step-32.png</file>
         <file alias="stop.png" >Images/player_stop-32.png</file>
         <file alias="qt_logo.png" >Images/qt-logo.png</file>
         <file alias="qt.png" >Images/qt.png</file>

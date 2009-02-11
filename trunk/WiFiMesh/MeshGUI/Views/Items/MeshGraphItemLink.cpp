@@ -19,7 +19,7 @@ static const QRgb PKT_TYPES_COLOR[ePKT_TYPE_LAST] =
 };
 
 MeshGraphItemLink::MeshGraphItemLink(MeshGraphItemStation* src, MeshGraphItemStation* dst, const Packet* pPacket) :
-    MeshGraphItemArrow(PKT_TYPES_COLOR[pPacket->type], 5, 1, 10.0, 10.0),
+    MeshGraphItemArrow(PKT_TYPES_COLOR[pPacket->header.type], 5, 1, 10.0, 10.0),
     m_src(src),
     m_dst(dst)
 {

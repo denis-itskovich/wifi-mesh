@@ -84,9 +84,9 @@ EStatus StationDestroy(Station* pThis);
  * Moves the station
  * \param pThis [in] pointer to instance
  * \param timeDelta [in] time, passed since last update
- * \param pReceiveOver [out] allows caller to know when a receive is over
+ * \param ppDeliveredPacket [out] packet, that was recently delivered (if any)
  */
-EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOver);
+EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDeliveredPacket);
 
 /** Sets a new station location
  * \param pThis [in] pointer to instance
@@ -121,10 +121,12 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket);
 /** Deliveries a packet
  * \param pThis [in] pointer to instance
  * \param pPacket [in] pointer to packet
- * \return eSTATUS_PACKET_NOT_ACCEPTED if the massage was not handled by station
+ * \param ppAbortedPacket [out] aborted packet (in case of collision)
+ * \return eSTATUS_PACKET_NOT_ACCEPTED if the packet was not handled by station
+ * \return eSTATUS_PACKET_COLLISION if the packet was not delivered due to collision
  * \return eSTATUS_COMMON_OK if the packet was handled
  */
-EStatus StationPutPacket(Station* pThis, const Packet* pPacket);
+EStatus StationPutPacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket);
 
 /** Checks whether a station is adjacent to another one
  * \param pThis [in] pointer to instance

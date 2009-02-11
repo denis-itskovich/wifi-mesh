@@ -24,7 +24,6 @@ public:
 	MeshTreeItemStation(MeshViewStations* pContainer, Station* pStation);
 
 protected:
-	virtual void reset();
 	virtual void addRouteEntry(StationId dst, StationId trans, double expires, int length);
 	virtual void updateRouteEntry(StationId dst, StationId trans, double expires, int length);
 	virtual void removeRouteEntry(StationId dst);

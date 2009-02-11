@@ -58,13 +58,17 @@ public slots:
 	void addStation(Location loc);
 	void addPacket();
 	void removeStation();
-	void generate();
+	void generateWorld();
+	void generatePackets();
+	void generateStations();
 
 	void start();
 	void stop();
 	void pause();
 	void resume();
 	void step();
+    void clear();
+    void reset();
 	void togglePause(bool paused);
 	void setSpeed(int speed);
 
@@ -85,7 +89,7 @@ signals:
 	void beginTransmit(const Station* pFrom, const Station* pTo, const Packet* pPacket);
 	void endTransmit(const Station* pTo);
 
-	void packetDispatched(const Packet* pMsg, StationId deliveredId);
+	void packetDispatched(const Packet* pPacket, StationId deliveredId, EPacketStatus status);
 
 	void worldSizeChanged();
 	void worldChanged();
@@ -98,6 +102,7 @@ signals:
 	void updatedTimeLine();
 
 private:
+    void prepare();
 	virtual void timerEvent(QTimerEvent* event);
 	Velocity generateVelocity() const;
 	Location generateLocation() const;
@@ -108,9 +113,8 @@ private:
 
 	// callbacks
 	static void stationTracker(Station* pStation, EStationEvent event, MeshDocument* pThis);
-	static void packetSniffer(const Packet* pPacket, const Station* pSrc, const Station* pDst, MeshDocument* pThis);
+	static void packetSniffer(const Packet* pPacket, const Station* pSrc, const Station* pDst, EPacketStatus status, MeshDocument* pThis);
 	static void eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis);
-	static void signalTracker( const Station* pSrc, const Station* pDst, MeshDocument* pThis);
 
 	static void routingHandler(	const Station* pStation,
 								StationId destId,
@@ -126,21 +130,22 @@ private:
 									ESchedulerEvent event,
 									MeshDocument* pThis);
 
-	QList<StationId>	m_stations;
-	Simulator*			m_pSimulator;
-	Settings*			m_pSettings;
-	TimeLine*			m_pTimeLine;
-	Station*			m_pCurStation;
-	int					m_stationsCount;
-	int					m_avgDataSize;
-	int					m_avgMsgCount;
-	double				m_avgVelocity;
-	double				m_duration;
-	bool				m_bStarted;
-	bool				m_bPaused;
-	int					m_timerId;
-	int					m_packets;
-	int                 m_delay;
+	QList<StationId>   m_stationIds;
+	QList<Station*>    m_stations;
+	Simulator*         m_pSimulator;
+	Settings*          m_pSettings;
+	TimeLine*          m_pTimeLine;
+	Station*           m_pCurStation;
+	int                m_stationsCount;
+	int                m_avgDataSize;
+	int                m_avgMsgCount;
+	double             m_avgVelocity;
+	double             m_duration;
+	bool               m_bStarted;
+	bool               m_bPaused;
+	int                m_timerId;
+	int                m_packets;
+	int                m_delay;
 };
 
 #endif /* MESHDOCUMENT_H_ */

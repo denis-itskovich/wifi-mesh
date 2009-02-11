@@ -13,11 +13,11 @@
 	( \
 		VALIDATE_ARGUMENTS(ptr); \
 		CLEAR(ptr); \
-		ptr->originalSrcId = _srcId; \
-		ptr->originalDstId = _dstId; \
-		ptr->transitSrcId = _srcId; \
-		ptr->transitDstId = INVALID_STATION_ID; \
-		ptr->type = _msgtype; \
+		ptr->header.originalSrcId = _srcId; \
+		ptr->header.originalDstId = _dstId; \
+		ptr->header.transitSrcId = _srcId; \
+		ptr->header.transitDstId = INVALID_STATION_ID; \
+		ptr->header.type = _msgtype; \
 	)
 
 EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId)
@@ -64,7 +64,7 @@ EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationI
 EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size)
 {
 	INIT_PACKET(pThis, ePKT_TYPE_DATA, srcId, dstId);
-	pThis->size = size;
+	pThis->payload.size = size;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -72,7 +72,7 @@ EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned
 EStatus PacketInitSearchRequest(Packet* pThis, StationId srcId, StationId lookForId)
 {
 	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_REQUEST, srcId, lookForId);
-	pThis->transitDstId = BROADCAST_STATION_ID;
+	pThis->header.transitDstId = BROADCAST_STATION_ID;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -92,8 +92,18 @@ EStatus PacketClone(Packet** ppDst, const Packet* pSrc)
 {
 	VALIDATE_ARGUMENTS(ppDst && pSrc);
 
-	CHECK(PacketNew(ppDst, pSrc->type, pSrc->originalSrcId, pSrc->originalDstId));
+	CHECK(PacketNew(ppDst, pSrc->header.type, pSrc->header.originalSrcId, pSrc->header.originalDstId));
 	memcpy(*ppDst, pSrc, sizeof(*pSrc));
 
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus PacketGetSize(const Packet* pThis, unsigned* pSize)
+{
+    unsigned size = sizeof(pThis->header);
+    VALIDATE_ARGUMENTS(pThis && pSize);
+    size += pThis->payload.size;
+    size += pThis->routing.length * pThis->routing.path[0];
+    *pSize = size;
+    return eSTATUS_COMMON_OK;
 }

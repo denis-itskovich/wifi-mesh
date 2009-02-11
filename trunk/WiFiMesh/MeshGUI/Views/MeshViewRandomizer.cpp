@@ -46,7 +46,8 @@ void MeshViewRandomizer::init()
 	m_spinDuration->setDecimals(1);
 	m_spinDuration->setSuffix(tr(" [sec]"));
 
-	m_buttonGenerate = new QPushButton(QIcon(":/generate.png"), tr("Generate mesh"));
+	m_buttonGenerateWorld = new QPushButton(QIcon(":/generate.png"), tr("Generate world"));
+	m_buttonGeneratePackets = new QPushButton(QIcon(":/packet.png"), tr("Generate packets only"));
 
 	QHBoxLayout* hlayout = new QHBoxLayout;
 	hlayout->addWidget(m_sliderStationsCount);
@@ -67,7 +68,9 @@ void MeshViewRandomizer::init()
 	layout->addWidget(group);
 	layout->addStretch();
 	QHBoxLayout* buttonLayout = new QHBoxLayout;
-	buttonLayout->addWidget(m_buttonGenerate, 0, Qt::AlignHCenter);
+
+	buttonLayout->addWidget(m_buttonGenerateWorld);
+	buttonLayout->addWidget(m_buttonGeneratePackets);
 
 	layout->addItem(buttonLayout);
 
@@ -82,7 +85,8 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(m_spinAvgDataSize, SIGNAL(valueChanged(int)), doc, SLOT(setAvgDataSize(int)));
 	connect(m_spinAvgPacketsCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgPacketsCount(int)));
 	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
-	connect(m_buttonGenerate, SIGNAL(clicked()), doc, SLOT(generate()));
+	connect(m_buttonGenerateWorld, SIGNAL(clicked()), doc, SLOT(generateWorld()));
+	connect(m_buttonGeneratePackets, SIGNAL(clicked()), doc, SLOT(generatePackets()));
 	connect(m_spinDuration, SIGNAL(valueChanged(double)), doc, SLOT(setDuration(double)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));

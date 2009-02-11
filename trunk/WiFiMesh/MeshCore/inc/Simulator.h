@@ -26,6 +26,16 @@ typedef enum
 	eSTATION_UPDATED		///< Station was updated
 } EStationEvent;
 
+/** Packet status, handled by sniffer
+ * \see Sniffer
+ */
+typedef enum
+{
+    ePKT_STATUS_PENDING,
+    ePKT_STATUS_DELIVERED,
+    ePKT_STATUS_COLLISION
+} EPacketStatus;
+
 /** Station tracker
  * \param pStation [in] pointer to station
  * \param eventType [in] station event type
@@ -37,17 +47,14 @@ typedef void (*StationTracker)(Station* pStation, EStationEvent eventType, void*
  * \param pPacket [in] pointer to packet
  * \param pSrc [in] pointer to source station
  * \param pDest [in] pointer to destination station
+ * \param status [in] current packet status
  * \param pUserArg [in] user defined argument
  */
-typedef void (*Sniffer)(const Packet* pPacket, const Station* pSrc, const Station* pDest, void* pUserArg);
-
-/** Signal radar callback.
- * Is being called each a transmit begins or finishes between 2 stations
- * \param pSrc [in] pointer to source station. If not NULL transmit begins, otherwise finishes
- * \param pDst [in] pointer to destination station.
- * \param pUserArg [in] user-defined argument
- */
-typedef void (*SignalRadar)(const Station* pSrc, const Station* pDst, void* pUserArg);
+typedef void (*PacketSniffer)(  const Packet* pPacket,
+                                const Station* pSrc,
+                                const Station* pDest,
+                                EPacketStatus status,
+                                void* pUserArg);
 
 /** Stations enumerator
  * \param pStation [in] pointer to station
@@ -101,7 +108,7 @@ EStatus SimulatorProcess(Simulator* pThis);
  * \param sniffer [in] sniffer callback
  * \param pUserArg [in] user defined argument of the sniffer
  */
-EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg);
+EStatus SimulatorSetPacketSniffer(Simulator* pThis, PacketSniffer sniffer, void* pUserArg);
 
 /** Sets station tracker callback
  * \param pThis [in] pointer to instance
@@ -109,13 +116,6 @@ EStatus SimulatorSetSniffer(Simulator* pThis, Sniffer sniffer, void* pUserArg);
  * \param pUserArg [in] user defined argument of the tracker
  */
 EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, void* pUserArg);
-
-/** Sets signal radar callback
- * \param pThis [in] pointer to instance
- * \param radar [in] signal radar callback
- * \param pUserArg [in] user-defined argument
- */
-EStatus SimulatorSetSignalRadar(Simulator* pThis, SignalRadar radar, void* pUserArg);
 
 /** Resets simulator
  * \param pThis [in] pointer to instance

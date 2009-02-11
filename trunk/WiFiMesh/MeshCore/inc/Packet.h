@@ -15,6 +15,8 @@
 #include "Status.h"
 #include "CommonTypes.h"
 
+#define MAX_PATH_LENGTH     64
+
 /// Packet type
 typedef enum
 {
@@ -29,17 +31,27 @@ typedef enum
 /// Packet declaration
 typedef struct _Packet
 {
-	EPacketType	type;					///< Packet type
-	StationId		originalSrcId;			///< Original source station id
-	StationId		originalDstId;			///< Original destination station id
-	StationId		transitSrcId;			///< Transit source id
-	StationId		transitDstId;			///< Transit destination id
-	unsigned		nodesCount;				///< Transit nodes counts
-	unsigned		sequenceNum;			///< Packet sequence number
-
-	unsigned long 	size;					///< Data size <i>(for data packets only)</i>
+    struct
+    {
+        EPacketType    type;                    ///< Packet type
+        StationId      originalSrcId;           ///< Original source station id
+        StationId      originalDstId;           ///< Original destination station id
+        StationId      transitSrcId;            ///< Transit source id
+        StationId      transitDstId;            ///< Transit destination id
+        unsigned       hopsCount;               ///< Transit nodes counts
+        unsigned       sequenceNum;             ///< Packet sequence number
+        unsigned       timeToLive;              ///< Maximum hops count to live
+    } header;                                   ///< Packet header
+    struct
+    {
+        unsigned long size;                     ///< Data size
+    } payload;                                  ///< Data packet payload
+    struct
+    {
+        unsigned   length;
+        StationId  path[MAX_PATH_LENGTH];       ///< Path - node list
+    } routing;                                  ///< Routing information
 } Packet;
-
 
 /** Allocates new packet
  * \param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -136,5 +148,11 @@ EStatus PacketCopy(Packet* pDst, const Packet* pSrc);
  * \param pSrc [in] source instance
  */
 EStatus PacketClone(Packet** ppDst, const Packet* pSrc);
+
+/** Calculates packet size
+ * \param pThis [in] packet instance
+ * \param pSize [out] size will be stored at *pSize
+ */
+EStatus PacketGetSize(const Packet* pThis, unsigned* pSize);
 
 #endif // _WIFI_MESH_PACKET_H

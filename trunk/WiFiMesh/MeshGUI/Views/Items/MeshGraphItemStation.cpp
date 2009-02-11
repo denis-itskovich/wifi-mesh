@@ -18,7 +18,6 @@ MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station
 	m_handle(NULL)
 {
     setFlag(ItemIsMovable);
-    setFlag(ItemIsFocusable);
     setAcceptHoverEvents(true);
 //    setCacheMode(ItemCoordinateCache);
     setPos(location());
@@ -55,16 +54,17 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 		colIn = Qt::gray;
 	}
 
-	if (isTransmitting())
-	{
-	    colOut = Qt::red;
-	}
-
-    if (option->state & QStyle::State_HasFocus)
+    if (isCurrent())
     {
         colIn = Qt::darkGreen;
         colOut = Qt::green;
     }
+
+    if (isTransmitting())
+	{
+	    colOut = Qt::red;
+	}
+
 
     QRadialGradient gradient(-3, -3, 10);
     if (option->state & QStyle::State_Sunken)
@@ -82,7 +82,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     painter->setPen(QPen(Qt::NoPen));
 
-    if (isActive() && option->state & QStyle::State_MouseOver)
+    if (isActive() && (option->state & QStyle::State_MouseOver || isCurrent()))
     {
         colOut.lighter(100);
         colOut.setAlpha(100);
@@ -106,6 +106,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
 void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    makeCurrent();
     m_isMoving = true;
     QGraphicsItem::update();
     setCursor(Qt::ClosedHandCursor);
@@ -119,21 +120,6 @@ void MeshGraphItemStation::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 	QGraphicsItem::update();
     setCursor(Qt::OpenHandCursor);
     QGraphicsItem::mouseReleaseEvent(event);
-}
-
-void MeshGraphItemStation::focusInEvent(QFocusEvent *event)
-{
-	makeCurrent();
-	setZValue(2);
-	QGraphicsItem::focusInEvent(event);
-	QGraphicsItem::update();
-}
-
-void MeshGraphItemStation::focusOutEvent(QFocusEvent *event)
-{
-    setZValue(1);
-    QGraphicsItem::focusOutEvent(event);
-    QGraphicsItem::update();
 }
 
 QVariant MeshGraphItemStation::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -155,12 +141,21 @@ QVariant MeshGraphItemStation::itemChange(GraphicsItemChange change, const QVari
 
 void MeshGraphItemStation::setCurrent(bool isCurrent)
 {
-    if (isCurrent && !m_handle) m_handle = new MeshGraphItemVelocityHandle(this);
-    if (!isCurrent && m_handle)
+    if (isCurrent)
     {
-        delete m_handle;
-        m_handle = NULL;
+        if (!m_handle) m_handle = new MeshGraphItemVelocityHandle(this);
+        setZValue(2);
     }
+    else
+    {
+        if (m_handle)
+        {
+            delete m_handle;
+            m_handle = NULL;
+        }
+        setZValue(1);
+    }
+    QGraphicsItem::update();
 }
 
 void MeshGraphItemStation::updateStation()

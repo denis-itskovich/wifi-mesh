@@ -36,6 +36,7 @@ public slots:
 	virtual void updateStation(Station* pStation);
 	virtual void updateItem(MeshItemStation* item);
 	virtual void updateAll();
+	virtual void resetStations();
 
 	virtual void addRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
 	virtual void updateRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);

@@ -1,10 +1,10 @@
 #include "MeshDlgAbout.h"
 
 #define COPYRIGHT_STRING 	"<p>%1, <b>version %2</b></p>" 		\
-							"<p><b>(C) 2008 Denis Itskovich</b></p>"				\
+							"<p><b>\xa9 2008 Denis Itskovich</b></p>"				\
 							"<p>Application is distributed 'as is'</p>"				\
 							"<p>Source code can be found at:</p>" \
-							"<p><a href=\"http://wifi-mesh.googlecode.com/svn/trunk/\">SVN repository</a></p>"
+							"<p><a href=\"http://wifi-mesh.googlecode.com/svn/trunk/WiFiMesh\">SVN repository</a></p>"
 
 
 MeshDlgAbout::MeshDlgAbout(QWidget *parent)

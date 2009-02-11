@@ -15,6 +15,7 @@ MeshViewStations::MeshViewStations(QWidget* parent) :
 
 MeshViewStations::~MeshViewStations()
 {
+
 }
 
 void MeshViewStations::registerStation(Station* pStation, MeshItemStation* pItem)
@@ -51,6 +52,7 @@ void MeshViewStations::setDocument(MeshDocument* doc)
     connect(doc, SIGNAL(beginTransmit(const Station*, const Station*, const Packet*)), this, SLOT(beginTransmit(const Station*, const Station*, const Packet*)));
     connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
 
+    connect(doc, SIGNAL(simulationStarted()), this, SLOT(resetStations()));
 
 	MeshView::setDocument(doc);
 }
@@ -162,4 +164,13 @@ void MeshViewStations::endTransmit(const Station* pDst)
     MeshItemStation* item = findItem(pSrc);
     assert(item != NULL);
     item->endTransmit();
+}
+
+void MeshViewStations::resetStations()
+{
+    for (StationToItem::const_iterator i = m_stationToItem.begin(); i != m_stationToItem.end(); ++i)
+    {
+        while (m_transmits.count(i.key())) endTransmit(i.key());
+        i.value()->reset();
+    }
 }
