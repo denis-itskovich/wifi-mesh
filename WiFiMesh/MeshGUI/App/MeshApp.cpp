@@ -39,7 +39,9 @@ void MeshApp::init()
 void MeshApp::setDocument(MeshDocument* doc)
 {
 	m_document = doc;
+    connect(m_actSimulationReset, SIGNAL(triggered()), doc, SLOT(reset()));
 	connect(m_actSimulationRun, SIGNAL(triggered()), doc, SLOT(start()));
+	connect(m_actSimulationStep, SIGNAL(triggered()), doc, SLOT(step()));
 	connect(m_actSimulationPause, SIGNAL(toggled(bool)), doc, SLOT(togglePause(bool)));
 	connect(m_actSimulationBreak, SIGNAL(triggered()), doc, SLOT(stop()));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(simulationStarted()));
@@ -122,16 +124,24 @@ void MeshApp::createActions()
 //	m_actViewShowLog->setCheckable(true);
 //	m_actViewShowLog->setChecked(true);
 
-	m_actSimulationRun = new QAction(QIcon(":/play.png"), tr("&Run"), this);
+    m_actSimulationReset = new QAction(QIcon(":/reset.png"), tr("&Reset"), this);
+    m_actSimulationReset->setShortcut(tr("Shift+F4"));
+    m_actSimulationReset->setStatusTip(tr("Reset simulation"));
+
+    m_actSimulationRun = new QAction(QIcon(":/play.png"), tr("&Run"), this);
 	m_actSimulationRun->setShortcut(tr("F5"));
 	m_actSimulationRun->setStatusTip(tr("Run simulation"));
-//	m_actSimulationRun->setEnabled(false);
+
+    m_actSimulationStep = new QAction(QIcon(":/step.png"), tr("&Step"), this);
+    m_actSimulationStep->setShortcut(tr("F10"));
+    m_actSimulationStep->setStatusTip(tr("Perform single step"));
 
 	m_actSimulationPause = new QAction(QIcon(":/pause.png"), tr("&Pause"), this);
-	m_actSimulationPause->setShortcut(tr("F5"));
+	m_actSimulationPause->setShortcut(tr("F4"));
 	m_actSimulationPause->setStatusTip(tr("Pause simulation"));
 	m_actSimulationPause->setEnabled(false);
 	m_actSimulationPause->setCheckable(true);
+	connect(m_actSimulationPause, SIGNAL(toggled(bool)), m_actSimulationStep, SLOT(setEnabled(bool)));
 
 	m_actSimulationBreak = new QAction(QIcon(":/stop.png"), tr("&Break"), this);
 	m_actSimulationBreak->setShortcut(tr("Shift+F5"));
@@ -174,7 +184,9 @@ void MeshApp::createMenus()
 //	m_menuView->addAction(m_actViewShowStations);
 //	m_menuView->addAction(m_actViewShowGenerator);
 
+	m_menuSimulation->addAction(m_actSimulationReset);
 	m_menuSimulation->addAction(m_actSimulationRun);
+	m_menuSimulation->addAction(m_actSimulationStep);
 	m_menuSimulation->addAction(m_actSimulationPause);
 	m_menuSimulation->addAction(m_actSimulationBreak);
 
@@ -201,7 +213,9 @@ void MeshApp::createToolBars()
 	m_toolbarFile->addAction(m_actFileSave);
 //	m_toolbarFile->addAction(m_actFileClose);
 
+	m_toolbarSimulation->addAction(m_actSimulationReset);
 	m_toolbarSimulation->addAction(m_actSimulationRun);
+	m_toolbarSimulation->addAction(m_actSimulationStep);
 	m_toolbarSimulation->addAction(m_actSimulationPause);
 	m_toolbarSimulation->addAction(m_actSimulationBreak);
 
@@ -283,6 +297,8 @@ void MeshApp::aboutQt()
 void MeshApp::simulationStarted()
 {
 	 m_actSimulationRun->setEnabled(false);
+     m_actSimulationReset->setEnabled(false);
+     m_actSimulationStep->setEnabled(false);
 	 m_actSimulationBreak->setEnabled(true);
 	 m_actSimulationPause->setEnabled(true);
 }
@@ -290,9 +306,16 @@ void MeshApp::simulationStarted()
 void MeshApp::simulationStopped()
 {
 	 m_actSimulationRun->setEnabled(true);
+     m_actSimulationReset->setEnabled(true);
+     m_actSimulationStep->setEnabled(true);
 	 m_actSimulationBreak->setEnabled(false);
 	 m_actSimulationPause->setEnabled(false);
 	 m_actSimulationPause->setChecked(false);
+}
+
+void MeshApp::simulationPaused(bool isPaused)
+{
+    m_actSimulationStep->setEnabled(isPaused);
 }
 
 void MeshApp::simulationEmpty(bool isEmpty)

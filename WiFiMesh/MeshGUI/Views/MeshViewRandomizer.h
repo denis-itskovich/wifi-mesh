@@ -22,15 +22,16 @@ public:
 private:
 	void init();
 
-	QSlider*			m_sliderStationsCount;
-	QSpinBox*			m_spinStationsCount;
+	QSlider*           m_sliderStationsCount;
+	QSpinBox*          m_spinStationsCount;
 
-	QDoubleSpinBox*		m_spinAvgVelocity;
-	QSpinBox*			m_spinAvgDataSize;
-	QSpinBox*			m_spinAvgPacketsCount;
-	QDoubleSpinBox*		m_spinDuration;
+	QDoubleSpinBox*    m_spinAvgVelocity;
+	QSpinBox*          m_spinAvgDataSize;
+	QSpinBox*          m_spinAvgPacketsCount;
+	QDoubleSpinBox*    m_spinDuration;
 
-	QPushButton*		m_buttonGenerate;
+	QPushButton*       m_buttonGenerateWorld;
+	QPushButton*       m_buttonGeneratePackets;
 };
 
 #endif /* MESHDOCKRANDOMIZER_H_ */

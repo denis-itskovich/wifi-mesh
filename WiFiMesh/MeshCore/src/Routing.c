@@ -13,17 +13,17 @@
 
 typedef struct _RoutingEntry
 {
-	StationId	dstId;
-	StationId	transitId;
-	double		expires;
-	unsigned	length;
+	StationId  dstId;
+	StationId  transitId;
+	double     expires;
+	unsigned   length;
 } RoutingEntry;
 
 struct _Routing
 {
-	List*		pEntries;
-	Settings*	pSettings;
-	TimeLine*	pTimeLine;
+	List*      pEntries;
+	Settings*  pSettings;
+	TimeLine*  pTimeLine;
 	struct
 	{
 		RoutingHandler	callback;
@@ -60,7 +60,12 @@ void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdat
 {
 	if (pThis->handler.callback)
 	{
-		pThis->handler.callback(pEntry->dstId, pEntry->transitId, pEntry->expires, pEntry->length, flag, pThis->handler.pArg);
+		pThis->handler.callback(pEntry->dstId,
+		                        pEntry->transitId,
+		                        pEntry->expires,
+		                        pEntry->length,
+		                        flag,
+		                        pThis->handler.pArg);
 	}
 }
 
@@ -123,25 +128,30 @@ EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 	StationId dstId, transitId;
 	ListEntry* pListEntry;
 	RoutingEntry* pRouteEntry;
+	unsigned i;
 
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 
-	dstId = pPacket->originalSrcId;
-
-	if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dstId, &transitId))
+	for (i = 0; i < pPacket->routing.length; ++i)
 	{
-		transitId = pPacket->transitSrcId;
-		return RoutingAddRoute(pThis, dstId, transitId, pPacket->nodesCount);
-	}
-
-	CHECK(ListGetValue(pListEntry, &pRouteEntry));
-
-	if (pRouteEntry->length >= pPacket->nodesCount)
-	{
-		pRouteEntry->length = pPacket->nodesCount;
-		pRouteEntry->transitId = pPacket->transitSrcId;
-		CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
-		RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
+	    dstId = pPacket->routing.path[i];
+	    if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dstId, NULL))
+	    {
+            transitId = pPacket->header.transitSrcId;
+            CHECK(RoutingAddRoute(pThis, dstId, transitId, i + 1));
+	    }
+	    else
+	    {
+	        CHECK(ListGetValue(pListEntry, &pRouteEntry));
+	        if (pRouteEntry->length >= i + 1)
+	        {
+	            pRouteEntry->length = i + 1;
+	            pRouteEntry->transitId = pPacket->header.transitSrcId;
+	            CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
+	            CHECK(TimeLineEvent(pThis->pTimeLine, pRouteEntry->expires, NULL));
+	            RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
+	        }
+	    }
 	}
 
 	return eSTATUS_COMMON_OK;
@@ -169,6 +179,7 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->transitId = transitId;
 	pEntry->length = length;
 	CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
+	CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
 	RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
 	return ListPushBack(pThis->pEntries, pEntry);
 }

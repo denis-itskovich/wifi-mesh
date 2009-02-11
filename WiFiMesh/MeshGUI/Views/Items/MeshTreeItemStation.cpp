@@ -135,11 +135,11 @@ QTreeWidgetItem* MeshTreeItemStation::createRouteItem(StationId dst, StationId t
 
 QTreeWidgetItem* MeshTreeItemStation::createScheduleItem(double time, const Packet* pPacket)
 {
-	QString brief = QString("(at: %1, to: Station %2, size: %3 bytes)").arg(time).arg(pPacket->originalDstId).arg(pPacket->size);
+	QString brief = QString("(at: %1, to: Station %2, size: %3 bytes)").arg(time).arg(pPacket->header.originalDstId).arg(pPacket->payload.size);
 	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Packet" << brief);
 	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "time" << QString("%1").arg(time)));
-	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("Station %1").arg(pPacket->originalDstId)));
-	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "size" << QString("%1 bytes").arg(pPacket->size)));
+	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "destination" << QString("Station %1").arg(pPacket->header.originalDstId)));
+	scheduleItem->addChild(new QTreeWidgetItem(QStringList() << "size" << QString("%1 bytes").arg(pPacket->payload.size)));
 	scheduleItem->setIcon(0, QIcon(":/packet.png"));
 	return scheduleItem;
 }
@@ -175,7 +175,7 @@ void MeshTreeItemStation::removeRouteEntry(StationId dst)
 
 void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
 {
-	unsigned seqNum = pPacket->sequenceNum;
+	unsigned seqNum = pPacket->header.sequenceNum;
 	assert(m_scheduleMap.count(seqNum) == 0);
 	QTreeWidgetItem* item = createScheduleItem(time, pPacket);
 	m_scheduleMap[seqNum] = item;
@@ -185,7 +185,7 @@ void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
 
 void MeshTreeItemStation::removeScheduleEntry(const Packet* pPacket)
 {
-	unsigned seqNum = pPacket->sequenceNum;
+	unsigned seqNum = pPacket->header.sequenceNum;
 	assert(m_scheduleMap.count(seqNum) != 0);
 	delete m_scheduleMap[seqNum];
 	m_scheduleMap.remove(seqNum);
@@ -198,6 +198,3 @@ void MeshTreeItemStation::deliverScheduleEntry(const Packet* pPacket)
 
 }
 
-void MeshTreeItemStation::reset()
-{
-}

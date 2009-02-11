@@ -47,7 +47,7 @@ Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry
 
 Comparison SchedulerFinder(const SchedulerEntry* pEntry, const Packet* pPacket, Scheduler* pThis)
 {
-	return pEntry->pPacket->sequenceNum == pPacket->sequenceNum ? EQUAL : LESS;
+	return pEntry->pPacket->header.sequenceNum == pPacket->header.sequenceNum ? EQUAL : LESS;
 }
 
 Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
@@ -87,7 +87,7 @@ EStatus SchedulerHandlePacket(Scheduler* pThis, const Packet* pPacket)
 {
 	ListEntry* pListEntry;
 	SchedulerEntry* pScheduleEntry;
-	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type == ePKT_TYPE_ACK));
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type == ePKT_TYPE_ACK));
 	CHECK(SortedListFind(pThis->pEntries, &pListEntry, (ItemComparator)&SchedulerFinder, pPacket, pThis));
 	SortedListGetValue(pListEntry, &pScheduleEntry);
 	pScheduleEntry->bWasDelivered = TRUE;
@@ -109,7 +109,7 @@ EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time)
 	SchedulerEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && pPacket && (time >= 0));
 
-	pPacket->sequenceNum = pThis->sequenceNum++;
+	pPacket->header.sequenceNum = pThis->sequenceNum++;
 	pEntry = NEW(SchedulerEntry);
 	pEntry->time = time;
 	pEntry->pPacket = pPacket;

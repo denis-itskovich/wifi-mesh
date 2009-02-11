@@ -87,6 +87,7 @@ void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 
 	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
+	connect(doc, SIGNAL(simulationCleared()), this, SLOT(resetStations()));
 	updateWorldSize();
 }
 

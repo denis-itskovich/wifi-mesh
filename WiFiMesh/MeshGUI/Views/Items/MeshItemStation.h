@@ -25,7 +25,7 @@ public:
 
 	virtual void updateStation();
 	virtual void stationChanged();
-	virtual void reset() {}
+	virtual void reset();
 
 	virtual void addRouteEntry(StationId dst, StationId trans, double expires, int length) {}
 	virtual void updateRouteEntry(StationId dst, StationId trans, double expires, int length) {}

@@ -4,6 +4,8 @@
 #include "Routing.h"
 #include "Scheduler.h"
 
+#define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
+
 struct _Station
 {
 	StationId   id;
@@ -18,9 +20,9 @@ struct _Station
 	TimeLine*   pTimeLine;
 	double      silentTime;
 	double      receiveTime;
-    Packet*     pReadyPacket;
+    Packet*     pOutPacket;
+    Packet*     pInPacket;
     Boolean     bBusy;
-    Boolean     bReceived;
     Boolean     bTransmitting;
 
 	struct
@@ -45,9 +47,14 @@ void StationHandleRoutingChange(StationId destId,
 								int length,
 								ERouteEntryUpdate updateAction,
 								Station* pThis);
-void StationHandleScheduleChange(double time, const Packet* pPacket, ESchedulerEvent event, Station* pThis);
+
+void StationHandleScheduleChange(double time,
+								 const Packet* pPacket,
+								 ESchedulerEvent event,
+								 Station* pThis);
 
 EStatus StationSendPacket(Station* pThis, Packet* pPacket);
+EStatus StationHandlePacket(Station* pThis, const Packet* pPacket);
 EStatus StationHandleData(Station* pThis, const Packet* pPacket);
 EStatus StationHandleAck(Station* pThis, const Packet* pPacket);
 EStatus StationHandleSearchRequest(Station* pThis, const Packet* pPacket);
@@ -108,11 +115,12 @@ EStatus StationDestroy(Station* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOver)
+EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDeliveredPacket)
 {
 	Packet* pPacket;
 	Boolean isActive;
 	VALIDATE_ARGUMENTS(pThis && (timeDelta > 0));
+	*ppDeliveredPacket = NULL;
 
 	CHECK(RoutingSynchronize(pThis->pRouting));
 
@@ -121,15 +129,18 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Boolean* pReceiveOv
 
 	if (pThis->receiveTime > 0)
 	{
-
 	    CHECK(StationIsActive(pThis, &isActive));
 	    if (!isActive || pThis->receiveTime <= timeDelta)
         {
             pThis->receiveTime = 0;
-            if (pThis->bReceived && pReceiveOver) *pReceiveOver = TRUE;
-            pThis->bReceived = FALSE;
             pThis->bBusy = FALSE;
             pThis->bTransmitting = FALSE;
+            if (pThis->pInPacket)
+            {
+                if (isActive) CHECK(StationHandlePacket(pThis, pThis->pInPacket));
+                *ppDeliveredPacket = pThis->pInPacket;
+                pThis->pInPacket = NULL;
+            }
         }
         else pThis->receiveTime -= timeDelta;
 	}
@@ -174,23 +185,23 @@ Boolean StationPacketFilter(Packet* pPacket, Station* pThis)
 	Packet* pNewMsg = NULL;
 
 	if (!StationIsPacketValid(pThis, pPacket)) return FALSE;
-	if (pPacket->transitDstId == BROADCAST_STATION_ID) return TRUE;
+	if (pPacket->header.transitDstId == BROADCAST_STATION_ID) return TRUE;
 
-	if (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->originalDstId, &pPacket->transitDstId, NULL))
+	if (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &pPacket->header.transitDstId, NULL))
 	{
-		PacketNewSearchRequest(&pNewMsg, pThis->id, pPacket->originalDstId);
-		if (pThis->pReadyPacket)
+		PacketNewSearchRequest(&pNewMsg, pThis->id, pPacket->header.originalDstId);
+		if (pThis->pOutPacket)
 		{
 			CHECK(StationSendPacket(pThis, pNewMsg));
 		}
-		else pThis->pReadyPacket = pNewMsg;
-		RoutingAddPending(pThis->pRouting, pPacket->originalDstId);
+		else pThis->pOutPacket = pNewMsg;
+		RoutingAddPending(pThis->pRouting, pPacket->header.originalDstId);
 		return TRUE;
 	}
-	if (pPacket->transitDstId == INVALID_STATION_ID) return TRUE;
-	if (pThis->pReadyPacket) return TRUE;
+	if (pPacket->header.transitDstId == INVALID_STATION_ID) return TRUE;
+	if (pThis->pOutPacket) return TRUE;
 
-	pThis->pReadyPacket = pPacket;
+	pThis->pOutPacket = pPacket;
 	return FALSE;
 }
 
@@ -205,9 +216,9 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 	VALIDATE_ARGUMENTS(pThis && ppPacket);
 	if (pThis->silentTime > 0) return eSTATUS_COMMON_OK;
 
-	pThis->pReadyPacket = NULL;
+	pThis->pOutPacket = NULL;
 	CHECK(ListCleanUp(pThis->pOutbox, (ItemFilter)&StationPacketFilter, pThis));
-	*ppPacket = pThis->pReadyPacket;
+	*ppPacket = pThis->pOutPacket;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -223,7 +234,7 @@ EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
         CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
     }
 
-    if (pThis->id == pPacket->transitSrcId)
+    if (pThis->id == pPacket->header.transitSrcId)
     {
         pThis->bTransmitting = TRUE;
         CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
@@ -239,26 +250,51 @@ EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
         pThis->receiveTime = receiveTime;
         pThis->bBusy = TRUE;
     }
-    else return eSTATUS_STATION_PACKET_COLLISION;
 
     return eSTATUS_COMMON_OK;
 }
 
-EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
+EStatus StationPutPacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket)
 {
-	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->type < ePKT_TYPE_LAST));
+    VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type < ePKT_TYPE_LAST));
 
-	CHECK(StationUpdateTiming(pThis, pPacket));
+    EStatus ret = eSTATUS_COMMON_OK;
+    *ppAbortedPacket = NULL;
 
-	if (pPacket->transitSrcId != pThis->id &&
-		pPacket->originalSrcId != pThis->id)
+    if (!pThis->bBusy)
+    {
+        if (StationIsAccepted(pThis, pPacket))
+        {
+            ASSERT(pThis->pInPacket == NULL);
+            CHECK(PacketClone(&pThis->pInPacket, pPacket));
+        }
+        else
+        {
+            ret = eSTATUS_STATION_PACKET_NOT_ACCEPTED;
+        }
+    }
+    else
+    {
+        *ppAbortedPacket = pThis->pInPacket;
+        pThis->pInPacket = NULL;
+        ret = eSTATUS_STATION_PACKET_COLLISION;
+    }
+
+    CHECK(StationUpdateTiming(pThis, pPacket));
+    return ret;
+}
+
+EStatus StationHandlePacket(Station* pThis, const Packet* pPacket)
+{
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type < ePKT_TYPE_LAST));
+
+	if (pPacket->header.transitSrcId != pThis->id &&
+		pPacket->header.originalSrcId != pThis->id)
 	{
 		CHECK(RoutingHandlePacket(pThis->pRouting, pPacket));
 	}
 
-	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_STATION_PACKET_NOT_ACCEPTED;
-
-	pThis->bReceived = TRUE;
+	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_COMMON_OK;
 
 	if (StationHandleLocals(pThis, pPacket) != eSTATUS_COMMON_OK)
 	{
@@ -269,14 +305,14 @@ EStatus StationPutPacket(Station* pThis, const Packet* pPacket)
 
 Boolean StationIsDestination(Station* pThis, const Packet* pPacket)
 {
-	return (IS_BROADCAST(pPacket->originalDstId)) || (pPacket->originalDstId == pThis->id) ? TRUE : FALSE;
+	return (IS_BROADCAST(pPacket->header.originalDstId)) || (pPacket->header.originalDstId == pThis->id) ? TRUE : FALSE;
 }
 
 Boolean StationIsAccepted(Station* pThis, const Packet* pPacket)
 {
-	if (pPacket->transitSrcId == pThis->id) return FALSE;
-	if (pPacket->originalSrcId == pThis->id) return FALSE;
-	return (IS_BROADCAST(pPacket->transitDstId)) || (pPacket->transitDstId == pThis->id) ? TRUE : FALSE;
+	if (pPacket->header.transitSrcId == pThis->id) return FALSE;
+	if (pPacket->header.originalSrcId == pThis->id) return FALSE;
+	return (IS_BROADCAST(pPacket->header.transitDstId)) || (pPacket->header.transitDstId == pThis->id) ? TRUE : FALSE;
 }
 
 EStatus StationHandleTransits(Station* pThis, const Packet* pPacket)
@@ -284,15 +320,15 @@ EStatus StationHandleTransits(Station* pThis, const Packet* pPacket)
 	Packet* pNewMsg = NULL;
 
 	CHECK(PacketClone(&pNewMsg, pPacket));
-	pNewMsg->transitSrcId = pThis->id;
-	pNewMsg->transitDstId = INVALID_STATION_ID;
+	pNewMsg->header.transitSrcId = pThis->id;
+	pNewMsg->header.transitDstId = INVALID_STATION_ID;
 	CHECK(StationSendPacket(pThis, pNewMsg));
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus StationHandleLocals(Station* pThis, const Packet* pPacket)
 {
-	return s_handlers[pPacket->type](pThis, pPacket);
+	return s_handlers[pPacket->header.type](pThis, pPacket);
 }
 
 EStatus StationHandleData(Station* pThis, const Packet* pPacket)
@@ -300,8 +336,8 @@ EStatus StationHandleData(Station* pThis, const Packet* pPacket)
 	Packet* pResponse;
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 	if (!StationIsDestination(pThis, pPacket)) return eSTATUS_STATION_PACKET_NOT_ACCEPTED;
-	CHECK(PacketNewAck(&pResponse, pThis->id, pPacket->originalSrcId));
-	pResponse->sequenceNum = pPacket->sequenceNum;
+	CHECK(PacketNewAck(&pResponse, pThis->id, pPacket->header.originalSrcId));
+	pResponse->header.sequenceNum = pPacket->header.sequenceNum;
 	return StationSendPacket(pThis, pResponse);
 }
 
@@ -319,17 +355,17 @@ EStatus StationHandleSearchRequest(Station* pThis, const Packet* pPacket)
 	unsigned length = 0;
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 
-	if (pPacket->originalDstId != pThis->id)
+	if (pPacket->header.originalDstId != pThis->id)
 	{
-		CHECK(RoutingLookFor(pThis->pRouting, pPacket->originalDstId, &dstId, &length));
+		CHECK(RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &dstId, &length));
 		if (dstId == INVALID_STATION_ID) return eSTATUS_LIST_NOT_FOUND;
 	}
 
-	dstId = pPacket->originalSrcId;
+	dstId = pPacket->header.originalSrcId;
 	CHECK(PacketNewSearchResponse(&pResponse, pThis->id, dstId));
-	pResponse->nodesCount = length;
-	pResponse->transitDstId = pPacket->transitSrcId;
-	pResponse->originalSrcId = pPacket->originalDstId;
+	pResponse->header.hopsCount = length;
+	pResponse->header.transitDstId = pPacket->header.transitSrcId;
+	pResponse->header.originalSrcId = pPacket->header.originalDstId;
 	CHECK(StationSendPacket(pThis, pResponse));
 
 	return eSTATUS_COMMON_OK;
@@ -394,6 +430,12 @@ EStatus StationReset(Station* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	pThis->curLocation = pThis->orgLocation;
 
+	if (pThis->pInPacket) CHECK(PacketDelete(&pThis->pInPacket));
+	if (pThis->pOutPacket) CHECK(PacketDelete(&pThis->pOutPacket));
+	pThis->bBusy = FALSE;
+	pThis->bTransmitting = FALSE;
+    pThis->silentTime = 0;
+    pThis->receiveTime = 0;
 	CHECK(ListCleanUp(pThis->pOutbox, NULL, NULL));
 	CHECK(RoutingClear(pThis->pRouting));
 	CHECK(SchedulerReset(pThis->pScheduler));
@@ -403,8 +445,8 @@ EStatus StationReset(Station* pThis)
 
 Boolean StationIsPacketValid(Station* pThis, const Packet* pPacket)
 {
-	if (pPacket->type != ePKT_TYPE_SEARCH_REQUEST) return TRUE;
-	return RoutingLookFor(pThis->pRouting, pPacket->originalDstId, NULL, NULL) != eSTATUS_COMMON_OK ? TRUE : FALSE;
+	if (pPacket->header.type != ePKT_TYPE_SEARCH_REQUEST) return TRUE;
+	return RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, NULL, NULL) != eSTATUS_COMMON_OK ? TRUE : FALSE;
 }
 
 EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg)

@@ -16,7 +16,7 @@
 #include "Settings.h"
 #include "TimeLine.h"
 
-typedef struct _Routing Routing; ///< forward declaration
+typedef struct _Routing Routing;    ///< forward declaration of Routing
 
 /// Routing entry modifying flag
 typedef enum _ERouteEntryUpdate
@@ -26,15 +26,22 @@ typedef enum _ERouteEntryUpdate
 	eROUTE_REMOVE		///< Entry is being removed
 } ERouteEntryUpdate;
 
+
 /** Route entry handler add/update/remove handler.
  * Is called each time a routing entry is being added, updated or removed (expired)
+ * \param pStation [in] pointer to station
  * \param destId [in] destination station id
  * \param transId [in] transit station id
  * \param expirationTime [in] entry expiration time
  * \param updateAction [in] true if entry is being added or updated
  * \param pUserArg [in] user defined argument
  */
-typedef void (*RoutingHandler)(StationId destId, StationId transId, double expirationTime, int length, ERouteEntryUpdate updateAction, void *pUserArg);
+typedef void (*RoutingHandler)( StationId destId,
+                                StationId transId,
+                                double expirationTime,
+                                int length,
+                                ERouteEntryUpdate updateAction,
+                                void *pUserArg);
 
 /** Allocates & initializes a new instance
  * \param ppThis [out] pointer to new instance will be stored at *ppThis

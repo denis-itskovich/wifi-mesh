@@ -23,13 +23,13 @@ public:
 	void setDocument(MeshDocument* doc);
 
 protected slots:
-	void addPacket(const Packet* pPacket, StationId deliveredId);
+	void addPacket(const Packet* pPacket, StationId deliveredId, EPacketStatus status);
 	void clear();
 
 private:
 	void init();
 	static QString stationId(StationId id);
-	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId);
+	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId, EPacketStatus status);
 	QAction* initAction(EPacketType type, const QString& title);
 
 	QTreeWidget*	m_packets;

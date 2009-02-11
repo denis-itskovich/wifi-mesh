@@ -128,3 +128,7 @@ void MeshItemStation::endTransmit()
     assert(m_transmitting > 0);
     if (!--m_transmitting) updateStation();
 }
+
+void MeshItemStation::reset()
+{
+}

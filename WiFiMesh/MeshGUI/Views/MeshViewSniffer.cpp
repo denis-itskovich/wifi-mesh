@@ -37,7 +37,7 @@ void MeshViewSniffer::init()
 {
 	m_packets = new QTreeWidget;
 	m_packets->setMinimumSize(600, 144);
-	m_packets->setColumnCount(9);
+	m_packets->setColumnCount(10);
 	m_packets->setHeaderLabels(QStringList()
 			<< tr("Time")
 			<< tr("Type")
@@ -47,7 +47,8 @@ void MeshViewSniffer::init()
 			<< tr("Destination")
 			<< tr("Arrived to")
 			<< tr("Size")
-			<< tr("Hops count"));
+			<< tr("Hops count")
+			<< tr("Status"));
 
 	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
 	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Filter"));
@@ -85,10 +86,10 @@ QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 	return action;
 }
 
-void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId)
+void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId, EPacketStatus status)
 {
-	if (!m_visActions[pPacket->type]->isChecked()) return;
-	QTreeWidgetItem* item = createItem(pPacket, deliveredId);
+	if (!m_visActions[pPacket->header.type]->isChecked()) return;
+	QTreeWidgetItem* item = createItem(pPacket, deliveredId, status);
 	m_packets->addTopLevelItem(item);
 	m_packets->setCurrentItem(item);
 }
@@ -105,23 +106,36 @@ QString MeshViewSniffer::stationId(StationId id)
 	return QString("Station %1").arg(id);
 }
 
-QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId deliveredId)
+QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId deliveredId, EPacketStatus status)
 {
 	QStringList columns;
+	unsigned size;
+	PacketGetSize(pPacket, &size);
 	columns << QString::number(document()->time())
-			<< PKT_TYPES_TEXT[pPacket->type]
-			<< stationId(pPacket->originalSrcId)
-			<< stationId(pPacket->originalDstId)
-			<< stationId(pPacket->transitSrcId)
-	        << stationId(pPacket->transitDstId)
+			<< PKT_TYPES_TEXT[pPacket->header.type]
+			<< stationId(pPacket->header.originalSrcId)
+			<< stationId(pPacket->header.originalDstId)
+			<< stationId(pPacket->header.transitSrcId)
+	        << stationId(pPacket->header.transitDstId)
 	        << stationId(deliveredId)
-			<< QString::number(pPacket->size + sizeof(*pPacket))
-			<< QString::number(pPacket->nodesCount);
+			<< QString::number(size)
+			<< QString::number(pPacket->header.hopsCount)
+            << ((status == ePKT_STATUS_DELIVERED) ? tr("delivered") : tr("collision"));
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);
-	item->setIcon(0, QIcon(":/packet.png"));
-	QBrush brush(PKT_TYPES_COLOR[pPacket->type]);
+	item->setIcon(0, QIcon((status == ePKT_STATUS_DELIVERED) ? ":/packet-delivered.png" : ":/packet-broken.png"));
+	QBrush brush(PKT_TYPES_COLOR[pPacket->header.type]);
 	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
+
+	if (status == ePKT_STATUS_COLLISION) return item;
+	if (pPacket->routing.length <= 1) return item;
+
+	for (unsigned i = 0; i < pPacket->routing.length; ++i)
+	{
+	    QTreeWidgetItem* path = new QTreeWidgetItem(QStringList() << QString("Station %1").arg(pPacket->routing.path[i]));
+	    item->addChild(path);
+	}
+
 	return item;
 }
 
@@ -129,7 +143,7 @@ void MeshViewSniffer::setDocument(MeshDocument* doc)
 {
 	disconnect(doc);
 
-	connect(doc, SIGNAL(packetDispatched(const Packet*, StationId)), this, SLOT(addPacket(const Packet*, StationId)));
+	connect(doc, SIGNAL(packetDispatched(const Packet*, StationId, EPacketStatus)), this, SLOT(addPacket(const Packet*, StationId, EPacketStatus)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(clear()));
 
 	MeshView::setDocument(doc);
