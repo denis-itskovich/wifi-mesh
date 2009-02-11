@@ -67,7 +67,6 @@ private:
 
 	QAction*    m_actSimulationReset;
 	QAction*	m_actSimulationRun;
-	QAction*    m_actSimulationStep;
 	QAction*	m_actSimulationPause;
 	QAction*	m_actSimulationBreak;
 

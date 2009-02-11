@@ -277,8 +277,9 @@ void MeshDocument::prepare()
 
 void MeshDocument::start()
 {
-    prepare();
-	resume();
+    if (!m_bStarted) prepare();
+    if (m_bPaused) step();
+    else resume();
 }
 
 void MeshDocument::stop()
@@ -327,7 +328,6 @@ void MeshDocument::resume()
 
 void MeshDocument::step()
 {
-    if (!m_bStarted) prepare();
     m_packets = 0;
     while (!m_packets)
     {

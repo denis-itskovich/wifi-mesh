@@ -222,8 +222,6 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	INFO_PRINT("Performing simulation step: [time delta: %.2f]", timeDelta);
 
-    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
-
     CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
     CHECK(TimeLineNext(pThis->pTimeLine));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &timeDelta));
@@ -231,6 +229,7 @@ EStatus SimulatorProcess(Simulator* pThis)
     pThis->timeDelta = timeDelta;
 
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
+    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
 	pThis->steps++;
 	END_FUNCTION;

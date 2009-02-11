@@ -128,24 +128,25 @@ EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 	StationId dstId, transitId;
 	ListEntry* pListEntry;
 	RoutingEntry* pRouteEntry;
-	unsigned i;
+	unsigned i, length;
 
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 
 	for (i = 0; i < pPacket->routing.length; ++i)
 	{
+	    length = pPacket->routing.length - i;
 	    dstId = pPacket->routing.path[i];
 	    if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dstId, NULL))
 	    {
             transitId = pPacket->header.transitSrcId;
-            CHECK(RoutingAddRoute(pThis, dstId, transitId, i + 1));
+            CHECK(RoutingAddRoute(pThis, dstId, transitId, length));
 	    }
 	    else
 	    {
 	        CHECK(ListGetValue(pListEntry, &pRouteEntry));
-	        if (pRouteEntry->length >= i + 1)
+	        if (pRouteEntry->length >= length)
 	        {
-	            pRouteEntry->length = i + 1;
+	            pRouteEntry->length = length;
 	            pRouteEntry->transitId = pPacket->header.transitSrcId;
 	            CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
 	            CHECK(TimeLineEvent(pThis->pTimeLine, pRouteEntry->expires, NULL));
