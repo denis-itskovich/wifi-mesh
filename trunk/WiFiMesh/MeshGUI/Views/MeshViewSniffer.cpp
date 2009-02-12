@@ -132,7 +132,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 
 	for (unsigned i = 0; i < pPacket->routing.length; ++i)
 	{
-	    QTreeWidgetItem* path = new QTreeWidgetItem(QStringList() << QString("Station %1").arg(pPacket->routing.path[i]));
+	    QTreeWidgetItem* path = new QTreeWidgetItem(QStringList() << QString("Passed through:") << QString("Station %1").arg(pPacket->routing.path[i]));
 	    item->addChild(path);
 	}
 
