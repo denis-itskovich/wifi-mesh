@@ -252,7 +252,8 @@ void MeshApp::createStatusBar()
 {
     m_simulationTime = new QLabel;
     connect(m_document, SIGNAL(timeChanged(const QString&)), m_simulationTime, SLOT(setText(const QString&)));
-    statusBar()->addWidget(m_simulationTime, 0);
+    m_simulationTime->setAlignment(Qt::AlignRight);
+    statusBar()->addPermanentWidget(m_simulationTime, 0);
 	statusBar()->showMessage(tr("Ready"));
 }
 
