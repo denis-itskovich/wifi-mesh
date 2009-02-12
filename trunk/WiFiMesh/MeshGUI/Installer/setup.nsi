@@ -59,9 +59,15 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
+    File ..\Images\MeshGUI.ico
     File ..\release\MeshGUI.exe
+    File ..\..\MeshCore\Documentation\License.txt
+    File ..\..\MeshCore\Documentation\MeshCore.chm
+    File ..\..\MeshCore\Documentation\MeshCore.chi
     SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk" $INSTDIR\MeshGUI.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk" "$INSTDIR\MeshGUI.exe" "" "$INSTDIR\MeshGUI.ico" 0 SW_SHOWMAXIMIZED
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk" $INSTDIR\MeshCore.chm
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\License.lnk" $INSTDIR\License.txt
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -98,7 +104,13 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\License.lnk"
     Delete /REBOOTOK $INSTDIR\MeshGUI.exe
+    Delete /REBOOTOK $INSTDIR\MeshGUI.ico
+    Delete /REBOOTOK $INSTDIR\MeshCore.chm
+    Delete /REBOOTOK $INSTDIR\MeshCore.chi
+    Delete /REBOOTOK $INSTDIR\License.txt
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 

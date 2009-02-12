@@ -46,5 +46,14 @@ SOURCES += Views/Items/MeshGraphItemVelocityHandle.cpp \
 FORMS += 
 RESOURCES += MeshApp.qrc
 LIBS += -lMeshCore
-debug:LIBS += -L../MeshCore/Debug
-release:LIBS += -L../MeshCore/Release
+
+DebugBuild {
+    LIBS += -L../MeshCore/Debug
+    PRE_TARGETDEPS += ../MeshCore/Debug/libMeshCore.a
+}
+
+ReleaseBuild {
+    LIBS += -L../MeshCore/Release
+    PRE_TARGETDEPS += ../MeshCore/Release/libMeshCore.a
+}
+
