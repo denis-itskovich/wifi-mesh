@@ -145,4 +145,23 @@
 		return eSTATUS_COMMON_OK; \
 	)
 
+/** Implements property getter & setter
+ * \param module module name
+ * \param name property name
+ * \param type property type
+ * \param initval initial value
+ */
+#define IMPLEMENT_PROPERTY(module, name, type, initval) \
+    static const type DEFAULT_ ## name ## _VALUE = initval; \
+    EStatus module ## Get ## name (const module * pThis, type* pValue) { GET_MEMBER(pValue, pThis, prop ## name); } \
+    EStatus module ## Set ## name (module * pThis, type value) { SET_MEMBER(value, pThis, prop ## name); } \
+    EStatus module ## Init ## name (module * pThis) { return module ## Set ## name(pThis, DEFAULT_ ## name ## _VALUE); }
+
+/** Initializes property
+ * \param module module name
+ * \param name property name
+ * \param ptr pointer to module structure
+ */
+#define INIT_PROPERTY(module, name, ptr) CHECK(module ## Init ## name(ptr))
+
 #endif // _WIFI_MESH_MACROS_H

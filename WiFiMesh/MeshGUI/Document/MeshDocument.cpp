@@ -10,6 +10,20 @@
 #include <cmath>
 #include <cstdlib>
 
+template <typename _Module, typename _Type>
+static _Type getMemberValue(_Module* pModule, EStatus(*getter)(const _Module*, _Type* pVal))
+{
+    _Type tmp;
+    CHECK(getter(pModule, &tmp));
+    return tmp;
+}
+
+template <typename _Module, typename _Type>
+static void setMemberValue(_Module* pModule, EStatus(*setter)(_Module*, _Type val), _Type val)
+{
+    CHECK(setter(pModule, val));
+}
+
 static const int RND_RESOLUTION = RAND_MAX;
 
 MeshDocument::MeshDocument() :
@@ -39,120 +53,42 @@ MeshDocument::~MeshDocument()
 	CHECK(SettingsDelete(&m_pSettings));
 }
 
-Station* MeshDocument::currentStation() const
-{
-	return m_pCurStation;
-}
+int     MeshDocument::dataRate() const { return getMemberValue(m_pSettings, &SettingsGetDataRate); }
+double  MeshDocument::coverage() const { return getMemberValue(m_pSettings, &SettingsGetCoverage); }
+Size    MeshDocument::worldSize() const {	return getMemberValue(m_pSettings, &SettingsGetWorldSize); }
+double  MeshDocument::time() const { return getMemberValue(m_pTimeLine, &TimeLineGetTime); }
+double  MeshDocument::packetRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryTimeout); }
+int     MeshDocument::packetRetryThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryThreshold); }
+int     MeshDocument::packetHopsThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketHopsThreshold); }
+double  MeshDocument::routeExpirationTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteExpirationTimeout); }
+double  MeshDocument::routeRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryTimeout); }
 
-void MeshDocument::setCoverage(double cov)
-{
-	CHECK(SettingsSetCoverage(m_pSettings, cov));
-}
+void    MeshDocument::setDataRate(int rate) { setMemberValue(m_pSettings, &SettingsSetDataRate, (unsigned long)rate); }
+void    MeshDocument::setCoverage(double coverage) { setMemberValue(m_pSettings, &SettingsSetCoverage, coverage); }
+void    MeshDocument::setWorldSize(Size size) { setMemberValue(m_pSettings, &SettingsSetWorldSize, size); emit worldSizeChanged(); }
+void    MeshDocument::setPacketRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetPacketRetryTimeout, timeout); }
+void    MeshDocument::setPacketRetryThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetPacketRetryThreshold, threshold); }
+void    MeshDocument::setPacketHopsThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetPacketHopsThreshold, threshold); }
+void    MeshDocument::setRouteExpirationTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteExpirationTimeout, timeout); }
+void    MeshDocument::setRouteRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteRetryTimeout, timeout); }
 
-void MeshDocument::setDataRate(int rate)
-{
-	CHECK(SettingsSetDataRate(m_pSettings, (unsigned long)rate));
-}
+int     MeshDocument::stationsCount() const { return m_stationsCount; }
+int     MeshDocument::avgPacketsCount() const { return m_avgMsgCount; }
+int     MeshDocument::avgDataSize() const { return m_avgDataSize; }
+double  MeshDocument::avgVelocity() const { return m_avgVelocity; }
+double  MeshDocument::duration() const { return m_duration; }
 
-void MeshDocument::setRouteTTL(double ttl)
-{
-	CHECK(SettingsSetRoutingTTL(m_pSettings, ttl));
-}
+void    MeshDocument::setStationsCount(int count) { m_stationsCount = count; }
+void    MeshDocument::setAvgDataSize(int dataSize) { m_avgDataSize = dataSize; }
+void    MeshDocument::setAvgVelocity(double avgVelocity) { m_avgVelocity = avgVelocity; }
+void    MeshDocument::setAvgPacketsCount(int avgMsgCount) { m_avgMsgCount = avgMsgCount; }
+void    MeshDocument::setDuration(double duration) { m_duration = duration; }
 
-void MeshDocument::setRetryTimeout(double timeout)
-{
-	CHECK(SettingsSetRetryTimeout(m_pSettings, timeout));
-}
+Station*    MeshDocument::currentStation() const { return m_pCurStation; }
+void        MeshDocument::setCurrentStation(Station* pStation) { m_pCurStation = pStation; emit currentStationChanged(pStation); }
 
-void MeshDocument::setWorldSize(Size size)
-{
-	CHECK(SettingsSetWorldSize(m_pSettings, size));
-	emit worldSizeChanged();
-}
-
-int MeshDocument::dataRate() const
-{
-	unsigned long rate;
-	CHECK(SettingsGetDataRate(m_pSettings, &rate));
-	return (int)rate;
-}
-
-double MeshDocument::coverage() const
-{
-	double coverage;
-	CHECK(SettingsGetCoverage(m_pSettings, &coverage));
-	return coverage;
-}
-
-double MeshDocument::routeTTL() const
-{
-	double ttl;
-	CHECK(SettingsGetRoutingTTL(m_pSettings, &ttl));
-	return ttl;
-}
-
-double MeshDocument::retryTimeout() const
-{
-	double timeout;
-	CHECK(SettingsGetRetryTimeout(m_pSettings, &timeout));
-	return timeout;
-}
-
-Size MeshDocument::worldSize() const
-{
-	Size size;
-	CHECK(SettingsGetWorldSize(m_pSettings, &size));
-	return size;
-}
-
-double MeshDocument::time() const
-{
-	double t;
-	CHECK(TimeLineGetTime(m_pTimeLine, &t));
-	return t;
-}
-
-void MeshDocument::setStationsCount(int count)
-{
-	m_stationsCount = count;
-}
-
-void MeshDocument::setAvgDataSize(int dataSize)
-{
-	m_avgDataSize = dataSize;
-}
-
-void MeshDocument::setAvgVelocity(double avgVelocity)
-{
-	m_avgVelocity = avgVelocity;
-}
-
-void MeshDocument::setAvgPacketsCount(int avgMsgCount)
-{
-	m_avgMsgCount = avgMsgCount;
-}
-
-void MeshDocument::setCurrentStation(Station* pStation)
-{
-	m_pCurStation = pStation;
-	emit currentStationChanged(pStation);
-}
-
-void MeshDocument::setDuration(double duration)
-{
-	m_duration = duration;
-}
-
-void MeshDocument::updateStation(Station* pStation)
-{
-	emit stationUpdated(pStation);
-}
-
-void MeshDocument::addStation()
-{
-	Location location = {0};
-	addStation(location);
-}
+void MeshDocument::updateStation(Station* pStation) { emit stationUpdated(pStation); }
+void MeshDocument::addStation() { Location location = {0}; addStation(location); }
 
 void MeshDocument::addPacket()
 {
@@ -366,31 +302,6 @@ Location MeshDocument::generateLocation() const
 	l.x = rand(s.x) - s.x / 2.0;
 	l.y = rand(s.y) - s.y / 2.0;
 	return l;
-}
-
-int MeshDocument::stationsCount() const
-{
-	return m_stationsCount;
-}
-
-int MeshDocument::avgPacketsCount() const
-{
-	return m_avgMsgCount;
-}
-
-int MeshDocument::avgDataSize() const
-{
-	return m_avgDataSize;
-}
-
-double MeshDocument::avgVelocity() const
-{
-	return m_avgVelocity;
-}
-
-double MeshDocument::duration() const
-{
-	return m_duration;
 }
 
 void MeshDocument::stationTracker(Station* pStation, EStationEvent event, MeshDocument* pThis)

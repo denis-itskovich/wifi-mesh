@@ -17,8 +17,8 @@
 
 class MeshTreeItemStation : public MeshItemStation, public QTreeWidgetItem
 {
-	typedef QMap<StationId, QTreeWidgetItem*> 	RouteMap;
-	typedef QMap<unsigned, QTreeWidgetItem*>	ScheduleMap;
+	typedef QMap<StationId, QTreeWidgetItem*> 	    RouteMap;
+	typedef QMap<const Packet*, QTreeWidgetItem*>	ScheduleMap;
 
 public:
 	MeshTreeItemStation(MeshViewStations* pContainer, Station* pStation);

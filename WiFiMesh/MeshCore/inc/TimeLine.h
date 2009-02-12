@@ -68,7 +68,7 @@ EStatus TimeLineNext(TimeLine* pThis);
  * \param pThis [in] pointer to instance
  * \param pTime [out] current time will be stored at *pTime
  */
-EStatus TimeLineGetTime(TimeLine* pThis, double* pTime);
+EStatus TimeLineGetTime(const TimeLine* pThis, double* pTime);
 
 /** Clear time line
  * \param pThis [in] pointer to instance

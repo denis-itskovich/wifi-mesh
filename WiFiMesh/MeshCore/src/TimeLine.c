@@ -102,7 +102,7 @@ EStatus TimeLineNext(TimeLine* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus TimeLineGetTime(TimeLine* pThis, double* pTime)
+EStatus TimeLineGetTime(const TimeLine* pThis, double* pTime)
 {
 	GET_MEMBER(pTime, pThis, time);
 }

@@ -160,15 +160,7 @@ EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 
 EStatus RoutingAddPending(Routing* pThis, StationId dstId)
 {
-	RoutingEntry* pEntry;
-	VALIDATE_ARGUMENTS(pThis);
-	pEntry = NEW(RoutingEntry);
-	pEntry->dstId = dstId;
-	pEntry->transitId = INVALID_STATION_ID;
-	pEntry->length = (unsigned)-1;
-	CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
-	RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
-	return ListPushBack(pThis->pEntries, pEntry);
+	return RoutingAddRoute(pThis, dstId, INVALID_STATION_ID, (unsigned)-1);
 }
 
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length)
@@ -179,10 +171,10 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
-	CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
-	CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
-	RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
-	return ListPushBack(pThis->pEntries, pEntry);
+    CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+    CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
+    RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
+    return ListPushBack(pThis->pEntries, pEntry);
 }
 
 EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount)
@@ -208,7 +200,7 @@ EStatus RoutingGetRetryTime(Routing* pThis, double* pTime)
 	double timeout;
 	VALIDATE_ARGUMENTS(pThis && pTime);
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
-	CHECK(SettingsGetRetryTimeout(pThis->pSettings, &timeout));
+	CHECK(SettingsGetRouteRetryTimeout(pThis->pSettings, &timeout));
 	*pTime = time + timeout;
 	return eSTATUS_COMMON_OK;
 }
@@ -216,11 +208,11 @@ EStatus RoutingGetRetryTime(Routing* pThis, double* pTime)
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 {
 	double time;
-	double ttl;
+	double timeout;
 	VALIDATE_ARGUMENTS(pThis && pTime);
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
-	CHECK(SettingsGetRoutingTTL(pThis->pSettings, &ttl));
-	*pTime = time + ttl;
+	CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &timeout));
+	*pTime = time + timeout;
 	return eSTATUS_COMMON_OK;
 }
 

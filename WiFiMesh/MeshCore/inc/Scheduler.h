@@ -58,12 +58,6 @@ EStatus SchedulerInit(Scheduler* pThis, TimeLine* pTimeLine);
  */
 EStatus SchedulerDestroy(Scheduler* pThis);
 
-/** Handles packet (currently - ACK only)
- * \param pThis [in] pointer to instance
- * \param pPacket [in] pointer to packet to handle
- */
-EStatus SchedulerHandlePacket(Scheduler* pThis, const Packet* pPacket);
-
 /** Schedules a packet
  * \param pThis [in] pointer to instance
  * \param pPacket [in] pointer to packet

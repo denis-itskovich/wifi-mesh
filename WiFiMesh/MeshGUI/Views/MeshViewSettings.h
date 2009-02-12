@@ -37,9 +37,12 @@ private:
 	int dataRate();
 
 	QDoubleSpinBox*	m_spinCoverage;
-	QDoubleSpinBox*	m_spinRouteTTL;
+	QDoubleSpinBox*	m_spinRouteExpTimeout;
+    QDoubleSpinBox* m_spinRouteRetryTimeout;
+    QDoubleSpinBox* m_spinPacketRetryTimeout;
+    QSpinBox*       m_spinPacketRetryThreshold;
+    QSpinBox*       m_spinPacketHopsThreshold;
 	QDoubleSpinBox*	m_spinDataRate;
-	QDoubleSpinBox*	m_spinRetryTimeout;
 	QComboBox*		m_comboDataUnits;
 	QSpinBox*		m_spinHeight;
 	QSpinBox*		m_spinWidth;

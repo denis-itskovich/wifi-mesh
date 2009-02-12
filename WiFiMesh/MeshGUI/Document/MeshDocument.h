@@ -21,30 +21,40 @@ public:
 
 	Station* currentStation() const;
 
-	int dataRate() const;
+	int    dataRate() const;
 	double coverage() const;
-	double routeTTL() const;
-	Size worldSize() const;
+	Size   worldSize() const;
 	double duration() const;
 	double time() const;
-	double retryTimeout() const;
 
-	int stationsCount() const;
+	double routeExpirationTimeout() const;
+	double routeRetryTimeout() const;
+
+	int    packetHopsThreshold() const;
+	int    packetRetryThreshold() const;
+    double packetRetryTimeout() const;
+
+	int    stationsCount() const;
 	double avgVelocity() const;
-	int avgDataSize() const;
-	int avgPacketsCount() const;
+	int    avgDataSize() const;
+	int    avgPacketsCount() const;
 
-	int speed() const;
-	int maximumSpeed() const { return 200; }
+	int    speed() const;
+	int    maximumSpeed() const { return 200; }
 
 
 public slots:
 	void setDataRate(int dataRate);
 	void setCoverage(double coverage);
-	void setRouteTTL(double routeTTL);
 	void setWorldSize(Size size);
 	void setDuration(double duration);
-	void setRetryTimeout(double timeout);
+
+	void setRouteExpirationTimeout(double timeout);
+	void setRouteRetryTimeout(double timeout);
+
+	void setPacketHopsThreshold(int threshold);
+    void setPacketRetryThreshold(int threshold);
+	void setPacketRetryTimeout(double timeout);
 
 	void setStationsCount(int count);
 	void setAvgDataSize(int dataSize);
