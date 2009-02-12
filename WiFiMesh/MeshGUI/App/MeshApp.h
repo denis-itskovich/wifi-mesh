@@ -1,3 +1,22 @@
+/*********************************************************************************
+WiFi Mesh Simulator PRO
+Copyright (C) 2009 Denis Itskovich
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*********************************************************************************/
+
 #ifndef MESHAPP_H
 #define MESHAPP_H
 
@@ -38,7 +57,6 @@ private slots:
 private:
 	QToolBar*	m_toolbarFile;
 	QToolBar*	m_toolbarSimulation;
-//	QToolBar*	m_toolbarView;
 
 	QMenu*		m_menuFile;
 	QMenu*		m_menuView;
@@ -57,14 +75,6 @@ private:
 	QAction*	m_actViewShowGenerator;
 	QAction*	m_actViewShowLog;
 
-//	QAction*	m_actViewShowBackground;
-//	QAction*	m_actViewShowGrid;
-//	QAction*	m_actViewShowRules;
-//	QAction*	m_actViewShowStations;
-//	QAction*	m_actViewShowDataFlow;
-//	QAction*	m_actViewShowRouting;
-//	QAction*	m_actViewShowCoverage;
-
 	QAction*    m_actSimulationReset;
 	QAction*	m_actSimulationRun;
 	QAction*	m_actSimulationPause;
@@ -75,6 +85,7 @@ private:
 
 	QTabWidget*	m_tabs;
 	QSlider*    m_sliderSpeed;
+	QLabel*     m_simulationTime;
 
 	MeshDocument*	m_document;
 };
