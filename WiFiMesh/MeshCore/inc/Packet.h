@@ -31,26 +31,35 @@ typedef enum
 /// Packet declaration
 typedef struct _Packet
 {
-    struct
+    //---------------------------------------------------------------------------
+    struct _PacketHeader
     {
-        EPacketType    type;                    ///< Packet type
-        StationId      originalSrcId;           ///< Original source station id
-        StationId      originalDstId;           ///< Original destination station id
-        StationId      transitSrcId;            ///< Transit source id
-        StationId      transitDstId;            ///< Transit destination id
-        unsigned       hopsCount;               ///< Transit nodes counts
-        unsigned       sequenceNum;             ///< Packet sequence number
-        unsigned       timeToLive;              ///< Maximum hops count to live
-    } header;                                   ///< Packet header
-    struct
+        EPacketType     type;                       ///< Packet type
+        StationId       originalSrcId;              ///< Original source station id
+        StationId       originalDstId;              ///< Original destination station id
+        StationId       transitSrcId;               ///< Transit source id
+        StationId       transitDstId;               ///< Transit destination id
+        unsigned        hopsCount;                  ///< Transit nodes counts
+        unsigned        sequenceNum;                ///< Packet sequence number
+        unsigned        timeToLive;                 ///< Maximum hops count to live
+    }                   header;                     ///< Packet header
+    //---------------------------------------------------------------------------
+    struct _PacketPayload
     {
-        unsigned long size;                     ///< Data size
-    } payload;                                  ///< Data packet payload
-    struct
+        unsigned long   size;                       ///< Data size
+    }                   payload;                    ///< Data packet payload
+    //---------------------------------------------------------------------------
+    struct _PacketRouting
     {
-        unsigned   length;
-        StationId  path[MAX_PATH_LENGTH];       ///< Path - node list
-    } routing;                                  ///< Routing information
+        unsigned        length;                     ///< Path length
+        StationId       path[MAX_PATH_LENGTH];      ///< Path - node list
+    }                   routing;                    ///< Routing information
+    //---------------------------------------------------------------------------
+    struct _PacketServiceInfo
+    {
+        unsigned        retriesCount;               ///< Counts how many times the packet was transmitted
+    }                   serviceInfo;                ///< Service information
+    //---------------------------------------------------------------------------
 } Packet;
 
 /** Allocates new packet

@@ -214,13 +214,14 @@ void MeshApp::createToolBars()
 	m_sliderSpeed = new QSlider(Qt::Horizontal);
 	m_sliderSpeed->setTickPosition(QSlider::TicksBelow);
 	m_sliderSpeed->setRange(1, m_document->maximumSpeed());
-	m_sliderSpeed->setMaximumWidth(400);
+	m_sliderSpeed->setMaximumWidth(200);
 	connect(m_sliderSpeed, SIGNAL(valueChanged(int)), m_document, SLOT(setSpeed(int)));
 	m_sliderSpeed->setValue(m_document->speed());
 
 	m_toolbarSimulation->addSeparator();
-	m_toolbarSimulation->addWidget(new QLabel(tr("Speed: ")));
+	m_toolbarSimulation->addWidget(new QLabel(tr("Speed: min")));
 	m_toolbarSimulation->addWidget(m_sliderSpeed);
+	m_toolbarSimulation->addWidget(new QLabel(tr("max")));
 
 //	m_toolbarView->addAction(m_actViewShowSettings);
 //	m_toolbarView->addAction(m_actViewShowSniffer);
@@ -236,6 +237,7 @@ void MeshApp::createStatusBar()
 void MeshApp::createDocks()
 {
     setDockOptions(dockOptions() | AllowNestedDocks);
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
 	QDockWidget* dockStations = createDock(tr("Stations browser"), new MeshViewStationsList(this));
 	QDockWidget* dockRandomizer = createDock(tr("World generator"), new MeshViewRandomizer(this));

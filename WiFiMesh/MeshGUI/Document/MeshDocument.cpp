@@ -216,7 +216,8 @@ void MeshDocument::generateStations()
 void MeshDocument::generatePackets()
 {
     int stationsCount = m_stations.count();
-    int msgCount = m_avgMsgCount * stationsCount + 1;
+    if (stationsCount < 2) return;
+    int msgCount = m_avgMsgCount * stationsCount;
 
     QProgressDialog progress;
     progress.setMinimumWidth(400);
