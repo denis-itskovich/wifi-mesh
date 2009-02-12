@@ -250,6 +250,7 @@ void MeshDocument::togglePause(bool paused)
 {
 	if (m_bPaused == paused) return;
 	m_bPaused = paused;
+	if (!m_bStarted) return;
 	if (!m_bPaused) resume();
 	else pause();
 }
@@ -292,7 +293,7 @@ void MeshDocument::step()
             stop();
             break;
         }
-        emit timeChanged(QString("Time: %1").arg(time()));
+        emit timeChanged(QString("Time: %1").arg(time(), 0, 'f', 5));
     }
 }
 
