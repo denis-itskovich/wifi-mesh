@@ -34,9 +34,9 @@ void MeshTreeItemStation::init()
 	velItem->addChild(new QTreeWidgetItem(QStringList() << "y"));
 	velItem->setIcon(0, folderIcon);
 
-	QTreeWidgetItem* routeItem = new QTreeWidgetItem(QStringList() << "Routing");
+	QTreeWidgetItem* routeItem = new QTreeWidgetItem(QStringList() << "Routing" << "(empty)");
 	routeItem->setIcon(0, folderIcon);
-	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Schedule");
+	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Schedule" << "(empty)");
 	scheduleItem->setIcon(0, folderIcon);
 
 	addChild(locItem);
@@ -175,20 +175,18 @@ void MeshTreeItemStation::removeRouteEntry(StationId dst)
 
 void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
 {
-	unsigned seqNum = pPacket->header.sequenceNum;
-	assert(m_scheduleMap.count(seqNum) == 0);
+	assert(m_scheduleMap.count(pPacket) == 0);
 	QTreeWidgetItem* item = createScheduleItem(time, pPacket);
-	m_scheduleMap[seqNum] = item;
+	m_scheduleMap[pPacket] = item;
 	child(3)->addChild(item);
 	child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
 }
 
 void MeshTreeItemStation::removeScheduleEntry(const Packet* pPacket)
 {
-	unsigned seqNum = pPacket->header.sequenceNum;
-	assert(m_scheduleMap.count(seqNum) != 0);
-	delete m_scheduleMap[seqNum];
-	m_scheduleMap.remove(seqNum);
+	assert(m_scheduleMap.count(pPacket) != 0);
+	delete m_scheduleMap[pPacket];
+	m_scheduleMap.remove(pPacket);
 	if (m_scheduleMap.isEmpty()) child(3)->setText(1, "(empty)");
 	else child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
 }

@@ -95,6 +95,8 @@ void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pD
 {
     MeshGraphItemStation* srcItem = findItem((Station*)pSrc);
     MeshGraphItemStation* dstItem = findItem((Station*)pDst);
+    srcItem->updateStation();
+    dstItem->updateStation();
     MeshGraphItemLink* link = new MeshGraphItemLink(srcItem, dstItem, pPacket);
     m_srcToLink.insert(pSrc, link);
     m_dstToLink.insert(pDst, link);

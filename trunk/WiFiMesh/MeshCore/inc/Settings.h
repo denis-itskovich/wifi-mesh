@@ -37,17 +37,17 @@ EStatus SettingsInit(Settings* pThis);
  */
 EStatus SettingsDestroy(Settings* pThis);
 
-/** Sets routing table entry time to live
- * \param pThis [in] pointer to instance
- * \param ttl [in] new routing time to live
- */
-EStatus SettingsSetRoutingTTL(Settings* pThis, double ttl);
-
 /** Sets coverage
  * \param pThis [in] pointer to instance
  * \param coverage [in] new coverage radius
  */
 EStatus SettingsSetCoverage(Settings* pThis, double coverage);
+
+/** Retrieves coverage
+ * \param pThis [in] pointer to instance
+ * \param pCoverage [out] coverage will be stored at *pCoverage
+ */
+EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage);
 
 /** Sets data rate
  * \param pThis [in] pointer to instance
@@ -55,17 +55,83 @@ EStatus SettingsSetCoverage(Settings* pThis, double coverage);
  */
 EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate);
 
+/** Retrieves data rate
+ * \param pThis [in] pointer to instance
+ * \param pDataRate [out] data rate will be stored at *pDataRate
+ */
+EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate);
+
 /** Sets world size
  * \param pThis [in] pointer to instance
  * \param size [in] new world size
  */
 EStatus SettingsSetWorldSize(Settings* pThis, Size size);
 
+/** Retrieves world size
+ * \param pThis [in] pointer to instance
+ * \param pSize [out] size will be stored at *pSize
+ */
+EStatus SettingsGetWorldSize(const Settings* pThis, Size* pSize);
+
+/** Sets route table entry expiration timeout
+ * \param pThis [in] pointer to instance
+ * \param timeout [in] new expiration timeout
+ */
+EStatus SettingsSetRouteExpirationTimeout(Settings* pThis, double timeout);
+
+/** Retrieves route table entry expiration timeout
+ * \param pThis [in] pointer to instance
+ * \param pTimeout [out] time to live will be stored at *pTimeout
+ */
+EStatus SettingsGetRouteExpirationTimeout(const Settings* pThis, double* pTimeout);
+
 /** Sets search retry timeout
  * \param pThis [in] pointer to instance
- * \param timeout [in] new timeout
+ * \param timeout [in] new route search retry timeout
  */
-EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout);
+EStatus SettingsSetRouteRetryTimeout(Settings* pThis, double timeout);
+
+/** Retrieves search retry timeout
+ * \param pThis [in] pointer to instance
+ * \param pTimeout [out] timeout will be stored at *pTimeout
+ */
+EStatus SettingsGetRouteRetryTimeout(const Settings* pThis, double* pTimeout);
+
+/** Sets Tx retry timeout
+ * \param pThis [in] pointer to instance
+ * \param timeout [in] new packet retry timeout
+ */
+EStatus SettingsSetPacketRetryTimeout(Settings* pThis, double timeout);
+
+/** Retrieves Tx retry timeout
+ * \param pThis [in] pointer to instance
+ * \param pTimeout [out] timeout will be stored at *pTimeout
+ */
+EStatus SettingsGetPacketRetryTimeout(const Settings* pThis, double* pTimeout);
+
+/** Sets maximum retries count
+ * \param pThis [in] pointer to instance
+ * \param retries [in] new retries threshold
+ */
+EStatus SettingsSetPacketRetryThreshold(Settings* pThis, int retries);
+
+/** Retrieves maximum retries count
+ * \param pThis [in] pointer to settings instance
+ * \param pRetries [out] retries threshold will be stored at *pRetries
+ */
+EStatus SettingsGetPacketRetryThreshold(const Settings* pThis, int* pRetries);
+
+/** Sets maximum packet hops count
+ * \param pThis [in] pointer to settings instance
+ * \param hops [in] new hops count threshold
+ */
+EStatus SettingsSetPacketHopsThreshold(Settings* pThis, int hops);
+
+/** Retrieves maximum packet hops count
+ * \param pThis [in] pointer to settings instance
+ * \param pHops [out] hops count threshold will be stored at *pHops
+ */
+EStatus SettingsGetPacketHopsThreshold(const Settings* pThis, int* pHops);
 
 /** Calculates transmit time for given packet
  * \param pThis [in] pointer to instance
@@ -80,35 +146,5 @@ EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, do
  * \param pTime [out] transmit time will be stored at *pTime
  */
 EStatus SettingsGetSilenceTime(const Settings* pThis, const Packet* pPacket, double* pTime);
-
-/** Retrieves routing table entry time to live
- * \param pThis [in] pointer to instance
- * \param pTTL [out] time to live will be stored at *pTTL
- */
-EStatus SettingsGetRoutingTTL(const Settings* pThis, double* pTTL);
-
-/** Retrieves coverage
- * \param pThis [in] pointer to instance
- * \param pCoverage [out] coverage will be stored at *pCoverage
- */
-EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage);
-
-/** Retrieves data rate
- * \param pThis [in] pointer to instance
- * \param pDataRate [out] data rate will be stored at *pDataRate
- */
-EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate);
-
-/** Retrieves world size
- * \param pThis [in] pointer to instance
- * \param pSize [out] size will be stored at *pSize
- */
-EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize);
-
-/** Retrieves search retry timeout
- * \param pThis [in] pointer to instance
- * \param pTimeout [out] timeout will be stored at *pTimeout
- */
-EStatus SettingsGetRetryTimeout(Settings* pThis, double* pTimeout);
 
 #endif /* SETTINGS_H_ */

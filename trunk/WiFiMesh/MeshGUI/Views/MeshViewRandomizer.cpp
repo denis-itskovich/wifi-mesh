@@ -39,7 +39,7 @@ void MeshViewRandomizer::init()
 	m_spinAvgDataSize->setSuffix(" [Bytes]");
 
 	m_spinAvgPacketsCount = new QSpinBox;
-	m_spinAvgPacketsCount->setRange(1, 100000);
+	m_spinAvgPacketsCount->setRange(0, 100000);
 
 	m_spinDuration = new QDoubleSpinBox;
 	m_spinDuration->setRange(0.1, 3600);

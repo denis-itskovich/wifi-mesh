@@ -12,19 +12,36 @@
 #include "Macros.h"
 #include <stdlib.h>
 
-#define DEFAULT_COVERAGE		50.0
-#define	DEFAULT_DATA_RATE		1048576
-#define DEFAULT_ROUTE_TTL		20.0
-#define DEFAULT_RETRY_TIMEOUT	0.5
+#define SETTINGS_PROPERTY(...)  IMPLEMENT_PROPERTY(Settings, ## __VA_ARGS__)
+#define SETTINGS_INIT(name)     INIT_PROPERTY(Settings, name, pThis)
 
 struct _Settings
 {
-	double		coverage;
-	unsigned	dataRate;
-	double		routeTTL;
-	double		retryTimeout;
-	Size		size;
+	double     propCoverage;
+	unsigned   propDataRate;
+	double     propRouteExpirationTimeout;
+	double     propRouteRetryTimeout;
+	double     propPacketRetryTimeout;
+	int        propPacketRetryThreshold;
+	int        propPacketHopsThreshold;
+	Size       propWorldSize;
 };
+
+SETTINGS_PROPERTY(Coverage, double, 75);
+SETTINGS_PROPERTY(DataRate, unsigned long, 1048576);
+
+static const Size DEFAULT_WorldSize_VALUE = {600, 400};
+EStatus SettingsGetWorldSize(const Settings* pThis, Size* pValue) { GET_MEMBER(pValue, pThis, propWorldSize); }
+EStatus SettingsSetWorldSize(Settings* pThis, Size value) { SET_MEMBER(value, pThis, propWorldSize); }
+EStatus SettingsInitWorldSize(Settings* pThis) { return SettingsSetWorldSize(pThis, DEFAULT_WorldSize_VALUE); }
+
+
+//SETTINGS_PROPERTY(WorldSize, Size, {600, 400});
+SETTINGS_PROPERTY(RouteExpirationTimeout, double, 20.0);
+SETTINGS_PROPERTY(RouteRetryTimeout, double, 0.5);
+SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.01);
+SETTINGS_PROPERTY(PacketRetryThreshold, int, 5);
+SETTINGS_PROPERTY(PacketHopsThreshold, int, 20);
 
 EStatus SettingsNew(Settings** ppThis)
 {
@@ -40,12 +57,16 @@ EStatus SettingsInit(Settings* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
-	pThis->coverage = DEFAULT_COVERAGE;
-	pThis->dataRate = DEFAULT_DATA_RATE;
-	pThis->routeTTL = DEFAULT_ROUTE_TTL;
-	pThis->retryTimeout = DEFAULT_RETRY_TIMEOUT;
-	pThis->size.x = 400.0;
-	pThis->size.y = 400.0;
+
+	SETTINGS_INIT(Coverage);
+	SETTINGS_INIT(DataRate);
+	SETTINGS_INIT(WorldSize);
+	SETTINGS_INIT(RouteExpirationTimeout);
+	SETTINGS_INIT(RouteRetryTimeout);
+	SETTINGS_INIT(PacketRetryTimeout);
+	SETTINGS_INIT(PacketRetryThreshold);
+	SETTINGS_INIT(PacketHopsThreshold);
+
 	return eSTATUS_COMMON_OK;
 }
 
@@ -59,7 +80,7 @@ EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, do
 {
     unsigned size;
     CHECK(PacketGetSize(pPacket, &size));
-    *pTime = ((double)size) / pThis->dataRate;
+    *pTime = ((double)size) / pThis->propDataRate;
     return eSTATUS_COMMON_OK;
 }
 
@@ -74,56 +95,6 @@ EStatus SettingsGetSilenceTime(const Settings* pThis, const Packet* pPacket, dou
     CHECK(SettingsGetTransmitTime(pThis, pPacket, pTime));
     resolution = RAND_MAX;
     variance = (((double)(rand() % sizeof(pPacket->header)) * resolution) + 1) / resolution / 2.0;
-    *pTime += variance / pThis->dataRate;
+    *pTime += variance / pThis->propDataRate;
     return eSTATUS_COMMON_OK;
-}
-
-EStatus SettingsGetRoutingTTL(const Settings* pThis, double* pTTL)
-{
-	GET_MEMBER(pTTL, pThis, routeTTL);
-}
-
-EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage)
-{
-	GET_MEMBER(pCoverage, pThis, coverage);
-}
-
-EStatus SettingsGetDataRate(const Settings* pThis, unsigned long* pDataRate)
-{
-	GET_MEMBER(pDataRate, pThis, dataRate);
-}
-
-EStatus SettingsGetWorldSize(Settings* pThis, Size* pSize)
-{
-	GET_MEMBER(pSize, pThis, size);
-}
-
-EStatus SettingsGetRetryTimeout(Settings* pThis, double* pTimeout)
-{
-	GET_MEMBER(pTimeout, pThis, retryTimeout);
-}
-
-EStatus SettingsSetRoutingTTL(Settings* pThis, double ttl)
-{
-	SET_MEMBER(ttl, pThis, routeTTL);
-}
-
-EStatus SettingsSetCoverage(Settings* pThis, double coverage)
-{
-	SET_MEMBER(coverage, pThis, coverage);
-}
-
-EStatus SettingsSetDataRate(Settings* pThis, unsigned long dataRate)
-{
-	SET_MEMBER(dataRate, pThis, dataRate);
-}
-
-EStatus SettingsSetWorldSize(Settings* pThis, Size size)
-{
-	SET_MEMBER(size, pThis, size);
-}
-
-EStatus SettingsSetRetryTimeout(Settings* pThis, double timeout)
-{
-	SET_MEMBER(timeout, pThis, retryTimeout);
 }

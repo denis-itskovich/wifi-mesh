@@ -94,7 +94,6 @@ EStatus PacketClone(Packet** ppDst, const Packet* pSrc)
 
 	CHECK(PacketNew(ppDst, pSrc->header.type, pSrc->header.originalSrcId, pSrc->header.originalDstId));
 	memcpy(*ppDst, pSrc, sizeof(*pSrc));
-	(*ppDst)->serviceInfo.retriesCount = 0;
 
 	return eSTATUS_COMMON_OK;
 }

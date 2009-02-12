@@ -55,11 +55,6 @@ typedef struct _Packet
         StationId       path[MAX_PATH_LENGTH];      ///< Path - node list
     }                   routing;                    ///< Routing information
     //---------------------------------------------------------------------------
-    struct _PacketServiceInfo
-    {
-        unsigned        retriesCount;               ///< Counts how many times the packet was transmitted
-    }                   serviceInfo;                ///< Service information
-    //---------------------------------------------------------------------------
 } Packet;
 
 /** Allocates new packet
