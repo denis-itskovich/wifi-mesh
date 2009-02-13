@@ -226,7 +226,7 @@ Boolean SimulatorDispatcher(Station* pStation, Simulator* pThis)
 	if (isActive)
 	{
 		SimulatorDispatchPackets(pThis, pStation);
-		SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
+	    if (pThis->bUpdateRequired) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
 	}
 	return TRUE;
 }
@@ -273,14 +273,10 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event)
 {
-    if (event == eSTATION_UPDATED && !pThis->bUpdateRequired)
-        return eSTATUS_COMMON_OK;
-
     if (pThis->tracker.callback)
     {
         pThis->tracker.callback(pStation, event, pThis->tracker.pArg);
     }
-
     return eSTATUS_COMMON_OK;
 }
 
