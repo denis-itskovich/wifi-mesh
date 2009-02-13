@@ -3,6 +3,7 @@
 	<name>MeshSetup</name>
 	<comment></comment>
 	<projects>
+		<project>MeshGUI</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
