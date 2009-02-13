@@ -14,6 +14,7 @@
         <file alias="process.png" >Images/developer.png</file>
         <file alias="excavator.png" >Images/excavator.png</file>
         <file alias="exit.png" >Images/exit.png</file>
+        <file alias="failure.png" >Images/failure-32.png</file>
         <file alias="close.png" >Images/fileclose.png</file>
         <file alias="about.png" >Images/fileinfo-32.png</file>
         <file alias="new.png" >Images/filenew.png</file>
@@ -48,6 +49,7 @@
         <file>Images/standardbutton-open-32.png</file>
         <file>Images/standardbutton-save-32.png</file>
         <file alias="break.png" >Images/stop-32.png</file>
+        <file alias="success.png" >Images/success-32.png</file>
         <file alias="txstation.png" >Images/txsignal.png</file>
     </qresource>
 </RCC>
