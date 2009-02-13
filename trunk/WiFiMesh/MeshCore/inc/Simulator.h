@@ -50,9 +50,12 @@ typedef enum
  */
 typedef enum
 {
-    ePKT_STATUS_PENDING,
-    ePKT_STATUS_DELIVERED,
-    ePKT_STATUS_COLLISION
+    ePKT_STATUS_PENDING,        ///< Packet transmitting has been recently started
+    ePKT_STATUS_DELIVERED,      ///< Transmit was successfully finished
+    ePKT_STATUS_COLLISION,      ///< Transmit was aborted due to collision
+    ePKT_STATUS_OUT_OF_RANGE,   ///< Transmit was not started because destination was out of range
+
+    ePKT_STATUS_LAST            ///< Terminator
 } EPacketStatus;
 
 /** Station tracker

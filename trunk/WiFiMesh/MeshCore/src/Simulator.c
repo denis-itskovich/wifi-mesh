@@ -68,7 +68,7 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
  * \param pThis [in] pointer to instance
  * \param pStation [in] pointer to station
  */
-EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation);
+EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation);
 
 /** Retrieves station list entry by id
  * \param pThis [in] pointer to instance
@@ -225,7 +225,7 @@ Boolean SimulatorDispatcher(Station* pStation, Simulator* pThis)
 	StationIsActive(pStation, &isActive);
 	if (isActive)
 	{
-		SimulatorDispatchPackets(pThis, pStation);
+		SimulatorDispatchPacket(pThis, pStation);
 	    if (pThis->bUpdateRequired) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
 	}
 	return TRUE;
@@ -280,7 +280,7 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
     return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation)
+EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 {
 	Packet* pPacket = NULL;
 	Packet* pAbortedPacket;
@@ -303,6 +303,7 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation)
 	while (pEntry)
 	{
         CHECK(ListGetValue(pEntry, &pCurrent));
+        CHECK(StationGetId(pCurrent, &id));
 	    CHECK(StationIsActive(pCurrent, &isActive));
 	    if (isActive)
 	    {
@@ -329,6 +330,10 @@ EStatus SimulatorDispatchPackets(Simulator* pThis, Station* pStation)
 	            default:
 	                return ret;
 	            }
+	        }
+	        else
+	        {
+	            if (pPacket->header.transitDstId == id) SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_OUT_OF_RANGE);
 	        }
 	    }
 
