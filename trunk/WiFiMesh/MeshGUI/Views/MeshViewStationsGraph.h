@@ -43,17 +43,24 @@ public:
 	MeshGraphics(QWidget* parent = 0);
 	void addItem(QGraphicsItem* item);
 	void removeItem(QGraphicsItem* item);
+	void setMenu(QMenu* menu);
+	QPointF pos() const;
 
 signals:
 	void doubleClicked(QPointF pos);
 	void focusCleared();
 
 protected:
+    virtual void contextMenuEvent(QContextMenuEvent* event);
 	virtual void keyPressEvent(QKeyEvent* event);
     virtual void wheelEvent(QWheelEvent* event);
     virtual void mouseDoubleClickEvent(QMouseEvent* event);
     virtual void mousePressEvent(QMouseEvent* event);
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
+
+private:
+    QMenu*  m_menu;
+    QPointF m_pos;
 };
 
 class MeshViewStationsGraph : public MeshViewStations
@@ -63,9 +70,6 @@ public:
 	MeshViewStationsGraph(QWidget* parent = 0);
 
 	virtual void setDocument(MeshDocument* document);
-
-signals:
-	void addStation(Location loc);
 
 protected:
 	virtual void addStation(Station* pStation);
@@ -88,6 +92,7 @@ private:
 	MeshGraphItemStation* findItem(Station* pStation) const;
 	MeshGraphItemStation* currentItem() const;
 	void updateLinks(const LinkList& links);
+    void addStationTriggered();
 
 	MeshGraphics*	       m_graphStations;
 	QGraphicsItem*	       m_resizeGaps[4];

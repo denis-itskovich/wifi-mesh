@@ -104,7 +104,13 @@ void    MeshDocument::setAvgPacketsCount(int avgMsgCount) { m_avgMsgCount = avgM
 void    MeshDocument::setDuration(double duration) { m_duration = duration; }
 
 Station*    MeshDocument::currentStation() const { return m_pCurStation; }
-void        MeshDocument::setCurrentStation(Station* pStation) { m_pCurStation = pStation; emit currentStationChanged(pStation); }
+
+void        MeshDocument::setCurrentStation(Station* pStation)
+{
+    if (pStation == m_pCurStation) return;
+    m_pCurStation = pStation;
+    emit currentStationChanged(pStation);
+}
 
 void MeshDocument::updateStation(Station* pStation) { emit stationUpdated(pStation); }
 void MeshDocument::addStation() { Location location = {0}; addStation(location); }
@@ -127,6 +133,7 @@ void MeshDocument::addStation(Location location)
 	Velocity velocity = generateVelocity();
 	CHECK(StationNew(&pStation, velocity, location, m_pTimeLine, m_pSettings));
 	CHECK(SimulatorAddStation(m_pSimulator, pStation));
+	setCurrentStation(pStation);
 }
 
 void MeshDocument::removeStation()
@@ -134,8 +141,7 @@ void MeshDocument::removeStation()
 	if (!m_pCurStation) return;
 
 	CHECK(SimulatorRemoveStation(m_pSimulator, m_pCurStation));
-	m_pCurStation = NULL;
-	emit currentStationChanged(NULL);
+	setCurrentStation(NULL);
 }
 
 void MeshDocument::clear()
@@ -222,6 +228,7 @@ void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsi
 void MeshDocument::reset()
 {
     CHECK(SimulatorReset(m_pSimulator));
+    emit simulationReset();
 }
 
 void MeshDocument::prepare()
@@ -293,7 +300,7 @@ void MeshDocument::step()
             stop();
             break;
         }
-        emit timeChanged(QString("Time: %1").arg(time(), 0, 'f', 5));
+        emit timeChanged(QString::QString("Time: %1 [msec]").arg(time() * 1000, 0, 'f', 5));
     }
 }
 

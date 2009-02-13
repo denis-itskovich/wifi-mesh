@@ -56,6 +56,7 @@ public slots:
 	virtual void updateItem(MeshItemStation* item);
 	virtual void updateAll();
 	virtual void resetStations();
+	virtual void addStationTriggered();
 
 	virtual void addRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
 	virtual void updateRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
@@ -81,7 +82,12 @@ protected:
 	static Location stationLocation(Station* pStation);
 	static Velocity stationVelocity(Station* pStation);
 
+	QAction*   m_actAddPacket;
+	QAction*   m_actAddStation;
+	QAction*   m_actRemoveStation;
+
 private:
+    void initActions();
 	typedef QMap<Station*, MeshItemStation*>       StationToItem;
 	typedef QMap<const Station*, const Station*>   TransmitMap;
 

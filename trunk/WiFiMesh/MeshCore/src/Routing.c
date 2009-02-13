@@ -142,37 +142,45 @@ EStatus RoutingDestroy(Routing* pThis)
 	return ListDelete(&pThis->pEntries);
 }
 
+EStatus RoutingUpdateDestination(Routing* pThis, StationId dst, StationId transit, unsigned length)
+{
+    ListEntry* pListEntry;
+    RoutingEntry* pRouteEntry;
+
+    if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dst, NULL))
+    {
+        CHECK(RoutingAddRoute(pThis, dst, transit, length));
+    }
+    else
+    {
+        CHECK(ListGetValue(pListEntry, &pRouteEntry));
+        if (pRouteEntry->length >= length)
+        {
+            pRouteEntry->length = length;
+            pRouteEntry->transitId = transit;
+            CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
+            CHECK(TimeLineEvent(pThis->pTimeLine, pRouteEntry->expires, NULL));
+            RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
+        }
+    }
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 {
-	StationId dstId, transitId;
-	ListEntry* pListEntry;
-	RoutingEntry* pRouteEntry;
-	unsigned i, length;
+	unsigned i;
+	StationId transitId;
 
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 
+	transitId = pPacket->header.transitSrcId;
 	for (i = 0; i < pPacket->routing.length; ++i)
 	{
-	    length = pPacket->routing.length - i;
-	    dstId = pPacket->routing.path[i];
-	    if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dstId, NULL))
-	    {
-            transitId = pPacket->header.transitSrcId;
-            CHECK(RoutingAddRoute(pThis, dstId, transitId, length));
-	    }
-	    else
-	    {
-	        CHECK(ListGetValue(pListEntry, &pRouteEntry));
-	        if (pRouteEntry->length >= length)
-	        {
-	            pRouteEntry->length = length;
-	            pRouteEntry->transitId = pPacket->header.transitSrcId;
-	            CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
-	            CHECK(TimeLineEvent(pThis->pTimeLine, pRouteEntry->expires, NULL));
-	            RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
-	        }
-	    }
+	    CHECK(RoutingUpdateDestination(pThis, pPacket->routing.path[i], transitId, pPacket->routing.length - i));
 	}
+
+	if (pPacket->header.hopsCount > pPacket->routing.length)
+	    CHECK(RoutingUpdateDestination(pThis, pPacket->header.originalSrcId, transitId, pPacket->header.hopsCount));
 
 	return eSTATUS_COMMON_OK;
 }

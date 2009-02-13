@@ -171,10 +171,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * \param initval initial value
  */
 #define IMPLEMENT_PROPERTY(module, name, type, initval) \
-    static const type DEFAULT_ ## name ## _VALUE = initval; \
     EStatus module ## Get ## name (const module * pThis, type* pValue) { GET_MEMBER(pValue, pThis, prop ## name); } \
     EStatus module ## Set ## name (module * pThis, type value) { SET_MEMBER(value, pThis, prop ## name); } \
-    EStatus module ## Init ## name (module * pThis) { return module ## Set ## name(pThis, DEFAULT_ ## name ## _VALUE); }
+    EStatus module ## Init ## name (module * pThis) { return module ## Set ## name(pThis, initval); }
 
 /** Initializes property
  * \param module module name

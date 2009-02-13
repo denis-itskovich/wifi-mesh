@@ -62,28 +62,37 @@ EStatus SortedListDestroy(SortedList* pThis)
 	return ListDelete(&pThis->pList);
 }
 
+EStatus SortedListInsert(SortedList* pThis, ListEntry* pEntry, void* pValue, Boolean unique)
+{
+    void* pRight;
+    Comparison rel, expected;
+
+    VALIDATE_ARGUMENTS(pThis && pValue);
+
+    if (!pEntry) CHECK(SortedListGetHead(pThis, &pEntry));
+    if (!pEntry) return ListPushBack(pThis->pList, pValue);
+
+    CHECK(SortedListGetValue(pEntry, &pRight));
+    expected = pThis->comparator(pValue, pRight, pThis->pUserArg);
+
+    while (pEntry)
+    {
+        CHECK(SortedListGetValue(pEntry, &pRight));
+        rel = pThis->comparator(pValue, pRight, pThis->pUserArg);
+        if (rel != expected)
+        {
+            if (unique && (rel == EQUAL)) return eSTATUS_SORTED_LIST_ALREADY_EXISTS;
+            return (rel == LESS) ? ListInsertBefore(pThis->pList, pEntry, pValue) : ListInsertAfter(pThis->pList, pEntry, pValue);
+        }
+        CHECK(rel == GREAT ? SortedListGetNext(&pEntry) : SortedListGetPrevious(&pEntry));
+    }
+
+    return (expected == GREAT) ? ListPushBack(pThis->pList, pValue) : ListPushFront(pThis->pList, pValue);
+}
+
 EStatus SortedListAdd(SortedList* pThis, void* pValue, Boolean unique)
 {
-	ListEntry* pEntry;
-	void* pRight;
-	Comparison rel;
-
-	VALIDATE_ARGUMENTS(pThis && pValue);
-
-	CHECK(SortedListGetHead(pThis, &pEntry));
-	while (pEntry)
-	{
-		CHECK(SortedListGetValue(pEntry, &pRight));
-		rel = pThis->comparator(pValue, pRight, pThis->pUserArg);
-		if (rel != GREAT)
-		{
-		    if (unique && (rel == EQUAL)) return eSTATUS_SORTED_LIST_ALREADY_EXISTS;
-			return ListInsertBefore(pThis->pList, pEntry, pValue);
-		}
-		CHECK(SortedListGetNext(&pEntry));
-	}
-
-	return ListPushBack(pThis->pList, pValue);
+    return SortedListInsert(pThis, NULL, pValue, unique);
 }
 
 EStatus SortedListRemove(SortedList* pThis, ListEntry* pEntry)

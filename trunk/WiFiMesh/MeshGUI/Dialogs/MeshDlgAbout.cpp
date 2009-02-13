@@ -45,14 +45,14 @@ void MeshDlgAbout::init()
 	meshLogo->setPixmap(QPixmap(":/station.png"));
 
 	QPushButton* buttonOK = new QPushButton(tr("Close"));
-	QBoxLayout* vlayout = new QVBoxLayout(this);
-	QGridLayout* gridLayout = new QGridLayout();
+	QBoxLayout* vlayout = new QVBoxLayout;
+	QBoxLayout* logoLayout = new QHBoxLayout;
 
-	gridLayout->setSpacing(10);
-	gridLayout->addWidget(meshLogo, 0, 0);
-	gridLayout->addWidget(copyright, 0, 1);
+	logoLayout->setSpacing(10);
+	logoLayout->addWidget(meshLogo, 0);
+	logoLayout->addWidget(copyright, 99);
 
-	vlayout->addItem(gridLayout);
+	vlayout->addItem(logoLayout);
 	vlayout->addWidget(buttonOK);
 
 	setLayout(vlayout);

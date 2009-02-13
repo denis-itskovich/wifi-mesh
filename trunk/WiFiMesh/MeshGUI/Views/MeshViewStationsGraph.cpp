@@ -47,6 +47,12 @@ void MeshViewStationsGraph::init()
 
 	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
+	QMenu* menu = new QMenu;
+	menu->addAction(m_actAddPacket);
+	menu->addAction(m_actAddStation);
+	menu->addAction(m_actRemoveStation);
+
+	m_graphStations->setMenu(menu);
 	m_graphStations->setScene(scene);
     m_graphStations->setCacheMode(QGraphicsView::CacheBackground);
     m_graphStations->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
@@ -56,7 +62,6 @@ void MeshViewStationsGraph::init()
 
     connect(m_graphStations, SIGNAL(doubleClicked(QPointF)), this, SLOT(addStation(QPointF)));
     connect(m_graphStations, SIGNAL(focusCleared()), this, SLOT(clearCurrent()));
-//    connect(scene, SIGNAL(selectionChanged()), this, SLOT(clearCurrent()));
 }
 
 MeshGraphItemStation* MeshViewStationsGraph::findItem(Station* pStation) const
@@ -74,7 +79,7 @@ void MeshViewStationsGraph::addStation(QPointF pos)
 	Location loc;
 	loc.x = pos.x();
 	loc.y = pos.y();
-	emit addStation(loc);
+	emit MeshViewStations::addStation(loc);
 }
 
 void MeshViewStationsGraph::addStation(Station *pStation)
@@ -83,6 +88,13 @@ void MeshViewStationsGraph::addStation(Station *pStation)
 	registerStation(pStation, item);
 	m_graphStations->addItem(item);
 	MeshViewStations::addStation(pStation);
+}
+
+void MeshViewStationsGraph::addStationTriggered()
+{
+    QPointF pos = m_graphStations->pos();
+    Location loc = { pos.x(), pos.y() };
+    emit MeshViewStations::addStation(loc);
 }
 
 void MeshViewStationsGraph::removeStation(Station *pStation)
@@ -104,9 +116,7 @@ void MeshViewStationsGraph::setDocument(MeshDocument *doc)
 {
 	MeshViewStations::setDocument(doc);
 
-	connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
 	connect(doc, SIGNAL(worldSizeChanged()), this, SLOT(updateWorldSize()));
-	connect(doc, SIGNAL(simulationCleared()), this, SLOT(resetStations()));
 	updateWorldSize();
 }
 
@@ -171,6 +181,22 @@ void MeshViewStationsGraph::updateWorldSize()
 MeshGraphics::MeshGraphics(QWidget* parent) :
 	QGraphicsView(parent)
 {
+}
+
+QPointF MeshGraphics::pos() const
+{
+    return m_pos;
+}
+
+void MeshGraphics::setMenu(QMenu* menu)
+{
+    m_menu = menu;
+}
+
+void MeshGraphics::contextMenuEvent(QContextMenuEvent* event)
+{
+    m_pos = mapToScene(event->pos());
+    if (m_menu) m_menu->exec(event->globalPos());
 }
 
 void MeshGraphics::wheelEvent(QWheelEvent* event)

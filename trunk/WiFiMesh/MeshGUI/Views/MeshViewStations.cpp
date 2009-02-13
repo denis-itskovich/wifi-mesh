@@ -30,6 +30,7 @@ MeshViewStations::MeshViewStations(QWidget* parent) :
 	MeshView(parent),
 	m_currentItem(NULL)
 {
+    initActions();
 }
 
 MeshViewStations::~MeshViewStations()
@@ -71,7 +72,14 @@ void MeshViewStations::setDocument(MeshDocument* doc)
     connect(doc, SIGNAL(beginTransmit(const Station*, const Station*, const Packet*)), this, SLOT(beginTransmit(const Station*, const Station*, const Packet*)));
     connect(doc, SIGNAL(endTransmit(const Station*)), this, SLOT(endTransmit(const Station*)));
 
-    connect(doc, SIGNAL(simulationStarted()), this, SLOT(resetStations()));
+    connect(doc, SIGNAL(simulationCleared()), this, SLOT(resetStations()));
+    connect(doc, SIGNAL(simulationReset()), this, SLOT(resetStations()));
+
+    connect(this, SIGNAL(addStation()), doc, SLOT(addStation()));
+    connect(this, SIGNAL(addStation(Location)), doc, SLOT(addStation(Location)));
+
+    connect(m_actRemoveStation, SIGNAL(triggered()), doc, SLOT(removeStation()));
+    connect(m_actAddPacket, SIGNAL(triggered()), doc, SLOT(addPacket()));
 
 	MeshView::setDocument(doc);
 }
@@ -79,6 +87,11 @@ void MeshViewStations::setDocument(MeshDocument* doc)
 bool MeshViewStations::isCurrent(const MeshItemStation* item) const
 {
 	return m_currentItem == item;
+}
+
+void MeshViewStations::addStationTriggered()
+{
+    emit addStation();
 }
 
 void MeshViewStations::updateItem(MeshItemStation* item)
@@ -108,6 +121,8 @@ void MeshViewStations::setCurrent(Station* pStation)
     if (m_currentItem) m_currentItem->setCurrent(false);
     m_currentItem = findItem(pStation);
     if (m_currentItem) m_currentItem->setCurrent(true);
+    m_actRemoveStation->setEnabled(pStation != NULL);
+    m_actAddPacket->setEnabled(pStation != NULL);
 }
 
 void MeshViewStations::updateStation(Station* pStation)
@@ -192,4 +207,14 @@ void MeshViewStations::resetStations()
         while (m_transmits.count(i.key())) endTransmit(i.key());
         i.value()->reset();
     }
+}
+
+void MeshViewStations::initActions()
+{
+    m_actAddPacket = new QAction(QIcon(":/packet.png"), tr("Add &packet"), this);
+    m_actAddStation = new QAction(QIcon(":/add.png"), tr("&Add station"), this);
+    connect(m_actAddStation, SIGNAL(triggered()), this, SLOT(addStationTriggered()));
+    m_actAddPacket->setEnabled(false);
+    m_actRemoveStation = new QAction(QIcon(":/remove.png"), tr("Remove station"), this);
+    m_actRemoveStation->setEnabled(false);
 }
