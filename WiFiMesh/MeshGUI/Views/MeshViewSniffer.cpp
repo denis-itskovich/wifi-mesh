@@ -46,8 +46,18 @@ static const QRgb PKT_TYPES_COLOR[ePKT_TYPE_LAST] =
 		0x007f7f7f
 };
 
+static const char* PKT_STATUS_TEXT[ePKT_STATUS_LAST] =
+{
+     "Pending",
+     "Delivered",
+     "Collision",
+     "Out of range"
+};
+
 MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
-	MeshView(parent)
+	MeshView(parent),
+    m_iconSuccess(":/success.png"),
+    m_iconFailure(":/failure.png")
 {
 	init();
 }
@@ -148,10 +158,10 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	        << stationId(deliveredId)
 			<< QString::number(size)
 			<< QString::number(pPacket->header.hopsCount)
-            << ((status == ePKT_STATUS_DELIVERED) ? tr("delivered") : tr("collision"));
+            << PKT_STATUS_TEXT[status];
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);
-	item->setIcon(0, QIcon((status == ePKT_STATUS_DELIVERED) ? ":/packet-delivered.png" : ":/packet-broken.png"));
+	item->setIcon(0, ((status == ePKT_STATUS_DELIVERED) ? m_iconSuccess : m_iconFailure));
 	QBrush brush(PKT_TYPES_COLOR[pPacket->header.type]);
 	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
 

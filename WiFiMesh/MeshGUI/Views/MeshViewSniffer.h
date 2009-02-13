@@ -55,6 +55,8 @@ private:
 	QAction*       m_visActions[ePKT_TYPE_LAST];
 	QAction*       m_showPath;
 	QAction*       m_showCollisions;
+	QIcon          m_iconSuccess;
+	QIcon          m_iconFailure;
 };
 
 #endif /* MESHVIEWPACKETSLIST_H_ */

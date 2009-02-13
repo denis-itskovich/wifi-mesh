@@ -375,6 +375,7 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
         emit pThis->packetDispatched(pPacket, id, status);
         emit pThis->endTransmit(pDst);
         break;
+    default: break;
     }
 
 	++pThis->m_packets;
