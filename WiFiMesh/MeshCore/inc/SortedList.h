@@ -61,6 +61,14 @@ EStatus SortedListInit(SortedList* pThis, ItemComparator comparator, void* pUser
  */
 EStatus SortedListDestroy(SortedList* pThis);
 
+/** Inserts a new item, while starting search from specified point
+ * \param pThis [in] pointer to instance
+ * \param pEntry [in] list entry to start the search from
+ * \param pValue [in] pointer to new item
+ * \param unique [in] if TRUE adding non-unique item will fail with status eSTATUS_SORTED_LIST_ALREADY_EXISTS (see EStatus)
+ */
+EStatus SortedListInsert(SortedList* pThis, ListEntry* pEntry, void* pValue, Boolean unique);
+
 /** Adds a new item into the sorted list
  * \param pThis [in] pointer to instance
  * \param pValue [in] pointer to new item

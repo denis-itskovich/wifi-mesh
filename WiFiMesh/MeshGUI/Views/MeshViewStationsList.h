@@ -39,6 +39,7 @@ public:
 	virtual void setDocument(MeshDocument* document);
 
 protected:
+    virtual QPushButton* createButton(QAction* action);
 	virtual void addStation(Station* pStation);
 	virtual void setCurrent(Station* pStation);
 	virtual void removeStation(Station* pStation);

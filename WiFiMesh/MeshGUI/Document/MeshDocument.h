@@ -128,6 +128,7 @@ signals:
 	void simulationStarted();
 	void simulationCleared();
 	void simulationStopped();
+    void simulationReset();
 
 	void updatedStations();
 	void updatedTimeLine();

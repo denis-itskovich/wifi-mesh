@@ -70,16 +70,23 @@ void MeshViewSniffer::init()
 			<< tr("Status"));
 
 	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
-	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Filter"));
+	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Options"));
 
 	connect(buttonClear, SIGNAL(clicked()), m_packets, SLOT(clear()));
 
 	QMenu* menuVisibility = new QMenu;
 
+	m_showPath = new QAction(tr("Show packet path"), this);
+	m_showPath->setCheckable(true);
+	m_showCollisions = new QAction(tr("Show collided packets"), this);
+	m_showCollisions->setCheckable(true);
 	menuVisibility->addAction(initAction(ePKT_TYPE_DATA, tr("Show &data packets")));
 	menuVisibility->addAction(initAction(ePKT_TYPE_ACK, tr("Show &ack packets")));
 	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_REQUEST, tr("Show search &request packets")));
 	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_RESPONSE, tr("Show search r&esponse packets")));
+	menuVisibility->addSeparator();
+	menuVisibility->addAction(m_showPath);
+	menuVisibility->addAction(m_showCollisions);
 
 	buttonVisibility->setMenu(menuVisibility);
 
@@ -98,7 +105,7 @@ void MeshViewSniffer::init()
 
 QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 {
-	QAction* action = new QAction(title, NULL);
+	QAction* action = new QAction(title, this);
 	action->setCheckable(true);
 	action->setChecked(true);
 	m_visActions[type] = action;
@@ -108,6 +115,8 @@ QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId, EPacketStatus status)
 {
 	if (!m_visActions[pPacket->header.type]->isChecked()) return;
+    if (status == ePKT_STATUS_COLLISION && !m_showCollisions->isChecked()) return;
+
 	QTreeWidgetItem* item = createItem(pPacket, deliveredId, status);
 	m_packets->addTopLevelItem(item);
 	m_packets->setCurrentItem(item);
@@ -146,6 +155,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	QBrush brush(PKT_TYPES_COLOR[pPacket->header.type]);
 	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
 
+	if (!m_showPath->isChecked()) return item;
 	if (status == ePKT_STATUS_COLLISION) return item;
 	if (pPacket->routing.length <= 1) return item;
 

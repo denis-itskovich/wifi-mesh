@@ -51,8 +51,10 @@ private:
 	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId, EPacketStatus status);
 	QAction* initAction(EPacketType type, const QString& title);
 
-	QTreeWidget*	m_packets;
-	QAction*		m_visActions[ePKT_TYPE_LAST];
+	QTreeWidget*   m_packets;
+	QAction*       m_visActions[ePKT_TYPE_LAST];
+	QAction*       m_showPath;
+	QAction*       m_showCollisions;
 };
 
 #endif /* MESHVIEWPACKETSLIST_H_ */

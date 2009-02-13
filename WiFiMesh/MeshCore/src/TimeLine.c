@@ -91,7 +91,7 @@ EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 	pEvent->time = time;
 	pEvent->pPacket = pPacket;
 
-	ret = SortedListAdd(pThis->pEvents, pEvent, TRUE);
+	ret = SortedListInsert(pThis->pEvents, pThis->pCurrent, pEvent, TRUE);
 	if (ret == eSTATUS_SORTED_LIST_ALREADY_EXISTS) return eSTATUS_COMMON_OK;
 	return ret;
 }
@@ -130,6 +130,7 @@ EStatus TimeLineClear(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
+	pThis->pCurrent = NULL;
 	pThis->time = 0;
 	CHECK(TimeLineEvent(pThis, 0.0, NULL));
     CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
