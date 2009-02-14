@@ -40,6 +40,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 typedef struct _Station Station; 	///< Station forward declaration
 
+typedef enum
+{
+    ePKT_EVENT_ADDED,
+    ePKT_EVENT_UPDATE,
+    ePKT_EVENT_REMOVED_DELIVERED,
+    ePKT_EVENT_REMOVED_BROADCAST,
+    ePKT_EVENT_REMOVED_TIMEOUT,
+    ePKT_EVENT_REMOVED_OUTDATED,
+    ePKT_EVENT_REMOVED_CLEAN
+} EOutboxEvent;
+
 /** Packet scheduler add/remove handler.
  * Is called each time a packet is scheduled/removed
  * @param pStation [in] pointer to station
@@ -70,6 +81,14 @@ typedef void (*StationRoutingHandler)(const Station* pStation,
 									  int length,
 									  ERouteEntryUpdate updateAction,
 									  void *pUserArg);
+
+typedef void (*StationOutboxHandler)(const Station* pStation,
+                                     const Packet* pPacket,
+                                     EOutboxEvent event,
+                                     int retriesCount,
+                                     double nextRetryTime,
+                                     void* pUserArg);
+
 
 /** Allocates and initializes new instance.
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -203,5 +222,14 @@ EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler 
  * @param pUserArg [in] user defined argument
  */
 EStatus StationRegisterRoutingHandler(Station* pThis, StationRoutingHandler handler, void* pUserArg);
+
+/** Registers outbox handler
+ * @param pThis [in] pointer to instance
+ * @param handler [in] outbox handler callback
+ * @param pUserArg [in] user-defined argument
+ */
+EStatus StationRegisterOutboxHandler(Station* pThis, StationOutboxHandler handler, void* pUserArg);
+
+EStatus StationDump(const Station* pThis);
 
 #endif //_WIFI_MESH_STATION_H

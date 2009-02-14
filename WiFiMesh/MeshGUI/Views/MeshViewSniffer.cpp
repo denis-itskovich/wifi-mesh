@@ -84,21 +84,27 @@ void MeshViewSniffer::init()
 
 	connect(buttonClear, SIGNAL(clicked()), m_packets, SLOT(clear()));
 
-	QMenu* menuVisibility = new QMenu;
+	m_menu = new QMenu;
 
-	m_showPath = new QAction(tr("Show packet path"), this);
-	m_showPath->setCheckable(true);
-	m_showCollisions = new QAction(tr("Show collided packets"), this);
-	m_showCollisions->setCheckable(true);
-	menuVisibility->addAction(initAction(ePKT_TYPE_DATA, tr("Show &data packets")));
-	menuVisibility->addAction(initAction(ePKT_TYPE_ACK, tr("Show &ack packets")));
-	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_REQUEST, tr("Show search &request packets")));
-	menuVisibility->addAction(initAction(ePKT_TYPE_SEARCH_RESPONSE, tr("Show search r&esponse packets")));
-	menuVisibility->addSeparator();
-	menuVisibility->addAction(m_showPath);
-	menuVisibility->addAction(m_showCollisions);
+	m_actShowPath = new QAction(tr("Show packet path"), this);
+	m_actShowPath->setCheckable(true);
+	m_actShowCollisions = new QAction(tr("Show collided packets"), this);
+	m_actShowCollisions->setCheckable(true);
 
-	buttonVisibility->setMenu(menuVisibility);
+	m_actAutoScroll = new QAction(tr("&Auto scroll"), this);
+	m_actAutoScroll->setCheckable(true);
+	m_actAutoScroll->setChecked(true);
+
+	m_menu->addAction(initAction(ePKT_TYPE_DATA, tr("Show &data packets")));
+	m_menu->addAction(initAction(ePKT_TYPE_ACK, tr("Show &ack packets")));
+	m_menu->addAction(initAction(ePKT_TYPE_SEARCH_REQUEST, tr("Show search &request packets")));
+	m_menu->addAction(initAction(ePKT_TYPE_SEARCH_RESPONSE, tr("Show search r&esponse packets")));
+	m_menu->addSeparator();
+	m_menu->addAction(m_actShowPath);
+	m_menu->addAction(m_actShowCollisions);
+	m_menu->addAction(m_actAutoScroll);
+
+	buttonVisibility->setMenu(m_menu);
 
 	QVBoxLayout* layout = new QVBoxLayout;
 	QHBoxLayout* buttonsLayout = new QHBoxLayout;
@@ -118,18 +124,18 @@ QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 	QAction* action = new QAction(title, this);
 	action->setCheckable(true);
 	action->setChecked(true);
-	m_visActions[type] = action;
+	m_actVisibility[type] = action;
 	return action;
 }
 
 void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId, EPacketStatus status)
 {
-	if (!m_visActions[pPacket->header.type]->isChecked()) return;
-    if (status == ePKT_STATUS_COLLISION && !m_showCollisions->isChecked()) return;
+	if (!m_actVisibility[pPacket->header.type]->isChecked()) return;
+    if (status == ePKT_STATUS_COLLISION && !m_actShowCollisions->isChecked()) return;
 
 	QTreeWidgetItem* item = createItem(pPacket, deliveredId, status);
 	m_packets->addTopLevelItem(item);
-	m_packets->setCurrentItem(item);
+	if (m_actAutoScroll->isChecked()) m_packets->scrollToItem(item);
 }
 
 void MeshViewSniffer::clear()
@@ -165,7 +171,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	QBrush brush(PKT_TYPES_COLOR[pPacket->header.type]);
 	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
 
-	if (!m_showPath->isChecked()) return item;
+	if (!m_actShowPath->isChecked()) return item;
 	if (status == ePKT_STATUS_COLLISION) return item;
 	if (pPacket->routing.length <= 1) return item;
 
@@ -186,4 +192,9 @@ void MeshViewSniffer::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(clear()));
 
 	MeshView::setDocument(doc);
+}
+
+void MeshViewSniffer::contextMenuEvent(QContextMenuEvent* event)
+{
+    m_menu->exec(event->globalPos());
 }

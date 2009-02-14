@@ -212,9 +212,9 @@ void MeshViewStations::resetStations()
 void MeshViewStations::initActions()
 {
     m_actAddPacket = new QAction(QIcon(":/packet.png"), tr("Add &packet"), this);
-    m_actAddStation = new QAction(QIcon(":/add.png"), tr("&Add station"), this);
+    m_actAddStation = new QAction(QIcon(":/add.png"), tr("&Add"), this);
     connect(m_actAddStation, SIGNAL(triggered()), this, SLOT(addStationTriggered()));
     m_actAddPacket->setEnabled(false);
-    m_actRemoveStation = new QAction(QIcon(":/remove.png"), tr("Remove station"), this);
+    m_actRemoveStation = new QAction(QIcon(":/remove.png"), tr("&Remove"), this);
     m_actRemoveStation->setEnabled(false);
 }

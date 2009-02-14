@@ -227,8 +227,8 @@ void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsi
 
 void MeshDocument::reset()
 {
-    CHECK(SimulatorReset(m_pSimulator));
     emit simulationReset();
+    CHECK(SimulatorReset(m_pSimulator));
 }
 
 void MeshDocument::prepare()

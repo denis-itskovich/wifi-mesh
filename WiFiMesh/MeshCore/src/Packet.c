@@ -20,6 +20,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Packet.h"
 #include "Macros.h"
 
+#ifndef __NO_LOG
+    static const char* PKT_TYPES[ePKT_TYPE_LAST] =
+    {
+         "Search Request",
+         "Search Response",
+         "Data",
+         "Ack"
+    };
+#endif // !__NO_LOG
+
 #define CONSTRUCT_PACKET(pptr, _msgtype, ...) SAFE_OPERATION \
 	( \
 		VALIDATE_ARGUMENTS(pptr); \
@@ -124,5 +134,16 @@ EStatus PacketGetSize(const Packet* pThis, unsigned* pSize)
     size += pThis->payload.size;
     size += pThis->routing.length * pThis->routing.path[0];
     *pSize = size;
+    return eSTATUS_COMMON_OK;
+}
+
+EStatus PacketDump(const Packet* pThis)
+{
+    DUMP_PRINT("Packet: [type: %s, from: %d, to: %d, src: %d, dst: %d]",
+               pThis->header.type < ePKT_TYPE_LAST ? PKT_TYPES[pThis->header.type] : "Invalid",
+               pThis->header.originalSrcId,
+               pThis->header.originalDstId,
+               pThis->header.transitSrcId,
+               pThis->header.transitDstId);
     return eSTATUS_COMMON_OK;
 }

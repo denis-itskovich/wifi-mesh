@@ -33,10 +33,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 typedef struct _SchedulerEntry
 {
-	double		time;
-	Packet*	pPacket;
-	Boolean		bWasIssued;
-	Boolean		bWasDelivered;
+    double      time;
+    Packet*     pPacket;
+    Boolean		bWasIssued;
+    Boolean		bWasDelivered;
 } SchedulerEntry;
 
 struct _Scheduler
@@ -171,4 +171,16 @@ EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, voi
 	pThis->handler.callback = handler;
 	pThis->handler.pArg = pUserArg;
 	return eSTATUS_COMMON_OK;
+}
+
+Boolean SchedulerDumpEntry(const SchedulerEntry* pEntry, void* pArg)
+{
+    DUMP_PRINT("SchedulerEntry: [time=%f]", pEntry->time);
+    return TRUE;
+}
+
+EStatus SchedulerDump(const Scheduler* pThis)
+{
+    CHECK(SortedListEnumerate(pThis->pEntries, (ItemEnumerator)&SchedulerDumpEntry, NULL));
+    return eSTATUS_COMMON_OK;
 }

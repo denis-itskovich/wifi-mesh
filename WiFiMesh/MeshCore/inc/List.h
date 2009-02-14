@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @see Queue.h, SortedList.h
  *
  * @author Denis Itskovich
- *   @date 1/12/2008
+ * @date 1/12/2008
  */
 
 #ifndef _WIFI_MESH_LIST_H
@@ -99,7 +99,12 @@ EStatus ListDestroy(List* pThis);
  */
 EStatus ListGetCount(List* pThis, unsigned* pCount);
 
-
+/** Checks whether a list is empty
+ * @param pThis [in] pointer to instance
+ * @param pIsEmpty [out] TRUE will be stored at *pIsEmpty if the list is empty,
+ * otherwise will be stored FALSE
+ */
+EStatus ListIsEmpty(List* pThis, Boolean* pIsEmpty);
 
 /** Inserts new item after the tail
  * @param pThis [in] pointer to instance
@@ -113,14 +118,14 @@ EStatus ListPushBack(List* pThis, void* pValue);
  */
 EStatus ListPushFront(List* pThis, void* pValue);
 
-/** Inserts new item \a after specified position
+/** Inserts new item after specified position
  * @param pThis [in] pointer to instance
  * @param pEntry [in] points to position in the list
  * @param pValue [in] pointer to abstract value
  */
 EStatus ListInsertAfter(List* pThis, ListEntry* pEntry, void* pValue);
 
-/** Inserts new item \a before specified position
+/** Inserts new item before specified position
  * @param pThis [in] pointer to instance
  * @param pEntry [in] points to position in the list
  * @param pValue [in] pointer to abstract value

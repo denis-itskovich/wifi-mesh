@@ -47,16 +47,19 @@ protected slots:
 
 private:
 	void init();
+	void contextMenuEvent(QContextMenuEvent* event);
 	static QString stationId(StationId id);
 	QTreeWidgetItem* createItem(const Packet* pPacket, StationId deliveredId, EPacketStatus status);
 	QAction* initAction(EPacketType type, const QString& title);
 
 	QTreeWidget*   m_packets;
-	QAction*       m_visActions[ePKT_TYPE_LAST];
-	QAction*       m_showPath;
-	QAction*       m_showCollisions;
+	QAction*       m_actVisibility[ePKT_TYPE_LAST];
+	QAction*       m_actShowPath;
+	QAction*       m_actShowCollisions;
+	QAction*       m_actAutoScroll;
 	QIcon          m_iconSuccess;
 	QIcon          m_iconFailure;
+	QMenu*         m_menu;
 };
 
 #endif /* MESHVIEWPACKETSLIST_H_ */

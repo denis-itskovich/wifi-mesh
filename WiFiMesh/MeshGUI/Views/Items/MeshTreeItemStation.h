@@ -53,8 +53,8 @@ protected:
 	virtual void updateStation();
 
 private:
-	void initLocationNode(QTreeWidgetItem* item);
-	void initVelocityNode(QTreeWidgetItem* item);
+	void initLocationItem();
+	void initVelocityItem();
 	void updateIcon();
 
 	void init();
@@ -62,10 +62,17 @@ private:
 	QTreeWidgetItem* createRouteItem(StationId dst, StationId transit, double expires, int length);
 	QTreeWidgetItem* createScheduleItem(double time, const Packet* pPacket);
 
-	RouteMap	  m_routeMap;
-	ScheduleMap	  m_scheduleMap;
-	bool		  m_isActive;
-	bool          m_isTransmitting;
+	RouteMap           m_routeMap;
+	ScheduleMap        m_scheduleMap;
+	bool               m_isActive;
+	bool               m_isTransmitting;
+	QTreeWidgetItem*   m_itemLocation;
+	QTreeWidgetItem*   m_itemVelocity;
+	QTreeWidgetItem*   m_itemRouting;
+	QTreeWidgetItem*   m_itemSchedule;
+	QIcon              m_iconTransmitting;
+	QIcon              m_iconActive;
+	QIcon              m_iconInactive;
 };
 
 #endif /* MESHTREEITEMSTATION_H_ */
