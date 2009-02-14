@@ -169,4 +169,9 @@ EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle);
  */
 EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle);
 
+/** Dumps an instance
+ * @param pThis [in] pointer to instance
+ */
+EStatus SimulatorDump(const Simulator* pThis);
+
 #endif /* WIFI_MESH_SIMULATOR_H_ */

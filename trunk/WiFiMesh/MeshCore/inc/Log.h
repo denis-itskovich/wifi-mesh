@@ -48,11 +48,13 @@ typedef enum
 	eSEVERITY_LAST		///< terminator
 } ELogSeverity;
 
-#if 0
+#ifndef __NO_LOG
 	#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+    #define DUMP_INSTANCE(module, ptr)      module ## Dump(ptr)
 #else
 	#define LOG_PRINT(severity, fmt, ...) {}
-#endif
+    #define DUMP_INSTANCE(module, ptr) {}
+#endif // __NO_LOG
 
 #define ERROR_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_ERROR, fmt, ##__VA_ARGS__)
 #define WARNING_PRINT(fmt, ...) 		LOG_PRINT(eSEVERITY_WARNING, fmt, ##__VA_ARGS__)
@@ -62,6 +64,7 @@ typedef enum
 
 #define BEGIN_FUNCTION					TRACE_PRINT(">> %s", __FUNCTION__)
 #define END_FUNCTION					TRACE_PRINT("<< %s", __FUNCTION__)
+
 
 /** Log output callback
  * @param severity [in] log entry severity

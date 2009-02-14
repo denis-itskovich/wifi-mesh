@@ -32,11 +32,24 @@ public:
     ~MeshLog();
 
 private:
+    void init();
+    QString moduleName(const QString& filename) const;
 	bool filter(ELogSeverity severity, const char* file, const char* function, int line);
 	void output(ELogSeverity severity, const char* function, const char* msg);
+    void contextMenuEvent(QContextMenuEvent* event);
 
 	static Boolean LogFilter(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg);
 	static void LogOutput(ELogSeverity severity, const char* function, const char* msg, void* pUserArg);
+
+	typedef QMap<QString, QAction*>    ModuleFilters;
+
+	QAction*       m_severityFilters[eSEVERITY_LAST];
+	ModuleFilters  m_moduleFilters;
+	QAction*       m_actClear;
+	QAction*       m_actAutoScroll;
+	QMenu*         m_menu;
+	QMenu*         m_menuModules;
+	QMenu*         m_menuSeverities;
 };
 
 #endif // MESHLOG_H

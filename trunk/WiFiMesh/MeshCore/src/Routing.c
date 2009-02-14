@@ -277,3 +277,19 @@ EStatus RoutingRegisterHandler(Routing* pThis, RoutingHandler handler, void* pUs
 
 	return eSTATUS_COMMON_OK;
 }
+
+Boolean RoutingDumpEntry(const RoutingEntry* pEntry, void* pArg)
+{
+    DUMP_PRINT("RoutingEntry: [dst=%d, transit=%d, length=%d, expires=%f]",
+               pEntry->dstId,
+               pEntry->transitId,
+               pEntry->length,
+               pEntry->expires);
+    return TRUE;
+}
+
+EStatus RoutingDump(const Routing* pThis)
+{
+    CHECK(ListEnumerate(pThis->pEntries, (ItemEnumerator)&RoutingDumpEntry, NULL));
+    return eSTATUS_COMMON_OK;
+}

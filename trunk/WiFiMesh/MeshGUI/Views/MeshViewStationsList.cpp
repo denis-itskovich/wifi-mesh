@@ -90,9 +90,9 @@ MeshTreeItemStation* MeshViewStationsList::currentItem() const
 void MeshViewStationsList::setDocument(MeshDocument* doc)
 {
 	MeshViewStations::setDocument(doc);
-	connect(m_buttonAdd, SIGNAL(clicked()), doc, SLOT(addStation()));
-	connect(m_buttonRemove, SIGNAL(clicked()), doc, SLOT(removeStation()));
-	connect(m_buttonPacket, SIGNAL(clicked()), doc, SLOT(addPacket()));
+//	connect(m_buttonAdd, SIGNAL(clicked()), doc, SLOT(addStation()));
+//	connect(m_buttonRemove, SIGNAL(clicked()), doc, SLOT(removeStation()));
+//	connect(m_buttonPacket, SIGNAL(clicked()), doc, SLOT(addPacket()));
 }
 
 void MeshViewStationsList::setCurrent(Station* pStation)
@@ -122,6 +122,6 @@ MeshTreeItemStation* MeshViewStationsList::findItem(Station* pStation)
 QPushButton* MeshViewStationsList::createButton(QAction* action)
 {
     QPushButton* button = new QPushButton(action->icon(), action->text(), this);
-    connect(button, SIGNAL(clicked()), action, SLOT(trigger));
+    connect(button, SIGNAL(clicked()), action, SLOT(trigger()));
     return button;
 }

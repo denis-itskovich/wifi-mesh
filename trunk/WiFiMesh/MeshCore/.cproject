@@ -13,7 +13,6 @@
 </externalSettings>
 <extensions>
 <extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
-<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 </extensions>
@@ -21,9 +20,9 @@
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
 <configuration artifactExtension="a" artifactName="MeshCore" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1324972800" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug">
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1324972800." name="/" resourcePath="">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.1806111456" name="Cygwin GCC" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.1806111456" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug.1535208268" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug"/>
-<builder buildPath="${workspace_loc:/MeshCore/Debug}" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug.1348483711" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Debug}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.2077051298" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.665004585" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug">
 <option id="gnu.both.asm.option.include.paths.116274044" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.795104976" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
@@ -466,11 +465,7 @@
 </scannerConfigBuildInfo>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings">
-<doc-comment-owner id="org.eclipse.cdt.ui.doxygen">
-<path value=""/>
-</doc-comment-owner>
-</storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.gnu.cygwin.lib.release.173914822">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cygwin.lib.release.173914822" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -482,7 +477,6 @@
 </externalSettings>
 <extensions>
 <extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
-<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 </extensions>
@@ -490,11 +484,11 @@
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
 <configuration artifactExtension="a" artifactName="MeshCore" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cygwin.lib.release.173914822" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.lib.release">
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.release.173914822." name="/" resourcePath="">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.1554676756" name="Cygwin GCC" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.1554676756" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.lib.release" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.lib.release.2043757004" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.release"/>
-<builder buildPath="${workspace_loc:/MeshCore/Release}" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.release.654448994" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.release"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Release}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.945788636" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.1949739894" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release">
-<option id="gnu.both.asm.option.include.paths.1514546495" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+<option id="gnu.both.asm.option.include.paths.1514546495" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1433201037" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release.1257171170" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release"/>
@@ -507,6 +501,9 @@
 <option id="gnu.c.compiler.cygwin.lib.release.option.debugging.level.42910526" name="Debug Level" superClass="gnu.c.compiler.cygwin.lib.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.include.paths.431675012" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="../inc"/>
+</option>
+<option id="gnu.c.compiler.option.preprocessor.def.symbols.1968785544" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="__NO_LOG"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.1311758869" superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin"/>
 </tool>
@@ -932,11 +929,7 @@
 </scannerConfigBuildInfo>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings">
-<doc-comment-owner id="org.eclipse.cdt.ui.doxygen">
-<path value=""/>
-</doc-comment-owner>
-</storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">

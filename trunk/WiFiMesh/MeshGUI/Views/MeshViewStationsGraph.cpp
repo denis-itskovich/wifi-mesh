@@ -145,6 +145,8 @@ void MeshViewStationsGraph::endTransmit(const Station* pDst)
     m_srcToLink.remove(pSrc, link);
     m_dstToLink.remove(pDst, link);
     delete link;
+    findItem((Station*)pSrc)->updateStation();
+    findItem((Station*)pDst)->updateStation();
 }
 
 void MeshViewStationsGraph::updateLinks(const LinkList& links)
@@ -181,6 +183,11 @@ void MeshViewStationsGraph::updateWorldSize()
 MeshGraphics::MeshGraphics(QWidget* parent) :
 	QGraphicsView(parent)
 {
+}
+
+MeshGraphics::~MeshGraphics()
+{
+    delete m_menu;
 }
 
 QPointF MeshGraphics::pos() const

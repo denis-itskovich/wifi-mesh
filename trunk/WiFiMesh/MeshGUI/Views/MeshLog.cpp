@@ -28,6 +28,15 @@ static const char* TXT_SEVERITIES[eSEVERITY_LAST] =
 		"DUMP "
 };
 
+static const char* NAME_SEVERITIES[eSEVERITY_LAST] =
+{
+        "errors",
+        "warnings",
+        "info",
+        "trace",
+        "dump"
+};
+
 static const QRgb COLOR_SEVERITIES[eSEVERITY_LAST] =
 {
 		0x00ff7f7f,
@@ -42,13 +51,53 @@ MeshLog::MeshLog(QWidget *parent)
 {
 	LogSetLogger(&MeshLog::LogOutput, this);
 	LogSetFilter(&MeshLog::LogFilter, this);
-	this->setFont(QFont("Courier"));
+	init();
 }
 
 MeshLog::~MeshLog()
 {
 	LogSetLogger(0, 0);
 	LogSetFilter(0, 0);
+	delete m_menu;
+}
+
+void MeshLog::init()
+{
+    this->setFont(QFont("Courier"));
+    m_actClear = new QAction(QIcon(":/clear.png"), tr("&Clear"), this);
+    connect(m_actClear, SIGNAL(triggered()), this, SLOT(clear()));
+
+    m_actAutoScroll = new QAction(tr("&Auto scroll"), this);
+    m_actAutoScroll->setCheckable(true);
+    m_actAutoScroll->setChecked(true);
+
+    m_menu = new QMenu;
+    m_menuSeverities = new QMenu(tr("Severity filter"));
+    m_menuModules = new QMenu(tr("Module filter"));
+
+    m_menu->addAction(m_actClear);
+    m_menu->addAction(m_actAutoScroll);
+
+    for (int i = 0; i < eSEVERITY_LAST; ++i)
+    {
+        QAction* action = new QAction(tr("Show %1").arg(NAME_SEVERITIES[i]), this);
+        action->setCheckable(true);
+        action->setChecked(false);
+        m_severityFilters[i] = action;
+        m_menuSeverities->addAction(action);
+    }
+
+    m_menu->addMenu(m_menuSeverities);
+}
+
+QString MeshLog::moduleName(const QString& filename) const
+{
+    QString module = filename;
+    module.replace('\\', '/');
+    int end = module.lastIndexOf('.');
+    int begin = module.lastIndexOf('/') + 1;
+
+    return module.mid(begin, end - begin);
 }
 
 Boolean MeshLog::LogFilter(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg)
@@ -63,14 +112,32 @@ void MeshLog::LogOutput(ELogSeverity severity, const char* function, const char*
 
 bool MeshLog::filter(ELogSeverity severity, const char* file, const char* function, int line)
 {
-	return true;
+	if (!m_severityFilters[severity]->isChecked()) return false;
+	QString module = moduleName(file);
+	if (!m_moduleFilters.count(module))
+	{
+	    QAction* action = new QAction(tr("Show %1 module").arg(module), this);
+	    action->setCheckable(true);
+	    action->setChecked(true);
+	    m_menuModules->addAction(action);
+        if (m_moduleFilters.isEmpty()) m_menu->addMenu(m_menuModules);
+	    m_moduleFilters[module] = action;
+	    return true;
+	}
+	return m_moduleFilters[module]->isChecked();
 }
 
 void MeshLog::output(ELogSeverity severity, const char* function, const char* msg)
 {
 	QString str(msg);
 	str = tr("[%1] [%2] : %3").arg(TXT_SEVERITIES[severity]).arg(function).arg(str);
-	QListWidgetItem* pItem = new QListWidgetItem(str);
-	pItem->setBackgroundColor(COLOR_SEVERITIES[severity]);
-	addItem(pItem);
+	QListWidgetItem* item = new QListWidgetItem(str);
+	item->setBackgroundColor(COLOR_SEVERITIES[severity]);
+	addItem(item);
+	if (m_actAutoScroll->isChecked()) scrollToItem(item);
+}
+
+void MeshLog::contextMenuEvent(QContextMenuEvent* event)
+{
+    m_menu->exec(event->globalPos());
 }

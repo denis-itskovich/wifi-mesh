@@ -134,4 +134,9 @@ EStatus RoutingClear(Routing* pThis);
  */
 EStatus RoutingRegisterHandler(Routing* pThis, RoutingHandler handler, void* pUserArg);
 
+/** Dumps an instance
+ * @param pThis [in] pointer to instance
+ */
+EStatus RoutingDump(const Routing* pThis);
+
 #endif /* ROUTING_H_ */

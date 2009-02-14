@@ -59,7 +59,7 @@ public:
 	int    avgPacketsCount() const;
 
 	int    speed() const;
-	int    maximumSpeed() const { return 200; }
+	int    maximumSpeed() const { return 400; }
 
 
 public slots:

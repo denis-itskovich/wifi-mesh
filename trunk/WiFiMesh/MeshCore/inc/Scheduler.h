@@ -109,4 +109,9 @@ EStatus SchedulerReset(Scheduler* pThis);
  */
 EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, void* pUserArg);
 
+/** Dumps an instance
+ * @param pThis [in] pointer to instance
+ */
+EStatus SchedulerDump(const Scheduler* pThis);
+
 #endif /* SCHEDULER_H_ */

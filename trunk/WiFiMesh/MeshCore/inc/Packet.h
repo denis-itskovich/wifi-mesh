@@ -178,4 +178,9 @@ EStatus PacketClone(Packet** ppDst, const Packet* pSrc);
  */
 EStatus PacketGetSize(const Packet* pThis, unsigned* pSize);
 
+/** Dumps a packet
+ * @param pThis [in] pointer to packet
+ */
+EStatus PacketDump(const Packet* pThis);
+
 #endif // _WIFI_MESH_PACKET_H

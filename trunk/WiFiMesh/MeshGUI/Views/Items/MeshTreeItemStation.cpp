@@ -31,7 +31,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 MeshTreeItemStation::MeshTreeItemStation(MeshViewStations* pContainer, Station* pStation) :
 	MeshItemStation(pContainer, pStation),
-	QTreeWidgetItem(QStringList() << name())
+	QTreeWidgetItem(QStringList() << name()),
+	m_iconTransmitting(":/txstation.png"),
+	m_iconActive(":/station.png"),
+	m_iconInactive(":/disabledstation.png")
 {
 	init();
 }
@@ -43,25 +46,26 @@ void MeshTreeItemStation::init()
 	updateIcon();
 
 	QIcon folderIcon(QIcon(":/folder.png"));
-	QTreeWidgetItem* locItem = new QTreeWidgetItem(QStringList() << "Location");
-	locItem->addChild(new QTreeWidgetItem(QStringList() << "x"));
-	locItem->addChild(new QTreeWidgetItem(QStringList() << "y"));
-	locItem->setIcon(0, folderIcon);
+	m_itemLocation = new QTreeWidgetItem(QStringList() << "Location");
+	m_itemLocation->addChild(new QTreeWidgetItem(QStringList() << "x"));
+	m_itemLocation->addChild(new QTreeWidgetItem(QStringList() << "y"));
+	m_itemLocation->setIcon(0, folderIcon);
 
-	QTreeWidgetItem* velItem = new QTreeWidgetItem(QStringList() << "Velocity");
-	velItem->addChild(new QTreeWidgetItem(QStringList() << "x"));
-	velItem->addChild(new QTreeWidgetItem(QStringList() << "y"));
-	velItem->setIcon(0, folderIcon);
+	m_itemVelocity = new QTreeWidgetItem(QStringList() << "Velocity");
+	m_itemVelocity->addChild(new QTreeWidgetItem(QStringList() << "x"));
+	m_itemVelocity->addChild(new QTreeWidgetItem(QStringList() << "y"));
+	m_itemVelocity->setIcon(0, folderIcon);
 
-	QTreeWidgetItem* routeItem = new QTreeWidgetItem(QStringList() << "Routing" << "(empty)");
-	routeItem->setIcon(0, folderIcon);
-	QTreeWidgetItem* scheduleItem = new QTreeWidgetItem(QStringList() << "Schedule" << "(empty)");
-	scheduleItem->setIcon(0, folderIcon);
+	m_itemRouting = new QTreeWidgetItem(QStringList() << "Routing" << "(empty)");
+	m_itemRouting->setIcon(0, folderIcon);
 
-	addChild(locItem);
-	addChild(velItem);
-	addChild(routeItem);
-	addChild(scheduleItem);
+	m_itemSchedule = new QTreeWidgetItem(QStringList() << "Schedule" << "(empty)");
+	m_itemSchedule->setIcon(0, folderIcon);
+
+	addChild(m_itemLocation);
+	addChild(m_itemVelocity);
+	addChild(m_itemRouting);
+	addChild(m_itemSchedule);
 
 	updateStation();
 }
@@ -78,23 +82,9 @@ void MeshTreeItemStation::updateIcon()
     QColor color;
 
 	if (m_isActive)
-    {
-	    if (m_isTransmitting)
-        {
-	        icon = QIcon(":/txstation.png");
-	        color = Qt::red;
-        }
-	    else
-        {
-	        icon = QIcon(":/station.png");
-	        color = Qt::black;
-        }
-    }
-	else
-    {
-	    icon = QIcon(":/disabledstation.png");
-	    color = Qt::gray;
-    }
+	    if (m_isTransmitting) { icon = m_iconTransmitting; color = Qt::red; }
+	    else { icon = m_iconActive; color = Qt::black; }
+	else { icon = m_iconInactive; color = Qt::gray; }
 
 	setIcon(0, icon);
 	this->setForeground(0, QBrush(color));
@@ -102,28 +92,28 @@ void MeshTreeItemStation::updateIcon()
 
 void MeshTreeItemStation::updateStation()
 {
-	initLocationNode(child(0));
-    initVelocityNode(child(1));
+	initLocationItem();
+    initVelocityItem();
 
     updateIcon();
 
 	MeshItemStation::updateStation();
 }
 
-void MeshTreeItemStation::initLocationNode(QTreeWidgetItem* item)
+void MeshTreeItemStation::initLocationItem()
 {
 	QPointF loc = location();
-	item->setText(1, locationString());
-	item->child(0)->setText(1, QString("%1").arg(loc.x(), 0, 'f', 2));
-	item->child(1)->setText(1, QString("%1").arg(loc.y(), 0, 'f', 2));
+	m_itemLocation->setText(1, locationString());
+	m_itemLocation->child(0)->setText(1, QString("%1").arg(loc.x(), 0, 'f', 2));
+	m_itemLocation->child(1)->setText(1, QString("%1").arg(loc.y(), 0, 'f', 2));
 }
 
-void MeshTreeItemStation::initVelocityNode(QTreeWidgetItem* item)
+void MeshTreeItemStation::initVelocityItem()
 {
 	QPointF vel = velocity();
-	item->setText(1, velocityString());
-	item->child(0)->setText(1, QString("%1").arg(vel.x(), 0, 'f', 2));
-	item->child(1)->setText(1, QString("%1").arg(vel.y(), 0, 'f', 2));
+	m_itemVelocity->setText(1, velocityString());
+	m_itemVelocity->child(0)->setText(1, QString("%1").arg(vel.x(), 0, 'f', 2));
+	m_itemVelocity->child(1)->setText(1, QString("%1").arg(vel.y(), 0, 'f', 2));
 }
 
 QTreeWidgetItem* MeshTreeItemStation::createRouteItem(StationId dst, StationId transit, double expires, int length)
@@ -176,11 +166,11 @@ void MeshTreeItemStation::updateRouteEntry(StationId dst, StationId trans, doubl
 {
 	assert(m_routeMap.count(dst) != 0);
 	QTreeWidgetItem* item = m_routeMap[dst];
-	int index = child(2)->indexOfChild(item);
+	int index = m_itemRouting->indexOfChild(item);
 	delete item;
 	item = createRouteItem(dst, trans, expires, length);
 	m_routeMap[dst] = item;
-	child(2)->insertChild(index, item);
+	m_itemRouting->insertChild(index, item);
 }
 
 void MeshTreeItemStation::removeRouteEntry(StationId dst)
@@ -188,8 +178,8 @@ void MeshTreeItemStation::removeRouteEntry(StationId dst)
 	assert(m_routeMap.count(dst) != 0);
 	delete m_routeMap[dst];
 	m_routeMap.remove(dst);
-	if (m_routeMap.isEmpty()) child(2)->setText(1, "(empty)");
-	else child(2)->setText(1, QString("(%1 entries)").arg(m_routeMap.count()));
+	if (m_routeMap.isEmpty()) m_itemRouting->setText(1, "(empty)");
+	else m_itemRouting->setText(1, QString("(%1 entries)").arg(m_routeMap.count()));
 }
 
 void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
@@ -197,8 +187,8 @@ void MeshTreeItemStation::addScheduleEntry(double time, const Packet* pPacket)
 	assert(m_scheduleMap.count(pPacket) == 0);
 	QTreeWidgetItem* item = createScheduleItem(time, pPacket);
 	m_scheduleMap[pPacket] = item;
-	child(3)->addChild(item);
-	child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
+	m_itemSchedule->addChild(item);
+	m_itemSchedule->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
 }
 
 void MeshTreeItemStation::removeScheduleEntry(const Packet* pPacket)
@@ -206,8 +196,8 @@ void MeshTreeItemStation::removeScheduleEntry(const Packet* pPacket)
 	assert(m_scheduleMap.count(pPacket) != 0);
 	delete m_scheduleMap[pPacket];
 	m_scheduleMap.remove(pPacket);
-	if (m_scheduleMap.isEmpty()) child(3)->setText(1, "(empty)");
-	else child(3)->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
+	if (m_scheduleMap.isEmpty()) m_itemSchedule->setText(1, "(empty)");
+	else m_itemSchedule->setText(1, QString("(%1 entries)").arg(m_scheduleMap.count()));
 }
 
 void MeshTreeItemStation::deliverScheduleEntry(const Packet* pPacket)

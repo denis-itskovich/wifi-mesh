@@ -76,6 +76,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
+    CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	return SortedListDelete(&pThis->pEvents);
 }
 

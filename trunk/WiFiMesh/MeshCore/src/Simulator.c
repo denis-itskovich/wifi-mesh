@@ -240,8 +240,6 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	VALIDATE_ARGUMENTS(pThis);
 
-	INFO_PRINT("Performing simulation step: [time delta: %.2f]", timeDelta);
-
     CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
     CHECK(TimeLineNext(pThis->pTimeLine));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
@@ -251,8 +249,12 @@ EStatus SimulatorProcess(Simulator* pThis)
 
     pThis->timeDelta = curTime - oldTime;
 
+    INFO_PRINT("Performing simulation step: [time delta: %.2f]", pThis->timeDelta);
+
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
+
+    CHECK(SimulatorDump(pThis));
 
 	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
@@ -364,7 +366,7 @@ EStatus SimulatorReset(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
     CHECK(TimeLineClear(pThis->pTimeLine));
-	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
+    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
 	pThis->lastUpdateTime = 0;
 	return eSTATUS_COMMON_OK;
 }
@@ -407,4 +409,17 @@ EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle)
 EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle)
 {
 	GET_MEMBER(pSingle, pThis, bDupBroadcast);
+}
+
+Boolean SimulatorDumpStation(const Station* pStation, void* pArg)
+{
+    StationDump(pStation);
+    return TRUE;
+}
+
+EStatus SimulatorDump(const Simulator* pThis)
+{
+    DUMP_PRINT("Simulator:");
+    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDumpStation, NULL));
+    return eSTATUS_COMMON_OK;
 }

@@ -51,6 +51,7 @@ MeshGraphItemStation::~MeshGraphItemStation()
 
 QRectF MeshGraphItemStation::boundingRect() const
 {
+
 	qreal size = std::max(document()->coverage(), 10.0);
     qreal adjust = 2;
     return QRectF(- size - adjust, - size - adjust, size * 2.0 + adjust, size * 2.0 + adjust);

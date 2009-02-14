@@ -54,7 +54,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	SAFE_OPERATION( \
 			if (!(condition)) \
 			{ \
-				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetPacket(error)); \
+				ERROR_PRINT("Validation of '%s' failed: %s", #condition, StatusGetMessage(error)); \
 				END_FUNCTION; \
 				return (error); \
 			} \
@@ -104,7 +104,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	SAFE_OPERATION( \
 		if ((s_lastStatus = rc) != eSTATUS_COMMON_OK) \
 		{ \
-			ERROR_PRINT("Error '%s', in %s", StatusGetPacket(s_lastStatus), #rc); \
+			ERROR_PRINT("Error '%s', in %s", StatusGetMessage(s_lastStatus), #rc); \
 			END_FUNCTION; \
 			return (s_lastStatus); \
 		} \

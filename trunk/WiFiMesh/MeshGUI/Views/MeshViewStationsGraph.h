@@ -41,7 +41,9 @@ class MeshGraphics : public QGraphicsView
 
 public:
 	MeshGraphics(QWidget* parent = 0);
-	void addItem(QGraphicsItem* item);
+    ~MeshGraphics();
+
+    void addItem(QGraphicsItem* item);
 	void removeItem(QGraphicsItem* item);
 	void setMenu(QMenu* menu);
 	QPointF pos() const;
