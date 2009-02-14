@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Log.h
+ * @file Log.h
  *
  * Project: MeshCore
  * (C) Copyright 2009 Denis Itskovich
  *
- * \date 09/01/2009
- * \author Denis Itskovich
+ * @date 09/01/2009
+ * @author Denis Itskovich
  */
 
 
@@ -64,45 +64,45 @@ typedef enum
 #define END_FUNCTION					TRACE_PRINT("<< %s", __FUNCTION__)
 
 /** Log output callback
- * \param severity [in] log entry severity
- * \param function [in] function name
- * \param msg [in] log entry text
- * \param pUserArg [in] user defined argument
+ * @param severity [in] log entry severity
+ * @param function [in] function name
+ * @param msg [in] log entry text
+ * @param pUserArg [in] user defined argument
  */
 typedef void (*Logger)(ELogSeverity severity, const char* function, const char* msg, void* pUserArg);
 
 /** Log filter callback
  * this callback should decide whether the packet
  * should be printed or not
- * \param severity [in] packet severity
- * \param file [in] source file name
- * \param function [in] function name
- * \param line [in] line in a file name
- * \param pUserArg [in] user defined argument
- * \return TRUE if the packet should be printed
- * \return FALSE if the packet should not be printed
+ * @param severity [in] packet severity
+ * @param file [in] source file name
+ * @param function [in] function name
+ * @param line [in] line in a file name
+ * @param pUserArg [in] user defined argument
+ * @return TRUE if the packet should be printed
+ * @return FALSE if the packet should not be printed
  */
 typedef Boolean (*Filter)(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg);
 
 /** Set log output callback
- * \param logger [in] output callback
- * \param pUserArg [in] user defined argument
+ * @param logger [in] output callback
+ * @param pUserArg [in] user defined argument
  */
 EStatus LogSetLogger(Logger logger, void* pUserArg);
 
 /** Set filter callback
- * \param filter [in] filter callback
- * \param pUserArg [in] user defined argument
+ * @param filter [in] filter callback
+ * @param pUserArg [in] user defined argument
  */
 EStatus LogSetFilter(Filter filter, void* pUserArg);
 
 /** Output log packet
- * \param severity [in] log entry severity
- * \param file [in] source file name, initiated a log packet
- * \param function [in] function name, initiated a log packet
- * \param line [in] line number in source file
- * \param fmt [in] format
- * \param ... [in] additional arguments
+ * @param severity [in] log entry severity
+ * @param file [in] source file name, initiated a log packet
+ * @param function [in] function name, initiated a log packet
+ * @param line [in] line number in source file
+ * @param fmt [in] format
+ * @param ... [in] additional arguments
  */
 void LogOutput(ELogSeverity severity, const char* file, const char* function, int line, const char* fmt, ...);
 

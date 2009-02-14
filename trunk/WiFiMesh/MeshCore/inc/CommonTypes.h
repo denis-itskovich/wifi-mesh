@@ -18,12 +18,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file CommonTypes.h
+ * @file CommonTypes.h
  *
  * Common data type declarations
  *
- * \author Denis Itskovich
- * \date 13/12/2008
+ * @author Denis Itskovich
+ * @date 13/12/2008
  */
 
 #ifndef WIFI_MESH_COMMONTYPES_H_
