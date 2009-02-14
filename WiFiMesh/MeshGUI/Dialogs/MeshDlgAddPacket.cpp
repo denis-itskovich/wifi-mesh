@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file MeshDlgAddPacket.cpp
+ * @file MeshDlgAddPacket.cpp
  *
  * Project: MeshGUI
  * (C) Copyright 2009 Denis Itskovich
  *
- * \date 07/02/2009
- * \author Denis Itskovich
+ * @date 07/02/2009
+ * @author Denis Itskovich
  */
 
 #include "MeshDlgAddPacket.h"

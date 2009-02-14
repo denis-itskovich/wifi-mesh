@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file MeshViewSniffer.cpp
+ * @file MeshViewSniffer.cpp
  *
  * Project: MeshGUI
  * (C) Copyright 2009 Denis Itskovich
  *
- * \date 27/01/2009
- * \author Denis Itskovich
+ * @date 27/01/2009
+ * @author Denis Itskovich
  */
 
 #include "MeshViewSniffer.h"

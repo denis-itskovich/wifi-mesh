@@ -18,12 +18,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Status.h
+ * @file Status.h
  *
  * Defines status return codes
  *
- * \author Denis Itskovich
- * \date   1/12/2008
+ * @author Denis Itskovich
+ * @date   1/12/2008
  */
 
 #ifndef _WIFI_MESH_STATUS_H

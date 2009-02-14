@@ -36,11 +36,11 @@ struct _List
 
 
 /** Used for items enumeration
- * \param pThis [in] pointer to instance
- * \param pEntry [in] item position in a list
- * \param pUserArg1 [in] user defined argument
- * \param pUserArg2 [in] user defined argument
- * \param pUserArg3 [in] user defined argument
+ * @param pThis [in] pointer to instance
+ * @param pEntry [in] item position in a list
+ * @param pUserArg1 [in] user defined argument
+ * @param pUserArg2 [in] user defined argument
+ * @param pUserArg3 [in] user defined argument
  */
 typedef Boolean (*EntryEnumerator) (List* pThis, ListEntry* pEntry, void* pUserArg1, void* pUserArg2, void* pUserArg3);
 

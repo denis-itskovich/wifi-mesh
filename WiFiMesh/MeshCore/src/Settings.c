@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Settings.c
+ * @file Settings.c
  *
  * Project: MeshCore
  * (C) Copyright 2009 Denis Itskovich
  *
- * \date 02/01/2009
- * \author Denis Itskovich
+ * @date 02/01/2009
+ * @author Denis Itskovich
  */
 
 #include "Settings.h"

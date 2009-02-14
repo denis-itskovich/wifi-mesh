@@ -18,12 +18,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Routing.c
+ * @file Routing.c
  *
  * Project: MeshCore
  * (C) Copyright 2008
- * \date 20/12/2008
- * \author Denis Itskovich
+ * @date 20/12/2008
+ * @author Denis Itskovich
  */
 
 #include "Routing.h"
@@ -43,6 +43,7 @@ struct _Routing
 	List*      pEntries;
 	Settings*  pSettings;
 	TimeLine*  pTimeLine;
+	StationId  deprecatedId;
 	struct
 	{
 		RoutingHandler	callback;
@@ -51,29 +52,29 @@ struct _Routing
 };
 
 /** Adds a route
- * \param pThis [in] pointer to instance
- * \param dstId [in] destination station id
- * \param transitId [in] adjacent transit station id
- * \param length [in] estimated route length
+ * @param pThis [in] pointer to instance
+ * @param dstId [in] destination station id
+ * @param transitId [in] adjacent transit station id
+ * @param length [in] estimated route length
  */
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length);
 
 /** Calculates entry expiration time
- * \param pThis [in] pointer to instance
- * \param pTime [out] routing entry expiration time will be stored at *pTime
+ * @param pThis [in] pointer to instance
+ * @param pTime [out] routing entry expiration time will be stored at *pTime
  */
 EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime);
 
 /** Calculates retry time
- * \param pThis [in] pointer to instance
- * \param pTimeout [out] routing entry expiration time will be stored at *pTimeout
+ * @param pThis [in] pointer to instance
+ * @param pTimeout [out] routing entry expiration time will be stored at *pTimeout
  */
 EStatus RoutingGetRetryTime(Routing* pThis, double* pTime);
 
 /** Invokes routing handler (if exists)
- * \param pThis [in] pointer to instance
- * \param pEntry [in] pointer to routing entry
- * \param flag [in] route entry update flag
+ * @param pThis [in] pointer to instance
+ * @param pEntry [in] pointer to routing entry
+ * @param flag [in] route entry update flag
  */
 void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdate flag)
 {
@@ -88,14 +89,23 @@ void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdat
 	}
 }
 
+Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis);
+Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis);
+Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis);
+
+
+Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis)
+{
+    if (pEntry->transitId != pThis->deprecatedId) return TRUE;
+    return RoutingEraser(pEntry, pThis);
+}
+
 Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
 {
 	double time;
 	TimeLineGetTime(pThis->pTimeLine, &time);
 	if (pEntry->expires > time) return TRUE;
-	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
-	DELETE(pEntry);
-	return FALSE;
+	return RoutingEraser(pEntry, pThis);
 }
 
 Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis)
@@ -142,6 +152,13 @@ EStatus RoutingDestroy(Routing* pThis)
 	return ListDelete(&pThis->pEntries);
 }
 
+EStatus RoutingRemoveTransit(Routing* pThis, StationId transit)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    pThis->deprecatedId = transit;
+    return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingTransitCleaner, pThis);
+}
+
 EStatus RoutingUpdateDestination(Routing* pThis, StationId dst, StationId transit, unsigned length)
 {
     ListEntry* pListEntry;
@@ -154,7 +171,9 @@ EStatus RoutingUpdateDestination(Routing* pThis, StationId dst, StationId transi
     else
     {
         CHECK(ListGetValue(pListEntry, &pRouteEntry));
-        if (pRouteEntry->length >= length)
+
+        if (pRouteEntry->length > length ||
+            (pRouteEntry->length == length && pRouteEntry->transitId != transit))
         {
             pRouteEntry->length = length;
             pRouteEntry->transitId = transit;

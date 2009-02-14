@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Scheduler.h
+ * @file Scheduler.h
  *
  * Project: MeshCore
  * (C) Copyright 2008 Denis Itskovich
  *
- * \date 22/12/2008
- * \author Denis Itskovich
+ * @date 22/12/2008
+ * @author Denis Itskovich
  */
 
 #ifndef SCHEDULER_H_
@@ -44,11 +44,11 @@ typedef enum _ESchedulerEvent
 } ESchedulerEvent;
 
 /** Scheduler adding/removing packet handler
- * \param pStation [in] pointer to station
- * \param time [in] time, when a packet should be issued
- * \param pPacket [in] pointer to packet instance
- * \param bAdded [in] if TRUE packet is being added, otherwise removed
- * \param pUserArg [in] user defined argument
+ * @param pStation [in] pointer to station
+ * @param time [in] time, when a packet should be issued
+ * @param pPacket [in] pointer to packet instance
+ * @param bAdded [in] if TRUE packet is being added, otherwise removed
+ * @param pUserArg [in] user defined argument
  */
 typedef void (*SchedulerHandler)(   double time,
                                     const Packet* pPacket,
@@ -56,56 +56,56 @@ typedef void (*SchedulerHandler)(   double time,
                                     void* pUserArg);
 
 /** Allocates and initializes new instance
- * \param ppThis [out] pointer to new instance will be stored at *ppThis
- * \param pTimeLine [in] pointer to valid TimeLine instance
+ * @param ppThis [out] pointer to new instance will be stored at *ppThis
+ * @param pTimeLine [in] pointer to valid TimeLine instance
  */
 EStatus SchedulerNew(Scheduler** ppThis, TimeLine* pTimeLine);
 
 /** Destroys and deallocates an instance
- * \param ppThis [in, out] pointer to valid instance
+ * @param ppThis [in, out] pointer to valid instance
  */
 EStatus SchedulerDelete(Scheduler** ppThis);
 
 /** Initializes an instance
- * \param pThis [in] pointer to instance
- * \param pTimeLine [in] pointer to valid TimeLine instance
+ * @param pThis [in] pointer to instance
+ * @param pTimeLine [in] pointer to valid TimeLine instance
  */
 EStatus SchedulerInit(Scheduler* pThis, TimeLine* pTimeLine);
 
 /** Destroys an instance
- * \param pThis [in] pointer to valid instance
+ * @param pThis [in] pointer to valid instance
  */
 EStatus SchedulerDestroy(Scheduler* pThis);
 
 /** Schedules a packet
- * \param pThis [in] pointer to instance
- * \param pPacket [in] pointer to packet
- * \param time [in] time, when the packet should be issued, in time units
+ * @param pThis [in] pointer to instance
+ * @param pPacket [in] pointer to packet
+ * @param time [in] time, when the packet should be issued, in time units
  */
 EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time);
 
 /** Retrieves available packet and removes it from queue
- * \param pThis [in] pointer to instance
- * \param ppPacket [out] pointer to packet will be stored at *ppPacket
- * \return eSTATUS_SCHEDULER_NO_PACKETS_AVAILABLE if there are no ready packets
- * \return eSTATUS_COMMON_OK if a packet was retrieved
+ * @param pThis [in] pointer to instance
+ * @param ppPacket [out] pointer to packet will be stored at *ppPacket
+ * @return eSTATUS_SCHEDULER_NO_PACKETS_AVAILABLE if there are no ready packets
+ * @return eSTATUS_COMMON_OK if a packet was retrieved
  */
 EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket);
 
 /** Removes all scheduled packets
- * \param pThis [in] pointer to instance
+ * @param pThis [in] pointer to instance
  */
 EStatus SchedulerClear(Scheduler* pThis);
 
 /** Resets a scheduler
- * \param pThis [in]
+ * @param pThis [in]
  */
 EStatus SchedulerReset(Scheduler* pThis);
 
 /** Registers scheduler handler
- * \param pThis [in] pointer to instance
- * \param handler [in] scheduler handler
- * \param pUserArg [in] user defined argument
+ * @param pThis [in] pointer to instance
+ * @param handler [in] scheduler handler
+ * @param pUserArg [in] user defined argument
  */
 EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, void* pUserArg);
 

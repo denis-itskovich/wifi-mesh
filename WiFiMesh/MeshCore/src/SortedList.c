@@ -18,13 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file SortedList.c
+ * @file SortedList.c
  *
  * Project: MeshCore
  * (C) Copyright 2008 Denis Itskovich
  *
- * \date 22/12/2008
- * \author Denis Itskovich
+ * @date 22/12/2008
+ * @author Denis Itskovich
  */
 
 #include "SortedList.h"

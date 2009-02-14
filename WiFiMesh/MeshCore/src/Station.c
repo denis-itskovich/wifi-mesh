@@ -30,6 +30,7 @@ typedef struct _PacketEntry
     Packet*     pPacket;
     unsigned    retriesCount;
     double      nextRetryTime;
+    Boolean     bClear;
 } PacketEntry;
 
 struct _Station
@@ -255,11 +256,22 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
     TimeLineGetTime(pThis->pTimeLine, &time);
     if (time < pEntry->nextRetryTime) return TRUE;
 
-    // Assign this packet for transmitting
-	pThis->pOutPacketEntry = pEntry;
+    // Last retry attempt, so no need to schedule next retry
+    if (pEntry->retriesCount-- == 0)
+    {
+        RoutingRemoveTransit(pThis->pRouting, pPacket->header.transitDstId);
+        StationPacketCleaner(pEntry, NULL);
+        return FALSE;
+    }
 
-	// Last retry attempt, so no need to schedule next retry
-	if (--pEntry->retriesCount <= 0) return FALSE;
+    // Assign this packet for transmitting
+    pThis->pOutPacketEntry = pEntry;
+
+    if (!StationIsAckRequired(pThis, pPacket))
+    {
+        pEntry->bClear = TRUE;
+        return FALSE;
+    }
 
     // Scheduling retry transmit for this packet
     SettingsGetPacketRetryTimeout(pThis->pSettings, &pEntry->nextRetryTime);
@@ -327,15 +339,15 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 	CHECK(ListCleanUp(pThis->pOutbox, (ItemFilter)&StationPacketFilter, pThis));
 	if (!pThis->pOutPacketEntry) return eSTATUS_COMMON_OK;
 
-	if (pThis->pOutPacketEntry->retriesCount)
+	if (!pThis->pOutPacketEntry->bClear)
 	{
-        CHECK(PacketClone(ppPacket, pThis->pOutPacketEntry->pPacket));
+	    CHECK(PacketClone(ppPacket, pThis->pOutPacketEntry->pPacket));
 	}
 	else
-	{
+    {
 	    *ppPacket = pThis->pOutPacketEntry->pPacket;
 	    DELETE(pThis->pOutPacketEntry);
-	}
+    }
 
 	return eSTATUS_COMMON_OK;
 }

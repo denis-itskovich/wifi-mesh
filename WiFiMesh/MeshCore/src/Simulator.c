@@ -18,10 +18,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * \file Simulator.c
+ * @file Simulator.c
  *
- * \date 06/12/2008
- * \author Denis Itskovich
+ * @date 06/12/2008
+ * @author Denis Itskovich
  */
 
 #include "Simulator.h"
@@ -58,48 +58,48 @@ struct _Simulator
 };
 
 /** Looks for a station with specified id
- * \param pThis [in] pointer to instance
- * \param id [in] station id to look for
- * \param ppStation [out] pointer to station will be stored at *ppStation
+ * @param pThis [in] pointer to instance
+ * @param id [in] station id to look for
+ * @param ppStation [out] pointer to station will be stored at *ppStation
  */
 EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation);
 
 /** Dispatches outbound packets for specified station
- * \param pThis [in] pointer to instance
- * \param pStation [in] pointer to station
+ * @param pThis [in] pointer to instance
+ * @param pStation [in] pointer to station
  */
 EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation);
 
 /** Retrieves station list entry by id
- * \param pThis [in] pointer to instance
- * \param id [in] station id
- * \param ppEntry [out] pointer to entry will be stored at *ppEntry
+ * @param pThis [in] pointer to instance
+ * @param id [in] station id
+ * @param ppEntry [out] pointer to entry will be stored at *ppEntry
  */
 EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry);
 
 /** Assigns unique station id
- * \param pThis [in] pointer to instance
+ * @param pThis [in] pointer to instance
  */
 StationId SimulatorAssignId(Simulator* pThis);
 
 /** Frees station id
- * \param pThis [in] pointer to instance
- * \param id [in] id to free
+ * @param pThis [in] pointer to instance
+ * @param id [in] id to free
  */
 void SimulatorFreeId(Simulator* pThis, StationId id);
 
 /** Invokes sniffer callback (if exists)
- * \param pThis [in] pointer to instance
- * \param pPacket [in] pointer to packet
- * \param pSrc [in] pointer to source station
- * \param pDst [in] pointer to destination station
+ * @param pThis [in] pointer to instance
+ * @param pPacket [in] pointer to packet
+ * @param pSrc [in] pointer to source station
+ * @param pDst [in] pointer to destination station
  */
 EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst, EPacketStatus status);
 
 /** Invokes tracker callback (if exists)
- * \param pThis [in] pointer to instance
- * \param pStation [in] pointer to station being updated
- * \param event [in] event type /see EStationEvent
+ * @param pThis [in] pointer to instance
+ * @param pStation [in] pointer to station being updated
+ * @param event [in] event type /see EStationEvent
  */
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event);
 

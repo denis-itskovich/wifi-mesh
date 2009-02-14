@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <wchar.h>
 
 #define STATUS_MESSAGE(msg) { msg, L ## msg }
-#define DECLARE_STATUS_MESSAGES(name, count)	\
-	static struct								\
-	{											\
-		const char* amsg;						\
-		const wchar_t* wmsg;					\
+#define DECLARE_STATUS_MESSAGES(name, count) \
+	static struct \
+	{ \
+		const char* amsg; \
+		const wchar_t* wmsg; \
 	} name[(count) + 1] =
 
 #define _MIN(a,b) ((a) < (b) ? (a) : (b))
