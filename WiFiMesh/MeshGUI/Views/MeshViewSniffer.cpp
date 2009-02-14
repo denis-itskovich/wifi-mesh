@@ -130,6 +130,7 @@ QAction* MeshViewSniffer::initAction(EPacketType type, const QString& title)
 
 void MeshViewSniffer::addPacket(const Packet* pPacket, StationId deliveredId, EPacketStatus status)
 {
+    if (!isVisible()) return;
 	if (!m_actVisibility[pPacket->header.type]->isChecked()) return;
     if (status == ePKT_STATUS_COLLISION && !m_actShowCollisions->isChecked()) return;
 
