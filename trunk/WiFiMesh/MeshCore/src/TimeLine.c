@@ -29,15 +29,19 @@ typedef struct _Event
 
 struct _TimeLine
 {
-	SortedList*		pEvents;
-	ListEntry*		pCurrent;
-	double			time;
+	SortedList*    pEvents;
+	ListEntry*     pCurrent;
+	double         nextTime;
+	double         time;
+	double         propMaxDelta;
 	struct
 	{
 		EventTracker 	callback;
 		void*			pArg;
 	}				tracker;
 };
+
+IMPLEMENT_PROPERTY(TimeLine, MaxDelta, double, 0.1)
 
 Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 {
@@ -69,6 +73,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
+	INIT_PROPERTY(TimeLine, MaxDelta, pThis);
 	CHECK(SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL));
 	return TimeLineEvent(pThis, 0.0, NULL);
 }
@@ -106,18 +111,31 @@ EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Packet* p
 EStatus TimeLineNext(TimeLine* pThis)
 {
 	Event* pEvent;
-	double time = 0;
 	VALIDATE_ARGUMENTS(pThis);
 
 	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
+
+	if (pThis->nextTime - pThis->time > pThis->propMaxDelta)
+	{
+	    pThis->time += pThis->propMaxDelta;
+	    return eSTATUS_COMMON_OK;
+	}
+
+	if (pThis->time < pThis->nextTime)
+	{
+	    pThis->time = pThis->nextTime;
+	    return eSTATUS_COMMON_OK;
+	}
 
     CHECK(SortedListGetNext(&pThis->pCurrent));
     if (pThis->pCurrent)
     {
         CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
-        time = pEvent->time;
+        pThis->nextTime = pEvent->time;
+
+        if (pThis->nextTime - pThis->time > pThis->propMaxDelta) pThis->time += pThis->propMaxDelta;
+        else pThis->time = pThis->nextTime;
     }
-	pThis->time = time;
 
 	return eSTATUS_COMMON_OK;
 }
@@ -133,6 +151,7 @@ EStatus TimeLineClear(TimeLine* pThis)
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->pCurrent = NULL;
 	pThis->time = 0;
+	pThis->nextTime = 0;
 	CHECK(TimeLineEvent(pThis, 0.0, NULL));
     CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
     return eSTATUS_COMMON_OK;

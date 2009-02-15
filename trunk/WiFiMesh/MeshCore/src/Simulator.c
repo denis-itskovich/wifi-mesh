@@ -246,22 +246,13 @@ EStatus SimulatorProcess(Simulator* pThis)
 	if (!pThis->activeStations) return eSTATUS_TIME_LINE_FINISHED;
 	pThis->activeStations = 0;
 
-	if (pThis->timeDelta <= 0.01)
-	{
-	    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
-	    CHECK(TimeLineNext(pThis->pTimeLine));
-	    CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
-	    pThis->bUpdateRequired = (curTime - pThis->lastUpdateTime > 0.01) ? TRUE : FALSE;
-	    if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
+    CHECK(TimeLineNext(pThis->pTimeLine));
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
+    pThis->bUpdateRequired = (curTime - pThis->lastUpdateTime > 0.01) ? TRUE : FALSE;
+    if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
 
-	    pThis->timeDelta = curTime - oldTime;
-	}
-	else
-	{
-	    pThis->timeDelta-= 0.01;
-	    pThis->lastUpdateTime += 0.01;
-	    pThis->bUpdateRequired = TRUE;
-	}
+    pThis->timeDelta = curTime - oldTime;
 
     INFO_PRINT("Performing simulation step: [time delta: %.2f]", pThis->timeDelta);
 
