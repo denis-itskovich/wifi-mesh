@@ -17,11 +17,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
-/*
- * DockTimeLine.cpp
+/**
+ * @file MeshViewTimeLine.cpp
  *
- *  Created on: 21/10/2008
- *      Author: denis
+ * @date 21/10/2008
+ * @author Denis Itskovich
  */
 
 #include "MeshViewTimeLine.h"

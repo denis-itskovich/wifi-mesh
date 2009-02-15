@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Status.h"
 #include "Station.h"
 #include "Settings.h"
+#include "Statistics.h"
 
 typedef struct _Simulator Simulator; ///< Simulator forward declaration
 
@@ -44,19 +45,6 @@ typedef enum
 	eSTATION_REMOVED,		///< Station was removed from simulator
 	eSTATION_UPDATED		///< Station was updated
 } EStationEvent;
-
-/** Packet status, handled by sniffer
- * @see Sniffer
- */
-typedef enum
-{
-    ePKT_STATUS_PENDING,        ///< Packet transmitting has been recently started
-    ePKT_STATUS_DELIVERED,      ///< Transmit was successfully finished
-    ePKT_STATUS_COLLISION,      ///< Transmit was aborted due to collision
-    ePKT_STATUS_OUT_OF_RANGE,   ///< Transmit was not started because destination was out of range
-
-    ePKT_STATUS_LAST            ///< Terminator
-} EPacketStatus;
 
 /** Station tracker
  * @param pStation [in] pointer to station
@@ -168,6 +156,12 @@ EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle);
  * @param pSingle [out] current mode will be stored at *pSingle
  */
 EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle);
+
+/** Retrieves statistics
+ * @param pThis [in] pointer to instance
+ * @param ppStatistics [out] pointer to statistics will be stored at *ppStatistics
+ */
+EStatus SimulatorGetStatistics(const Simulator* pThis, const Statistics** ppStatistics);
 
 /** Dumps an instance
  * @param pThis [in] pointer to instance

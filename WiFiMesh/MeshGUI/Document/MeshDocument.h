@@ -176,7 +176,6 @@ private:
 	bool               m_bStarted;
 	bool               m_bPaused;
 	int                m_timerId;
-	int                m_packets;
 	int                m_delay;
 };
 
