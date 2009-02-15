@@ -292,16 +292,9 @@ void MeshDocument::resume()
 
 void MeshDocument::step()
 {
-    m_packets = 0;
-    while (!m_packets)
-    {
-        if (SimulatorProcess(m_pSimulator) != eSTATUS_COMMON_OK)
-        {
-            stop();
-            break;
-        }
+    if (SimulatorProcess(m_pSimulator) == eSTATUS_COMMON_OK)
         emit timeChanged(QString::QString("Time: %1 [msec]").arg(time() * 1000, 0, 'f', 5));
-    }
+    else stop();
 }
 
 double MeshDocument::rand(double limit)
@@ -377,8 +370,6 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
         break;
     default: break;
     }
-
-	++pThis->m_packets;
 }
 
 void MeshDocument::eventTracker(double time, const Packet* pPacket, bool isAdded, MeshDocument* pThis)

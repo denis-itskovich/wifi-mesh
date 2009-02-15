@@ -665,7 +665,7 @@ EStatus StationReset(Station* pThis)
     CHECK(RoutingClear(pThis->pRouting));
     CHECK(SchedulerReset(pThis->pScheduler));
 
-    StationDump(pThis);
+    DUMP_INSTANCE(Station, pThis);
 
     CHECK(ListCleanUp(pThis->pOutbox, (ItemFilter)&StationPacketCleaner, pThis));
 
@@ -737,14 +737,14 @@ EStatus StationDump(const Station* pThis)
     DUMP_PRINT("Station: [id=%d]", pThis->id);
     DUMP_PRINT("Outbox:");
     CHECK(ListEnumerate(pThis->pOutbox, (ItemEnumerator)&StationDumpPacketEntry, NULL));
-    CHECK(RoutingDump(pThis->pRouting));
-    CHECK(SchedulerDump(pThis->pScheduler));
+    DUMP_INSTANCE(Routing, pThis->pRouting);
+    DUMP_INSTANCE(Scheduler, pThis->pScheduler);
     return eSTATUS_COMMON_OK;
 }
 
 Boolean StationDumpPacketEntry(PacketEntry* pEntry, void* pArg)
 {
     DUMP_PRINT("PacketEntry: [retriesCount=%d, nextRetryTime=%f]", pEntry->retriesCount, pEntry->nextRetryTime);
-    PacketDump(pEntry->pPacket);
+    DUMP_INSTANCE(Packet, pEntry->pPacket);
     return TRUE;
 }

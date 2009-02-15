@@ -30,20 +30,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Macros.h"
 #include "List.h"
 
-#define NEW_STATION_ITEM(ptr) SAFE_OPERATION(ptr = NEW(*ptr); CHECK(ListCreate(&ptr->listHeader)))
-#define STATION_FROM_LIST_ITEM(pListHdr) ((StationListItem*)pListHdr)->pStation
-
 struct _Simulator
 {
 	List*          pStations;
 	TimeLine*      pTimeLine;
 	Settings*      pSettings;
+    Statistics*    pStatistics;
 	StationId      minId;
 	StationId      maxId;
 	Boolean        bDupBroadcast;
 	Boolean        bUpdateRequired;
 	double         lastUpdateTime;
 	double         timeDelta;
+	int            activeStations;
 
 	struct
 	{
@@ -55,6 +54,7 @@ struct _Simulator
 		StationTracker    callback;
 		void*		      pArg;
 	} 				tracker;
+
 };
 
 /** Looks for a station with specified id
@@ -133,6 +133,7 @@ EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine
 	CLEAR(pThis);
 
 	CHECK(ListNew(&pThis->pStations));
+	CHECK(StatisticsNew(&pThis->pStatistics));
 	pThis->pTimeLine = pTimeLine;
 	pThis->pSettings = pSettings;
 	pThis->bDupBroadcast = TRUE;
@@ -149,6 +150,7 @@ EStatus SimulatorDestroy(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
+    CHECK(StatisticsDelete(&pThis->pStatistics));
 	CHECK(ListDelete(&pThis->pStations));
 
 	return eSTATUS_COMMON_OK;
@@ -215,6 +217,7 @@ Boolean SimulatorSynchronizer(Station* pStation, Simulator* pThis)
 		    PacketDelete(&pDeliveredPacket);
         }
         if (!isActive) SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
+        else ++pThis->activeStations;
 	}
 	return TRUE;
 }
@@ -240,21 +243,32 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 	VALIDATE_ARGUMENTS(pThis);
 
-    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
-    CHECK(TimeLineNext(pThis->pTimeLine));
-    CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
+	if (!pThis->activeStations) return eSTATUS_TIME_LINE_FINISHED;
+	pThis->activeStations = 0;
 
-    pThis->bUpdateRequired = (curTime - pThis->lastUpdateTime > 0.01) ? TRUE : FALSE;
-    if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
+	if (pThis->timeDelta <= 0.01)
+	{
+	    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
+	    CHECK(TimeLineNext(pThis->pTimeLine));
+	    CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
+	    pThis->bUpdateRequired = (curTime - pThis->lastUpdateTime > 0.01) ? TRUE : FALSE;
+	    if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
 
-    pThis->timeDelta = curTime - oldTime;
+	    pThis->timeDelta = curTime - oldTime;
+	}
+	else
+	{
+	    pThis->timeDelta-= 0.01;
+	    pThis->lastUpdateTime += 0.01;
+	    pThis->bUpdateRequired = TRUE;
+	}
 
     INFO_PRINT("Performing simulation step: [time delta: %.2f]", pThis->timeDelta);
 
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
-    CHECK(SimulatorDump(pThis));
+    DUMP_INSTANCE(Simulator, pThis);
 
 	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
@@ -270,7 +284,7 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 			pThis->sniffer.callback(pPacket, pSrc, pDst, status, pThis->sniffer.pArg);
 		}
 	}
-	return eSTATUS_COMMON_OK;
+	return StatisticsHandlePacket(pThis->pStatistics, pPacket, status);
 }
 
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event)
@@ -367,7 +381,9 @@ EStatus SimulatorReset(Simulator* pThis)
 	VALIDATE_ARGUMENTS(pThis);
     CHECK(TimeLineClear(pThis->pTimeLine));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
+    CHECK(StatisticsReset(pThis->pStatistics));
 	pThis->lastUpdateTime = 0;
+	pThis->activeStations = -1;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -376,7 +392,9 @@ EStatus SimulatorClear(Simulator* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListCleanUp(pThis->pStations, (ItemFilter)&SimulatorCleaner, pThis));
 	CHECK(TimeLineClear(pThis->pTimeLine));
+    CHECK(StatisticsClear(pThis->pStatistics));
     pThis->lastUpdateTime = 0;
+    pThis->activeStations = -1;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -411,9 +429,16 @@ EStatus SimulatorGetSniffingMode(Simulator* pThis, Boolean* pSingle)
 	GET_MEMBER(pSingle, pThis, bDupBroadcast);
 }
 
+EStatus SimulatorGetStatistics(const Simulator* pThis, const Statistics** ppStatistics)
+{
+    VALIDATE_ARGUMENTS(pThis && ppStatistics);
+    *ppStatistics = (const Statistics*)pThis->pStatistics;
+    return eSTATUS_COMMON_OK;
+}
+
 Boolean SimulatorDumpStation(const Station* pStation, void* pArg)
 {
-    StationDump(pStation);
+    DUMP_INSTANCE(Station, pStation);
     return TRUE;
 }
 
@@ -423,3 +448,4 @@ EStatus SimulatorDump(const Simulator* pThis)
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDumpStation, NULL));
     return eSTATUS_COMMON_OK;
 }
+
