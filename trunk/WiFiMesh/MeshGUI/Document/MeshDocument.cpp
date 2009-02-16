@@ -91,16 +91,16 @@ void    MeshDocument::setPacketHopsThreshold(int threshold) { setMemberValue(m_p
 void    MeshDocument::setRouteExpirationTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteExpirationTimeout, timeout); }
 void    MeshDocument::setRouteRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteRetryTimeout, timeout); }
 
-int     MeshDocument::stationsCount() const { return m_stationsCount; }
-int     MeshDocument::avgPacketsCount() const { return m_avgMsgCount; }
+int     MeshDocument::stationCount() const { return m_stationsCount; }
+int     MeshDocument::avgPacketCount() const { return m_avgMsgCount; }
 int     MeshDocument::avgDataSize() const { return m_avgDataSize; }
 double  MeshDocument::avgVelocity() const { return m_avgVelocity; }
 double  MeshDocument::duration() const { return m_duration; }
 
-void    MeshDocument::setStationsCount(int count) { m_stationsCount = count; }
+void    MeshDocument::setStationCount(int count) { m_stationsCount = count; }
 void    MeshDocument::setAvgDataSize(int dataSize) { m_avgDataSize = dataSize; }
 void    MeshDocument::setAvgVelocity(double avgVelocity) { m_avgVelocity = avgVelocity; }
-void    MeshDocument::setAvgPacketsCount(int avgMsgCount) { m_avgMsgCount = avgMsgCount; }
+void    MeshDocument::setAvgPacketCount(int avgMsgCount) { m_avgMsgCount = avgMsgCount; }
 void    MeshDocument::setDuration(double duration) { m_duration = duration; }
 
 Station*    MeshDocument::currentStation() const { return m_pCurStation; }

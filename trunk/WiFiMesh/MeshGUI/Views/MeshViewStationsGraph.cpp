@@ -252,7 +252,23 @@ void MeshGraphics::removeItem(QGraphicsItem* item)
 void MeshGraphics::drawBackground(QPainter *painter, const QRectF &rect)
 {
 	QRectF sceneRect = this->sceneRect();
+
+    // Shadow
+//    QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
+//    QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
+//    if (rightShadow.intersects(rect) || rightShadow.contains(rect))
+//        painter->fillRect(rightShadow, Qt::darkGray);
+//    if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
+//        painter->fillRect(bottomShadow, Qt::darkGray);
+//
+//    QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
+//    gradient.setColorAt(0, QRgb(0x00dfdfdf));
+//    gradient.setColorAt(1, Qt::lightGray);
+//    painter->fillRect(rect.intersect(sceneRect), gradient);
+//    painter->setBrush(Qt::NoBrush);
+//    painter->drawRect(sceneRect);
+
 	painter->setPen(QColor(Qt::black));
-	painter->fillRect(sceneRect, QBrush(QColor(Qt::lightGray)));
+	painter->fillRect(sceneRect, QBrush(QRgb(0x00dfdfdf)));
 	painter->drawRect(sceneRect);
 }

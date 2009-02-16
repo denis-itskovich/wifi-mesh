@@ -42,6 +42,7 @@ void MeshViewStationsList::init()
 	m_treeStations = new QTreeWidget(this);
 	m_treeStations->setColumnCount(2);
 	m_treeStations->setHeaderLabels(QStringList() << tr("Station") << tr("Properties"));
+	m_treeStations->setAllColumnsShowFocus(true);
 
 	m_buttonAdd = createButton(m_actAddStation);
 	m_buttonRemove = createButton(m_actRemoveStation);
@@ -90,14 +91,15 @@ MeshTreeItemStation* MeshViewStationsList::currentItem() const
 void MeshViewStationsList::setDocument(MeshDocument* doc)
 {
 	MeshViewStations::setDocument(doc);
-//	connect(m_buttonAdd, SIGNAL(clicked()), doc, SLOT(addStation()));
-//	connect(m_buttonRemove, SIGNAL(clicked()), doc, SLOT(removeStation()));
-//	connect(m_buttonPacket, SIGNAL(clicked()), doc, SLOT(addPacket()));
 }
 
 void MeshViewStationsList::setCurrent(Station* pStation)
 {
     MeshViewStations::setCurrent(pStation);
+
+    m_buttonRemove->setEnabled(pStation != NULL);
+    m_buttonPacket->setEnabled(pStation != NULL);
+
 	MeshTreeItemStation* newCur = findItem(pStation);
 	if (newCur == currentItem()) return;
 	m_treeStations->setCurrentItem(newCur);
@@ -123,5 +125,6 @@ QPushButton* MeshViewStationsList::createButton(QAction* action)
 {
     QPushButton* button = new QPushButton(action->icon(), action->text(), this);
     connect(button, SIGNAL(clicked()), action, SLOT(trigger()));
+    button->setEnabled(action->isEnabled());
     return button;
 }

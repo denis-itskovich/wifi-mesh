@@ -53,10 +53,10 @@ public:
 	int    packetRetryThreshold() const;
     double packetRetryTimeout() const;
 
-	int    stationsCount() const;
+	int    stationCount() const;
 	double avgVelocity() const;
 	int    avgDataSize() const;
-	int    avgPacketsCount() const;
+	int    avgPacketCount() const;
 
 	int    speed() const;
 	int    maximumSpeed() const { return 400; }
@@ -75,10 +75,10 @@ public slots:
     void setPacketRetryThreshold(int threshold);
 	void setPacketRetryTimeout(double timeout);
 
-	void setStationsCount(int count);
+	void setStationCount(int count);
 	void setAvgDataSize(int dataSize);
 	void setAvgVelocity(double avgVelocity);
-	void setAvgPacketsCount(int avgMsgCount);
+	void setAvgPacketCount(int avgMsgCount);
 
 	void setCurrentStation(Station* pStation);
 	void updateStation(Station* pStation);
