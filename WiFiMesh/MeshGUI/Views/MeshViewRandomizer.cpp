@@ -38,16 +38,8 @@ MeshViewRandomizer::~MeshViewRandomizer()
 
 void MeshViewRandomizer::init()
 {
-	m_sliderStationsCount = new QSlider(Qt::Horizontal);
-	m_sliderStationsCount->setTickPosition(QSlider::TicksBelow);
-	m_sliderStationsCount->setRange(1, 1000);
-	m_sliderStationsCount->setTickInterval(100);
-
-	m_spinStationsCount = new QSpinBox;
-	m_spinStationsCount->setRange(1, 1000);
-
-	connect(m_sliderStationsCount, SIGNAL(valueChanged(int)), m_spinStationsCount, SLOT(setValue(int)));
-	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), m_sliderStationsCount, SLOT(setValue(int)));
+	m_spinStationCount = new QSpinBox;
+	m_spinStationCount->setRange(1, 1000);
 
 	m_spinAvgVelocity = new QDoubleSpinBox;
 	m_spinAvgVelocity->setSingleStep(0.05);
@@ -57,8 +49,8 @@ void MeshViewRandomizer::init()
 	m_spinAvgDataSize->setRange(1, 1 << 30);
 	m_spinAvgDataSize->setSuffix(" [Bytes]");
 
-	m_spinAvgPacketsCount = new QSpinBox;
-	m_spinAvgPacketsCount->setRange(0, 100000);
+	m_spinAvgPacketCount = new QSpinBox;
+	m_spinAvgPacketCount->setRange(0, 100000);
 
 	m_spinDuration = new QDoubleSpinBox;
 	m_spinDuration->setRange(0.1, 3600);
@@ -68,16 +60,12 @@ void MeshViewRandomizer::init()
 	m_buttonGenerateWorld = new QPushButton(QIcon(":/generate.png"), tr("Generate world"));
 	m_buttonGeneratePackets = new QPushButton(QIcon(":/packet.png"), tr("Generate packets only"));
 
-	QHBoxLayout* hlayout = new QHBoxLayout;
-	hlayout->addWidget(m_sliderStationsCount);
-	hlayout->addWidget(m_spinStationsCount);
-
 	QFormLayout* mainLayout = new QFormLayout;
 
-	mainLayout->addRow(tr("Stations count:"), hlayout);
+	mainLayout->addRow(tr("Stations count:"), m_spinStationCount);
 	mainLayout->addRow(tr("Average velocity:"), m_spinAvgVelocity);
 	mainLayout->addRow(tr("Average data size:"), m_spinAvgDataSize);
-	mainLayout->addRow(tr("Average packets count:"), m_spinAvgPacketsCount);
+	mainLayout->addRow(tr("Average packets count:"), m_spinAvgPacketCount);
 	mainLayout->addRow(tr("Duration:"), m_spinDuration);
 
 	QGroupBox* group = new QGroupBox("Randomization parameters");
@@ -86,6 +74,10 @@ void MeshViewRandomizer::init()
 	QVBoxLayout* layout = new QVBoxLayout;
 	layout->addWidget(group);
 	layout->addStretch();
+
+//	layout->addWidget(m_buttonGenerateWorld);
+//	layout->addWidget(m_buttonGeneratePackets);
+
 	QHBoxLayout* buttonLayout = new QHBoxLayout;
 
 	buttonLayout->addWidget(m_buttonGenerateWorld);
@@ -102,8 +94,8 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 
 	connect(m_spinAvgVelocity, SIGNAL(valueChanged(double)), doc, SLOT(setAvgVelocity(double)));
 	connect(m_spinAvgDataSize, SIGNAL(valueChanged(int)), doc, SLOT(setAvgDataSize(int)));
-	connect(m_spinAvgPacketsCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgPacketsCount(int)));
-	connect(m_spinStationsCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationsCount(int)));
+	connect(m_spinAvgPacketCount, SIGNAL(valueChanged(int)), doc, SLOT(setAvgPacketCount(int)));
+	connect(m_spinStationCount, SIGNAL(valueChanged(int)), doc, SLOT(setStationCount(int)));
 	connect(m_buttonGenerateWorld, SIGNAL(clicked()), doc, SLOT(generateWorld()));
 	connect(m_buttonGeneratePackets, SIGNAL(clicked()), doc, SLOT(generatePackets()));
 	connect(m_spinDuration, SIGNAL(valueChanged(double)), doc, SLOT(setDuration(double)));
@@ -112,8 +104,8 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 
 	m_spinAvgVelocity->setValue(doc->avgVelocity());
 	m_spinAvgDataSize->setValue(doc->avgDataSize());
-	m_spinAvgPacketsCount->setValue(doc->avgPacketsCount());
-	m_spinStationsCount->setValue(doc->stationsCount());
+	m_spinAvgPacketCount->setValue(doc->avgPacketCount());
+	m_spinStationCount->setValue(doc->stationCount());
 	m_spinDuration->setValue(doc->duration());
 
 	MeshView::setDocument(doc);

@@ -2,7 +2,9 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += Views/Items/MeshGraphItemVelocityHandle.h \
+HEADERS += Views/Items/MeshChartItem.h \
+    Views/MeshViewChart.h \
+    Views/Items/MeshGraphItemVelocityHandle.h \
     Views/Items/MeshGraphItemArrow.h \
     Views/Items/MeshGraphItemLink.h \
     Views/Items/MeshGraphItemStation.h \
@@ -22,7 +24,8 @@ HEADERS += Views/Items/MeshGraphItemVelocityHandle.h \
     Dialogs/MeshDlgAbout.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += Views/Items/MeshGraphItemVelocityHandle.cpp \
+SOURCES += Views/MeshViewChart.cpp \
+    Views/Items/MeshGraphItemVelocityHandle.cpp \
     Views/Items/MeshGraphItemArrow.cpp \
     Views/Items/MeshGraphItemLink.cpp \
     Views/Items/MeshGraphItemStation.cpp \
@@ -46,14 +49,11 @@ SOURCES += Views/Items/MeshGraphItemVelocityHandle.cpp \
 FORMS += 
 RESOURCES += MeshApp.qrc
 LIBS += -lMeshCore
-
-DebugBuild {
+DebugBuild { 
     LIBS += -L../MeshCore/Debug
     PRE_TARGETDEPS += ../MeshCore/Debug/libMeshCore.a
 }
-
-ReleaseBuild {
+ReleaseBuild { 
     LIBS += -L../MeshCore/Release
     PRE_TARGETDEPS += ../MeshCore/Release/libMeshCore.a
 }
-

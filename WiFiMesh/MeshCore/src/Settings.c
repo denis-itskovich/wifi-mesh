@@ -50,7 +50,7 @@ static const Size DEFAULT_WORLD_SIZE = {600, 400};
 
 SETTINGS_PROPERTY(WorldSize, Size, DEFAULT_WORLD_SIZE);
 SETTINGS_PROPERTY(Coverage, double, 75);
-SETTINGS_PROPERTY(DataRate, unsigned long, 1048576);
+SETTINGS_PROPERTY(DataRate, unsigned long, 65536);
 SETTINGS_PROPERTY(RouteExpirationTimeout, double, 20.0);
 SETTINGS_PROPERTY(RouteRetryTimeout, double, 0.5);
 SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.01);

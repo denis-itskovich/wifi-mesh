@@ -41,12 +41,11 @@ public:
 private:
 	void init();
 
-	QSlider*           m_sliderStationsCount;
-	QSpinBox*          m_spinStationsCount;
+	QSpinBox*          m_spinStationCount;
 
 	QDoubleSpinBox*    m_spinAvgVelocity;
 	QSpinBox*          m_spinAvgDataSize;
-	QSpinBox*          m_spinAvgPacketsCount;
+	QSpinBox*          m_spinAvgPacketCount;
 	QDoubleSpinBox*    m_spinDuration;
 
 	QPushButton*       m_buttonGenerateWorld;

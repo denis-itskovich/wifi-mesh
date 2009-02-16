@@ -43,7 +43,7 @@ MeshViewSettings::~MeshViewSettings()
 void MeshViewSettings::init()
 {
 	m_spinCoverage = new QDoubleSpinBox;
-	m_spinCoverage->setSingleStep(0.5);
+	m_spinCoverage->setSingleStep(1);
 	m_spinCoverage->setRange(0.01, 1000);
 
 	m_spinRouteExpTimeout = new QDoubleSpinBox;
@@ -70,8 +70,8 @@ void MeshViewSettings::init()
     m_spinPacketRetryThreshold->setRange(1, 100);
 
 	m_spinDataRate = new QDoubleSpinBox;
-	m_spinDataRate->setRange(1, 1 << 30);
-	m_spinDataRate->setDecimals(0);
+	m_spinDataRate->setRange(0.1, 1 << 30);
+	m_spinDataRate->setDecimals(1);
 
 	m_comboDataUnits = new QComboBox;
 	m_comboDataUnits->addItems(QStringList() << tr("Bit/s") << tr("KBit/s") << tr("MBit/s"));
@@ -134,8 +134,14 @@ void MeshViewSettings::setDataRate(double)
 
 void MeshViewSettings::setUnits(int units)
 {
-	m_spinDataRate->setValue(m_dataRate / (1 << (10 *units)));
-	// m_spinDataRate->setDecimals(units);
+    int dataRate = m_dataRate;
+    double min = pow(10, -units);
+    double max = (double)(1 << (10 * (3 - units)));
+    double val = (double)dataRate / (double)(1 << (10 * units));
+
+    m_spinDataRate->setDecimals(units);
+    m_spinDataRate->setRange(min, max);
+	m_spinDataRate->setValue(val);
 }
 
 void MeshViewSettings::setHeight(int height)
@@ -181,8 +187,8 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
     connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
     connect(this, SIGNAL(updateDataRate(int)), doc, SLOT(setDataRate(int)));
-    m_comboDataUnits->setCurrentIndex(2);
-    m_spinDataRate->setValue(doc->dataRate() * 8 / (1 << (10 * m_comboDataUnits->currentIndex())));
+    m_dataRate = doc->dataRate() * 8;
+    m_comboDataUnits->setCurrentIndex(1);
 
 	MeshView::setDocument(doc);
 }

@@ -82,6 +82,7 @@ void MeshViewSniffer::init()
 	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
 	QPushButton* buttonVisibility = new QPushButton(QIcon(":/filter.png"), tr("&Options"));
 
+	m_packets->setAllColumnsShowFocus(true);
 	connect(buttonClear, SIGNAL(clicked()), m_packets, SLOT(clear()));
 
 	m_menu = new QMenu;

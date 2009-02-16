@@ -61,6 +61,7 @@ Section -Main SEC0000
     SetOverwrite on
     File ..\MeshGUI\Images\MeshGUI.ico
     File ..\MeshGUI\release\MeshGUI.exe
+    File ..\MeshGUI\Libraries\mingwm10.dll
     File ..\MeshCore\Documentation\License.txt
     File ..\MeshCore\Documentation\MeshCore.chm
     File ..\MeshCore\Documentation\MeshCore.chi
@@ -108,6 +109,7 @@ Section /o -un.Main UNSEC0000
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\License.lnk"
     Delete /REBOOTOK $INSTDIR\MeshGUI.exe
     Delete /REBOOTOK $INSTDIR\MeshGUI.ico
+    Delete /REBOOTOK $INSTDIR\mingwm10.dll
     Delete /REBOOTOK $INSTDIR\MeshCore.chm
     Delete /REBOOTOK $INSTDIR\MeshCore.chi
     Delete /REBOOTOK $INSTDIR\License.txt
