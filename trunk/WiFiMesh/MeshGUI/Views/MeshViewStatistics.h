@@ -1,5 +1,5 @@
 /*********************************************************************************
-WiFi Mesh Simulator PRO
+MeshGUI
 Copyright (C) 2009 Denis Itskovich
 
 This program is free software; you can redistribute it and/or
@@ -18,47 +18,24 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * Represents customizable chart
- *
- * @file MeshViewChart.h
- * @date 15/02/2009
+ * TODO Fill file purpose and description
+ * @file MeshViewStatistics.h
+ * @date 17/02/2009
  * @author Denis Itskovich
  */
 
-
-#ifndef MESHVIEWCHART_H_
-#define MESHVIEWCHART_H_
+#ifndef MESHVIEWSTATISTICS_H_
+#define MESHVIEWSTATISTICS_H_
 
 #include "MeshView.h"
-#include "Items/MeshChartItem.h"
 
-class MeshViewChart : public MeshView
+class MeshViewStatistics : public MeshView
 {
 public:
-    MeshViewChart(QWidget* parent = NULL);
+    MeshViewStatistics(QWidget* parent);
 
-    void addItem(MeshChartItem* item);
-    void removeItem(MeshChartItem* item);
-
-protected:
-    void paintEvent(QPaintEvent* event);
-    void paintItem(QPainter* painter, MeshChartItem* item, const QRect& rect, double normalizedVal);
-    void paintLegend(QPainter* painter);
-
-    QRect itemRect(int index);
-    const QRect& legendRect() const;
-    const QRect& itemsRect() const;
-    void updateItems();
-
+    virtual void setDocument(MeshDocument* doc);
 private:
-    void init();
-    typedef QList<MeshChartItem*> ChartItems;
-
-    ChartItems  m_items;
-    int         m_spacing;
-    double      m_maxVal;
-    QRect       m_legendRect;
-    QRect       m_itemsRect;
 };
 
-#endif /* MESHVIEWCHART_H_ */
+#endif /* MESHVIEWSTATISTICS_H_ */

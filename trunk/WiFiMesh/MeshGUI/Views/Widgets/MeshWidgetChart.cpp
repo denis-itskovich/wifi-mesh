@@ -19,35 +19,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 /**
  * TODO Fill file purpose and description
- * @file MeshViewChart.cpp
+ * @file MeshWidgetChart.cpp
  * @date 16/02/2009
  * @author Denis Itskovich
  */
 
-#include "MeshViewChart.h"
+#include "MeshWidgetChart.h"
 
-MeshViewChart::MeshViewChart(QWidget* parent) :
-    MeshView(parent)
+MeshWidgetChart::MeshWidgetChart(QWidget* parent) :
+    QWidget(parent),
+    m_spacing(20)
 {
     init();
 }
 
-void MeshViewChart::init()
+void MeshWidgetChart::init()
 {
 
 }
 
-void MeshViewChart::addItem(MeshChartItem* item)
+void MeshWidgetChart::addItem(MeshChartItem* item)
 {
+    item->setParent(this);
     if (item) m_items << item;
 }
 
-void MeshViewChart::removeItem(MeshChartItem* item)
+void MeshWidgetChart::removeItem(MeshChartItem* item)
 {
     if (item) m_items.removeAll(item);
+    if (item->parent() == this) delete item;
 }
 
-void MeshViewChart::paintEvent(QPaintEvent* event)
+void MeshWidgetChart::paintEvent(QPaintEvent* event)
 {
     QWidget::paintEvent(event);
     QPainter painter;
@@ -66,17 +69,17 @@ void MeshViewChart::paintEvent(QPaintEvent* event)
     painter.end();
 }
 
-const QRect& MeshViewChart::itemsRect() const
+const QRect& MeshWidgetChart::itemsRect() const
 {
     return m_itemsRect;
 }
 
-const QRect& MeshViewChart::legendRect() const
+const QRect& MeshWidgetChart::legendRect() const
 {
     return m_legendRect;
 }
 
-void MeshViewChart::updateItems()
+void MeshWidgetChart::updateItems()
 {
     int width = 0;
     int height = 0;
@@ -99,11 +102,11 @@ void MeshViewChart::updateItems()
     rect.setLeft(rect.right() - width);
     m_legendRect = rect.adjusted(m_spacing, m_spacing, -m_spacing, -m_spacing);
 
-    m_itemsRect = QRect(widgetRect.topLeft(), QSize(widgetRect.width() - m_legendRect.width(), widgetRect.height()))
+    m_itemsRect = QRect(widgetRect.topLeft(), QSize(widgetRect.width() - rect.width(), widgetRect.height()))
                   .adjusted(m_spacing, m_spacing, -m_spacing, -m_spacing);
 }
 
-QRect MeshViewChart::itemRect(int index)
+QRect MeshWidgetChart::itemRect(int index)
 {
     int count = m_items.count();
     int itemWidth = (int)(((double)m_itemsRect.width() - (double)((count - 1) * m_spacing)) / (double)count + 0.5);
@@ -111,36 +114,46 @@ QRect MeshViewChart::itemRect(int index)
     return QRect(QPoint(m_itemsRect.left() + (itemWidth + m_spacing)*index, m_itemsRect.top()), QSize(itemWidth, m_itemsRect.height()));
 }
 
-void MeshViewChart::paintItem(QPainter* painter, MeshChartItem* item, const QRect& boundingRect, double normalizedVal)
+void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QRect& boundingRect, double normalizedVal)
 {
-    QRect rect(boundingRect);
-    rect.setTop(rect.bottom() - (int)((double)rect.height() * normalizedVal + 0.5));
+    QRect itemRect(boundingRect);
+    QRect textRect(boundingRect);
 
-    QRect rightShadow(rect.right(), rect.top() + 2, 2, rect.height());
-    QRect bottomShadow(rect.left() + 2, rect.bottom(), rect.width(), 2);
+    int fontHeight = QFontMetrics(item->font()).height();
+    textRect.setHeight(fontHeight);
+    itemRect.setTop(itemRect.bottom() - (int)((double)(itemRect.height() - fontHeight - 4) * normalizedVal + 0.5));
 
-    painter->fillRect(rightShadow, Qt::darkGray);
-    painter->fillRect(bottomShadow, Qt::darkGray);
+    QRect rightShadow(itemRect.right() + 1, itemRect.top() + 5, 5, itemRect.height());
+    QRect bottomShadow(itemRect.left() + 5, itemRect.bottom() + 1, itemRect.width(), 5);
+
+    itemRect.adjust(0, 0, -1, -1);
 
     painter->setBrush(QBrush(item->color()));
     painter->setPen(Qt::black);
 
-    painter->drawRect(rect);
+    painter->drawRect(itemRect);
+    painter->fillRect(rightShadow, Qt::darkGray);
+    painter->fillRect(bottomShadow, Qt::darkGray);
+
+    painter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, QString::number(item->value()));
 }
 
-void MeshViewChart::paintLegend(QPainter* painter)
+void MeshWidgetChart::paintLegend(QPainter* painter)
 {
     painter->setFont(font());
-    painter->drawText(m_legendRect, Qt::AlignCenter | Qt::AlignTop | Qt::TextSingleLine, tr("Legend"));
+    painter->drawText(m_legendRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, tr("Legend"));
 
     QPoint point(m_legendRect.topLeft());
-    point.setY(point.y() + painter->fontMetrics().height() + 10);
+    point.setY(point.y() + painter->fontMetrics().height() + 10 + m_spacing);
 
     foreach(MeshChartItem* item, m_items)
     {
+
         painter->setFont(item->font());
         int fontHeight = painter->fontMetrics().height();
         painter->fillRect(point.x(), point.y(), fontHeight, fontHeight, item->color());
-        painter->drawText(point.x() + fontHeight + 4, point.y(), item->title());
+        QRect textbox(QPoint(point.x() + fontHeight + 4, point.y()), QSize(m_legendRect.width() - fontHeight - 4, fontHeight));
+        painter->drawText(textbox, item->title());
+        point.setY(point.y() + fontHeight + 4);
     }
 }

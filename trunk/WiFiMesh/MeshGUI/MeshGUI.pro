@@ -2,15 +2,17 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += Views/Items/MeshChartItem.h \
-    Views/MeshViewChart.h \
+HEADERS += Views/MeshViewStatistics.h \
+    Views/Widgets/MeshWidgetLog.h \
+    Views/Widgets/MeshWidgetGraphics.h \
+    Views/Widgets/MeshWidgetChart.h \
+    Views/Items/MeshChartItem.h \
     Views/Items/MeshGraphItemVelocityHandle.h \
     Views/Items/MeshGraphItemArrow.h \
     Views/Items/MeshGraphItemLink.h \
     Views/Items/MeshGraphItemStation.h \
     Views/Items/MeshTreeItemStation.h \
     Views/Items/MeshItemStation.h \
-    Views/MeshLog.h \
     Views/MeshView.h \
     Views/MeshViewRandomizer.h \
     Views/MeshViewSettings.h \
@@ -24,14 +26,16 @@ HEADERS += Views/Items/MeshChartItem.h \
     Dialogs/MeshDlgAbout.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += Views/MeshViewChart.cpp \
+SOURCES += Views/MeshViewStatistics.cpp \
+    Views/Widgets/MeshWidgetLog.cpp \
+    Views/Widgets/MeshWidgetGraphics.cpp \
+    Views/Widgets/MeshWidgetChart.cpp \
     Views/Items/MeshGraphItemVelocityHandle.cpp \
     Views/Items/MeshGraphItemArrow.cpp \
     Views/Items/MeshGraphItemLink.cpp \
     Views/Items/MeshGraphItemStation.cpp \
     Views/Items/MeshTreeItemStation.cpp \
     Views/Items/MeshItemStation.cpp \
-    Views/MeshLog.cpp \
     Views/MeshView.cpp \
     Views/MeshViewRandomizer.cpp \
     Views/MeshViewSettings.cpp \

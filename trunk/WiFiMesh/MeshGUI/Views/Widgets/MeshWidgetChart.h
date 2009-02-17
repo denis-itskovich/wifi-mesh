@@ -18,44 +18,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * Represents chart item
- * @file MeshChartItem.h
+ * Represents customizable chart
+ *
+ * @file MeshWidgetChart.h
  * @date 15/02/2009
  * @author Denis Itskovich
  */
 
 
-#ifndef MESHCHARTITEM_H_
-#define MESHCHARTITEM_H_
+#ifndef MESHWIDGETCHART_H_
+#define MESHWIDGETCHART_H_
 
 #include <QtGui>
+#include "../Items/MeshChartItem.h"
 
-class MeshChartItem : public QObject
+class MeshWidgetChart : public QWidget
 {
-    Q_OBJECT
 public:
-    MeshChartItem(const QString& title, QColor color) :
-        m_title(title), m_color(color), m_font("tahoma"), m_value(20) {}
+    MeshWidgetChart(QWidget* parent = NULL);
 
-    double value() const { return m_value; }
-    QColor color() const { return m_color; }
-    const QString& title() const { return m_title; }
-    const QFont& font() const { return m_font; }
+    void addItem(MeshChartItem* item);
+    void removeItem(MeshChartItem* item);
 
-public slots:
-    void setValue(double val) { m_value = val; emit updateRequired(); }
-    void setColor(QColor col) { m_color = col; emit updateRequired(); }
-    void setTitle(const QString& title) { m_title = title; emit updateRequired(); }
-    void setFont(const QFont& font) { m_font = font; emit updateRequired(); }
+protected:
+    void paintEvent(QPaintEvent* event);
+    void paintItem(QPainter* painter, MeshChartItem* item, const QRect& rect, double normalizedVal);
+    void paintLegend(QPainter* painter);
 
-signals:
-    void updateRequired();
+    QRect itemRect(int index);
+    const QRect& legendRect() const;
+    const QRect& itemsRect() const;
+    void updateItems();
 
 private:
-    QString m_title;
-    QColor  m_color;
-    QFont   m_font;
-    double  m_value;
+    void init();
+    typedef QList<MeshChartItem*> ChartItems;
+
+    ChartItems  m_items;
+    int         m_spacing;
+    double      m_maxVal;
+    QRect       m_legendRect;
+    QRect       m_itemsRect;
 };
 
-#endif /* MESHCHARTITEM_H_ */
+#endif /* MESHWIDGETCHART_H_ */
