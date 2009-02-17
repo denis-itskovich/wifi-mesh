@@ -19,41 +19,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 /**
  * TODO Fill file purpose and description
- * @file MeshViewStatistics.h
+ * @file MeshTheme.cpp
  * @date 17/02/2009
  * @author Denis Itskovich
  */
 
-#ifndef MESHVIEWSTATISTICS_H_
-#define MESHVIEWSTATISTICS_H_
+#include "MeshTheme.h"
 
-#include "MeshView.h"
-#include "Widgets/MeshWidgetChart.h"
-#include "Theme/MeshTheme.h"
-#include "../Core/MeshCore.h"
-
-class MeshViewStatistics : public MeshView
+const MeshTheme::ItemDescriptor MeshTheme::s_packetType[ePKT_TYPE_LAST] =
 {
-    Q_OBJECT
-public:
-    MeshViewStatistics(QWidget* parent = NULL);
-
-    virtual void setDocument(MeshDocument* doc);
-
-protected slots:
-    void updateStatistics(const Statistics* pStatistics);
-
-private:
-    MeshChartItem* createItem(const MeshTheme::ItemDescriptor& desc);
-
-    void init();
-
-    MeshWidgetChart*    m_chartPacketsByStatus;
-    MeshWidgetChart*    m_chartPacketsByType;
-    MeshWidgetChart*    m_chartTrafficByType;
-    MeshChartItem*      m_itemPacketsByStatus[ePKT_STATUS_PENDING];
-    MeshChartItem*      m_itemPacketsByType[ePKT_TYPE_LAST];
-    MeshChartItem*      m_itemTrafficByType[ePKT_TYPE_LAST];
+     { "Search request",    0x000000bf },
+     { "Search response",   0x0000bf00 },
+     { "Data",              0x00000000 },
+     { "Ack",               0x007f7f7f }
 };
 
-#endif /* MESHVIEWSTATISTICS_H_ */
+const MeshTheme::ItemDescriptor MeshTheme::s_packetStatus[ePKT_TYPE_LAST] =
+{
+     { "Delivered",     0x00007f00 },
+     { "Collision",     0x00bf0000 },
+     { "Out of range",  0x00bf7f00 },
+     { "Pending",       0x007f7f7f },
+};
+
+const MeshTheme::ItemDescriptor& MeshTheme::packetTypeDescriptor(EPacketType packetType)
+{
+    return s_packetType[packetType];
+}
+
+const MeshTheme::ItemDescriptor& MeshTheme::packetStatusDescriptor(EPacketStatus packetStatus)
+{
+    return s_packetStatus[packetStatus];
+}

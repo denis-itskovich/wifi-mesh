@@ -130,6 +130,8 @@ signals:
 	void simulationStopped();
     void simulationReset();
 
+    void statisticsUpdated(const Statistics* pStatistics);
+
 	void updatedStations();
 	void updatedTimeLine();
 

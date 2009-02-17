@@ -29,30 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "MeshViewSniffer.h"
 #include "../Core/MeshCore.h"
-
-static const char* PKT_TYPES_TEXT[ePKT_TYPE_LAST] =
-{
-		"Search request",
-		"Search response",
-		"Data",
-		"Ack"
-};
-
-static const QRgb PKT_TYPES_COLOR[ePKT_TYPE_LAST] =
-{
-		0x000000bf,
-		0x0000bf00,
-		0x00000000,
-		0x007f7f7f
-};
-
-static const char* PKT_STATUS_TEXT[ePKT_STATUS_LAST] =
-{
-     "Pending",
-     "Delivered",
-     "Collision",
-     "Out of range"
-};
+#include "Theme/MeshTheme.h"
 
 MeshViewSniffer::MeshViewSniffer(QWidget* parent) :
 	MeshView(parent),
@@ -157,8 +134,11 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	QStringList columns;
 	unsigned size;
 	PacketGetSize(pPacket, &size);
+	MeshTheme::ItemDescriptor typeDesc = MeshTheme::packetTypeDescriptor(pPacket->header.type);
+	MeshTheme::ItemDescriptor statusDesc = MeshTheme::packetStatusDescriptor(status);
+
 	columns << QString::number(document()->time())
-			<< PKT_TYPES_TEXT[pPacket->header.type]
+			<< typeDesc.title
 			<< stationId(pPacket->header.originalSrcId)
 			<< stationId(pPacket->header.originalDstId)
 			<< stationId(pPacket->header.transitSrcId)
@@ -166,12 +146,13 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	        << stationId(deliveredId)
 			<< QString::number(size)
 			<< QString::number(pPacket->header.hopsCount)
-            << PKT_STATUS_TEXT[status];
+            << statusDesc.title;
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);
 	item->setIcon(0, ((status == ePKT_STATUS_DELIVERED) ? m_iconSuccess : m_iconFailure));
-	QBrush brush(PKT_TYPES_COLOR[pPacket->header.type]);
-	for (int i = 0; i < item->columnCount(); ++i) item->setForeground(i, brush);
+	QBrush brush(typeDesc.color);
+	for (int i = 0; i < item->columnCount() - 1; ++i) item->setForeground(i, brush);
+	item->setForeground(item->columnCount() - 1, QBrush(statusDesc.color));
 
 	if (!m_actShowPath->isChecked()) return item;
 	if (status == ePKT_STATUS_COLLISION) return item;

@@ -19,41 +19,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 /**
  * TODO Fill file purpose and description
- * @file MeshViewStatistics.h
+ * @file MeshTheme.h
  * @date 17/02/2009
  * @author Denis Itskovich
  */
 
-#ifndef MESHVIEWSTATISTICS_H_
-#define MESHVIEWSTATISTICS_H_
 
-#include "MeshView.h"
-#include "Widgets/MeshWidgetChart.h"
-#include "Theme/MeshTheme.h"
-#include "../Core/MeshCore.h"
+#ifndef MESHTHEME_H_
+#define MESHTHEME_H_
 
-class MeshViewStatistics : public MeshView
+#include "../../Core/MeshCore.h"
+
+class MeshTheme
 {
-    Q_OBJECT
 public:
-    MeshViewStatistics(QWidget* parent = NULL);
 
-    virtual void setDocument(MeshDocument* doc);
+    struct ItemDescriptor
+    {
+        const char* title;
+        QRgb        color;
+    };
 
-protected slots:
-    void updateStatistics(const Statistics* pStatistics);
+    static const ItemDescriptor& packetTypeDescriptor(EPacketType packetType);
+    static const ItemDescriptor& packetStatusDescriptor(EPacketStatus packetStatus);
 
 private:
-    MeshChartItem* createItem(const MeshTheme::ItemDescriptor& desc);
-
-    void init();
-
-    MeshWidgetChart*    m_chartPacketsByStatus;
-    MeshWidgetChart*    m_chartPacketsByType;
-    MeshWidgetChart*    m_chartTrafficByType;
-    MeshChartItem*      m_itemPacketsByStatus[ePKT_STATUS_PENDING];
-    MeshChartItem*      m_itemPacketsByType[ePKT_TYPE_LAST];
-    MeshChartItem*      m_itemTrafficByType[ePKT_TYPE_LAST];
+    static const ItemDescriptor s_packetType[ePKT_TYPE_LAST];
+    static const ItemDescriptor s_packetStatus[ePKT_STATUS_LAST];
 };
 
-#endif /* MESHVIEWSTATISTICS_H_ */
+#endif /* MESHTHEME_H_ */

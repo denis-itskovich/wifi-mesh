@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../Views/MeshViewStationsList.h"
 #include "../Views/MeshViewStationsGraph.h"
 #include "../Views/MeshViewSniffer.h"
+#include "../Views/MeshViewStatistics.h"
 #include "../Views/Widgets/MeshWidgetLog.h"
 
 MeshApp::MeshApp(QWidget *parent)
@@ -286,9 +287,12 @@ void MeshApp::createTabs()
 	setCentralWidget(m_tabs);
 	MeshView* viewMap = new MeshViewStationsGraph;
 	viewMap->setDocument(m_document);
+	MeshView* statistics = new MeshViewStatistics;
+	statistics->setDocument(m_document);
+
 	m_tabs->addTab(viewMap, QIcon(":/map.png"), tr("World map"));
 	m_tabs->addTab(new MeshWidgetLog, QIcon(":/log.png"), tr("Activity log"));
-
+	m_tabs->addTab(statistics, tr("Statistics"));
 }
 
 QDockWidget* MeshApp::createDock(const QString& title, MeshView* view)
