@@ -46,9 +46,9 @@ EStatus StatisticsInit(Statistics* pThis)
 EStatus StatisticsReset(Statistics* pThis)
 {
     VALIDATE_ARGUMENTS(pThis);
-    int scheduledDataAmount = pThis->scheduledDataAmount;
+//    int scheduledDataAmount = pThis->scheduledDataAmount;
     CHECK(StatisticsClear(pThis));
-    pThis->scheduledDataAmount = scheduledDataAmount;
+//    pThis->scheduledDataAmount = scheduledDataAmount;
     return eSTATUS_COMMON_OK;
 }
 
@@ -78,10 +78,9 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     ++pThis->packetsByStatus[status];
     if (status != ePKT_STATUS_DELIVERED) return eSTATUS_COMMON_OK;
 
-    ++pThis->packetsByType[type];
-
     CHECK(PacketGetSize(pPacket, &size));
-    type = pPacket->header.type;
+    pThis->trafficByType[type] += size;
+    ++pThis->packetsByType[type];
 
     totalHopsCount = pThis->avgHopsCount * (double)(pThis->packetsByStatus[status] - 1) + (double)pPacket->header.hopsCount;
     pThis->avgHopsCount = totalHopsCount / (double)pThis->packetsByStatus[status];
@@ -89,16 +88,11 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     totalRouteLength = pThis->avgRouteLength * (double)(pThis->packetsByStatus[status] - 1) + (double)pPacket->routing.length;
     pThis->avgRouteLength = totalRouteLength / (double)pThis->packetsByStatus[status];
 
-    if (type == ePKT_TYPE_DATA)
-    {
-        pThis->usefulDataAmount += size;
-        if (pPacket->header.transitDstId == pPacket->header.originalDstId)
-            pThis->deliveredDataAmount += size;
-    }
-    else
-    {
-        pThis->controlDataAmount += size;
-    }
+//    if (type == ePKT_TYPE_DATA)
+//    {
+//        if (pPacket->header.transitDstId == pPacket->header.originalDstId)
+//            pThis->dataAmounts[eTRAFFIC_DELIVERED] += size;
+//    }
 
     return eSTATUS_COMMON_OK;
 }

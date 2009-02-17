@@ -34,32 +34,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 typedef enum
 {
-    ePKT_STATUS_PENDING,        ///< Packet transmitting has been recently started
     ePKT_STATUS_DELIVERED,      ///< Transmit was successfully finished
     ePKT_STATUS_COLLISION,      ///< Transmit was aborted due to collision
     ePKT_STATUS_OUT_OF_RANGE,   ///< Transmit was not started because destination was out of range
+    ePKT_STATUS_PENDING,        ///< Packet transmitting has been recently started
 
     ePKT_STATUS_LAST            ///< Terminator
 } EPacketStatus;
+
+typedef enum
+{
+    eTRAFFIC_SCHEDULED,         ///< Scheduled for delivery data - total size of all scheduled packets
+    eTRAFFIC_DELIVERED,         /**< Delivered data - total size of all delivered from point to point data packets
+                                     (not including intermediators traffic) */
+
+    eTRAFFIC_LAST               ///< Terminator
+} ETraffic;
 
 /// Statistics collection
 typedef struct _Statistics
 {
     int     packetsByStatus[ePKT_STATUS_LAST];      ///< Packet counts by delivery status @see EPacketStatus
     int     packetsByType[ePKT_TYPE_LAST];          ///< Packet counts by packet type @see EPacketType
+    int     trafficByType[ePKT_TYPE_LAST];          ///< Data amounts by packet type @see EPacketType
 
     int     maxHopsCount;                           ///< Maximal delivered hops count
     double  avgHopsCount;                           ///< Average delivered hops count
 
     int     maxRouteLength;                         ///< Longest delivered route length
     double  avgRouteLength;                         ///< Average delivered route length
-
-    int     controlDataAmount;                      ///< Total amount of delivered control packets
-    int     usefulDataAmount;                       ///< Total amount of delivered data packets
-
-    int     scheduledDataAmount;                    ///< Total amount of scheduled data amount
-    int     deliveredDataAmount;                    /**< Total amount of delivered from end - to end data amount
-                                                         (not including traffic between intermediators) */
 } Statistics;
 
 /** Allocates and initializes new instance of statistics

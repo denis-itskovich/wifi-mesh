@@ -38,6 +38,7 @@ extern "C"
 	#include "../../MeshCore/inc/Settings.h"
 	#include "../../MeshCore/inc/Log.h"
 	#include "../../MeshCore/inc/Packet.h"
+    #include "../../MeshCore/inc/Statistics.h"
 }
 
 #include "MeshException.h"

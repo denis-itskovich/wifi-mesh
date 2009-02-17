@@ -35,7 +35,7 @@ class MeshChartItem : public QObject
     Q_OBJECT
 public:
     MeshChartItem(const QString& title, QColor color) :
-        m_title(title), m_color(color), m_font("tahoma"), m_value(20) {}
+        m_title(title), m_color(color), m_font(QFont("tahoma", 8, QFont::Normal)), m_value(20) {}
 
     double value() const { return m_value; }
     QColor color() const { return m_color; }

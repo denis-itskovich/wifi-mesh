@@ -35,10 +35,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class MeshWidgetChart : public QWidget
 {
 public:
+    MeshWidgetChart(const QString& title, QWidget* parent = NULL);
     MeshWidgetChart(QWidget* parent = NULL);
 
     void addItem(MeshChartItem* item);
     void removeItem(MeshChartItem* item);
+
+    const QString& title() { return m_title; }
+
+public slots:
+    void setTitle(const QString& title);
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -48,17 +54,20 @@ protected:
     QRect itemRect(int index);
     const QRect& legendRect() const;
     const QRect& itemsRect() const;
-    void updateItems();
+    const QRect& titleRect() const;
 
 private:
+    void updateItems();
     void init();
     typedef QList<MeshChartItem*> ChartItems;
 
+    QString     m_title;
     ChartItems  m_items;
     int         m_spacing;
     double      m_maxVal;
     QRect       m_legendRect;
     QRect       m_itemsRect;
+    QRect       m_titleRect;
 };
 
 #endif /* MESHWIDGETCHART_H_ */

@@ -251,6 +251,9 @@ void MeshDocument::stop()
 	pause();
 	m_bStarted = false;
 	emit simulationStopped();
+	const Statistics* pStatistics;
+	CHECK(SimulatorGetStatistics(m_pSimulator, &pStatistics));
+	emit statisticsUpdated(pStatistics);
 }
 
 void MeshDocument::togglePause(bool paused)
