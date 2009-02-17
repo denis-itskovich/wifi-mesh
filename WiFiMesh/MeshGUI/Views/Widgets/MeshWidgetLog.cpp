@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
-#include "MeshLog.h"
+#include "MeshWidgetLog.h"
 
 static const char* TXT_SEVERITIES[eSEVERITY_LAST] =
 {
@@ -46,22 +46,22 @@ static const QRgb COLOR_SEVERITIES[eSEVERITY_LAST] =
 		0x007fffff
 };
 
-MeshLog::MeshLog(QWidget *parent)
+MeshWidgetLog::MeshWidgetLog(QWidget *parent)
     : QListWidget(parent)
 {
-	LogSetLogger(&MeshLog::LogOutput, this);
-	LogSetFilter(&MeshLog::LogFilter, this);
+	LogSetLogger(&MeshWidgetLog::LogOutput, this);
+	LogSetFilter(&MeshWidgetLog::LogFilter, this);
 	init();
 }
 
-MeshLog::~MeshLog()
+MeshWidgetLog::~MeshWidgetLog()
 {
 	LogSetLogger(0, 0);
 	LogSetFilter(0, 0);
 	delete m_menu;
 }
 
-void MeshLog::init()
+void MeshWidgetLog::init()
 {
     this->setFont(QFont("Courier"));
     m_actClear = new QAction(QIcon(":/clear.png"), tr("&Clear"), this);
@@ -90,7 +90,7 @@ void MeshLog::init()
     m_menu->addMenu(m_menuSeverities);
 }
 
-QString MeshLog::moduleName(const QString& filename) const
+QString MeshWidgetLog::moduleName(const QString& filename) const
 {
     QString module = filename;
     module.replace('\\', '/');
@@ -100,17 +100,17 @@ QString MeshLog::moduleName(const QString& filename) const
     return module.mid(begin, end - begin);
 }
 
-Boolean MeshLog::LogFilter(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg)
+Boolean MeshWidgetLog::LogFilter(ELogSeverity severity, const char* file, const char* function, int line, void* pUserArg)
 {
-	return ((MeshLog*)pUserArg)->filter(severity, file, function, line) ? TRUE : FALSE;
+	return ((MeshWidgetLog*)pUserArg)->filter(severity, file, function, line) ? TRUE : FALSE;
 }
 
-void MeshLog::LogOutput(ELogSeverity severity, const char* function, const char* msg, void* pUserArg)
+void MeshWidgetLog::LogOutput(ELogSeverity severity, const char* function, const char* msg, void* pUserArg)
 {
-	((MeshLog*)pUserArg)->output(severity, function, msg);
+	((MeshWidgetLog*)pUserArg)->output(severity, function, msg);
 }
 
-bool MeshLog::filter(ELogSeverity severity, const char* file, const char* function, int line)
+bool MeshWidgetLog::filter(ELogSeverity severity, const char* file, const char* function, int line)
 {
 	if (!m_severityFilters[severity]->isChecked()) return false;
 	QString module = moduleName(file);
@@ -127,7 +127,7 @@ bool MeshLog::filter(ELogSeverity severity, const char* file, const char* functi
 	return m_moduleFilters[module]->isChecked();
 }
 
-void MeshLog::output(ELogSeverity severity, const char* function, const char* msg)
+void MeshWidgetLog::output(ELogSeverity severity, const char* function, const char* msg)
 {
 	QString str(msg);
 	str = tr("[%1] [%2] : %3").arg(TXT_SEVERITIES[severity]).arg(function).arg(str);
@@ -137,7 +137,7 @@ void MeshLog::output(ELogSeverity severity, const char* function, const char* ms
 	if (m_actAutoScroll->isChecked()) scrollToItem(item);
 }
 
-void MeshLog::contextMenuEvent(QContextMenuEvent* event)
+void MeshWidgetLog::contextMenuEvent(QContextMenuEvent* event)
 {
     m_menu->exec(event->globalPos());
 }

@@ -38,7 +38,7 @@ MeshViewStationsGraph::MeshViewStationsGraph(QWidget *parent) :
 void MeshViewStationsGraph::init()
 {
 	QGraphicsScene* scene = new QGraphicsScene();
-	m_graphStations = new MeshGraphics();
+	m_graphStations = new MeshWidgetGraphics();
 	QLayout* layout = new QHBoxLayout;
 
 	layout->setMargin(0);
@@ -178,97 +178,4 @@ void MeshViewStationsGraph::updateWorldSize()
 	    scene->setSceneRect(-size.x/2.0, -size.y/2.0, size.x, size.y);
 		scene->update();
 	}
-}
-
-MeshGraphics::MeshGraphics(QWidget* parent) :
-	QGraphicsView(parent)
-{
-}
-
-MeshGraphics::~MeshGraphics()
-{
-    delete m_menu;
-}
-
-QPointF MeshGraphics::pos() const
-{
-    return m_pos;
-}
-
-void MeshGraphics::setMenu(QMenu* menu)
-{
-    m_menu = menu;
-}
-
-void MeshGraphics::contextMenuEvent(QContextMenuEvent* event)
-{
-    m_pos = mapToScene(event->pos());
-    if (m_menu) m_menu->exec(event->globalPos());
-}
-
-void MeshGraphics::wheelEvent(QWheelEvent* event)
-{
-	qreal scaleFactor = pow(1.2, -event->delta() / 240.0);
-	scale(scaleFactor, scaleFactor);
-}
-
-void MeshGraphics::mouseDoubleClickEvent(QMouseEvent* event)
-{
-	emit doubleClicked(mapToScene(event->pos()));
-}
-
-void MeshGraphics::mousePressEvent(QMouseEvent* event)
-{
-    if (itemAt(event->pos()) == NULL) emit focusCleared();
-    QGraphicsView::mousePressEvent(event);
-}
-
-void MeshGraphics::keyPressEvent(QKeyEvent* event)
-{
-	qreal scaleFactor = 1.0;
-
-	switch (event->key())
-	{
-	case Qt::Key_Plus: scaleFactor = 1.2; break;
-	case Qt::Key_Minus: scaleFactor = 1/1.2; break;
-	default: break;
-	}
-
-	if (scaleFactor != 1.0)
-		scale(scaleFactor, scaleFactor);
-    QGraphicsView::keyPressEvent(event);
-}
-
-void MeshGraphics::addItem(QGraphicsItem* item)
-{
-	if (item && scene()) scene()->addItem(item);
-}
-
-void MeshGraphics::removeItem(QGraphicsItem* item)
-{
-	if (item && scene()) scene()->removeItem(item);
-}
-
-void MeshGraphics::drawBackground(QPainter *painter, const QRectF &rect)
-{
-	QRectF sceneRect = this->sceneRect();
-
-    // Shadow
-//    QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
-//    QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
-//    if (rightShadow.intersects(rect) || rightShadow.contains(rect))
-//        painter->fillRect(rightShadow, Qt::darkGray);
-//    if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
-//        painter->fillRect(bottomShadow, Qt::darkGray);
-//
-//    QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-//    gradient.setColorAt(0, QRgb(0x00dfdfdf));
-//    gradient.setColorAt(1, Qt::lightGray);
-//    painter->fillRect(rect.intersect(sceneRect), gradient);
-//    painter->setBrush(Qt::NoBrush);
-//    painter->drawRect(sceneRect);
-
-	painter->setPen(QColor(Qt::black));
-	painter->fillRect(sceneRect, QBrush(QRgb(0x00dfdfdf)));
-	painter->drawRect(sceneRect);
 }

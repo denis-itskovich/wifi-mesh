@@ -18,44 +18,44 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * Represents chart item
- * @file MeshChartItem.h
- * @date 15/02/2009
+ * TODO Fill file purpose and description
+ * @file MeshWidgetGtaphics.h
+ * @date 17/02/2009
  * @author Denis Itskovich
  */
 
-
-#ifndef MESHCHARTITEM_H_
-#define MESHCHARTITEM_H_
+#ifndef MESHWIDGETGTAPHICS_H_
+#define MESHWIDGETGTAPHICS_H_
 
 #include <QtGui>
 
-class MeshChartItem : public QObject
+class MeshWidgetGraphics: public QGraphicsView
 {
     Q_OBJECT
 public:
-    MeshChartItem(const QString& title, QColor color) :
-        m_title(title), m_color(color), m_font("tahoma"), m_value(20) {}
+    MeshWidgetGraphics(QWidget* parent = 0);
+    ~MeshWidgetGraphics();
 
-    double value() const { return m_value; }
-    QColor color() const { return m_color; }
-    const QString& title() const { return m_title; }
-    const QFont& font() const { return m_font; }
-
-public slots:
-    void setValue(double val) { m_value = val; emit updateRequired(); }
-    void setColor(QColor col) { m_color = col; emit updateRequired(); }
-    void setTitle(const QString& title) { m_title = title; emit updateRequired(); }
-    void setFont(const QFont& font) { m_font = font; emit updateRequired(); }
+    void addItem(QGraphicsItem* item);
+    void removeItem(QGraphicsItem* item);
+    void setMenu(QMenu* menu);
+    QPointF pos() const;
 
 signals:
-    void updateRequired();
+    void doubleClicked(QPointF pos);
+    void focusCleared();
+
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void wheelEvent(QWheelEvent* event);
+    virtual void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void drawBackground(QPainter *painter, const QRectF &rect);
 
 private:
-    QString m_title;
-    QColor  m_color;
-    QFont   m_font;
-    double  m_value;
+    QMenu*  m_menu;
+    QPointF m_pos;
 };
 
-#endif /* MESHCHARTITEM_H_ */
+#endif /* MESHWIDGETGTAPHICS_H_ */

@@ -85,7 +85,6 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
 	    colOut = Qt::red;
 	}
 
-
     QRadialGradient gradient(-3, -3, 10);
     if (option->state & QStyle::State_Sunken)
     {

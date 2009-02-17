@@ -17,19 +17,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
-#ifndef MESHLOG_H
-#define MESHLOG_H
+#ifndef MESHWIDGETLOG_H
+#define MESHWIDGETLOG_H
 
 #include <QtGui>
 #include "../Core/MeshCore.h"
 
-class MeshLog : public QListWidget
+class MeshWidgetLog : public QListWidget
 {
     Q_OBJECT
 
 public:
-    MeshLog(QWidget *parent = 0);
-    ~MeshLog();
+    MeshWidgetLog(QWidget *parent = 0);
+    ~MeshWidgetLog();
 
 private:
     void init();
@@ -52,4 +52,4 @@ private:
 	QMenu*         m_menuSeverities;
 };
 
-#endif // MESHLOG_H
+#endif // MESHWIDGETLOG_H
