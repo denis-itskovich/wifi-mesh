@@ -33,61 +33,67 @@ public:
     ~MeshApp();
 
 private:
-	void init();
-	void createActions();
-	void createMenus();
-	void createWidgets();
-	void createToolBars();
-	void createStatusBar();
-	void createDocks();
-	void createTabs();
-	void setDocument(MeshDocument* doc);
+    void init();
+    void createActions();
+    void createMenus();
+    void createToolBars();
+    void createStatusBar();
+    void createDocks();
+    void createTabs();
+    void setDocument(MeshDocument* doc);
 
-	QDockWidget* createDock(const QString& title, MeshView* view);
+    void addDock(Qt::DockWidgetArea area, const QString& title, MeshView* view);
+    void addTab(const QIcon& icon, const QString& title, MeshView* view);
 
 private slots:
-	void about();
-	void aboutQt();
+    void about();
+    void aboutQt();
 
-	void simulationStarted();
-	void simulationStopped();
-	void simulationPaused(bool isPaused);
-	void simulationEmpty(bool isEmpty);
+    void simulationStarted();
+    void simulationStopped();
+    void simulationPaused(bool isPaused);
+    void simulationEmpty(bool isEmpty);
 
 private:
-	QToolBar*	m_toolbarFile;
-	QToolBar*	m_toolbarSimulation;
+    void addView(MeshView* view);
+    void removeView(MeshView* view);
 
-	QMenu*		m_menuFile;
-	QMenu*		m_menuView;
-	QMenu*		m_menuSimulation;
-	QMenu*		m_menuHelp;
+    typedef QList<MeshView*>    MeshViews;
 
-	QAction*	m_actFileNew;
-	QAction*	m_actFileOpen;
-	QAction*	m_actFileSave;
-	QAction*	m_actFileClose;
-	QAction*	m_actFileExit;
+    QToolBar*   m_toolbarFile;
+    QToolBar*   m_toolbarSimulation;
 
-	QAction*	m_actViewShowSettings;
-	QAction*	m_actViewShowSniffer;
-	QAction*	m_actViewShowStations;
-	QAction*	m_actViewShowGenerator;
-	QAction*	m_actViewShowLog;
+    QMenu*      m_menuFile;
+    QMenu*      m_menuView;
+    QMenu*      m_menuSimulation;
+    QMenu*      m_menuHelp;
 
-	QAction*    m_actSimulationReset;
-	QAction*	m_actSimulationRun;
-	QAction*	m_actSimulationPause;
-	QAction*	m_actSimulationBreak;
+    QAction*    m_actFileNew;
+    QAction*    m_actFileOpen;
+    QAction*    m_actFileSave;
+    QAction*    m_actFileExit;
 
-	QAction*	m_actHelpAbout;
-	QAction*	m_actHelpAboutQt;
+    QAction*    m_actViewShowSettings;
+    QAction*    m_actViewShowSniffer;
+    QAction*    m_actViewShowStations;
+    QAction*    m_actViewShowGenerator;
+    QAction*    m_actViewShowLog;
 
-	QTabWidget*	m_tabs;
-	QSlider*    m_sliderSpeed;
-	QLabel*     m_simulationTime;
+    QAction*    m_actSimulationReset;
+    QAction*    m_actSimulationRun;
+    QAction*    m_actSimulationPause;
+    QAction*    m_actSimulationBreak;
 
-	MeshDocument*	m_document;
+    QAction*    m_actHelpAbout;
+    QAction*    m_actHelpAboutQt;
+
+    QTabWidget* m_tabs;
+    QSlider*    m_sliderSpeed;
+    QLabel*     m_simulationTime;
+
+    MeshViews   m_views;
+
+    MeshDocument*	m_document;
 };
 
 #endif // MESHAPP_H

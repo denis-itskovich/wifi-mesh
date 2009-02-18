@@ -137,6 +137,7 @@ signals:
 
 private:
     void prepare();
+    void refreshStatistics();
 	virtual void timerEvent(QTimerEvent* event);
 	Velocity generateVelocity() const;
 	Location generateLocation() const;
@@ -169,6 +170,7 @@ private:
 	Simulator*         m_pSimulator;
 	Settings*          m_pSettings;
 	TimeLine*          m_pTimeLine;
+    const Statistics*  m_pStatistics;
 	Station*           m_pCurStation;
 	int                m_stationsCount;
 	int                m_avgDataSize;
@@ -179,6 +181,7 @@ private:
 	bool               m_bPaused;
 	int                m_timerId;
 	int                m_delay;
+	int                m_steps;
 };
 
 #endif /* MESHDOCUMENT_H_ */

@@ -71,8 +71,12 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     unsigned size;
     double totalHopsCount;
     double totalRouteLength;
+    static const Packet* pLastPacket = NULL;
 
     VALIDATE_ARGUMENTS(pThis);
+
+    if (pPacket == pLastPacket) return eSTATUS_COMMON_OK;
+    pLastPacket = pPacket;
 
     type = pPacket->header.type;
     ++pThis->packetsByStatus[status];

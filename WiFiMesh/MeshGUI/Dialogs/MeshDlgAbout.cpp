@@ -19,10 +19,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "MeshDlgAbout.h"
 
-#define COPYRIGHT_STRING 	"<p>%1, <b>version %2</b></p>" 		\
-							"<p><b>\xa9 2008 Denis Itskovich</b></p>"				    \
-							"<p>Application is distributed under <a href=\"http://www.gnu.org/licenses/gpl-2.0.html#TOC1\">GPL v2 license</a></p>" \
-							"<p>Source code can be found at <a href=\"http://wifi-mesh.googlecode.com/svn/trunk/WiFiMesh\">SVN repository</a></p>"
+#define COPYRIGHT_STRING 	"<p align=\"center\">%1, version <b>%2</b></p>" \
+							"<p align=\"center\">\xa9 Copyright 2008 <a href=\"mailto:denis.itskovich@gmail.com\">Denis Itskovich</a></p>" \
+							"<p align=\"center\">Application is distributed under <a href=\"http://www.gnu.org/licenses/gpl-2.0.html#TOC1\">GPL v2 license</a></p>" \
+							"<p align=\"center\">Source code can be found at <a href=\"http://wifi-mesh.googlecode.com/svn/trunk/WiFiMesh\">SVN repository</a></p>" \
+							"<p align=\"center\">Project home page: <a href=\"http://wifi-mesh.googlecode.com\">http://wifi-mesh.googlecode.com</a></p>"
 
 
 MeshDlgAbout::MeshDlgAbout(QWidget *parent)
@@ -56,6 +57,7 @@ void MeshDlgAbout::init()
 	vlayout->addWidget(buttonOK);
 
 	setLayout(vlayout);
+	setMaximumSize(minimumSize());
 
 	connect(buttonOK, SIGNAL(clicked()), this, SLOT(close()));
 }

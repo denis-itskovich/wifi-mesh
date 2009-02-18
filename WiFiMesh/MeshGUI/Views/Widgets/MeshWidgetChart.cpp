@@ -52,6 +52,7 @@ void MeshWidgetChart::addItem(MeshChartItem* item)
         item->setParent(this);
         m_items << item;
         connect(item, SIGNAL(updateRequired()), this, SLOT(update()));
+        updateBounds();
     }
 }
 
@@ -77,10 +78,13 @@ void MeshWidgetChart::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::TextAntialiasing);
     painter.drawText(m_titleRect, Qt::AlignCenter, m_title);
 
+    double maxVal = 0;
+    foreach(MeshChartItem* item, m_items) maxVal = std::max(maxVal, item->value());
+
     int index = 0;
     foreach(MeshChartItem* item, m_items)
     {
-        paintItem(&painter, item, itemRect(index++), m_maxVal != 0 ? item->value()/m_maxVal : 0);
+        paintItem(&painter, item, itemRect(index++),maxVal != 0 ? item->value()/maxVal : 0);
     }
 
     paintLegend(&painter);
@@ -98,11 +102,30 @@ const QRect& MeshWidgetChart::legendRect() const
     return m_legendRect;
 }
 
-void MeshWidgetChart::updateItems()
+void MeshWidgetChart::updateBounds()
+{
+    QRect itemsRect(calculateItemsRect());
+    QRect legendRect(calculateLegendRect());
+    QRect titleRect(calculateTitleRect());
+
+    int height = std::max(titleRect.height() + itemsRect.height() + 2 * m_spacing, legendRect.height()) + 2 * m_spacing;
+    int width = std::max(itemsRect.width() + legendRect.width() + 2 * m_spacing, titleRect.width()) + 2 * m_spacing;
+
+    setMinimumSize(QSize(width, height));
+}
+
+QRect MeshWidgetChart::calculateItemsRect() const
+{
+    int width = 0;
+    width += (m_items.count() + 1) * m_spacing;
+    width += m_items.count() * 20;
+    return QRect(QPoint(0, 0), QSize(width, 50));
+}
+
+QRect MeshWidgetChart::calculateLegendRect() const
 {
     int width = 0;
     int height = 0;
-    m_maxVal = 0;
 
     foreach(MeshChartItem* item, m_items)
     {
@@ -112,19 +135,31 @@ void MeshWidgetChart::updateItems()
         size.setWidth(size.width() + m_spacing * 2 + size.height() + 4);
         height += size.height() + 4;
         if (size.width() > width) width = size.width();
-        if (item->value() > m_maxVal) m_maxVal = item->value();
     }
 
-    QRect widgetRect(rect());
+    height += QFontMetrics(legendFont()).height() + 10 + m_spacing;
+    return QRect(QPoint(0, 0), QSize(height, width));
+}
 
-    height = QFontMetrics(font()).height();
+QRect MeshWidgetChart::calculateTitleRect() const
+{
+    QFontMetrics metrics(font());
+    return metrics.boundingRect(m_title);
+}
+
+void MeshWidgetChart::updateItems()
+{
+    QRect widgetRect(rect());
+    QRect legendRect(calculateLegendRect());
+
+    int height = QFontMetrics(font()).height();
     m_titleRect = widgetRect;
     m_titleRect.setBottom(m_titleRect.top() + height + m_spacing * 2);
 
     widgetRect.setTop(m_titleRect.bottom());
 
     QRect rect(widgetRect);
-    rect.setLeft(rect.right() - width);
+    rect.setLeft(rect.right() - legendRect.width());
 
     m_legendRect = rect.adjusted(m_spacing, m_spacing, -m_spacing, -m_spacing);
 
@@ -160,16 +195,22 @@ void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QR
     painter->fillRect(rightShadow, Qt::darkGray);
     painter->fillRect(bottomShadow, Qt::darkGray);
 
-    painter->setFont(item->font());
+    QFont font = item->font();
+    font.setPointSize(font.pointSize() - 1);
+    painter->setFont(font);
     painter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, QString::number(item->value()));
+}
+
+QFont MeshWidgetChart::legendFont() const
+{
+    QFont fnt(font());
+    fnt.setPointSizeF(fnt.pointSizeF() / 1.25);
+    return fnt;
 }
 
 void MeshWidgetChart::paintLegend(QPainter* painter)
 {
-    QFont fnt = font();
-    fnt.setPointSizeF(fnt.pointSizeF() / 1.5);
-    fnt.setWeight(QFont::Normal);
-    painter->setFont(fnt);
+    painter->setFont(legendFont());
     painter->drawText(m_legendRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, tr("Legend"));
 
     QPoint point(m_legendRect.topLeft());

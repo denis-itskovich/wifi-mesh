@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setApplicationVersion("1.0.2");
-    a.setApplicationName("WiFi Mesh Simulator - Professional Edition");
+    a.setApplicationVersion("1.0.3");
+    a.setApplicationName("WiFi Mesh Simulator PRO");
 
     MeshApp w;
     w.showMaximized();

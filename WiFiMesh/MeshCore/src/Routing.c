@@ -217,7 +217,8 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
-    CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+    if (transitId == INVALID_STATION_ID) CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+    else CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
     CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
     RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
     return ListPushBack(pThis->pEntries, pEntry);
