@@ -1,6 +1,6 @@
-#summary One-sentence summary of this page.
+#summary This page describes main features of WiFi Mesh Simulator
 
-= WiFi Mesh Simulator =
+= WiFi Mesh Simulator Pro =
 
 Allows to simulate traffic and routing building between moving in 2D space stations.
 
