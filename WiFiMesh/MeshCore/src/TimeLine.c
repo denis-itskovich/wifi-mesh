@@ -157,7 +157,7 @@ EStatus TimeLineClear(TimeLine* pThis)
     return eSTATUS_COMMON_OK;
 }
 
-EStatus TimeLineGetLength(TimeLine* pThis, double* pLength)
+EStatus TimeLineGetLength(const TimeLine* pThis, double* pLength)
 {
 	double* pResult;
 	ListEntry* pEntry;

@@ -53,6 +53,7 @@ private slots:
     void simulationStopped();
     void simulationPaused(bool isPaused);
     void simulationEmpty(bool isEmpty);
+    void simulationTime(double time);
 
 private:
     void addView(MeshView* view);
@@ -60,36 +61,37 @@ private:
 
     typedef QList<MeshView*>    MeshViews;
 
-    QToolBar*   m_toolbarFile;
-    QToolBar*   m_toolbarSimulation;
+    QToolBar*       m_toolbarFile;
+    QToolBar*       m_toolbarSimulation;
 
-    QMenu*      m_menuFile;
-    QMenu*      m_menuView;
-    QMenu*      m_menuSimulation;
-    QMenu*      m_menuHelp;
+    QMenu*          m_menuFile;
+    QMenu*          m_menuView;
+    QMenu*          m_menuSimulation;
+    QMenu*          m_menuHelp;
 
-    QAction*    m_actFileNew;
-    QAction*    m_actFileOpen;
-    QAction*    m_actFileSave;
-    QAction*    m_actFileExit;
+    QAction*        m_actFileNew;
+    QAction*        m_actFileOpen;
+    QAction*        m_actFileSave;
+    QAction*        m_actFileExit;
 
-    QAction*    m_actViewShowSettings;
-    QAction*    m_actViewShowSniffer;
-    QAction*    m_actViewShowStations;
-    QAction*    m_actViewShowGenerator;
-    QAction*    m_actViewShowLog;
+    QAction*        m_actViewShowSettings;
+    QAction*        m_actViewShowSniffer;
+    QAction*        m_actViewShowStations;
+    QAction*        m_actViewShowGenerator;
+    QAction*        m_actViewShowLog;
 
-    QAction*    m_actSimulationReset;
-    QAction*    m_actSimulationRun;
-    QAction*    m_actSimulationPause;
-    QAction*    m_actSimulationBreak;
+    QAction*        m_actSimulationReset;
+    QAction*        m_actSimulationRun;
+    QAction*        m_actSimulationPause;
+    QAction*        m_actSimulationBreak;
 
-    QAction*    m_actHelpAbout;
-    QAction*    m_actHelpAboutQt;
+    QAction*        m_actHelpAbout;
+    QAction*        m_actHelpAboutQt;
 
-    QTabWidget* m_tabs;
-    QSlider*    m_sliderSpeed;
-    QLabel*     m_simulationTime;
+    QTabWidget*     m_tabs;
+    QSlider*        m_sliderSpeed;
+    QLabel*         m_simulationTime;
+    QProgressBar*   m_simulationProgress;
 
     MeshViews   m_views;
 

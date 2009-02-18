@@ -70,8 +70,8 @@ void MeshApp::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(simulationStopped()));
 	connect(m_actFileNew, SIGNAL(triggered()), doc, SLOT(clear()));
     connect(m_sliderSpeed, SIGNAL(valueChanged(int)), m_document, SLOT(setSpeed(int)));
-    connect(m_document, SIGNAL(timeChanged(const QString&)), m_simulationTime, SLOT(setText(const QString&)));
     connect(m_document, SIGNAL(statusChanged(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    connect(m_document, SIGNAL(timeChanged(double)), this, SLOT(simulationTime(double)));
 
     foreach (MeshView* view, m_views)
     {
@@ -176,8 +176,20 @@ void MeshApp::createToolBars()
 void MeshApp::createStatusBar()
 {
     m_simulationTime = new QLabel;
+    m_simulationProgress = new QProgressBar;
+    m_simulationProgress->setMaximumWidth(128);
+    m_simulationProgress->setRange(0, 1000);
+
+    statusBar()->setSizeGripEnabled(true);
     statusBar()->addPermanentWidget(m_simulationTime, 0);
+    statusBar()->addPermanentWidget(m_simulationProgress, 0);
 	statusBar()->showMessage(tr("Ready"));
+}
+
+void MeshApp::simulationTime(double time)
+{
+    m_simulationTime->setText(QString("Time: %1 [msec]").arg(time * 1000, 0, 'f', 5));
+    m_simulationProgress->setValue((int)(1000.0 * time / m_document->simulationDuration()));
 }
 
 void MeshApp::createDocks()

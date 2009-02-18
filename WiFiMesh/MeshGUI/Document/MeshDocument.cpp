@@ -77,6 +77,7 @@ int     MeshDocument::dataRate() const { return getMemberValue(m_pSettings, &Set
 double  MeshDocument::coverage() const { return getMemberValue(m_pSettings, &SettingsGetCoverage); }
 Size    MeshDocument::worldSize() const {	return getMemberValue(m_pSettings, &SettingsGetWorldSize); }
 double  MeshDocument::time() const { return getMemberValue(m_pTimeLine, &TimeLineGetTime); }
+double  MeshDocument::simulationDuration() const { return getMemberValue(m_pTimeLine, &TimeLineGetLength); }
 double  MeshDocument::packetRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryTimeout); }
 int     MeshDocument::packetRetryThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryThreshold); }
 int     MeshDocument::packetHopsThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketHopsThreshold); }
@@ -303,7 +304,7 @@ void MeshDocument::step()
 {
     if (SimulatorProcess(m_pSimulator) == eSTATUS_COMMON_OK)
     {
-        emit timeChanged(QString::QString("Time: %1 [msec]").arg(time() * 1000, 0, 'f', 5));
+        emit timeChanged(time());
         if ((++m_steps) % (1000 / (m_delay + 1)) == 0) refreshStatistics();
     }
     else

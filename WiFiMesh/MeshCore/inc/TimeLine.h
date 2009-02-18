@@ -98,7 +98,7 @@ EStatus TimeLineClear(TimeLine* pThis);
  * @param pThis [in] pointer to instance
  * @param pLength [out] length will be stored at *pLength
  */
-EStatus TimeLineGetLength(TimeLine* pThis, double* pLength);
+EStatus TimeLineGetLength(const TimeLine* pThis, double* pLength);
 
 /** Sets time line event tracker
  * @param pThis [in] pointer to instance
