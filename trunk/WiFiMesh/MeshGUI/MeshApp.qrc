@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/" >
         <file alias="generate.png" >Images/Automator-32.png</file>
+        <file alias="statistics.png" >Images/ChartBar_32.png</file>
         <file alias="disconnected.png" >Images/Disconnected_32.png</file>
         <file alias="connected.png" >Images/Internet_32.png</file>
-        <file alias="message.png" >Images/Mail-envelope-32.png</file>
         <file alias="packet.png" >Images/Package-32.png</file>
         <file alias="clear.png" >Images/RecycleBin-32.png</file>
         <file alias="accept.png" >Images/accept-32.png</file>
@@ -12,10 +12,8 @@
         <file alias="configure.png" >Images/configure.png</file>
         <file alias="cancel.png" >Images/delete-32.png</file>
         <file alias="process.png" >Images/developer.png</file>
-        <file alias="excavator.png" >Images/excavator.png</file>
         <file alias="exit.png" >Images/exit.png</file>
         <file alias="failure.png" >Images/failure-32.png</file>
-        <file alias="close.png" >Images/fileclose.png</file>
         <file alias="about.png" >Images/fileinfo-32.png</file>
         <file alias="new.png" >Images/filenew.png</file>
         <file alias="open.png" >Images/fileopen.png</file>
@@ -23,14 +21,10 @@
         <file alias="filter.png" >Images/filter-32.png</file>
         <file alias="folder.png" >Images/folder.png</file>
         <file alias="package.png" >Images/gift box_32x32.png</file>
-        <file alias="wifi.png" >Images/kwifimanager.png</file>
         <file alias="log.png" >Images/log.png</file>
         <file alias="map.png" >Images/map.png</file>
         <file alias="mesh.png" >Images/mesh.png</file>
-        <file>Images/network.png</file>
-        <file>Images/new.png</file>
         <file alias="disabledstation.png" >Images/nosignal-Vista-48x48.png</file>
-        <file>Images/open.png</file>
         <file alias="packet-broken.png" >Images/packet-broken.png</file>
         <file alias="packet-delivered.png" >Images/packet-delivered.png</file>
         <file alias="pause.png" >Images/player_pause-32.png</file>
@@ -41,13 +35,7 @@
         <file alias="qt_logo.png" >Images/qt-logo.png</file>
         <file alias="qt.png" >Images/qt.png</file>
         <file alias="run.png" >Images/right-32.png</file>
-        <file>Images/save.png</file>
         <file alias="station.png" >Images/signal-Vista-48x48.png</file>
-        <file>Images/standardbutton-close-32.png</file>
-        <file>Images/standardbutton-delete-32.png</file>
-        <file>Images/standardbutton-help-32.png</file>
-        <file>Images/standardbutton-open-32.png</file>
-        <file>Images/standardbutton-save-32.png</file>
         <file alias="break.png" >Images/stop-32.png</file>
         <file alias="success.png" >Images/success-32.png</file>
         <file alias="txstation.png" >Images/txsignal.png</file>

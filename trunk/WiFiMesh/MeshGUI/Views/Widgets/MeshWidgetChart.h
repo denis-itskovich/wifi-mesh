@@ -57,6 +57,11 @@ protected:
     const QRect& titleRect() const;
 
 private:
+    void updateBounds();
+    QRect calculateItemsRect() const;
+    QRect calculateLegendRect() const;
+    QRect calculateTitleRect() const;
+    QFont legendFont() const;
     void updateItems();
     void init();
     typedef QList<MeshChartItem*> ChartItems;
@@ -64,7 +69,6 @@ private:
     QString     m_title;
     ChartItems  m_items;
     int         m_spacing;
-    double      m_maxVal;
     QRect       m_legendRect;
     QRect       m_itemsRect;
     QRect       m_titleRect;

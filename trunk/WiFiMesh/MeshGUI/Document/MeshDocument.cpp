@@ -63,6 +63,7 @@ MeshDocument::MeshDocument() :
 	CHECK(SimulatorSetStationTracker(m_pSimulator, (StationTracker)&MeshDocument::stationTracker, this));
 	CHECK(SimulatorSetPacketSniffer(m_pSimulator, (PacketSniffer)&MeshDocument::packetSniffer, this));
 	CHECK(TimeLineSetEventTracker(m_pTimeLine, (EventTracker)&MeshDocument::eventTracker, this));
+	CHECK(SimulatorGetStatistics(m_pSimulator, &m_pStatistics));
 }
 
 MeshDocument::~MeshDocument()
@@ -225,6 +226,11 @@ void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsi
 	CHECK(StationSchedulePacket(pStation, pPacket, time));
 }
 
+void MeshDocument::refreshStatistics()
+{
+    emit statisticsUpdated(m_pStatistics);
+}
+
 void MeshDocument::reset()
 {
     emit simulationReset();
@@ -235,6 +241,7 @@ void MeshDocument::prepare()
 {
     reset();
     m_bStarted = true;
+    m_steps = 0;
     emit simulationStarted();
     emit statusChanged("Simulation started...");
 }
@@ -251,9 +258,8 @@ void MeshDocument::stop()
 	pause();
 	m_bStarted = false;
 	emit simulationStopped();
-	const Statistics* pStatistics;
-	CHECK(SimulatorGetStatistics(m_pSimulator, &pStatistics));
-	emit statisticsUpdated(pStatistics);
+	refreshStatistics();
+	emit statusChanged("Simulation aborted.");
 }
 
 void MeshDocument::togglePause(bool paused)
@@ -296,8 +302,15 @@ void MeshDocument::resume()
 void MeshDocument::step()
 {
     if (SimulatorProcess(m_pSimulator) == eSTATUS_COMMON_OK)
+    {
         emit timeChanged(QString::QString("Time: %1 [msec]").arg(time() * 1000, 0, 'f', 5));
-    else stop();
+        if ((++m_steps) % (1000 / (m_delay + 1)) == 0) refreshStatistics();
+    }
+    else
+    {
+        stop();
+        emit statusChanged("Simulation finished.");
+    }
 }
 
 double MeshDocument::rand(double limit)
