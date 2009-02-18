@@ -61,6 +61,8 @@ public:
 	int    speed() const;
 	int    maximumSpeed() const { return 400; }
 
+	double simulationDuration() const;
+
 
 public slots:
 	void setDataRate(int dataRate);
@@ -103,7 +105,7 @@ public slots:
 
 signals:
     void statusChanged(const QString& status);
-    void timeChanged(const QString& time);
+    void timeChanged(double time);
 	void currentStationChanged(Station* pStation);
 	void stationRemoved(Station* pStation);
 	void stationAdded(Station* pStation);
