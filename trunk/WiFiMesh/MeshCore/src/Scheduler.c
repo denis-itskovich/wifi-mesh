@@ -178,8 +178,8 @@ EStatus SchedulerExportEntry(const SchedulerEntry* pEntry, FILE* file)
     const Packet* pPacket = pEntry->pPacket;
     fprintf(file, "%d %d %d %lf %d %d\n",
             pPacket->payload.id,
-            (int)pPacket->header.originalSrcId,
-            (int)pPacket->header.originalDstId,
+            (int)pPacket->header.originalSrcId - 1,
+            (int)pPacket->header.originalDstId - 1,
             pEntry->time,
             (int)pPacket->payload.size,
             (int)pPacket->header.timeToLive);

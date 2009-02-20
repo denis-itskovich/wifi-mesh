@@ -56,7 +56,7 @@ DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 	// Simulator
 	STATUS_MESSAGE("Station not found"),
 	STATUS_MESSAGE("Simulation finished"),
-	STATUS_MESSAGE("File format is incorrect"),
+	STATUS_MESSAGE("Simulation file is corrupted"),
 
 	// Scheduler
 	STATUS_MESSAGE("No available packets"),

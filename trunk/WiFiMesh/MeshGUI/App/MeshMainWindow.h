@@ -51,6 +51,7 @@ private:
     void addTab(const QIcon& icon, const QString& title, MeshView* view);
 
 private slots:
+    void newFile();
     void openFile();
     void saveFile();
     void saveFileAs();
@@ -61,6 +62,7 @@ private slots:
     void simulationStopped();
     void simulationPaused(bool isPaused);
     void simulationEmpty(bool isEmpty);
+    void simulationCleared();
     void simulationTime(double time);
 
 private:
