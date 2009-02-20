@@ -119,7 +119,7 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
     painter->drawEllipse(-10, -10, 20, 20);
     painter->setPen(QColor(Qt::white));
     QRectF rect(-10.0, -10.0, 20.0, 20.0);
-    painter->setFont(QFont("Tahoma"));
+    painter->setFont(QFont("Sans Serif"));
     painter->drawText(rect, Qt::AlignCenter, QString("%1").arg(id()));
 }
 
@@ -131,7 +131,6 @@ void MeshGraphItemStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setCursor(Qt::ClosedHandCursor);
     QGraphicsItem::mousePressEvent(event);
 }
-
 
 void MeshGraphItemStation::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {

@@ -69,6 +69,7 @@ private:
     QString     m_title;
     ChartItems  m_items;
     int         m_spacing;
+    int         m_shadowSize;
     QRect       m_legendRect;
     QRect       m_itemsRect;
     QRect       m_titleRect;

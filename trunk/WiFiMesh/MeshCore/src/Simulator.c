@@ -29,6 +29,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "TimeLine.h"
 #include "Macros.h"
 #include "List.h"
+#include <stdio.h>
+#include <math.h>
+
+static const double PI = 3.1415269;
 
 struct _Simulator
 {
@@ -440,3 +444,195 @@ EStatus SimulatorDump(const Simulator* pThis)
     return eSTATUS_COMMON_OK;
 }
 
+EStatus SimulatorImport(Simulator* pThis, const char* filename)
+{
+    FILE* file;
+
+    int routingProtocol;
+    int dataLinkProtocol;
+    int bufferRouting;
+    double attenuationConst;
+    double maxAttenuation;
+    Size worldSize;
+    int stationsCount;
+    int dataRate;
+    int bufferSize;
+    int ctrlMessagesPriority;
+    double crcProbability;
+    double timeUntilReply;
+    int routingTableSize;
+    double routeEntryTimeout;
+    int searchRetries;
+    int routingTablePolicy;
+    int maxEntriesToSameHost;
+    double beaconSendInterval;
+    double neighborsListSendTime;
+    double tdmaSlotSize;
+    int tdmaSlotsNumber;
+    int connectionAttempts;
+    double simulationSamplingRate;
+    double simulationTimeout;
+
+    int i;
+    double angle, vel;
+    Location l;
+    Velocity v;
+    Station* pStation;
+
+    StationId src, dst;
+    int pktId;
+    double time;
+    int size;
+    int hopsCount;
+    Packet* pPacket;
+
+    VALIDATE_ARGUMENTS(pThis && filename);
+
+    file = fopen(filename, "r");
+    VALIDATE(fscanf(file, "%d %d %d", &routingProtocol, &dataLinkProtocol, &bufferRouting) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%lf %lf %d %lf %lf", &worldSize.x, &worldSize.y, &stationsCount, &maxAttenuation, &attenuationConst) == 5, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%d %d %d %lf", &dataRate, &bufferSize, &ctrlMessagesPriority, &crcProbability) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%lf %d %lf", &timeUntilReply, &routingTableSize, &routeEntryTimeout) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%d %d %d", &searchRetries, &routingTablePolicy, &maxEntriesToSameHost) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%lf %lf %lf %d", &beaconSendInterval, &neighborsListSendTime, &tdmaSlotSize, &tdmaSlotsNumber) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%d %lf %lf", &connectionAttempts, &simulationSamplingRate, &simulationTimeout) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+
+    CHECK(SettingsSetDataRate(pThis->pSettings, dataRate * 1024));
+    CHECK(SettingsSetWorldSize(pThis->pSettings, worldSize));
+    CHECK(SettingsSetCoverage(pThis->pSettings, sqrt(maxAttenuation/attenuationConst)));
+    CHECK(SettingsSetPacketRetryTimeout(pThis->pSettings, timeUntilReply));
+    CHECK(SettingsSetRouteExpirationTimeout(pThis->pSettings, routeEntryTimeout));
+
+    for (i = 0; i < stationsCount; ++i)
+    {
+        VALIDATE(fscanf(file, "%lf %lf %lf %lf", &l.x, &l.y, &angle, &vel) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+        angle = angle / 180 * PI;
+        l.x -= worldSize.x / 2.0;
+        l.y -= worldSize.y / 2.0;
+        v.x = vel * cos(angle);
+        v.y = -vel * sin(angle);
+        CHECK(StationNew(&pStation, v, l, pThis->pTimeLine, pThis->pSettings));
+        CHECK(SimulatorAddStation(pThis, pStation));
+    }
+
+    while (!feof(file))
+    {
+        VALIDATE(fscanf(file, "%d %d %d %lf %d, %d", &pktId, (int*)&src, (int*)&dst, &time, &size, &hopsCount) == 6, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+        ++src, ++dst;
+        time /= 1000.0;
+
+        CHECK(PacketNewData(&pPacket, src, dst, (unsigned long)size, pktId));
+        pPacket->header.timeToLive = hopsCount;
+
+        CHECK(SimulatorGetStation(pThis, src, &pStation));
+        CHECK(StationSchedulePacket(pStation, pPacket, time));
+    }
+
+    fclose(file);
+
+    return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorExport(Simulator* pThis, const char* filename)
+{
+    FILE* file;
+
+    int routingProtocol = 0;
+    int dataLinkProtocol = 0;
+    int bufferRouting = 0;
+    double attenuationConst = 0;
+    double maxAttenuation = 0;
+    Size worldSize = {0};
+    int stationsCount = 0;
+    unsigned long dataRate = 0;
+    int bufferSize = 0;
+    int ctrlMessagesPriority = 0;
+    double crcProbability = 0;
+    double timeUntilReply = 0;
+    int routingTableSize = 0;
+    double routeEntryTimeout = 0;
+    int searchRetries = 0;
+    int routingTablePolicy = 0;
+    int maxEntriesToSameHost = 0;
+    double beaconSendInterval = 0;
+    double neighborsListSendTime = 0;
+    double tdmaSlotSize = 0;
+    int tdmaSlotsNumber = 0;
+    int connectionAttempts = 0;
+    double simulationSamplingRate = 0;
+    double simulationTimeout = 0;
+    double coverage = 0;
+
+//    int i = 0;
+    double angle = 0, vel = 0;
+    Location l = {0};
+    Velocity v = {0};
+    Station* pStation = NULL;
+
+//    StationId src = 0, dst = 0;
+//    int pktId = 0;
+//    double time = 0;
+//    int size = 0;
+//    int hopsCount = 0;
+//    Packet* pPacket = NULL;
+    ListEntry* pEntry;
+
+    VALIDATE_ARGUMENTS(pThis && filename);
+
+    file = fopen(filename, "w");
+
+    CHECK(SettingsGetDataRate(pThis->pSettings, &dataRate));
+    CHECK(SettingsGetWorldSize(pThis->pSettings, &worldSize));
+    CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
+    CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeUntilReply));
+    CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeEntryTimeout));
+
+    attenuationConst = 1;
+    maxAttenuation = pow(coverage, 2);
+
+    fprintf(file, "%d %d %d\n", routingProtocol, dataLinkProtocol, bufferRouting);
+    fprintf(file, "%d %d %d %lf %lf\n", (int)worldSize.x, (int)worldSize.y, stationsCount, maxAttenuation, attenuationConst);
+    fprintf(file, "%d %d %d %lf\n", (int)dataRate / 1024, bufferSize, ctrlMessagesPriority, crcProbability);
+    fprintf(file, "%lf %d %lf ", timeUntilReply, routingTableSize, routeEntryTimeout);
+    fprintf(file, "%d %d %d\n", searchRetries, routingTablePolicy, maxEntriesToSameHost);
+    fprintf(file, "%lf %lf %lf %d\n", beaconSendInterval, neighborsListSendTime, tdmaSlotSize, tdmaSlotsNumber);
+    fprintf(file, "%d %lf %lf\n", connectionAttempts, simulationSamplingRate, simulationTimeout);
+
+    fprintf(file, "\n\n");
+
+    CHECK(ListGetHead(pThis->pStations, &pEntry));
+    while (pEntry)
+    {
+        CHECK(ListGetValue(pEntry, &pStation));
+        CHECK(StationGetLocation(pStation, &l));
+        CHECK(StationGetVelocity(pStation, &v));
+        vel = sqrt(pow(v.x, 2) * pow(v.y, 2));
+
+        if (vel != 0)
+        {
+            angle = acos(v.x/vel);
+            angle = angle / PI * 180;
+            if (v.y > 0) angle = 360-angle;
+        }
+        else angle = 0;
+
+        l.x += worldSize.x / 2;
+        l.y += worldSize.y / 2;
+        fprintf(file, "%d %d %lf %lf\n", (int)l.x, (int)l.y, angle, vel);
+        CHECK(ListGetNext(&pEntry));
+    }
+
+    fprintf(file, "\n\n");
+
+    CHECK(ListGetHead(pThis->pStations, &pEntry));
+    while (pEntry)
+    {
+        CHECK(ListGetValue(pEntry, &pStation));
+        CHECK(StationExport(pStation, file));
+        CHECK(ListGetNext(&pEntry));
+    }
+
+    fclose(file);
+
+    return eSTATUS_COMMON_OK;
+}

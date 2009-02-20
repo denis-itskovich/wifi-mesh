@@ -66,6 +66,7 @@ typedef struct _Packet
     struct _PacketPayload
     {
         unsigned long   size;                       ///< Data size
+        int             id;                         ///< Data packet id
     }                   payload;                    ///< Data packet payload
     //---------------------------------------------------------------------------
     struct _PacketRouting
@@ -89,8 +90,9 @@ EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, Station
  * @param srcId [in] source id
  * @param dstId [in] destination id
  * @param size [in] size
+ * @param id [in] data packet id
  */
-EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size);
+EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id);
 
 /** Allocates search request packet
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -126,8 +128,9 @@ EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationI
  * @param srcId [in] source id
  * @param dstId [in] destination id
  * @param size [in] size
+ * @param id [in] data packet id
  */
-EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size);
+EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id);
 
 /** Initializes search request packet
  * @param pThis [in] pointer to instance

@@ -41,6 +41,7 @@ MeshDocument* MeshView::document() const
 void MeshView::setDocument(MeshDocument* doc)
 {
 	m_document = doc;
+	connect(doc, SIGNAL(updateViews()), this, SLOT(updateView()));
 }
 
 void MeshView::init()

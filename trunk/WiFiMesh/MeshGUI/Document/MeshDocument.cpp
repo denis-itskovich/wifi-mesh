@@ -150,6 +150,7 @@ void MeshDocument::clear()
 {
     emit simulationCleared();
     CHECK(SimulatorClear(m_pSimulator));
+    m_packetId = 0;
 }
 
 void MeshDocument::generateStations()
@@ -223,7 +224,7 @@ void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsi
 	StationId src;
 	CHECK(StationGetId(pStation, &src));
 	Packet* pPacket;
-	CHECK(PacketNewData(&pPacket, src, dst, size));
+	CHECK(PacketNewData(&pPacket, src, dst, size, m_packetId++));
 	CHECK(StationSchedulePacket(pStation, pPacket, time));
 }
 
@@ -299,7 +300,6 @@ void MeshDocument::resume()
 	m_timerId = startTimer(m_delay);
 }
 
-
 void MeshDocument::step()
 {
     if (SimulatorProcess(m_pSimulator) == eSTATUS_COMMON_OK)
@@ -312,6 +312,22 @@ void MeshDocument::step()
         stop();
         emit statusChanged("Simulation finished.");
     }
+}
+
+void MeshDocument::viewsAttached()
+{
+    emit updateViews();
+}
+
+void MeshDocument::importFromFile(const QString& filename)
+{
+    CHECK(SimulatorImport(m_pSimulator, filename.toLatin1()));
+    emit updateViews();
+}
+
+void MeshDocument::exportToFile(const QString& filename)
+{
+    CHECK(SimulatorExport(m_pSimulator, filename.toLatin1()));
 }
 
 double MeshDocument::rand(double limit)

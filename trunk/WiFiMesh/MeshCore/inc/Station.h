@@ -230,6 +230,15 @@ EStatus StationRegisterRoutingHandler(Station* pThis, StationRoutingHandler hand
  */
 EStatus StationRegisterOutboxHandler(Station* pThis, StationOutboxHandler handler, void* pUserArg);
 
+/** Exports a station into the file
+ * @param pThis [in] pointer to instance
+ * @param file [in] pointer to file
+ */
+EStatus StationExport(const Station* pThis, FILE* file);
+
+/** Dumps an instance
+ * @param pThis [in] pointer to instance
+ */
 EStatus StationDump(const Station* pThis);
 
 #endif //_WIFI_MESH_STATION_H

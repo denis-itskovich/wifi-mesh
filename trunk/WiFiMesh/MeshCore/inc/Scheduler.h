@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Status.h"
 #include "Packet.h"
 #include "TimeLine.h"
+#include <stdio.h>
 
 typedef struct _Scheduler Scheduler;	///< forward declaration
 
@@ -108,6 +109,12 @@ EStatus SchedulerReset(Scheduler* pThis);
  * @param pUserArg [in] user defined argument
  */
 EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, void* pUserArg);
+
+/** Exports scheduler state into the file
+ * @param pThis [in] pointer to instance
+ * @param file [in] output file
+ */
+EStatus SchedulerExport(const Scheduler* pThis, FILE* file);
 
 /** Dumps an instance
  * @param pThis [in] pointer to instance

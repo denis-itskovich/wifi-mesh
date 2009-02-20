@@ -42,7 +42,8 @@ MeshWidgetChart::MeshWidgetChart(QWidget* parent) :
 void MeshWidgetChart::init()
 {
     m_spacing = 7;
-    setFont(QFont("Tahoma", 12, QFont::Bold));
+    m_shadowSize = 3;
+    setFont(QFont("Sans Serif", 12, QFont::Bold));
 }
 
 void MeshWidgetChart::addItem(MeshChartItem* item)
@@ -108,7 +109,7 @@ void MeshWidgetChart::updateBounds()
     QRect legendRect(calculateLegendRect());
     QRect titleRect(calculateTitleRect());
 
-    int height = std::max(titleRect.height() + itemsRect.height() + 2 * m_spacing, legendRect.height()) + 2 * m_spacing;
+    int height = std::max(itemsRect.height(), legendRect.height()) + 4 * m_spacing + titleRect.height();
     int width = std::max(itemsRect.width() + legendRect.width() + 2 * m_spacing, titleRect.width()) + 2 * m_spacing;
 
     setMinimumSize(QSize(width, height));
@@ -124,20 +125,22 @@ QRect MeshWidgetChart::calculateItemsRect() const
 
 QRect MeshWidgetChart::calculateLegendRect() const
 {
-    int width = 0;
-    int height = 0;
+    QFontMetrics metrics(legendFont());
+
+    int width = metrics.width("Legend");
+    int height = metrics.height() + 10 + m_spacing;
 
     foreach(MeshChartItem* item, m_items)
     {
         const QFont& font = item->font();
         QFontMetrics metrics(font);
         QSize size(metrics.size(Qt::TextSingleLine, item->title()));
-        size.setWidth(size.width() + m_spacing * 2 + size.height() + 4);
-        height += size.height() + 4;
+        size.setWidth(size.width() + size.height());
         if (size.width() > width) width = size.width();
+        height += size.height() + 4;
     }
 
-    height += QFontMetrics(legendFont()).height() + 10 + m_spacing;
+    width += 4;
     return QRect(QPoint(0, 0), QSize(height, width));
 }
 
@@ -160,9 +163,9 @@ void MeshWidgetChart::updateItems()
 
     QRect rect(widgetRect);
     rect.setLeft(rect.right() - legendRect.width());
+    rect.adjust(-m_spacing * 2, 0, 0, m_spacing * 2);
 
-    m_legendRect = rect.adjusted(m_spacing, m_spacing, -m_spacing, -m_spacing);
-
+    m_legendRect = rect;
     m_itemsRect = QRect(widgetRect.topLeft(), QSize(widgetRect.width() - rect.width(), widgetRect.height()))
                   .adjusted(m_spacing, m_spacing, -m_spacing, -m_spacing);
 }
@@ -170,7 +173,7 @@ void MeshWidgetChart::updateItems()
 QRect MeshWidgetChart::itemRect(int index)
 {
     int count = m_items.count();
-    int itemWidth = (int)(((double)m_itemsRect.width() - (double)((count - 1) * m_spacing)) / (double)count + 0.5);
+    int itemWidth = (int)(((double)m_itemsRect.width() - (double)((count - 1) * m_spacing - m_shadowSize)) / (double)count);
 
     return QRect(QPoint(m_itemsRect.left() + (itemWidth + m_spacing)*index, m_itemsRect.top()), QSize(itemWidth, m_itemsRect.height()));
 }
@@ -181,10 +184,11 @@ void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QR
 
     int fontHeight = QFontMetrics(item->font()).height();
     itemRect.setTop(itemRect.bottom() - (int)((double)(itemRect.height() - fontHeight - 4) * normalizedVal + 0.5));
+    itemRect.moveTop(itemRect.top() - m_shadowSize);
     QRect textRect(boundingRect.left(), itemRect.top() - fontHeight, boundingRect.width(), fontHeight);
 
-    QRect rightShadow(itemRect.right() + 1, itemRect.top() + 3, 3, itemRect.height());
-    QRect bottomShadow(itemRect.left() + 3, itemRect.bottom() + 1, itemRect.width(), 3);
+    QRect rightShadow(itemRect.right() + 1, itemRect.top() + m_shadowSize, m_shadowSize, itemRect.height());
+    QRect bottomShadow(itemRect.left() + m_shadowSize, itemRect.bottom() + 1, itemRect.width(), m_shadowSize);
 
     itemRect.adjust(0, 0, -1, -1);
 

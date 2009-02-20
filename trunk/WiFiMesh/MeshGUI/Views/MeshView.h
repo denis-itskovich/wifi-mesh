@@ -42,7 +42,7 @@ protected:
 	MeshDocument* document() const;
 
 protected slots:
-	virtual void update() {}
+	virtual void updateView() {}
 	virtual void disable();
 	virtual void enable();
 

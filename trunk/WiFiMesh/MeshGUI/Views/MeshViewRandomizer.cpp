@@ -102,11 +102,15 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
-	m_spinAvgVelocity->setValue(doc->avgVelocity());
-	m_spinAvgDataSize->setValue(doc->avgDataSize());
-	m_spinAvgPacketCount->setValue(doc->avgPacketCount());
-	m_spinStationCount->setValue(doc->stationCount());
-	m_spinDuration->setValue(doc->duration());
-
 	MeshView::setDocument(doc);
+}
+
+void MeshViewRandomizer::updateView()
+{
+    MeshDocument* doc = document();
+    m_spinAvgVelocity->setValue(doc->avgVelocity());
+    m_spinAvgDataSize->setValue(doc->avgDataSize());
+    m_spinAvgPacketCount->setValue(doc->avgPacketCount());
+    m_spinStationCount->setValue(doc->stationCount());
+    m_spinDuration->setValue(doc->duration());
 }

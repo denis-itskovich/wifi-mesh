@@ -42,14 +42,13 @@ extern "C"
 }
 
 #include "MeshException.h"
-#include <QtGui>
 
 #define CHECK(res) \
 	do { \
 		EStatus status = res; \
 		if (status != eSTATUS_COMMON_OK) \
 		{ \
-			QMessageBox::critical(0, "MeshCore failure", QString(StatusGetMessage(status)) + "\nin function " + __PRETTY_FUNCTION__ ); \
+		    throw new MeshException(QString("%1\nin function %2").arg(StatusGetMessage(status)).arg(__PRETTY_FUNCTION__ )); \
 		} \
 	} while (0)
 

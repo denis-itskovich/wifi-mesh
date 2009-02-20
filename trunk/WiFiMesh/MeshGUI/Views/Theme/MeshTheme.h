@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define MESHTHEME_H_
 
 #include "../../Core/MeshCore.h"
+#include <QtGui>
 
 class MeshTheme
 {

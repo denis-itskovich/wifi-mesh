@@ -2,7 +2,8 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += Views/Theme/MeshTheme.h \
+HEADERS += App/MeshMainWindow.h \
+    Views/Theme/MeshTheme.h \
     Views/MeshViewStatistics.h \
     Views/Widgets/MeshWidgetLog.h \
     Views/Widgets/MeshWidgetGraphics.h \
@@ -18,16 +19,15 @@ HEADERS += Views/Theme/MeshTheme.h \
     Views/MeshViewRandomizer.h \
     Views/MeshViewSettings.h \
     Views/MeshViewSniffer.h \
-    Views/MeshViewStationProperties.h \
     Views/MeshViewStations.h \
     Views/MeshViewStationsGraph.h \
     Views/MeshViewStationsList.h \
-    Views/MeshViewTimeLine.h \
     Dialogs/MeshDlgAddPacket.h \
     Dialogs/MeshDlgAbout.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += Views/Theme/MeshTheme.cpp \
+SOURCES += App/MeshMainWindow.cpp \
+    Views/Theme/MeshTheme.cpp \
     Views/MeshViewStatistics.cpp \
     Views/Widgets/MeshWidgetLog.cpp \
     Views/Widgets/MeshWidgetGraphics.cpp \
@@ -42,16 +42,13 @@ SOURCES += Views/Theme/MeshTheme.cpp \
     Views/MeshViewRandomizer.cpp \
     Views/MeshViewSettings.cpp \
     Views/MeshViewSniffer.cpp \
-    Views/MeshViewStationProperties.cpp \
     Views/MeshViewStations.cpp \
     Views/MeshViewStationsGraph.cpp \
     Views/MeshViewStationsList.cpp \
-    Views/MeshViewTimeLine.cpp \
     Dialogs/MeshDlgAddPacket.cpp \
     Dialogs/MeshDlgAbout.cpp \
     Document/MeshDocument.cpp \
-    App/MeshApp.cpp \
-    main.cpp
+    App/MeshApp.cpp
 FORMS += 
 RESOURCES += MeshApp.qrc
 LIBS += -lMeshCore
