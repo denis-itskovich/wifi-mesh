@@ -67,7 +67,7 @@ void MeshMainWindow::setDocument(MeshDocument* doc)
     connect(m_actSimulationBreak, SIGNAL(triggered()), doc, SLOT(stop()));
     connect(doc, SIGNAL(simulationStarted()), this, SLOT(simulationStarted()));
     connect(doc, SIGNAL(simulationStopped()), this, SLOT(simulationStopped()));
-    connect(m_actFileNew, SIGNAL(triggered()), doc, SLOT(clear()));
+    connect(doc, SIGNAL(simulationCleared()), this, SLOT(simulationCleared()));
     connect(m_sliderSpeed, SIGNAL(valueChanged(int)), m_document, SLOT(setSpeed(int)));
     connect(m_document, SIGNAL(statusChanged(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
     connect(m_document, SIGNAL(timeChanged(double)), this, SLOT(simulationTime(double)));
@@ -85,6 +85,7 @@ void MeshMainWindow::createActions()
     m_actFileNew = new QAction(QIcon(":/new.png"), tr("&New"), this);
     m_actFileNew->setShortcut(tr("Ctrl+N"));
     m_actFileNew->setStatusTip(tr("Create new simulation"));
+    connect(m_actFileNew, SIGNAL(triggered()), this, SLOT(newFile()));
 
     m_actFileOpen = new QAction(QIcon(":/open.png"), tr("&Open..."), this);
     m_actFileOpen->setShortcut(tr("Ctrl+O"));
@@ -254,6 +255,12 @@ bool MeshMainWindow::getFilename(bool isOpenning)
     return true;
 }
 
+void MeshMainWindow::newFile()
+{
+    m_filename.clear();
+    m_document->clear();
+}
+
 void MeshMainWindow::openFile()
 {
     if (!getFilename(true)) return;
@@ -280,6 +287,11 @@ void MeshMainWindow::about()
 void MeshMainWindow::aboutQt()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
+}
+
+void MeshMainWindow::simulationCleared()
+{
+    simulationTime(0);
 }
 
 void MeshMainWindow::simulationStarted()

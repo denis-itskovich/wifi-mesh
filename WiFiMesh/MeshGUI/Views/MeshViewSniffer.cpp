@@ -173,6 +173,7 @@ void MeshViewSniffer::setDocument(MeshDocument* doc)
 
 	connect(doc, SIGNAL(packetDispatched(const Packet*, StationId, EPacketStatus)), this, SLOT(addPacket(const Packet*, StationId, EPacketStatus)));
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(clear()));
+    connect(doc, SIGNAL(simulationCleared()), this, SLOT(clear()));
 
 	MeshView::setDocument(doc);
 }

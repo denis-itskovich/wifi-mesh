@@ -479,7 +479,7 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     Velocity v;
     Station* pStation;
 
-    StationId src, dst;
+    int src, dst;
     int pktId;
     double time;
     int size;
@@ -517,11 +517,11 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
 
     while (!feof(file))
     {
-        VALIDATE(fscanf(file, "%d %d %d %lf %d, %d", &pktId, (int*)&src, (int*)&dst, &time, &size, &hopsCount) == 6, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+        if (fscanf(file, "%d %d %d %lf %d %d", &pktId, &src, &dst, &time, &size, &hopsCount) < 6) break;
         ++src, ++dst;
         time /= 1000.0;
 
-        CHECK(PacketNewData(&pPacket, src, dst, (unsigned long)size, pktId));
+        CHECK(PacketNewData(&pPacket, (StationId)src, (StationId)dst, (unsigned long)size, pktId));
         pPacket->header.timeToLive = hopsCount;
 
         CHECK(SimulatorGetStation(pThis, src, &pStation));
@@ -586,6 +586,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeUntilReply));
     CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeEntryTimeout));
+    CHECK(ListGetCount(pThis->pStations, &stationsCount));
 
     attenuationConst = 1;
     maxAttenuation = pow(coverage, 2);
@@ -606,7 +607,8 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
         CHECK(ListGetValue(pEntry, &pStation));
         CHECK(StationGetLocation(pStation, &l));
         CHECK(StationGetVelocity(pStation, &v));
-        vel = sqrt(pow(v.x, 2) * pow(v.y, 2));
+
+        vel = sqrt(pow(v.x, 2) + pow(v.y, 2));
 
         if (vel != 0)
         {

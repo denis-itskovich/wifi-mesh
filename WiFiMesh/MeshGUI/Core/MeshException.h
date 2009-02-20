@@ -32,17 +32,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define MESHEXCEPTION_H_
 
 #include <exception>
-#include <QtCore>
+#include <string>
 
 class MeshException : public std::exception
 {
 public:
-	MeshException(const QString& msg) : m_msg(msg) {}
-	virtual const char* what() const throw() { return m_msg.toLatin1(); }
+	MeshException(EStatus status, const char* filename, int linenum) :
+	    m_msg(StatusGetMessage(status)),
+	    m_filename(filename),
+	    m_linenum(linenum) {}
+
+	virtual const char* what() const throw() { return m_msg.c_str(); }
 	virtual ~MeshException() throw() {}
 
 private:
-	QString m_msg;
+	std::string    m_msg;
+	std::string    m_filename;
+	int            m_linenum;
 };
 
 #endif /* MESHEXCEPTION_H_ */

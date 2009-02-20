@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define MESHSTATIONITEM_H_
 
 #include "../../Core/MeshCore.h"
+#include <QtCore>
 
 class MeshViewStations;
 class MeshDocument;

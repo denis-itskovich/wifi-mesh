@@ -46,10 +46,7 @@ extern "C"
 #define CHECK(res) \
 	do { \
 		EStatus status = res; \
-		if (status != eSTATUS_COMMON_OK) \
-		{ \
-		    throw new MeshException(QString("%1\nin function %2").arg(StatusGetMessage(status)).arg(__PRETTY_FUNCTION__ )); \
-		} \
+		if (status != eSTATUS_COMMON_OK) throw new MeshException(status, __FILE__, __LINE__); \
 	} while (0)
 
 #endif /* MESHCORE_H_ */
