@@ -732,6 +732,11 @@ void StationHandleScheduleChange(double time, const Packet* pPacket, ESchedulerE
 	}
 }
 
+EStatus StationExport(const Station* pThis, FILE* file)
+{
+    return SchedulerExport(pThis->pScheduler, file);
+}
+
 EStatus StationDump(const Station* pThis)
 {
     DUMP_PRINT("Station: [id=%d]", pThis->id);

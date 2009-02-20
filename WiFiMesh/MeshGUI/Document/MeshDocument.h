@@ -102,6 +102,9 @@ public slots:
     void reset();
 	void togglePause(bool paused);
 	void setSpeed(int speed);
+	void importFromFile(const QString& filename);
+	void exportToFile(const QString& filename);
+	void viewsAttached();
 
 signals:
     void statusChanged(const QString& status);
@@ -136,6 +139,7 @@ signals:
 
 	void updatedStations();
 	void updatedTimeLine();
+	void updateViews();
 
 private:
     void prepare();
@@ -143,8 +147,8 @@ private:
 	virtual void timerEvent(QTimerEvent* event);
 	Velocity generateVelocity() const;
 	Location generateLocation() const;
+	void addPacket(Station* pStation, double time, StationId dst, unsigned long size);
 
-	static void addPacket(Station* pStation, double time, StationId dst, unsigned long size);
 	static double rand(double limit);
 	static int rand(int limit);
 
@@ -184,6 +188,7 @@ private:
 	int                m_timerId;
 	int                m_delay;
 	int                m_steps;
+	int                m_packetId;
 };
 
 #endif /* MESHDOCUMENT_H_ */

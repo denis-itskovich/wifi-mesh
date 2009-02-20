@@ -40,6 +40,7 @@ public:
 
 private:
 	void init();
+	void updateView();
 
 	QSpinBox*          m_spinStationCount;
 

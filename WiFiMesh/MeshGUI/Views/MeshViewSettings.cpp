@@ -161,36 +161,33 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
 	disconnect(document());
 
 	connect(m_spinCoverage, SIGNAL(valueChanged(double)), doc, SLOT(setCoverage(double)));
-    m_spinCoverage->setValue(doc->coverage());
-
 	connect(m_spinRouteExpTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteExpirationTimeout(double)));
-    m_spinRouteExpTimeout->setValue(doc->routeExpirationTimeout());
-
     connect(m_spinRouteRetryTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteRertyTimeout(double)));
-    m_spinRouteRetryTimeout->setValue(doc->routeRetryTimeout());
-
 	connect(m_spinPacketHopsThreshold, SIGNAL(valueChanged(int)), SLOT(setPacketHopsThreshold(int)));
-	m_spinPacketHopsThreshold->setValue(doc->packetHopsThreshold());
-
 	connect(m_spinPacketRetryTimeout, SIGNAL(valueChanged(double)), SLOT(setPacketRetryTimeout(double)));
-	m_spinPacketRetryTimeout->setValue(doc->packetRetryTimeout());
-
 	connect(m_spinPacketRetryThreshold, SIGNAL(valueChanged(int)), SLOT(setPacketRetryThreshold(int)));
-	m_spinPacketRetryThreshold->setValue(doc->packetRetryThreshold());
-
     connect(this, SIGNAL(updateSize(Size)), doc, SLOT(setWorldSize(Size)));
+    connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
+    connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
+    connect(this, SIGNAL(updateDataRate(int)), doc, SLOT(setDataRate(int)));
+
+	MeshView::setDocument(doc);
+}
+
+void MeshViewSettings::updateView()
+{
+    MeshDocument* doc = document();
+    m_spinPacketRetryThreshold->setValue(doc->packetRetryThreshold());
+    m_spinPacketRetryTimeout->setValue(doc->packetRetryTimeout());
+    m_spinPacketHopsThreshold->setValue(doc->packetHopsThreshold());
+    m_spinRouteRetryTimeout->setValue(doc->routeRetryTimeout());
+    m_spinCoverage->setValue(doc->coverage());
+    m_spinRouteExpTimeout->setValue(doc->routeExpirationTimeout());
     Size size = doc->worldSize();
     m_spinWidth->setValue((int)(size.x + 0.5));
     m_spinHeight->setValue((int)(size.y + 0.5));
-
-    connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
-    connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
-
-    connect(this, SIGNAL(updateDataRate(int)), doc, SLOT(setDataRate(int)));
     m_dataRate = doc->dataRate() * 8;
     m_comboDataUnits->setCurrentIndex(1);
-
-	MeshView::setDocument(doc);
 }
 
 int MeshViewSettings::dataRate()

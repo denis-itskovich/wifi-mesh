@@ -168,4 +168,16 @@ EStatus SimulatorGetStatistics(const Simulator* pThis, const Statistics** ppStat
  */
 EStatus SimulatorDump(const Simulator* pThis);
 
+/** Imports a simulation from the file
+ * @param pThis [in] pointer to instance
+ * @param filename [in] filename to import
+ */
+EStatus SimulatorImport(Simulator* pThis, const char* filename);
+
+/** Exports a simulator into the file
+ * @param pThis [in] pointer to instance
+ * @param filename [in] export filename
+ */
+EStatus SimulatorExport(Simulator* pThis, const char* filename);
+
 #endif /* WIFI_MESH_SIMULATOR_H_ */

@@ -54,9 +54,9 @@ EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, Station
 	CONSTRUCT(ppThis, Packet, msgType, srcId, dstId);
 }
 
-EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size)
+EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id)
 {
-	CONSTRUCT_PACKET(ppThis, Data, srcId, dstId, size);
+	CONSTRUCT_PACKET(ppThis, Data, srcId, dstId, size, id);
 }
 
 EStatus PacketNewSearchRequest(Packet** ppThis, StationId srcId, StationId lookForId)
@@ -90,10 +90,11 @@ EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationI
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size)
+EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id)
 {
 	INIT_PACKET(pThis, ePKT_TYPE_DATA, srcId, dstId);
 	pThis->payload.size = size;
+	pThis->payload.id = id;
 
 	return eSTATUS_COMMON_OK;
 }

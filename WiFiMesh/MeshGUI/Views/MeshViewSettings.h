@@ -46,6 +46,7 @@ signals:
 	void updateSize(Size size);
 
 private slots:
+    void updateView();
 	void setDataRate(double dataRate);
 	void setUnits(int units);
 	void setHeight(int height);

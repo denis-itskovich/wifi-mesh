@@ -173,6 +173,25 @@ EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, voi
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus SchedulerExportEntry(const SchedulerEntry* pEntry, FILE* file)
+{
+    const Packet* pPacket = pEntry->pPacket;
+    fprintf(file, "%d %d %d %lf %d %d\n",
+            pPacket->payload.id,
+            (int)pPacket->header.originalSrcId,
+            (int)pPacket->header.originalDstId,
+            pEntry->time,
+            (int)pPacket->payload.size,
+            (int)pPacket->header.timeToLive);
+
+    return TRUE;
+}
+
+EStatus SchedulerExport(const Scheduler* pThis, FILE* file)
+{
+    return SortedListEnumerate(pThis->pEntries, (ItemEnumerator)&SchedulerExportEntry, file);
+}
+
 Boolean SchedulerDumpEntry(const SchedulerEntry* pEntry, void* pArg)
 {
     DUMP_PRINT("SchedulerEntry: [time=%f]", pEntry->time);
