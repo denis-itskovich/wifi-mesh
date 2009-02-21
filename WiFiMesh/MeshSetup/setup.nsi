@@ -5,7 +5,7 @@ Name "WiFi Mesh Simulator PRO"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0.5
+!define VERSION 1.0.6
 !define COMPANY "Denis Itskovich"
 !define URL ""
 
@@ -62,12 +62,14 @@ Section -Main SEC0000
     File ..\MeshGUI\Images\MeshGUI.ico
     File ..\MeshGUI\release\MeshGUI.exe
     File ..\MeshGUI\Libraries\mingwm10.dll
+    File ..\MeshCore\Release\MeshCore.exe
     File ..\MeshCore\Documentation\License.txt
     File ..\MeshCore\Documentation\MeshCore.chm
     File ..\MeshCore\Documentation\MeshCore.chi
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk" "$INSTDIR\MeshGUI.exe" "" "$INSTDIR\MeshGUI.ico" 0 SW_SHOWMAXIMIZED
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk" $INSTDIR\MeshCore.chm
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Command prompt.lnk" "cmd.exe" "/k cd $INSTDIR" "$SYSDIR\cmd.exe"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\License.lnk" $INSTDIR\License.txt
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
@@ -106,6 +108,7 @@ done${UNSECTION_ID}:
 Section /o -un.Main UNSEC0000
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Command prompt.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\License.lnk"
     Delete /REBOOTOK $INSTDIR\MeshGUI.exe
     Delete /REBOOTOK $INSTDIR\MeshGUI.ico

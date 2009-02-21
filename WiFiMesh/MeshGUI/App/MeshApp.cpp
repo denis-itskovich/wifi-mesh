@@ -19,12 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "MeshApp.h"
 #include "../Core/MeshException.h"
+#include "../../MeshCore/inc/Version.h"
 
 MeshApp::MeshApp(int argc, char** argv) :
     QApplication(argc, argv)
 {
-    setApplicationVersion("1.0.5");
-    setApplicationName("WiFi Mesh Simulator PRO");
+    setApplicationVersion(APP_VERSION);
+    setApplicationName(APP_NAME);
     m_mainWindow = new MeshMainWindow;
     m_mainWindow->showMaximized();
 }
