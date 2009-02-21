@@ -71,7 +71,7 @@ typedef void (*StationSchedulerHandler)(const Station* pStation,
  * @param destId [in] destination station id
  * @param transId [in] transit station id
  * @param expirationTime [in] entry expiration time
- * @param updateAction [in] true if entry is being added or updated
+ * @param updateAction [in] routing event
  * @param pUserArg [in] user defined argument
  */
 typedef void (*StationRoutingHandler)(const Station* pStation,
@@ -82,6 +82,14 @@ typedef void (*StationRoutingHandler)(const Station* pStation,
 									  ERouteEntryUpdate updateAction,
 									  void *pUserArg);
 
+/** Output box events handler
+ * @param pStation [in] pointer to station
+ * @param pPacket [in] packet being added/removed
+ * @param event [in] outbox event
+ * @param retriesCount [in] updated retries count
+ * @param nextRetryTime [in] next retry time
+ * @param pUserArg [in] user-defined argument
+ */
 typedef void (*StationOutboxHandler)(const Station* pStation,
                                      const Packet* pPacket,
                                      EOutboxEvent event,

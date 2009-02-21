@@ -22,7 +22,7 @@
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1324972800." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.1806111456" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug.1535208268" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug"/>
-<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Debug}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.2077051298" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Debug}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.1320190645" incrementalBuildTarget="all" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.665004585" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug">
 <option id="gnu.both.asm.option.include.paths.116274044" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.795104976" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
@@ -486,7 +486,7 @@
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.release.173914822." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.1554676756" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.lib.release" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.lib.release.2043757004" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.release"/>
-<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Release}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.945788636" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/MeshCore/Release}" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.376926915" incrementalBuildTarget="all" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.1949739894" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release">
 <option id="gnu.both.asm.option.include.paths.1514546495" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1433201037" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>

@@ -62,6 +62,8 @@ MeshDocument::MeshDocument() :
 	CHECK(SimulatorNew(&m_pSimulator, m_pSettings, m_pTimeLine));
 	CHECK(SimulatorSetStationTracker(m_pSimulator, (StationTracker)&MeshDocument::stationTracker, this));
 	CHECK(SimulatorSetPacketSniffer(m_pSimulator, (PacketSniffer)&MeshDocument::packetSniffer, this));
+    CHECK(SimulatorSetRoutingHandler(m_pSimulator, (StationRoutingHandler)&MeshDocument::routingHandler, this));
+    CHECK(SimulatorSetSchedulerHandler(m_pSimulator, (StationSchedulerHandler)&MeshDocument::schedulerHandler, this));
 	CHECK(TimeLineSetEventTracker(m_pTimeLine, (EventTracker)&MeshDocument::eventTracker, this));
 	CHECK(SimulatorGetStatistics(m_pSimulator, &m_pStatistics));
 }
@@ -367,18 +369,16 @@ void MeshDocument::stationTracker(Station* pStation, EStationEvent event, MeshDo
 	switch (event)
 	{
 	case eSTATION_ADDED:
-		pThis->m_stationIds.push_back(id);
-		pThis->m_stations.push_back(pStation);
+		pThis->m_stationIds.append(id);
+		pThis->m_stations.append(pStation);
 
 		emit pThis->stationAdded(pStation);
-		CHECK(StationRegisterRoutingHandler(pStation, (StationRoutingHandler)&MeshDocument::routingHandler, pThis));
-		CHECK(StationRegisterSchedulerHandler(pStation, (StationSchedulerHandler)&MeshDocument::schedulerHandler, pThis));
 		break;
+
 	case eSTATION_REMOVED:
 		pThis->m_stationIds.removeOne(id);
 		pThis->m_stations.removeOne(pStation);
-		CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
-		CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
+
 		emit pThis->currentStationChanged(NULL);
 		emit pThis->stationRemoved(pStation);
 		break;
@@ -439,6 +439,7 @@ void MeshDocument::schedulerHandler(	const Station* pStation,
 	case eSCHEDULE_ADDED: emit pThis->scheduleEntryAdded(pStation, time, pPacket); break;
 	case eSCHEDULE_DELIVERED: emit pThis->scheduleEntryDelivered(pStation, pPacket); break;
 	case eSCHEDULE_REMOVED: emit pThis->scheduleEntryRemoved(pStation, pPacket); break;
+	default: break;
 	}
 }
 

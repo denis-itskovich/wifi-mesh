@@ -127,6 +127,27 @@ EStatus SimulatorSetPacketSniffer(Simulator* pThis, PacketSniffer sniffer, void*
  */
 EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, void* pUserArg);
 
+/** Sets station routing event handler
+ * @param pThis [in] pointer to instance
+ * @param handler [in] handler callback
+ * @param pUserArg [in] user-defined argument
+ */
+EStatus SimulatorSetRoutingHandler(Simulator* pThis, StationRoutingHandler handler, void* pUserArg);
+
+/** Sets station scheduler event handler
+ * @param pThis [in] pointer to instance
+ * @param handler [in] handler callback
+ * @param pUserArg [in] user-defined argument
+ */
+EStatus SimulatorSetSchedulerHandler(Simulator* pThis, StationSchedulerHandler handler, void* pUserArg);
+
+/** Sets station outbox event handler
+ * @param pThis [in] pointer to instance
+ * @param handler [in] handler callback
+ * @param pUserArg [in] user-defined argument
+ */
+EStatus SimulatorSetOutboxHandler(Simulator* pThis, StationOutboxHandler handler, void* pUserArg);
+
 /** Resets simulator
  * @param pThis [in] pointer to instance
  */

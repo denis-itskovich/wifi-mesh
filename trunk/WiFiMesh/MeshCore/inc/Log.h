@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-
 #ifndef MESH_CORE_LOG_H_
 #define MESH_CORE_LOG_H_
 

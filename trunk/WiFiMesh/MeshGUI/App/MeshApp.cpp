@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 MeshApp::MeshApp(int argc, char** argv) :
     QApplication(argc, argv)
 {
-    setApplicationVersion("1.0.4");
+    setApplicationVersion("1.0.4.1");
     setApplicationName("WiFi Mesh Simulator PRO");
     m_mainWindow.showMaximized();
 }

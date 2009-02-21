@@ -41,6 +41,8 @@ typedef enum _ESchedulerEvent
 {
 	eSCHEDULE_ADDED,
 	eSCHEDULE_REMOVED,
+	eSCHEDULE_RESET,
+	eSCHEDULE_ISSUED,
 	eSCHEDULE_DELIVERED
 } ESchedulerEvent;
 
@@ -115,6 +117,12 @@ EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, voi
  * @param file [in] output file
  */
 EStatus SchedulerExport(const Scheduler* pThis, FILE* file);
+
+/** Notifies a scheduler about the packet reached its final destination
+ * @param pThis [in] pointer to instance
+ * @param pPacket [in] pointer to packet
+ */
+EStatus SchedulerPacketDelivered(Scheduler* pThis, const Packet* pPacket);
 
 /** Dumps an instance
  * @param pThis [in] pointer to instance

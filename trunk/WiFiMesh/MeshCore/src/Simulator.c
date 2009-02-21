@@ -50,15 +50,33 @@ struct _Simulator
 
 	struct
 	{
-		PacketSniffer callback;
-		void*         pArg;
-	} 				sniffer;
-	struct
-	{
-		StationTracker    callback;
-		void*		      pArg;
-	} 				tracker;
+        PacketSniffer           callback;
+        void*                   pArg;
+	} sniffer;
 
+    struct
+    {
+        StationTracker          callback;
+        void*                   pArg;
+	} tracker;
+
+    struct
+    {
+        StationRoutingHandler   callback;
+        void*                   pArg;
+    } routingHandler;
+
+    struct
+    {
+        StationSchedulerHandler callback;
+        void*                   pArg;
+    } schedulerHandler;
+
+    struct
+    {
+        StationOutboxHandler    callback;
+        void*                   pArg;
+    } outboxHandler;
 };
 
 /** Looks for a station with specified id
@@ -106,6 +124,51 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
  * @param event [in] event type /see EStationEvent
  */
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event);
+
+/** Handles routing events
+ * @param pStation [in] pointer to station
+ * @param destId [in] destination station id
+ * @param transId [in] transit station id
+ * @param expirationTime [in] entry expiration time
+ * @param updateAction [in] routing event
+ * @param pThis [in] pointer to instance
+ */
+void SimulatorRoutingHandler(const Station* pStation,
+                             StationId destId,
+                             StationId transId,
+                             double expirationTime,
+                             int length,
+                             ERouteEntryUpdate updateAction,
+                             Simulator* pThis);
+
+/** Handles station scheduler events
+ * Is called each time a packet is scheduled/removed
+ * @param pStation [in] pointer to station
+ * @param time [in] time, when a packet should be issued
+ * @param pPacket [in] pointer to packet instance
+ * @param bAdded [in] if TRUE packet is being added, otherwise removed
+ * @param pThis [in] pointer to instance
+ */
+void SimulatorSchedulerHandler(const Station* pStation,
+                               double time,
+                               const Packet* pPacket,
+                               ESchedulerEvent event,
+                               Simulator* pThis);
+
+/** Handles station output box events
+ * @param pStation [in] pointer to station
+ * @param pPacket [in] packet being added/removed
+ * @param event [in] outbox event
+ * @param retriesCount [in] updated retries count
+ * @param nextRetryTime [in] next retry time
+ * @param pThis [in] pointer to instance
+ */
+void SimulatorOutboxHandler(const Station* pStation,
+                            const Packet* pPacket,
+                            EOutboxEvent event,
+                            int retriesCount,
+                            double nextRetryTime,
+                            Simulator* pThis);
 
 Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 {
@@ -288,6 +351,22 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
     {
         pThis->tracker.callback(pStation, event, pThis->tracker.pArg);
     }
+
+    switch (event)
+    {
+    case eSTATION_ADDED:
+        CHECK(StationRegisterRoutingHandler(pStation, (StationRoutingHandler)&SimulatorRoutingHandler, pThis));
+        CHECK(StationRegisterSchedulerHandler(pStation, (StationSchedulerHandler)&SimulatorSchedulerHandler, pThis));
+        CHECK(StationRegisterOutboxHandler(pStation, (StationOutboxHandler)&SimulatorOutboxHandler, pThis));
+        break;
+    case eSTATION_REMOVED:
+        CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
+        CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
+        CHECK(StationRegisterOutboxHandler(pStation, NULL, NULL));
+        break;
+    default: break;
+    }
+
     return eSTATUS_COMMON_OK;
 }
 
@@ -371,6 +450,30 @@ EStatus SimulatorSetStationTracker(Simulator* pThis, StationTracker tracker, voi
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus SimulatorSetRoutingHandler(Simulator* pThis, StationRoutingHandler handler, void* pUserArg)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    pThis->routingHandler.callback = handler;
+    pThis->routingHandler.pArg = pUserArg;
+    return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorSetSchedulerHandler(Simulator* pThis, StationSchedulerHandler handler, void* pUserArg)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    pThis->schedulerHandler.callback = handler;
+    pThis->schedulerHandler.pArg = pUserArg;
+    return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorSetOutboxHandler(Simulator* pThis, StationOutboxHandler handler, void* pUserArg)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    pThis->outboxHandler.callback = handler;
+    pThis->outboxHandler.pArg = pUserArg;
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus SimulatorReset(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
@@ -430,6 +533,46 @@ EStatus SimulatorGetStatistics(const Simulator* pThis, const Statistics** ppStat
     *ppStatistics = (const Statistics*)pThis->pStatistics;
     return eSTATUS_COMMON_OK;
 }
+
+void SimulatorRoutingHandler(const Station* pStation,
+                             StationId destId,
+                             StationId transId,
+                             double expirationTime,
+                             int length,
+                             ERouteEntryUpdate updateAction,
+                             Simulator* pThis)
+{
+    if (pThis->routingHandler.callback)
+    {
+        pThis->routingHandler.callback(pStation, destId, transId, expirationTime, length, updateAction, pThis->routingHandler.pArg);
+    }
+}
+
+void SimulatorSchedulerHandler(const Station* pStation,
+                               double time,
+                               const Packet* pPacket,
+                               ESchedulerEvent event,
+                               Simulator* pThis)
+{
+    if (pThis->schedulerHandler.callback)
+    {
+        pThis->schedulerHandler.callback(pStation, time, pPacket, event, pThis->schedulerHandler.pArg);
+    }
+}
+
+void SimulatorOutboxHandler(const Station* pStation,
+                            const Packet* pPacket,
+                            EOutboxEvent event,
+                            int retriesCount,
+                            double nextRetryTime,
+                            Simulator* pThis)
+{
+    if (pThis->outboxHandler.callback)
+    {
+        pThis->outboxHandler.callback(pStation, pPacket, event, retriesCount, nextRetryTime, pThis->outboxHandler.pArg);
+    }
+}
+
 
 Boolean SimulatorDumpStation(const Station* pStation, void* pArg)
 {
@@ -519,7 +662,6 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     {
         if (fscanf(file, "%d %d %d %lf %d %d", &pktId, &src, &dst, &time, &size, &hopsCount) < 6) break;
         ++src, ++dst;
-        time /= 1000.0;
 
         CHECK(PacketNewData(&pPacket, (StationId)src, (StationId)dst, (unsigned long)size, pktId));
         pPacket->header.timeToLive = hopsCount;
