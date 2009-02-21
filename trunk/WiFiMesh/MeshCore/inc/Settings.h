@@ -152,6 +152,18 @@ EStatus SettingsSetPacketHopsThreshold(Settings* pThis, int hops);
  */
 EStatus SettingsGetPacketHopsThreshold(const Settings* pThis, int* pHops);
 
+/** Sets maximum simulation duration
+ * @param pThis [in] pointer to instance
+ * @param duration [in] maximum duration
+ */
+EStatus SettingsSetMaxDuration(Settings* pThis, double duration);
+
+/** Retrieves maximum simulation duration
+ * @param pThis [in] pointer to instance
+ * @param pDuration [out] duration will be stored at *pDuration
+ */
+EStatus SettingsGetMaxDuration(const Settings* pThis, double* pDuration);
+
 /** Calculates transmit time for given packet
  * @param pThis [in] pointer to instance
  * @param pPacket [in] pointer to packet

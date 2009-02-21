@@ -44,6 +44,7 @@ struct _Settings
 	int        propPacketRetryThreshold;
 	int        propPacketHopsThreshold;
 	Size       propWorldSize;
+	double     propMaxDuration;
 };
 
 static const Size DEFAULT_WORLD_SIZE = {600, 400};
@@ -56,6 +57,7 @@ SETTINGS_PROPERTY(RouteRetryTimeout, double, 0.5);
 SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.01);
 SETTINGS_PROPERTY(PacketRetryThreshold, int, 5);
 SETTINGS_PROPERTY(PacketHopsThreshold, int, 20);
+SETTINGS_PROPERTY(MaxDuration, double, 60.0);
 
 EStatus SettingsNew(Settings** ppThis)
 {
@@ -80,6 +82,7 @@ EStatus SettingsInit(Settings* pThis)
 	SETTINGS_INIT(PacketRetryTimeout);
 	SETTINGS_INIT(PacketRetryThreshold);
 	SETTINGS_INIT(PacketHopsThreshold);
+	SETTINGS_INIT(MaxDuration);
 
 	return eSTATUS_COMMON_OK;
 }
