@@ -26,11 +26,12 @@ class MeshApp : public QApplication
 {
 public:
     MeshApp(int argc, char** argv);
+    ~MeshApp();
 
 protected:
     virtual bool notify(QObject* reciever, QEvent* event);
 
-    MeshMainWindow m_mainWindow;
+    MeshMainWindow* m_mainWindow;
 };
 
 #endif // MESHAPP_H
