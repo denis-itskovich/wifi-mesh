@@ -33,10 +33,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 typedef struct _SchedulerEntry
 {
-    double      time;
-    Packet*     pPacket;
-    Boolean		bWasIssued;
-    Boolean		bWasDelivered;
+    double          time;
+    Packet*         pPacket;
+    ESchedulerEvent state;
 } SchedulerEntry;
 
 struct _Scheduler
@@ -51,7 +50,7 @@ struct _Scheduler
 	}			handler;
 };
 
-EStatus SchedulerInvokeHandler(Scheduler* pThis, const SchedulerEntry* pEntry, ESchedulerEvent event);
+EStatus SchedulerInvokeHandler(Scheduler* pThis, SchedulerEntry* pEntry, ESchedulerEvent event);
 Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis);
 Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis);
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg);
@@ -64,8 +63,8 @@ Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry
 
 Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
 {
-	pEntry->bWasIssued = FALSE;
-	pEntry->bWasDelivered = FALSE;
+	SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_RESET);
+	pEntry->state = eSCHEDULE_ADDED;
 	TimeLineEvent(pThis->pTimeLine, pEntry->time, pEntry->pPacket);
 	return TRUE;
 }
@@ -95,13 +94,14 @@ EStatus SchedulerDestroy(Scheduler* pThis)
 	return SortedListDelete(&pThis->pEntries);
 }
 
-EStatus SchedulerInvokeHandler(Scheduler* pThis, const SchedulerEntry* pEntry, ESchedulerEvent event)
+EStatus SchedulerInvokeHandler(Scheduler* pThis, SchedulerEntry* pEntry, ESchedulerEvent event)
 {
 	VALIDATE_ARGUMENTS(pThis && pEntry);
 	if (pThis->handler.callback)
 	{
 		pThis->handler.callback(pEntry->time, pEntry->pPacket, event, pThis->handler.pArg);
 	}
+	pEntry->state = event;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -135,10 +135,23 @@ EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket)
 
 	CHECK(PacketClone(ppPacket, pSchedulerEntry->pPacket));
 	CHECK(SortedListGetNext(&pThis->pCurrent));
-
-	pSchedulerEntry->bWasIssued = TRUE;
-
+	CHECK(SchedulerInvokeHandler(pThis, pSchedulerEntry, eSCHEDULE_ISSUED));
 	return eSTATUS_COMMON_OK;
+}
+
+Comparison SchedulerEntryFinder(SchedulerEntry* pEntry, const Packet* pPacket, const Scheduler* pThis)
+{
+    return pEntry->pPacket->payload.id == pPacket->payload.id ? EQUAL : LESS;
+}
+
+EStatus SchedulerPacketDelivered(Scheduler* pThis, const Packet* pPacket)
+{
+    ListEntry* pEntry;
+    SchedulerEntry* pSchedulerEntry;
+    CHECK(SortedListFind(pThis->pEntries, &pEntry, (ItemComparator)&SchedulerEntryFinder, pPacket, pThis));
+    CHECK(SortedListGetValue(pEntry, &pSchedulerEntry));
+    CHECK(SchedulerInvokeHandler(pThis, pSchedulerEntry, eSCHEDULE_DELIVERED));
+    return eSTATUS_COMMON_OK;
 }
 
 Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis)
@@ -203,3 +216,4 @@ EStatus SchedulerDump(const Scheduler* pThis)
     CHECK(SortedListEnumerate(pThis->pEntries, (ItemEnumerator)&SchedulerDumpEntry, NULL));
     return eSTATUS_COMMON_OK;
 }
+
