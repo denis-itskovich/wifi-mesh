@@ -186,7 +186,7 @@ void MeshMainWindow::createStatusBar()
 {
     m_simulationTime = new QLabel;
     m_simulationProgress = new QProgressBar;
-    m_simulationProgress->setMaximumWidth(128);
+    m_simulationProgress->setMaximumWidth(384);
     m_simulationProgress->setRange(0, 1000);
 
     statusBar()->setSizeGripEnabled(true);

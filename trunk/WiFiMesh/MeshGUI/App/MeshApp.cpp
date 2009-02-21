@@ -23,9 +23,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 MeshApp::MeshApp(int argc, char** argv) :
     QApplication(argc, argv)
 {
-    setApplicationVersion("1.0.4.1");
+    setApplicationVersion("1.0.5");
     setApplicationName("WiFi Mesh Simulator PRO");
-    m_mainWindow.showMaximized();
+    m_mainWindow = new MeshMainWindow;
+    m_mainWindow->showMaximized();
+}
+
+MeshApp::~MeshApp()
+{
+    delete m_mainWindow;
 }
 
 bool MeshApp::notify(QObject* receiver, QEvent* event)
@@ -36,7 +42,7 @@ bool MeshApp::notify(QObject* receiver, QEvent* event)
     }
     catch (MeshException* e)
     {
-        QMessageBox::critical(&m_mainWindow, "MeshCore failure", e->what());
+        QMessageBox::critical(m_mainWindow, "MeshCore failure", e->what());
         return false;
     }
 }
