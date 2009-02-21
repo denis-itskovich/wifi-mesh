@@ -52,6 +52,7 @@ typedef enum
 	eSTATUS_SIMULATOR_STATION_NOT_FOUND,			///< Referred station was not found
 	eSTATUS_SIMULATOR_FINISHED,						///< Simulation finished
 	eSTATUS_SIMULATOR_FILE_CORRUPTED,               ///< Could not import file
+	eSTATUS_SIMULATOR_FILE_OPEN_FAILURE,            ///< Could not open file
 
 	eSTATUS_SCHEDULER_NO_PACKETS,					///< No ready packets found
 

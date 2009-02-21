@@ -28,7 +28,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "TimeLine.h"
 #include "Settings.h"
 #include "Version.h"
+
 #include <stdlib.h>
+#include <string.h>
 
 const char* EXE_NAME = NULL;
 
@@ -99,7 +101,7 @@ int main(int argc, char** argv)
 
     EXE_NAME = argv[0];
     Welcome();
-    if ((argc < 2) || (argc > 3)) Usage();
+    if ((argc < 2) || (argc > 3) || strcmp(argv[1], "/?") == 0) Usage();
 
     inputfile = argv[1];
     if (argc > 2) pathloss = argv[2];
