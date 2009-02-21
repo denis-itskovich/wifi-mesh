@@ -632,6 +632,7 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     VALIDATE_ARGUMENTS(pThis && filename);
 
     file = fopen(filename, "r");
+    VALIDATE(file, eSTATUS_SIMULATOR_FILE_OPEN_FAILURE);
     VALIDATE(fscanf(file, "%d %d %d", &routingProtocol, &dataLinkProtocol, &bufferRouting) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
     VALIDATE(fscanf(file, "%lf %lf %d %lf %lf", &worldSize.x, &worldSize.y, &stationsCount, &maxAttenuation, &attenuationConst) == 5, eSTATUS_SIMULATOR_FILE_CORRUPTED);
     VALIDATE(fscanf(file, "%d %d %d %lf", &dataRate, &bufferSize, &ctrlMessagesPriority, &crcProbability) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
@@ -722,6 +723,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     VALIDATE_ARGUMENTS(pThis && filename);
 
     file = fopen(filename, "w");
+    VALIDATE(file, eSTATUS_SIMULATOR_FILE_OPEN_FAILURE);
 
     CHECK(SettingsGetDataRate(pThis->pSettings, &dataRate));
     CHECK(SettingsGetWorldSize(pThis->pSettings, &worldSize));
