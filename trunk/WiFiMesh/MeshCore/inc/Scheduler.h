@@ -39,9 +39,9 @@ typedef struct _Scheduler Scheduler;	///< forward declaration
 
 typedef enum _ESchedulerEvent
 {
+    eSCHEDULE_REMOVED,
 	eSCHEDULE_ADDED,
-	eSCHEDULE_REMOVED,
-	eSCHEDULE_RESET,
+    eSCHEDULE_RESET,
 	eSCHEDULE_ISSUED,
 	eSCHEDULE_DELIVERED
 } ESchedulerEvent;

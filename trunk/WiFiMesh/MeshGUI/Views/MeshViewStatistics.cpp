@@ -45,16 +45,18 @@ MeshChartItem* MeshViewStatistics::createItem(const MeshTheme::ItemDescriptor& d
 
 void MeshViewStatistics::init()
 {
-    m_chartPacketsByStatus = new MeshWidgetChart("Packets count by delivery status");
-    m_chartPacketsByType = new MeshWidgetChart("Packets count by packet type");
-    m_chartTrafficByType = new MeshWidgetChart("Traffic by packet type");
+    m_chartPacketsByStatus = new MeshWidgetChart("Packets count\nby delivery status");
+    m_chartPacketsByType = new MeshWidgetChart("Packets count\nby packet type");
+    m_chartSizeByType = new MeshWidgetChart("Traffic\nby packet type");
+    m_chartPacketsByTraffic = new MeshWidgetChart("Packets count\nby scheduling status");
+    m_chartSizeByTraffic = new MeshWidgetChart("Traffic\nby scheduling status");
 
     for (int i = 0; i < ePKT_TYPE_LAST; ++i)
     {
         m_itemPacketsByType[i] = createItem(MeshTheme::packetTypeDescriptor((EPacketType)i));
+        m_itemSizeByType[i] = createItem(MeshTheme::packetTypeDescriptor((EPacketType)i));
         m_chartPacketsByType->addItem(m_itemPacketsByType[i]);
-        m_itemTrafficByType[i] = createItem(MeshTheme::packetTypeDescriptor((EPacketType)i));
-        m_chartTrafficByType->addItem(m_itemTrafficByType[i]);
+        m_chartSizeByType->addItem(m_itemSizeByType[i]);
     }
 
     for (int i = 0; i < ePKT_STATUS_PENDING; ++i)
@@ -63,12 +65,28 @@ void MeshViewStatistics::init()
         m_chartPacketsByStatus->addItem(m_itemPacketsByStatus[i]);
     }
 
-    QGridLayout* gridLayout = new QGridLayout;
-    gridLayout->addWidget(m_chartTrafficByType, 0, 0);
-    gridLayout->addWidget(m_chartPacketsByType, 0, 1);
-    gridLayout->addWidget(m_chartPacketsByStatus, 1, 0);
+    for (int i = 0; i < eTRAFFIC_LAST; ++i)
+    {
+        m_itemPacketsByTraffic[i] = createItem(MeshTheme::trafficTypeDescriptor((ETraffic)i));
+        m_itemSizeByTraffic[i] = createItem(MeshTheme::trafficTypeDescriptor((ETraffic)i));
+        m_chartPacketsByTraffic->addItem(m_itemPacketsByTraffic[i]);
+        m_chartSizeByTraffic->addItem(m_itemSizeByTraffic[i]);
+    }
 
-    setLayout(gridLayout);
+    QVBoxLayout* vlayout = new QVBoxLayout;
+    QHBoxLayout* topLayout = new QHBoxLayout;
+    QHBoxLayout* bottomLayout = new QHBoxLayout;
+
+    topLayout->addWidget(m_chartSizeByType);
+    topLayout->addWidget(m_chartPacketsByType);
+    bottomLayout->addWidget(m_chartSizeByTraffic);
+    bottomLayout->addWidget(m_chartPacketsByTraffic);
+    bottomLayout->addWidget(m_chartPacketsByStatus);
+
+    vlayout->addItem(topLayout);
+    vlayout->addItem(bottomLayout);
+
+    setLayout(vlayout);
 }
 
 void MeshViewStatistics::updateStatistics(const Statistics* pStatistics)
@@ -76,11 +94,17 @@ void MeshViewStatistics::updateStatistics(const Statistics* pStatistics)
     for (int i = 0; i < ePKT_TYPE_LAST; ++i)
     {
         m_itemPacketsByType[i]->setValue(pStatistics->packetsByType[i]);
-        m_itemTrafficByType[i]->setValue(pStatistics->trafficByType[i]);
+        m_itemSizeByType[i]->setValue(pStatistics->sizeByType[i]);
     }
 
     for (int i = 0; i < ePKT_STATUS_PENDING; ++i)
     {
         m_itemPacketsByStatus[i]->setValue(pStatistics->packetsByStatus[i]);
+    }
+
+    for (int i = 0; i < eTRAFFIC_LAST; ++i)
+    {
+        m_itemPacketsByTraffic[i]->setValue(pStatistics->packetsByTraffic[i]);
+        m_itemSizeByTraffic[i]->setValue(pStatistics->sizeByTraffic[i]);
     }
 }

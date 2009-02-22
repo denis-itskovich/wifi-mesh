@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "TimeLine.h"
 #include "Settings.h"
 #include "Version.h"
+#include "Descriptors.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -58,11 +59,37 @@ void Check(EStatus status)
     if (status != eSTATUS_COMMON_OK) Error(StatusGetMessage(status));
 }
 
+void PrintArray(const char* title, const char * const* desc, const int* pArray, int count)
+{
+    int total = 0;
+    int i;
+    double val;
+    char c = ' ';
+
+    for (i = 0; i < count; ++i) total += pArray[i];
+    printf("\n%s:\n", title);
+
+    for (i = 0; i < count; ++i)
+    {
+        val = (double)pArray[i];
+        if (val > (1 << 17)) { val /= 1024.0; c = 'K'; }
+        if (val > (1 << 17)) { val /= 1024.0; c = 'M'; }
+        if (val > (1 << 17)) { val /= 1024.0; c = 'G'; }
+
+        printf("    %-24s%9.0lf%c (%.2lf%%)\n", desc[i], val, c, (double)pArray[i]/(double)total * 100);
+    }
+}
+
 void PrintStatistics(Simulator* pSimulator)
 {
     const Statistics* pStatistics;
     Check(SimulatorGetStatistics(pSimulator, &pStatistics));
-    printf("Simulation finished.\n");
+
+    PrintArray("Traffic by packet type", DESC_PACKET_TYPE, pStatistics->sizeByType, ePKT_TYPE_LAST);
+    PrintArray("Packets count by packet type", DESC_PACKET_TYPE, pStatistics->packetsByType, ePKT_TYPE_LAST);
+    PrintArray("Packets count by delivery status", DESC_PACKET_STATUS, pStatistics->packetsByStatus, ePKT_STATUS_PENDING);
+    PrintArray("Traffic by scheduling status", DESC_TRAFFIC_TYPE, pStatistics->sizeByTraffic, eTRAFFIC_LAST);
+    PrintArray("Packets count by scheduling status", DESC_TRAFFIC_TYPE, pStatistics->packetsByTraffic, eTRAFFIC_LAST);
 }
 
 int Simulate(const char* inputfile, const char* pathloss)
@@ -78,6 +105,10 @@ int Simulate(const char* inputfile, const char* pathloss)
 
     Check(SimulatorImport(pSimulator, inputfile));
     Check(SettingsGetMaxDuration(pSettings, &maxDuration));
+    Check(SimulatorReset(pSimulator));
+
+    printf("Running simulation, please wait...");
+    fflush(stdout);
 
     while (SimulatorProcess(pSimulator) == eSTATUS_COMMON_OK)
     {
@@ -85,6 +116,7 @@ int Simulate(const char* inputfile, const char* pathloss)
         if (time > maxDuration) break;
     }
 
+    printf("\nSimulation finished, time: %lf\n", time);
     PrintStatistics(pSimulator);
 
     Check(SimulatorDelete(&pSimulator));

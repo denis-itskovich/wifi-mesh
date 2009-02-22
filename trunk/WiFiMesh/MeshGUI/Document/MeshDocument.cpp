@@ -248,6 +248,7 @@ void MeshDocument::prepare()
     m_steps = 0;
     emit simulationStarted();
     emit statusChanged("Simulation started...");
+    refreshStatistics();
 }
 
 void MeshDocument::start()

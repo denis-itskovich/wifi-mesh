@@ -18,17 +18,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 /**
- * Version information
- * @file Version.h
+ * TODO Fill file purpose and description
+ * @file Descriptions.c
  * @date 21/02/2009
  * @author Denis Itskovich
  */
 
+#include "Descriptors.h"
 
-#ifndef VERSION_H_
-#define VERSION_H_
+const char* DESC_PACKET_TYPE[ePKT_TYPE_LAST] =
+{
+     "Search request",
+     "Search response",
+     "Data",
+     "Ack"
+};
 
-#define APP_VERSION     "1.0.7"
-#define APP_NAME        "WiFi Mesh Simulator Pro"
+const char* DESC_PACKET_STATUS[ePKT_STATUS_LAST] =
+{
+     "Delivered",
+     "Collision",
+     "Out of range",
+     "Pending"
+};
 
-#endif /* VERSION_H_ */
+const char* DESC_TRAFFIC_TYPE[eTRAFFIC_LAST] =
+{
+     "Scheduled",
+     "Issued",
+     "Delivered"
+};

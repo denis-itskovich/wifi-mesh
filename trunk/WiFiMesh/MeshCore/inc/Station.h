@@ -238,6 +238,12 @@ EStatus StationRegisterRoutingHandler(Station* pThis, StationRoutingHandler hand
  */
 EStatus StationRegisterOutboxHandler(Station* pThis, StationOutboxHandler handler, void* pUserArg);
 
+/** Notifies a station about packet successful delivery
+ * @param pThis [in] pointer to instance
+ * @param pPacket [in] pointer to packet
+ */
+EStatus StationPacketDelivered(Station* pThis, const Packet* pPacket);
+
 /** Exports a station into the file
  * @param pThis [in] pointer to instance
  * @param file [in] pointer to file

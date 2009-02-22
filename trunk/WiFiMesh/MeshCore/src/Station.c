@@ -732,6 +732,12 @@ void StationHandleScheduleChange(double time, const Packet* pPacket, ESchedulerE
 	}
 }
 
+EStatus StationPacketDelivered(Station* pThis, const Packet* pPacket)
+{
+    VALIDATE_ARGUMENTS(pThis && pPacket);
+    return SchedulerPacketDelivered(pThis->pScheduler, pPacket);
+}
+
 EStatus StationExport(const Station* pThis, FILE* file)
 {
     return SchedulerExport(pThis->pScheduler, file);

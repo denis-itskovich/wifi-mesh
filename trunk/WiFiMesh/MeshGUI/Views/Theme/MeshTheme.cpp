@@ -25,29 +25,45 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "MeshTheme.h"
+#include "../../../MeshCore/inc/Descriptors.h"
 
 const MeshTheme::ItemDescriptor MeshTheme::s_packetType[ePKT_TYPE_LAST] =
 {
-     { "Search request",    0x000000bf },
-     { "Search response",   0x0000bf00 },
-     { "Data",              0x00000000 },
-     { "Ack",               0x007f7f7f }
+     { DESC_PACKET_TYPE[ePKT_TYPE_SEARCH_REQUEST],      0x000000bf },
+     { DESC_PACKET_TYPE[ePKT_TYPE_SEARCH_RESPONSE],     0x0000bf00 },
+     { DESC_PACKET_TYPE[ePKT_TYPE_DATA],                0x00000000 },
+     { DESC_PACKET_TYPE[ePKT_TYPE_ACK],                 0x007f7f7f }
 };
 
 const MeshTheme::ItemDescriptor MeshTheme::s_packetStatus[ePKT_TYPE_LAST] =
 {
-     { "Delivered",     0x00007f00 },
-     { "Collision",     0x00bf0000 },
-     { "Out of range",  0x00bf7f00 },
-     { "Pending",       0x007f7f7f },
+     { DESC_PACKET_STATUS[ePKT_STATUS_DELIVERED],       0x00007f00 },
+     { DESC_PACKET_STATUS[ePKT_STATUS_COLLISION],       0x00bf0000 },
+     { DESC_PACKET_STATUS[ePKT_STATUS_OUT_OF_RANGE],    0x00bf7f00 },
+     { DESC_PACKET_STATUS[ePKT_STATUS_PENDING],         0x007f7f7f },
+};
+
+const MeshTheme::ItemDescriptor MeshTheme::s_trafficType[eTRAFFIC_LAST] =
+{
+     { DESC_TRAFFIC_TYPE[eTRAFFIC_SCHEDULED],           0x00bf00bf },
+     { DESC_TRAFFIC_TYPE[eTRAFFIC_ISSUED],              0x00bfbf00 },
+     { DESC_TRAFFIC_TYPE[eTRAFFIC_DELIVERED],           0x0000bfbf }
 };
 
 const MeshTheme::ItemDescriptor& MeshTheme::packetTypeDescriptor(EPacketType packetType)
 {
+    assert(packetType < ePKT_TYPE_LAST);
     return s_packetType[packetType];
 }
 
 const MeshTheme::ItemDescriptor& MeshTheme::packetStatusDescriptor(EPacketStatus packetStatus)
 {
+    assert(packetStatus < ePKT_STATUS_LAST);
     return s_packetStatus[packetStatus];
+}
+
+const MeshTheme::ItemDescriptor& MeshTheme::trafficTypeDescriptor(ETraffic trafficType)
+{
+    assert(trafficType < eTRAFFIC_LAST);
+    return s_trafficType[trafficType];
 }

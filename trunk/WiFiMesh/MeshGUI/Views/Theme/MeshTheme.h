@@ -43,10 +43,12 @@ public:
 
     static const ItemDescriptor& packetTypeDescriptor(EPacketType packetType);
     static const ItemDescriptor& packetStatusDescriptor(EPacketStatus packetStatus);
+    static const ItemDescriptor& trafficTypeDescriptor(ETraffic trafficType);
 
 private:
     static const ItemDescriptor s_packetType[ePKT_TYPE_LAST];
     static const ItemDescriptor s_packetStatus[ePKT_STATUS_LAST];
+    static const ItemDescriptor s_trafficType[eTRAFFIC_LAST];
 };
 
 #endif /* MESHTHEME_H_ */
