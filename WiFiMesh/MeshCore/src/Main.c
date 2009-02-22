@@ -67,7 +67,7 @@ void PrintStatistics(Simulator* pSimulator)
     Check(SimulatorGetStatistics(pSimulator, &pStatistics));
     Check(StatisticsPrint(pStatistics, buff, len));
 
-    printf(buff);
+    printf("%s", buff);
 }
 
 int Simulate(const char* inputfile, const char* pathloss)
