@@ -58,6 +58,7 @@ protected:
 
 private:
     void updateBounds();
+    QString itemText(MeshChartItem* item) const;
     QRect calculateItemsRect() const;
     QRect calculateLegendRect() const;
     QRect calculateTitleRect() const;

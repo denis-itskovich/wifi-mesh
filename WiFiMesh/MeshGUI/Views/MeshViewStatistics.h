@@ -50,10 +50,15 @@ private:
 
     MeshWidgetChart*    m_chartPacketsByStatus;
     MeshWidgetChart*    m_chartPacketsByType;
-    MeshWidgetChart*    m_chartTrafficByType;
+    MeshWidgetChart*    m_chartSizeByType;
+    MeshWidgetChart*    m_chartPacketsByTraffic;
+    MeshWidgetChart*    m_chartSizeByTraffic;
+
     MeshChartItem*      m_itemPacketsByStatus[ePKT_STATUS_PENDING];
     MeshChartItem*      m_itemPacketsByType[ePKT_TYPE_LAST];
-    MeshChartItem*      m_itemTrafficByType[ePKT_TYPE_LAST];
+    MeshChartItem*      m_itemSizeByType[ePKT_TYPE_LAST];
+    MeshChartItem*      m_itemPacketsByTraffic[eTRAFFIC_LAST];
+    MeshChartItem*      m_itemSizeByTraffic[eTRAFFIC_LAST];
 };
 
 #endif /* MESHVIEWSTATISTICS_H_ */

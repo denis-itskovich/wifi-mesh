@@ -334,6 +334,8 @@ EStatus SimulatorProcess(Simulator* pThis)
 
 EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const Station* pSrc, const Station* pDst, EPacketStatus status)
 {
+    Station* pOrigSrc;
+
 	if (pThis->sniffer.callback)
 	{
 		if ((pThis->bDupBroadcast && pDst) ||
@@ -341,6 +343,13 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 		{
 			pThis->sniffer.callback(pPacket, pSrc, pDst, status, pThis->sniffer.pArg);
 		}
+	}
+	if (pPacket->header.type == ePKT_TYPE_DATA &&
+	    status == ePKT_STATUS_DELIVERED &&
+	    pPacket->header.originalDstId == pPacket->header.transitDstId)
+	{
+	    CHECK(SimulatorGetStation(pThis, pPacket->header.originalSrcId, &pOrigSrc));
+	    CHECK(StationPacketDelivered(pOrigSrc, pPacket));
 	}
 	return StatisticsHandlePacket(pThis->pStatistics, pPacket, status);
 }
@@ -558,6 +567,7 @@ void SimulatorSchedulerHandler(const Station* pStation,
     {
         pThis->schedulerHandler.callback(pStation, time, pPacket, event, pThis->schedulerHandler.pArg);
     }
+    StatisticsHandleSchedulerEvent(pThis->pStatistics, pPacket, event);
 }
 
 void SimulatorOutboxHandler(const Station* pStation,
@@ -646,6 +656,7 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     CHECK(SettingsSetCoverage(pThis->pSettings, sqrt(maxAttenuation/attenuationConst)));
     CHECK(SettingsSetPacketRetryTimeout(pThis->pSettings, timeUntilReply));
     CHECK(SettingsSetRouteExpirationTimeout(pThis->pSettings, routeEntryTimeout));
+    CHECK(SettingsSetMaxDuration(pThis->pSettings, simulationTimeout));
 
     for (i = 0; i < stationsCount; ++i)
     {
@@ -730,6 +741,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeUntilReply));
     CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeEntryTimeout));
+    CHECK(SettingsGetMaxDuration(pThis->pSettings, &simulationTimeout));
     CHECK(ListGetCount(pThis->pStations, &stationsCount));
 
     attenuationConst = 1;

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "Status.h"
 #include "Packet.h"
+#include "Scheduler.h"
 
 /** Packet status, handled by sniffer
  * @see PacketSniffer
@@ -45,6 +46,7 @@ typedef enum
 typedef enum
 {
     eTRAFFIC_SCHEDULED,         ///< Scheduled for delivery data - total size of all scheduled packets
+    eTRAFFIC_ISSUED,            ///< Issued - delivery was started
     eTRAFFIC_DELIVERED,         /**< Delivered data - total size of all delivered from point to point data packets
                                      (not including intermediators traffic) */
 
@@ -56,7 +58,9 @@ typedef struct _Statistics
 {
     int     packetsByStatus[ePKT_STATUS_LAST];      ///< Packet counts by delivery status @see EPacketStatus
     int     packetsByType[ePKT_TYPE_LAST];          ///< Packet counts by packet type @see EPacketType
-    int     trafficByType[ePKT_TYPE_LAST];          ///< Data amounts by packet type @see EPacketType
+    int     sizeByType[ePKT_TYPE_LAST];             ///< Data amounts by packet type @see EPacketType
+    int     packetsByTraffic[eTRAFFIC_LAST];        ///< Packets count by traffic type @see ETraffic
+    int     sizeByTraffic[eTRAFFIC_LAST];           ///< Data amounts by traffic type @see ETraffic
 
     int     maxHopsCount;                           ///< Maximal delivered hops count
     double  avgHopsCount;                           ///< Average delivered hops count
@@ -103,5 +107,12 @@ EStatus StatisticsClear(Statistics* pThis);
  * @param status [in] packet status
  */
 EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacketStatus status);
+
+/** Handles scheduler event
+ * @param pThis [in] pointer to instance
+ * @param pPacket [in] pointer to packet
+ * @param event [in] scheduler event
+ */
+EStatus StatisticsHandleSchedulerEvent(Statistics* pThis, const Packet* pPacket, ESchedulerEvent event);
 
 #endif /* STATISTICS_H_ */

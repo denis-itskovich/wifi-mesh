@@ -97,6 +97,8 @@ EStatus SchedulerDestroy(Scheduler* pThis)
 EStatus SchedulerInvokeHandler(Scheduler* pThis, SchedulerEntry* pEntry, ESchedulerEvent event)
 {
 	VALIDATE_ARGUMENTS(pThis && pEntry);
+	if (pEntry->state == event) return eSTATUS_COMMON_OK;
+
 	if (pThis->handler.callback)
 	{
 		pThis->handler.callback(pEntry->time, pEntry->pPacket, event, pThis->handler.pArg);

@@ -43,7 +43,7 @@ void MeshWidgetChart::init()
 {
     m_spacing = 7;
     m_shadowSize = 3;
-    setFont(QFont("Sans Serif", 12, QFont::Bold));
+    setFont(QFont("Sans Serif", 11, QFont::Bold));
 }
 
 void MeshWidgetChart::addItem(MeshChartItem* item)
@@ -134,7 +134,7 @@ QRect MeshWidgetChart::calculateLegendRect() const
     {
         const QFont& font = item->font();
         QFontMetrics metrics(font);
-        QSize size(metrics.size(Qt::TextSingleLine, item->title()));
+        QSize size(metrics.size(0, item->title()));
         size.setWidth(size.width() + size.height());
         if (size.width() > width) width = size.width();
         height += size.height() + 4;
@@ -178,6 +178,15 @@ QRect MeshWidgetChart::itemRect(int index)
     return QRect(QPoint(m_itemsRect.left() + (itemWidth + m_spacing)*index, m_itemsRect.top()), QSize(itemWidth, m_itemsRect.height()));
 }
 
+QString MeshWidgetChart::itemText(MeshChartItem* item) const
+{
+    double val = item->value();
+    if (val < (1 << 17)) return QString::number(val);
+    val /= 1024.0; if (val < (1 << 17)) return QString("%1K").arg(val);
+    val /= 1024.0; if (val < (1 << 17)) return QString("%1M").arg(val);
+    val /= 1024.0; return QString("%1G").arg(val);
+}
+
 void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QRect& boundingRect, double normalizedVal)
 {
     QRect itemRect(boundingRect);
@@ -202,7 +211,7 @@ void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QR
     QFont font = item->font();
     font.setPointSize(font.pointSize() - 1);
     painter->setFont(font);
-    painter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, QString::number(item->value()));
+    painter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, itemText(item));
 }
 
 QFont MeshWidgetChart::legendFont() const
@@ -215,7 +224,7 @@ QFont MeshWidgetChart::legendFont() const
 void MeshWidgetChart::paintLegend(QPainter* painter)
 {
     painter->setFont(legendFont());
-    painter->drawText(m_legendRect, Qt::AlignHCenter | Qt::AlignTop | Qt::TextSingleLine, tr("Legend"));
+    painter->drawText(m_legendRect, Qt::AlignHCenter | Qt::AlignTop, tr("Legend"));
 
     QPoint point(m_legendRect.topLeft());
     point.setY(point.y() + painter->fontMetrics().height() + 10 + m_spacing);

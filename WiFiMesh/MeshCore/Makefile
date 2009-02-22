@@ -1,4 +1,5 @@
 SOURCES =			\
+	src/Descriptors.c \
     src/List.c \
     src/Log.c \
     src/Packet.c \
@@ -22,8 +23,8 @@ TARGET =			$(OUTDIR)/MeshCore.exe
 OUTDIR_DEBUG =		Debug
 OUTDIR_RELEASE =	Release
 
-CFLAGS_DEBUG = 		-O0 -g3
-CFLAGS_RELEASE = 	-O3
+CFLAGS_DEBUG = 		-O0 -g3 -ggdb
+CFLAGS_RELEASE = 	-O3 -D__NO_LOG
 
 LDFLAGS_DEBUG =
 LDFLAGS_RELEASE =	"-Wl,-s,-x"
@@ -31,7 +32,7 @@ LDFLAGS_RELEASE =	"-Wl,-s,-x"
 
 AR =				ar
 CC =				gcc
-CFLAGS = 			-Iinc $(CLFAGS_$(CONFIG)) -Wall -Werror -c -fmessage-length=0 -MMD -MP -o"$(__object)" "$(__source)" -MT"$(__dep)" -MF"$(__dep)"
+CFLAGS = 			-Iinc $(CFLAGS_$(CONFIG)) -Wall -Werror -c -fmessage-length=0 -MMD -MP -o"$(__object)" "$(__source)" -MT"$(__dep)" -MF"$(__dep)"
 LDFLAGS = 			$(LDFLAGS_$(CONFIG)) $(LIBS) -o $(TARGET)
 LIBS =				-lMeshCore -L"$(OUTDIR)"
 

@@ -46,9 +46,11 @@ EStatus StatisticsInit(Statistics* pThis)
 EStatus StatisticsReset(Statistics* pThis)
 {
     VALIDATE_ARGUMENTS(pThis);
-//    int scheduledDataAmount = pThis->scheduledDataAmount;
+    int scheduledSize = pThis->sizeByTraffic[eTRAFFIC_SCHEDULED];
+    int scheduledPackets = pThis->packetsByTraffic[eTRAFFIC_SCHEDULED];
     CHECK(StatisticsClear(pThis));
-//    pThis->scheduledDataAmount = scheduledDataAmount;
+    pThis->sizeByTraffic[eTRAFFIC_SCHEDULED] = scheduledSize;
+    pThis->packetsByTraffic[eTRAFFIC_SCHEDULED] = scheduledPackets;
     return eSTATUS_COMMON_OK;
 }
 
@@ -65,6 +67,41 @@ EStatus StatisticsDestroy(Statistics* pThis)
     return eSTATUS_COMMON_OK;
 }
 
+EStatus StatisticsHandleSchedulerEvent(Statistics* pThis, const Packet* pPacket, ESchedulerEvent event)
+{
+    VALIDATE_ARGUMENTS(pThis && pPacket);
+
+    unsigned long size = pPacket->payload.size;
+
+    switch (event)
+    {
+    case eSCHEDULE_ADDED:
+        ++pThis->packetsByTraffic[eTRAFFIC_SCHEDULED];
+        pThis->sizeByTraffic[eTRAFFIC_SCHEDULED] += size;
+        break;
+    case eSCHEDULE_REMOVED:
+        --pThis->packetsByTraffic[eTRAFFIC_SCHEDULED];
+        pThis->sizeByTraffic[eTRAFFIC_SCHEDULED] -= size;
+        break;
+    case eSCHEDULE_RESET:
+        pThis->packetsByTraffic[eTRAFFIC_ISSUED] = 0;
+        pThis->packetsByTraffic[eTRAFFIC_DELIVERED] = 0;
+        pThis->sizeByTraffic[eTRAFFIC_ISSUED] = 0;
+        pThis->sizeByTraffic[eTRAFFIC_DELIVERED] = 0;
+        break;
+    case eSCHEDULE_ISSUED:
+        ++pThis->packetsByTraffic[eTRAFFIC_ISSUED];
+        pThis->sizeByTraffic[eTRAFFIC_ISSUED] += size;
+        break;
+    case eSCHEDULE_DELIVERED:
+        ++pThis->packetsByTraffic[eTRAFFIC_DELIVERED];
+        pThis->sizeByTraffic[eTRAFFIC_DELIVERED] += size;
+        break;
+    }
+
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacketStatus status)
 {
     EPacketType type;
@@ -73,7 +110,7 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     double totalRouteLength;
     static const Packet* pLastPacket = NULL;
 
-    VALIDATE_ARGUMENTS(pThis);
+    VALIDATE_ARGUMENTS(pThis && pPacket);
 
     if (pPacket == pLastPacket) return eSTATUS_COMMON_OK;
     pLastPacket = pPacket;
@@ -83,7 +120,7 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     if (status != ePKT_STATUS_DELIVERED) return eSTATUS_COMMON_OK;
 
     CHECK(PacketGetSize(pPacket, &size));
-    pThis->trafficByType[type] += size;
+    pThis->sizeByType[type] += size;
     ++pThis->packetsByType[type];
 
     totalHopsCount = pThis->avgHopsCount * (double)(pThis->packetsByStatus[status] - 1) + (double)pPacket->header.hopsCount;
@@ -100,3 +137,4 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
 
     return eSTATUS_COMMON_OK;
 }
+
