@@ -44,6 +44,16 @@ void MeshWidgetChart::init()
     m_spacing = 7;
     m_shadowSize = 3;
     setFont(QFont("Sans Serif", 11, QFont::Bold));
+    m_action = new QAction(m_title, this);
+    m_action->setCheckable(true);
+    m_action->setChecked(true);
+
+    connect(m_action, SIGNAL(toggled(bool)), this, SLOT(setVisible(bool)));
+}
+
+QAction* MeshWidgetChart::toggleViewAction()
+{
+    return m_action;
 }
 
 void MeshWidgetChart::addItem(MeshChartItem* item)

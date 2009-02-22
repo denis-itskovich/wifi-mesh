@@ -115,4 +115,11 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
  */
 EStatus StatisticsHandleSchedulerEvent(Statistics* pThis, const Packet* pPacket, ESchedulerEvent event);
 
+/** Prints statistics into buffer
+ * @param pThis [in] pointer to instance
+ * @param buffer [out] character buffer
+ * @param len [in] buffer length
+ */
+EStatus StatisticsPrint(const Statistics* pThis, char* buffer, int len);
+
 #endif /* STATISTICS_H_ */

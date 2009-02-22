@@ -45,11 +45,26 @@ MeshChartItem* MeshViewStatistics::createItem(const MeshTheme::ItemDescriptor& d
 
 void MeshViewStatistics::init()
 {
-    m_chartPacketsByStatus = new MeshWidgetChart("Packets count\nby delivery status");
-    m_chartPacketsByType = new MeshWidgetChart("Packets count\nby packet type");
-    m_chartSizeByType = new MeshWidgetChart("Traffic\nby packet type");
-    m_chartPacketsByTraffic = new MeshWidgetChart("Packets count\nby scheduling status");
-    m_chartSizeByTraffic = new MeshWidgetChart("Traffic\nby scheduling status");
+    m_chartPacketsByStatus = new MeshWidgetChart("Packets count by delivery status");
+    m_chartPacketsByType = new MeshWidgetChart("Packets count by packet type");
+    m_chartSizeByType = new MeshWidgetChart("Traffic by packet type");
+    m_chartPacketsByTraffic = new MeshWidgetChart("Packets count by scheduling status");
+    m_chartSizeByTraffic = new MeshWidgetChart("Traffic by scheduling status");
+
+    m_menu = new QMenu(this);
+    m_menu->addAction(m_chartPacketsByStatus->toggleViewAction());
+    m_menu->addAction(m_chartPacketsByType->toggleViewAction());
+    m_menu->addAction(m_chartSizeByType->toggleViewAction());
+    m_menu->addAction(m_chartPacketsByTraffic->toggleViewAction());
+    m_menu->addAction(m_chartSizeByTraffic->toggleViewAction());
+
+//    QActionGroup* typeGroup = new QActionGroup(this);
+//    m_chartPacketsByType->toggleViewAction()->setActionGroup(typeGroup);
+//    m_chartSizeByType->toggleViewAction()->setActionGroup(typeGroup);
+//
+//    QActionGroup* trafficGroup = new QActionGroup(this);
+//    m_chartPacketsByTraffic->toggleViewAction()->setActionGroup(trafficGroup);
+//    m_chartSizeByTraffic->toggleViewAction()->setActionGroup(trafficGroup);
 
     for (int i = 0; i < ePKT_TYPE_LAST; ++i)
     {
@@ -85,7 +100,6 @@ void MeshViewStatistics::init()
 
     vlayout->addItem(topLayout);
     vlayout->addItem(bottomLayout);
-
     setLayout(vlayout);
 }
 
@@ -107,4 +121,10 @@ void MeshViewStatistics::updateStatistics(const Statistics* pStatistics)
         m_itemPacketsByTraffic[i]->setValue(pStatistics->packetsByTraffic[i]);
         m_itemSizeByTraffic[i]->setValue(pStatistics->sizeByTraffic[i]);
     }
+
+}
+
+void MeshViewStatistics::contextMenuEvent(QContextMenuEvent* event)
+{
+    m_menu->exec(event->globalPos());
 }
