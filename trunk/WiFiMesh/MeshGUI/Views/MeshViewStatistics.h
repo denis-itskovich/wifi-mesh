@@ -45,6 +45,7 @@ protected slots:
 
 private:
     MeshChartItem* createItem(const MeshTheme::ItemDescriptor& desc);
+    void contextMenuEvent(QContextMenuEvent* event);
 
     void init();
 
@@ -59,6 +60,8 @@ private:
     MeshChartItem*      m_itemSizeByType[ePKT_TYPE_LAST];
     MeshChartItem*      m_itemPacketsByTraffic[eTRAFFIC_LAST];
     MeshChartItem*      m_itemSizeByTraffic[eTRAFFIC_LAST];
+
+    QMenu*              m_menu;
 };
 
 #endif /* MESHVIEWSTATISTICS_H_ */

@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../Views/MeshViewStationsGraph.h"
 #include "../Views/MeshViewSniffer.h"
 #include "../Views/MeshViewStatistics.h"
+#include "../Views/MeshViewTextStatistics.h"
 #include "../Views/Widgets/MeshWidgetLog.h"
 
 MeshMainWindow::MeshMainWindow(QWidget *parent)
@@ -226,7 +227,8 @@ void MeshMainWindow::createTabs()
     setCentralWidget(m_tabs);
 
     addTab(QIcon(":/map.png"), tr("World map"), new MeshViewStationsGraph);
-    addTab(QIcon(":/statistics.png"), tr("Statistics"), new MeshViewStatistics);
+    addTab(QIcon(":/statistics.png"), tr("Charts"), new MeshViewStatistics);
+    addTab(QIcon(":/log.png"), tr("Statistics"), new MeshViewTextStatistics);
 }
 
 void MeshMainWindow::addView(MeshView* view)

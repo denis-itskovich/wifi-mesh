@@ -42,6 +42,7 @@ public:
     void removeItem(MeshChartItem* item);
 
     const QString& title() { return m_title; }
+    QAction* toggleViewAction();
 
 public slots:
     void setTitle(const QString& title);
@@ -67,6 +68,7 @@ private:
     void init();
     typedef QList<MeshChartItem*> ChartItems;
 
+    QAction*    m_action;
     QString     m_title;
     ChartItems  m_items;
     int         m_spacing;

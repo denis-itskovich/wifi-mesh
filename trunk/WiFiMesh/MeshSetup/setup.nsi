@@ -5,7 +5,7 @@ Name "WiFi Mesh Simulator PRO"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0.7
+!define VERSION 1.0.8
 !define COMPANY "Denis Itskovich"
 !define URL ""
 
@@ -45,7 +45,7 @@ InstallDir "$PROGRAMFILES\WiFi Mesh Simulator PRO"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 1.0.7.0
+VIProductVersion 1.0.8.0
 VIAddVersionKey ProductName "WiFi Mesh Simulator PRO"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
@@ -67,10 +67,11 @@ Section -Main SEC0000
     File ..\MeshCore\Documentation\MeshCore.chm
     File ..\MeshCore\Documentation\MeshCore.chi
     SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk" "$INSTDIR\MeshGUI.exe" "" "$INSTDIR\MeshGUI.ico" 0 SW_SHOWMAXIMIZED
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk" $INSTDIR\MeshCore.chm
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Command prompt.lnk" "cmd.exe" "/k cd $INSTDIR" "$SYSDIR\cmd.exe"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\License.lnk" $INSTDIR\License.txt
+    SetOutPath "$INSTDIR"
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk" "$INSTDIR\MeshGUI.exe" "" "$INSTDIR\MeshGUI.ico" 0 SW_SHOWMAXIMIZED
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 

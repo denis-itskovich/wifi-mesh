@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "Macros.h"
 #include "Statistics.h"
+#include "Descriptors.h"
 
 EStatus StatisticsNew(Statistics** ppThis)
 {
@@ -138,3 +139,39 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     return eSTATUS_COMMON_OK;
 }
 
+void StatisticsPrintArray(char** ppBuff, int* pLen, const char* title, const char * const* desc, const int* pArray, int count)
+{
+    int total = 0;
+    int i;
+    double val;
+    char c;
+    int lineLen;
+
+    for (i = 0; i < count; ++i) total += pArray[i];
+    lineLen = sprintf(*ppBuff, "\n%s:\n", title);
+    (*ppBuff) += lineLen;
+    *pLen -= lineLen;
+
+    for (i = 0; (i < count) && (*pLen > 80); ++i)
+    {
+        val = (double)pArray[i];
+        c = ' ';
+        if (val > 10240) { val /= 1024.0; c = 'K'; }
+        if (val > 10240) { val /= 1024.0; c = 'M'; }
+        if (val > 10240) { val /= 1024.0; c = 'G'; }
+
+        lineLen = sprintf(*ppBuff, "    %-24s%*.0lf%-*c (%.2lf%%)\n", desc[i], c == ' ' ? 9 : 8, val, c == ' ' ? 1 : 2, c, (double)pArray[i]/(double)total * 100);
+        (*ppBuff) += lineLen;
+        *pLen -= lineLen;
+    }
+}
+
+EStatus StatisticsPrint(const Statistics* pThis, char* buffer, int len)
+{
+    StatisticsPrintArray(&buffer, &len, "Traffic by packet type", DESC_PACKET_TYPE, pThis->sizeByType, ePKT_TYPE_LAST);
+    StatisticsPrintArray(&buffer, &len, "Packets count by packet type", DESC_PACKET_TYPE, pThis->packetsByType, ePKT_TYPE_LAST);
+    StatisticsPrintArray(&buffer, &len, "Packets count by delivery status", DESC_PACKET_STATUS, pThis->packetsByStatus, ePKT_STATUS_PENDING);
+    StatisticsPrintArray(&buffer, &len, "Traffic by scheduling status", DESC_TRAFFIC_TYPE, pThis->sizeByTraffic, eTRAFFIC_LAST);
+    StatisticsPrintArray(&buffer, &len, "Packets count by scheduling status", DESC_TRAFFIC_TYPE, pThis->packetsByTraffic, eTRAFFIC_LAST);
+    return eSTATUS_COMMON_OK;
+}

@@ -2,7 +2,8 @@ INCLUDEPATH += ../MeshCore/inc
 TARGET = MeshGUI
 QT += core \
     gui
-HEADERS += App/MeshMainWindow.h \
+HEADERS += Views/MeshViewTextStatistics.h \
+    App/MeshMainWindow.h \
     Views/Theme/MeshTheme.h \
     Views/MeshViewStatistics.h \
     Views/Widgets/MeshWidgetLog.h \
@@ -26,7 +27,8 @@ HEADERS += App/MeshMainWindow.h \
     Dialogs/MeshDlgAbout.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += App/MeshMainWindow.cpp \
+SOURCES += Views/MeshViewTextStatistics.cpp \
+    App/MeshMainWindow.cpp \
     Views/Theme/MeshTheme.cpp \
     Views/MeshViewStatistics.cpp \
     Views/Widgets/MeshWidgetLog.cpp \
