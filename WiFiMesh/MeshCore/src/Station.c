@@ -17,12 +17,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
-#include "Station.h"
-#include "Macros.h"
-#include "List.h"
-#include "Routing.h"
-#include "Scheduler.h"
-#include "Log.h"
+#include "../inc/Station.h"
+#include "../inc/Macros.h"
+#include "../inc/List.h"
+#include "../inc/Routing.h"
+#include "../inc/Scheduler.h"
+#include "../inc/Log.h"
 
 #define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
 

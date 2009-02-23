@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Descriptors.h"
+#include "../inc/Descriptors.h"
 
 const char* DESC_PACKET_TYPE[ePKT_TYPE_LAST] =
 {

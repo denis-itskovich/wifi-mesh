@@ -45,10 +45,10 @@ MeshChartItem* MeshViewStatistics::createItem(const MeshTheme::ItemDescriptor& d
 
 void MeshViewStatistics::init()
 {
-    m_chartPacketsByStatus = new MeshWidgetChart("Packets count by delivery status");
-    m_chartPacketsByType = new MeshWidgetChart("Packets count by packet type");
+    m_chartPacketsByStatus = new MeshWidgetChart("Packets by delivery status");
+    m_chartPacketsByType = new MeshWidgetChart("Packets by packet type");
     m_chartSizeByType = new MeshWidgetChart("Traffic by packet type");
-    m_chartPacketsByTraffic = new MeshWidgetChart("Packets count by scheduling status");
+    m_chartPacketsByTraffic = new MeshWidgetChart("Packets by scheduling status");
     m_chartSizeByTraffic = new MeshWidgetChart("Traffic by scheduling status");
 
     m_menu = new QMenu(this);

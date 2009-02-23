@@ -40,7 +40,10 @@ public:
 	MeshException(EStatus status, const char* filename, int linenum) :
 	    m_msg(StatusGetMessage(status)),
 	    m_filename(filename),
-	    m_linenum(linenum) {}
+	    m_linenum(linenum)
+	    {
+
+	    }
 
 	virtual const char* what() const throw() { return m_msg.c_str(); }
 	virtual ~MeshException() throw() {}

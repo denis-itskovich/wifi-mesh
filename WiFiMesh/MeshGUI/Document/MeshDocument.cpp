@@ -52,8 +52,8 @@ MeshDocument::MeshDocument() :
 	m_avgMsgCount(100),
 	m_avgVelocity(30.0),
 	m_duration(60),
-	m_bStarted(false),
-	m_bPaused(false),
+	m_isRunning(false),
+	m_isPaused(false),
 	m_timerId(0),
 	m_delay(1)
 {
@@ -143,6 +143,18 @@ void MeshDocument::addStation(Location location)
 void MeshDocument::removeStation()
 {
 	if (!m_pCurStation) return;
+	if (m_isRunning)
+    {
+	    QMessageBox::StandardButton ret =
+	        QMessageBox::question(NULL,
+                                  "Remove station",
+                                  "Cannot remove station while simulation is running. " \
+                                  "Do you want to stop simulation?",
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::No);
+	    if (ret == QMessageBox::No) return;
+	    stop();
+    }
 
 	CHECK(SimulatorRemoveStation(m_pSimulator, m_pCurStation));
 	setCurrentStation(NULL);
@@ -244,7 +256,7 @@ void MeshDocument::reset()
 void MeshDocument::prepare()
 {
     reset();
-    m_bStarted = true;
+    m_isRunning = true;
     m_steps = 0;
     emit simulationStarted();
     emit statusChanged("Simulation started...");
@@ -253,15 +265,15 @@ void MeshDocument::prepare()
 
 void MeshDocument::start()
 {
-    if (!m_bStarted) prepare();
-    if (m_bPaused) step();
+    if (!m_isRunning) prepare();
+    if (m_isPaused) step();
     else resume();
 }
 
 void MeshDocument::stop()
 {
 	pause();
-	m_bStarted = false;
+	m_isRunning = false;
 	emit simulationStopped();
 	refreshStatistics();
 	emit statusChanged("Simulation aborted.");
@@ -269,10 +281,10 @@ void MeshDocument::stop()
 
 void MeshDocument::togglePause(bool paused)
 {
-	if (m_bPaused == paused) return;
-	m_bPaused = paused;
-	if (!m_bStarted) return;
-	if (!m_bPaused) resume();
+	if (m_isPaused == paused) return;
+	m_isPaused = paused;
+	if (!m_isRunning) return;
+	if (!m_isPaused) resume();
 	else pause();
 }
 

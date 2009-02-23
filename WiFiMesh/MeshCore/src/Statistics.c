@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Macros.h"
-#include "Statistics.h"
-#include "Descriptors.h"
+#include "../inc/Macros.h"
+#include "../inc/Statistics.h"
+#include "../inc/Descriptors.h"
 
 EStatus StatisticsNew(Statistics** ppThis)
 {

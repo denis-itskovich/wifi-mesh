@@ -191,10 +191,10 @@ QRect MeshWidgetChart::itemRect(int index)
 QString MeshWidgetChart::itemText(MeshChartItem* item) const
 {
     double val = item->value();
-    if (val < (1 << 17)) return QString::number(val);
-    val /= 1024.0; if (val < (1 << 17)) return QString("%1K").arg(val);
-    val /= 1024.0; if (val < (1 << 17)) return QString("%1M").arg(val);
-    val /= 1024.0; return QString("%1G").arg(val);
+    if (val < 10240.0) return QString::number(val);
+    val /= 1024.0; if (val < 10240.0) return QString("%1K").arg(val,0,'f',0);
+    val /= 1024.0; if (val < 10240.0) return QString("%1M").arg(val,0,'f',0);
+    val /= 1024.0; return QString("%1G").arg(val,0,'f',0);
 }
 
 void MeshWidgetChart::paintItem(QPainter* painter, MeshChartItem* item, const QRect& boundingRect, double normalizedVal)

@@ -27,8 +27,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "SortedList.h"
-#include "Macros.h"
+#include "../inc/SortedList.h"
+#include "../inc/Macros.h"
 
 struct _SortedList
 {

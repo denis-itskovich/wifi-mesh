@@ -65,7 +65,10 @@ void MeshWidgetGraphics::mouseDoubleClickEvent(QMouseEvent* event)
 
 void MeshWidgetGraphics::mousePressEvent(QMouseEvent* event)
 {
-    if (itemAt(event->pos()) == NULL) emit focusCleared();
+    if (itemAt(event->pos()) == NULL)
+    {
+        emit focusCleared();
+    }
     QGraphicsView::mousePressEvent(event);
 }
 

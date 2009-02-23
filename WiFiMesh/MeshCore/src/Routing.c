@@ -26,9 +26,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Routing.h"
-#include "Macros.h"
-#include "List.h"
+#include "../inc/Routing.h"
+#include "../inc/Macros.h"
+#include "../inc/List.h"
 
 typedef struct _RoutingEntry
 {

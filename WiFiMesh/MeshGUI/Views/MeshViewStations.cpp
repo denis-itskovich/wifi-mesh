@@ -113,6 +113,10 @@ void MeshViewStations::addStation(Station* pStation)
 
 void MeshViewStations::removeStation(Station* pStation)
 {
+    QList<const Station*> dests = m_transmits.keys(pStation);
+    foreach (const Station* pDst, dests) endTransmit(pDst);
+    while (m_transmits.count(pStation)) endTransmit(pStation);
+
 	unregisterStation(pStation);
 }
 
@@ -163,7 +167,8 @@ void MeshViewStations::updateRouteEntry(const Station* pStation, StationId dst, 
 
 void MeshViewStations::removeRouteEntry(const Station* pStation, StationId dst)
 {
-	findItem(pStation)->removeRouteEntry(dst);
+    MeshItemStation* item = findItem(pStation);
+	if (item) findItem(pStation)->removeRouteEntry(dst);
 }
 
 void MeshViewStations::addScheduleEntry(const Station* pStation, double time, const Packet* pPacket)
@@ -173,7 +178,8 @@ void MeshViewStations::addScheduleEntry(const Station* pStation, double time, co
 
 void MeshViewStations::removeScheduleEntry(const Station* pStation, const Packet* pPacket)
 {
-	findItem(pStation)->removeScheduleEntry(pPacket);
+    MeshItemStation* item = findItem(pStation);
+	if (item) item->removeScheduleEntry(pPacket);
 }
 
 void MeshViewStations::deliverScheduleEntry(const Station* pStation, const Packet* pPacket)
@@ -196,8 +202,7 @@ void MeshViewStations::endTransmit(const Station* pDst)
     const Station* pSrc = m_transmits.value(pDst);
     m_transmits.remove(pDst);
     MeshItemStation* item = findItem(pSrc);
-    assert(item != NULL);
-    item->endTransmit();
+    if (item) item->endTransmit();
 }
 
 void MeshViewStations::resetStations()
