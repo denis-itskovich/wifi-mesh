@@ -17,9 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
-#include "TimeLine.h"
-#include "Macros.h"
-#include "SortedList.h"
+#include "../inc/TimeLine.h"
+#include "../inc/Macros.h"
+#include "../inc/SortedList.h"
 
 typedef struct _Event
 {

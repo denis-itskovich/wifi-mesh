@@ -183,8 +183,8 @@ private:
 	int                m_avgMsgCount;
 	double             m_avgVelocity;
 	double             m_duration;
-	bool               m_bStarted;
-	bool               m_bPaused;
+	bool               m_isRunning;
+	bool               m_isPaused;
 	int                m_timerId;
 	int                m_delay;
 	int                m_steps;

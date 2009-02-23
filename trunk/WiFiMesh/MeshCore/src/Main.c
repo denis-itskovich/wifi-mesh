@@ -24,10 +24,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Simulator.h"
-#include "TimeLine.h"
-#include "Settings.h"
-#include "Version.h"
+#include "../inc/Simulator.h"
+#include "../inc/TimeLine.h"
+#include "../inc/Settings.h"
+#include "../inc/Version.h"
 
 #include <stdlib.h>
 #include <string.h>

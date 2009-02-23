@@ -24,11 +24,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Simulator.h"
-#include "Station.h"
-#include "TimeLine.h"
-#include "Macros.h"
-#include "List.h"
+#include "../inc/Simulator.h"
+#include "../inc/Station.h"
+#include "../inc/TimeLine.h"
+#include "../inc/Macros.h"
+#include "../inc/List.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -174,7 +174,7 @@ Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
 {
 	StationId id;
 
-	SimulatorInvokeTracker(pThis, pStation, eSTATION_REMOVED);
+    SimulatorInvokeTracker(pThis, pStation, eSTATION_REMOVED);
 	StationGetId(pStation, &id);
 	StationDelete(&pStation);
 	SimulatorFreeId(pThis, id);
@@ -361,19 +361,11 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
         pThis->tracker.callback(pStation, event, pThis->tracker.pArg);
     }
 
-    switch (event)
+    if (event == eSTATION_ADDED)
     {
-    case eSTATION_ADDED:
         CHECK(StationRegisterRoutingHandler(pStation, (StationRoutingHandler)&SimulatorRoutingHandler, pThis));
         CHECK(StationRegisterSchedulerHandler(pStation, (StationSchedulerHandler)&SimulatorSchedulerHandler, pThis));
         CHECK(StationRegisterOutboxHandler(pStation, (StationOutboxHandler)&SimulatorOutboxHandler, pThis));
-        break;
-    case eSTATION_REMOVED:
-        CHECK(StationRegisterRoutingHandler(pStation, NULL, NULL));
-        CHECK(StationRegisterSchedulerHandler(pStation, NULL, NULL));
-        CHECK(StationRegisterOutboxHandler(pStation, NULL, NULL));
-        break;
-    default: break;
     }
 
     return eSTATUS_COMMON_OK;

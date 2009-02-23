@@ -27,8 +27,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @author Denis Itskovich
  */
 
-#include "Settings.h"
-#include "Macros.h"
+#include "../inc/Settings.h"
+#include "../inc/Macros.h"
 #include <stdlib.h>
 
 #define SETTINGS_PROPERTY(...)  IMPLEMENT_PROPERTY(Settings, ## __VA_ARGS__)
