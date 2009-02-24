@@ -64,15 +64,15 @@ QPainterPath MeshGraphItemStation::shape() const
     return path;
 }
 
-void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+bool MeshGraphItemStation::updateColors()
 {
-	QColor colIn(Qt::darkBlue), colOut(Qt::cyan);
+    QColor colOut(Qt::cyan), colIn(Qt::darkBlue);
 
-	if (!isActive())
-	{
-		colOut = Qt::lightGray;
-		colIn = Qt::gray;
-	}
+    if (!isActive())
+    {
+        colOut = Qt::lightGray;
+        colIn = Qt::gray;
+    }
 
     if (isCurrent())
     {
@@ -81,9 +81,20 @@ void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsIt
     }
 
     if (isTransmitting())
-	{
-	    colOut = Qt::red;
-	}
+    {
+        colOut = Qt::red;
+    }
+
+    bool bModified = (colOut == m_lastOuterColor && colIn == m_lastInnerColor);
+    m_lastOuterColor = colOut;
+    m_lastInnerColor = colIn;
+    return bModified;
+}
+
+void MeshGraphItemStation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    updateColors();
+	QColor colIn(m_lastInnerColor), colOut(m_lastOuterColor);
 
     QRadialGradient gradient(-3, -3, 10);
     if (option->state & QStyle::State_Sunken)
@@ -183,5 +194,8 @@ void MeshGraphItemStation::updateStation()
 	    prepareGeometryChange();
 		setPos(location());
 	}
+
+	if (updateColors()) update();
+
 	MeshItemStation::updateStation();
 }

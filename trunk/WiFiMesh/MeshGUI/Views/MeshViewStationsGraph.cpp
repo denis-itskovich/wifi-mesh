@@ -124,13 +124,13 @@ void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pD
 {
     MeshGraphItemStation* srcItem = findItem((Station*)pSrc);
     MeshGraphItemStation* dstItem = findItem((Station*)pDst);
-    srcItem->updateStation();
-    dstItem->updateStation();
     MeshGraphItemLink* link = new MeshGraphItemLink(srcItem, dstItem, pPacket);
     m_srcToLink.insert(pSrc, link);
     m_dstToLink.insert(pDst, link);
     m_graphStations->addItem(link);
     MeshViewStations::beginTransmit(pSrc, pDst, pPacket);
+    srcItem->updateStation();
+    dstItem->updateStation();
 }
 
 void MeshViewStationsGraph::endTransmit(const Station* pDst)

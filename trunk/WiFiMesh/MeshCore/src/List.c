@@ -203,6 +203,27 @@ EStatus ListGetValue(ListEntry* pEntry, void* ppValue)
 	return eSTATUS_COMMON_OK;
 }
 
+EStatus ListPeelValue(List* pThis, ListEntry* pEntry, void** ppValue)
+{
+    VALIDATE_ARGUMENTS(pThis && pEntry);
+    CHECK(ListGetValue(pEntry, ppValue));
+    return ListRemove(pThis, pEntry);
+}
+
+EStatus ListMoveToHead(List* pThis, ListEntry* pEntry)
+{
+    void* pValue;
+    CHECK(ListPeelValue(pThis, pEntry, &pValue));
+    return ListPushFront(pThis, pValue);
+}
+
+EStatus ListMoveToTail(List* pThis, ListEntry* pEntry)
+{
+    void* pValue;
+    CHECK(ListPeelValue(pThis, pEntry, &pValue));
+    return ListPushBack(pThis, pValue);
+}
+
 EStatus ListEnumerateEntries(List* pThis, ListEntry** ppEntry, EntryEnumerator enumerator, void* pUserArg1, void* pUserArg2, void* pUserArg3)
 {
 	ListEntry* pNextEntry;

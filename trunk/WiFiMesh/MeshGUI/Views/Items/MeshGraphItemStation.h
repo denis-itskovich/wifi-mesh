@@ -53,8 +53,12 @@ protected:
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    bool updateColors();
+
     QGraphicsItem*  m_handle;
     bool            m_isMoving;
+    QColor          m_lastInnerColor;
+    QColor          m_lastOuterColor;
 };
 
 #endif /* MESHGRAPHITEMSTATION_H_ */

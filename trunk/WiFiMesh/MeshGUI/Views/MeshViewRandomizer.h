@@ -42,15 +42,15 @@ private:
 	void init();
 	void updateView();
 
-	QSpinBox*          m_spinStationCount;
+    QSpinBox*           m_spinStationCount;
+    QSpinBox*           m_spinRandomSeed;
+    QDoubleSpinBox*     m_spinAvgVelocity;
+    QSpinBox*           m_spinAvgDataSize;
+    QSpinBox*           m_spinAvgPacketCount;
+    QDoubleSpinBox*     m_spinDuration;
 
-	QDoubleSpinBox*    m_spinAvgVelocity;
-	QSpinBox*          m_spinAvgDataSize;
-	QSpinBox*          m_spinAvgPacketCount;
-	QDoubleSpinBox*    m_spinDuration;
-
-	QPushButton*       m_buttonGenerateWorld;
-	QPushButton*       m_buttonGeneratePackets;
+    QPushButton*        m_buttonGenerateWorld;
+    QPushButton*        m_buttonGeneratePackets;
 };
 
 #endif /* MESHDOCKRANDOMIZER_H_ */

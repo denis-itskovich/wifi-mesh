@@ -35,48 +35,54 @@ class MeshDocument : public QObject
 	Q_OBJECT
 
 public:
-	MeshDocument();
-	virtual ~MeshDocument();
+    MeshDocument();
+    virtual ~MeshDocument();
 
-	Station* currentStation() const;
+    Station* currentStation() const;
 
-	int    dataRate() const;
-	double coverage() const;
-	Size   worldSize() const;
-	double duration() const;
-	double time() const;
+    int     dataRate() const;
+    double  coverage() const;
+    bool    smoothenMode() const;
+    Size    worldSize() const;
+    double  duration() const;
+    double  time() const;
 
-	double routeExpirationTimeout() const;
-	double routeRetryTimeout() const;
+    double  routeExpirationTimeout() const;
+    double  routeRetryTimeout() const;
+    int     routingTableSize() const;
+    int     packetHopsThreshold() const;
+    int     packetRetryThreshold() const;
+    double  packetRetryTimeout() const;
+    int     relayBufferSize() const;
 
-	int    packetHopsThreshold() const;
-	int    packetRetryThreshold() const;
-    double packetRetryTimeout() const;
+    int     randomSeed() const;
+    int     stationCount() const;
+    double  avgVelocity() const;
+    int     avgDataSize() const;
+    int     avgPacketCount() const;
 
-	int    stationCount() const;
-	double avgVelocity() const;
-	int    avgDataSize() const;
-	int    avgPacketCount() const;
+    int     speed() const;
+    int     maximumSpeed() const { return 400; }
 
-	int    speed() const;
-	int    maximumSpeed() const { return 400; }
-
-	double simulationDuration() const;
-
+    double  simulationDuration() const;
 
 public slots:
 	void setDataRate(int dataRate);
 	void setCoverage(double coverage);
+	void setSmoothenMode(bool isEnabled);
 	void setWorldSize(Size size);
 	void setDuration(double duration);
 
 	void setRouteExpirationTimeout(double timeout);
 	void setRouteRetryTimeout(double timeout);
+	void setRoutingTableSize(int size);
 
 	void setPacketHopsThreshold(int threshold);
     void setPacketRetryThreshold(int threshold);
 	void setPacketRetryTimeout(double timeout);
+	void setRelayBufferSize(int size);
 
+	void setRandomSeed(int seed);
 	void setStationCount(int count);
 	void setAvgDataSize(int dataSize);
 	void setAvgVelocity(double avgVelocity);
@@ -145,6 +151,7 @@ private:
     void prepare();
     void refreshStatistics();
 	virtual void timerEvent(QTimerEvent* event);
+	void initSeed() const;
 	Velocity generateVelocity() const;
 	Location generateLocation() const;
 	void addPacket(Station* pStation, double time, StationId dst, unsigned long size);
@@ -189,6 +196,7 @@ private:
 	int                m_delay;
 	int                m_steps;
 	int                m_packetId;
+	int                m_seed;
 };
 
 #endif /* MESHDOCUMENT_H_ */

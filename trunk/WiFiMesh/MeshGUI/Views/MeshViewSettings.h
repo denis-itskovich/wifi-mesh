@@ -56,17 +56,20 @@ private:
 	void init();
 	int dataRate();
 
-	QDoubleSpinBox*	m_spinCoverage;
-	QDoubleSpinBox*	m_spinRouteExpTimeout;
-    QDoubleSpinBox* m_spinRouteRetryTimeout;
-    QDoubleSpinBox* m_spinPacketRetryTimeout;
-    QSpinBox*       m_spinPacketRetryThreshold;
-    QSpinBox*       m_spinPacketHopsThreshold;
-	QDoubleSpinBox*	m_spinDataRate;
-	QComboBox*		m_comboDataUnits;
-	QSpinBox*		m_spinHeight;
-	QSpinBox*		m_spinWidth;
-	int				m_dataRate;
+    QDoubleSpinBox*	    m_spinCoverage;
+    QDoubleSpinBox*     m_spinRouteExpTimeout;
+    QDoubleSpinBox*     m_spinRouteRetryTimeout;
+    QSpinBox*           m_spinRoutingTableSize;
+    QDoubleSpinBox*     m_spinPacketRetryTimeout;
+    QSpinBox*           m_spinPacketRetryThreshold;
+    QSpinBox*           m_spinPacketHopsThreshold;
+    QSpinBox*           m_spinRelayBufferSize;
+    QDoubleSpinBox*     m_spinDataRate;
+    QComboBox*          m_comboDataUnits;
+    QCheckBox*          m_checkSmoothenEvents;
+    QSpinBox*           m_spinHeight;
+    QSpinBox*           m_spinWidth;
+    int                 m_dataRate;
 };
 
 #endif /* DOCKSETTINGS_H_ */

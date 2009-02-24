@@ -92,7 +92,7 @@ void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdat
 Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis);
 Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis);
 Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis);
-
+EStatus RoutingEraseLRUEntry(Routing* pThis);
 
 Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis)
 {
@@ -212,16 +212,25 @@ EStatus RoutingAddPending(Routing* pThis, StationId dstId)
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length)
 {
 	RoutingEntry* pEntry;
+	int tableSize, maxTableSize;
+
 	VALIDATE_ARGUMENTS(pThis);
+
+    CHECK(SettingsGetRoutingTableSize(pThis->pSettings, &maxTableSize));
+    CHECK(ListGetCount(pThis->pEntries, &tableSize));
+    while (tableSize >= maxTableSize) CHECK(RoutingEraseLRUEntry(pThis));
+
 	pEntry = NEW(RoutingEntry);
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
+
     if (transitId == INVALID_STATION_ID) CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
     else CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
+
     CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
     RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
-    return ListPushBack(pThis->pEntries, pEntry);
+    return ListPushFront(pThis->pEntries, pEntry);
 }
 
 EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount)
@@ -231,8 +240,20 @@ EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, u
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId));
 	CHECK(ListGetValue(pEntry, &pRouteEntry));
+	CHECK(ListMoveToHead(pThis->pEntries, pEntry));
 	if (pHopsCount) *pHopsCount = pRouteEntry->length;
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus RoutingEraseLRUEntry(Routing* pThis)
+{
+    RoutingEntry* pRouteEntry;
+    ListEntry* pListEntry;
+    VALIDATE_ARGUMENTS(pThis);
+    CHECK(ListGetTail(pThis->pEntries, &pListEntry));
+    CHECK(ListGetValue(pListEntry, &pRouteEntry));
+    RoutingEraser(pRouteEntry, pThis);
+    return ListRemove(pThis->pEntries, pListEntry);
 }
 
 EStatus RoutingSynchronize(Routing* pThis)

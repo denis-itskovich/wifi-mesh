@@ -178,6 +178,18 @@ EStatus ListGetPrevious(ListEntry** ppEntry);
  */
 EStatus ListGetValue(ListEntry* pEntry, void* ppValue);
 
+/** Moves an entry to head
+ * @param pThis [in] pointer to instance
+ * @param pEntry [in] pointer to entry
+ */
+EStatus ListMoveToHead(List* pThis, ListEntry* pEntry);
+
+/** Moves an entry to tail
+ * @param pThis [in] pointer to instance
+ * @param pEntry [in] pointer to entry
+ */
+EStatus ListMoveToTail(List* pThis, ListEntry* pEntry);
+
 /** Looks for an item in a list
  * @param pThis [in] pointer to instance
  * @param ppEntry [out] found item position will be stored at *ppEntry

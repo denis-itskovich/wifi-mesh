@@ -649,6 +649,8 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     CHECK(SettingsSetPacketRetryTimeout(pThis->pSettings, timeUntilReply));
     CHECK(SettingsSetRouteExpirationTimeout(pThis->pSettings, routeEntryTimeout));
     CHECK(SettingsSetMaxDuration(pThis->pSettings, simulationTimeout));
+    CHECK(SettingsSetRoutingTableSize(pThis->pSettings, routingTableSize));
+    CHECK(SettingsSetRelayBufferSize(pThis->pSettings, bufferSize));
 
     for (i = 0; i < stationsCount; ++i)
     {
@@ -686,7 +688,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     int routingProtocol = 0;
     int dataLinkProtocol = 0;
     int bufferRouting = 0;
-    double attenuationConst = 0;
+    double attenuationConst = 1;
     double maxAttenuation = 0;
     Size worldSize = {0};
     int stationsCount = 0;
@@ -698,7 +700,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     int routingTableSize = 0;
     double routeEntryTimeout = 0;
     int searchRetries = 0;
-    int routingTablePolicy = 0;
+    int routingTablePolicy = 3;
     int maxEntriesToSameHost = 0;
     double beaconSendInterval = 0;
     double neighborsListSendTime = 0;
@@ -734,9 +736,11 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeUntilReply));
     CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeEntryTimeout));
     CHECK(SettingsGetMaxDuration(pThis->pSettings, &simulationTimeout));
+    CHECK(SettingsGetRoutingTableSize(pThis->pSettings, &routingTableSize));
+    CHECK(SettingsGetRelayBufferSize(pThis->pSettings, &bufferSize));
+
     CHECK(ListGetCount(pThis->pStations, &stationsCount));
 
-    attenuationConst = 1;
     maxAttenuation = pow(coverage, 2);
 
     fprintf(file, "%d %d %d\n", routingProtocol, dataLinkProtocol, bufferRouting);

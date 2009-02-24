@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../Dialogs/MeshDlgAddPacket.h"
 #include <cmath>
 #include <cstdlib>
+#include <ctime>
 
 template <typename _Module, typename _Type>
 static _Type getMemberValue(_Module* pModule, EStatus(*getter)(const _Module*, _Type* pVal))
@@ -55,7 +56,8 @@ MeshDocument::MeshDocument() :
 	m_isRunning(false),
 	m_isPaused(false),
 	m_timerId(0),
-	m_delay(1)
+	m_delay(1),
+	m_seed(0)
 {
 	CHECK(SettingsNew(&m_pSettings));
 	CHECK(TimeLineNew(&m_pTimeLine));
@@ -77,30 +79,38 @@ MeshDocument::~MeshDocument()
 
 int     MeshDocument::dataRate() const { return getMemberValue(m_pSettings, &SettingsGetDataRate); }
 double  MeshDocument::coverage() const { return getMemberValue(m_pSettings, &SettingsGetCoverage); }
+bool    MeshDocument::smoothenMode() const { return getMemberValue(m_pTimeLine, &TimeLineGetSmoothenMode); }
 Size    MeshDocument::worldSize() const {	return getMemberValue(m_pSettings, &SettingsGetWorldSize); }
 double  MeshDocument::time() const { return getMemberValue(m_pTimeLine, &TimeLineGetTime); }
 double  MeshDocument::simulationDuration() const { return getMemberValue(m_pTimeLine, &TimeLineGetLength); }
 double  MeshDocument::packetRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryTimeout); }
 int     MeshDocument::packetRetryThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketRetryThreshold); }
 int     MeshDocument::packetHopsThreshold() const { return getMemberValue(m_pSettings, &SettingsGetPacketHopsThreshold); }
+int     MeshDocument::relayBufferSize() const { return getMemberValue(m_pSettings, &SettingsGetRelayBufferSize); }
 double  MeshDocument::routeExpirationTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteExpirationTimeout); }
 double  MeshDocument::routeRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryTimeout); }
+int     MeshDocument::routingTableSize() const { return getMemberValue(m_pSettings, &SettingsGetRoutingTableSize); }
 
 void    MeshDocument::setDataRate(int rate) { setMemberValue(m_pSettings, &SettingsSetDataRate, (unsigned long)rate); }
 void    MeshDocument::setCoverage(double coverage) { setMemberValue(m_pSettings, &SettingsSetCoverage, coverage); }
+void    MeshDocument::setSmoothenMode(bool isEnabled) { setMemberValue(m_pTimeLine, &TimeLineSetSmoothenMode, (Boolean)isEnabled); }
 void    MeshDocument::setWorldSize(Size size) { setMemberValue(m_pSettings, &SettingsSetWorldSize, size); emit worldSizeChanged(); }
 void    MeshDocument::setPacketRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetPacketRetryTimeout, timeout); }
 void    MeshDocument::setPacketRetryThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetPacketRetryThreshold, threshold); }
 void    MeshDocument::setPacketHopsThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetPacketHopsThreshold, threshold); }
+void    MeshDocument::setRelayBufferSize(int size) { setMemberValue(m_pSettings, &SettingsSetRelayBufferSize, size); }
 void    MeshDocument::setRouteExpirationTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteExpirationTimeout, timeout); }
 void    MeshDocument::setRouteRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteRetryTimeout, timeout); }
+void    MeshDocument::setRoutingTableSize(int size) { setMemberValue(m_pSettings, &SettingsSetRoutingTableSize, size); }
 
+int     MeshDocument::randomSeed() const { return m_seed; }
 int     MeshDocument::stationCount() const { return m_stationsCount; }
 int     MeshDocument::avgPacketCount() const { return m_avgMsgCount; }
 int     MeshDocument::avgDataSize() const { return m_avgDataSize; }
 double  MeshDocument::avgVelocity() const { return m_avgVelocity; }
 double  MeshDocument::duration() const { return m_duration; }
 
+void    MeshDocument::setRandomSeed(int seed) { m_seed = seed; }
 void    MeshDocument::setStationCount(int count) { m_stationsCount = count; }
 void    MeshDocument::setAvgDataSize(int dataSize) { m_avgDataSize = dataSize; }
 void    MeshDocument::setAvgVelocity(double avgVelocity) { m_avgVelocity = avgVelocity; }
@@ -167,9 +177,22 @@ void MeshDocument::clear()
     m_packetId = 0;
 }
 
+void MeshDocument::initSeed() const
+{
+    if (m_seed) srand((unsigned)m_seed);
+    else
+    {
+        time_t curTime;
+        ::time(&curTime);
+        srand(curTime);
+    }
+}
+
 void MeshDocument::generateStations()
 {
     clear();
+    initSeed();
+
     QProgressDialog progress;
     progress.setMinimumWidth(400);
     progress.setLabel(new QLabel("Generating stations..."));
@@ -193,6 +216,8 @@ void MeshDocument::generateStations()
 
 void MeshDocument::generatePackets()
 {
+    initSeed();
+
     int stationsCount = m_stations.count();
     if (stationsCount < 2) return;
     int msgCount = m_avgMsgCount * stationsCount;
