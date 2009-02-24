@@ -38,6 +38,10 @@ MeshViewRandomizer::~MeshViewRandomizer()
 
 void MeshViewRandomizer::init()
 {
+    m_spinRandomSeed = new QSpinBox;
+    m_spinRandomSeed->setRange(0, 1 << 30);
+    m_spinRandomSeed->setSpecialValueText(tr("<Random>"));
+
 	m_spinStationCount = new QSpinBox;
 	m_spinStationCount->setRange(1, 1000);
 
@@ -62,6 +66,7 @@ void MeshViewRandomizer::init()
 
 	QFormLayout* mainLayout = new QFormLayout;
 
+	mainLayout->addRow(tr("Randomizer seed:"), m_spinRandomSeed);
 	mainLayout->addRow(tr("Stations count:"), m_spinStationCount);
 	mainLayout->addRow(tr("Average velocity:"), m_spinAvgVelocity);
 	mainLayout->addRow(tr("Average data size:"), m_spinAvgDataSize);
@@ -99,6 +104,8 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(m_buttonGenerateWorld, SIGNAL(clicked()), doc, SLOT(generateWorld()));
 	connect(m_buttonGeneratePackets, SIGNAL(clicked()), doc, SLOT(generatePackets()));
 	connect(m_spinDuration, SIGNAL(valueChanged(double)), doc, SLOT(setDuration(double)));
+	connect(m_spinRandomSeed, SIGNAL(valueChanged(int)), doc, SLOT(setRandomSeed(int)));
+
 	connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
@@ -113,4 +120,5 @@ void MeshViewRandomizer::updateView()
     m_spinAvgPacketCount->setValue(doc->avgPacketCount());
     m_spinStationCount->setValue(doc->stationCount());
     m_spinDuration->setValue(doc->duration());
+    m_spinRandomSeed->setValue(doc->randomSeed());
 }

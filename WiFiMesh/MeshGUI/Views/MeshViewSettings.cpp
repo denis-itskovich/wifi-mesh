@@ -45,6 +45,7 @@ void MeshViewSettings::init()
 	m_spinCoverage = new QDoubleSpinBox;
 	m_spinCoverage->setSingleStep(1);
 	m_spinCoverage->setRange(0.01, 1000);
+	m_spinCoverage->setSuffix(" [m]");
 
 	m_spinRouteExpTimeout = new QDoubleSpinBox;
 	m_spinRouteExpTimeout->setSingleStep(1);
@@ -56,9 +57,11 @@ void MeshViewSettings::init()
     m_spinRouteRetryTimeout->setDecimals(1);
     m_spinRouteRetryTimeout->setSuffix(tr(" [sec]"));
 
+    m_spinRoutingTableSize = new QSpinBox;
+    m_spinRoutingTableSize->setRange(1, 1000);
+
     m_spinPacketHopsThreshold = new QSpinBox;
-    m_spinPacketHopsThreshold->setRange(0, 1000);
-    // m_spinPacketHopsThreshold->setSuffix(tr(" [hops]"));
+    m_spinPacketHopsThreshold->setRange(1, MAX_PATH_LENGTH);
 
     m_spinPacketRetryTimeout = new QDoubleSpinBox;
     m_spinPacketRetryTimeout->setRange(0.01, 60.0);
@@ -69,9 +72,15 @@ void MeshViewSettings::init()
     m_spinPacketRetryThreshold = new QSpinBox;
     m_spinPacketRetryThreshold->setRange(1, 100);
 
+    m_spinRelayBufferSize = new QSpinBox;
+    m_spinRelayBufferSize->setRange(0, 65536);
+    m_spinRelayBufferSize->setSuffix(tr(" [Bytes]"));
+
 	m_spinDataRate = new QDoubleSpinBox;
 	m_spinDataRate->setRange(0.1, 1 << 30);
 	m_spinDataRate->setDecimals(1);
+
+	m_checkSmoothenEvents = new QCheckBox("Smoothen events");
 
 	m_comboDataUnits = new QComboBox;
 	m_comboDataUnits->addItems(QStringList() << tr("Bit/s") << tr("KBit/s") << tr("MBit/s"));
@@ -95,17 +104,20 @@ void MeshViewSettings::init()
 	sizeLayout->addRow(tr("Height:"), m_spinHeight);
 
 	QFormLayout* simulatorLayout = new QFormLayout;
-	simulatorLayout->addRow(tr("Coverage:"), m_spinCoverage);
+	simulatorLayout->addRow(tr("Coverage radius:"), m_spinCoverage);
 	simulatorLayout->addRow(tr("Data rate:"), dataRateLayout);
+	simulatorLayout->addRow(m_checkSmoothenEvents);
 
 	QFormLayout* routeLayout = new QFormLayout;
     routeLayout->addRow(tr("Expiration timeout:"), m_spinRouteExpTimeout);
     routeLayout->addRow(tr("Retry timeout:"), m_spinRouteRetryTimeout);
+    routeLayout->addRow(tr("Routing table size:"), m_spinRoutingTableSize);
 
     QFormLayout* packetLayout = new QFormLayout;
     packetLayout->addRow(tr("Hops count threshold:"), m_spinPacketHopsThreshold);
     packetLayout->addRow(tr("Retry timeout:"), m_spinPacketRetryTimeout);
     packetLayout->addRow(tr("Retries count threshold:"), m_spinPacketRetryThreshold);
+    packetLayout->addRow(tr("Relay buffer size:"), m_spinRelayBufferSize);
 
 	QGroupBox* simulatorGroup = new QGroupBox(tr("Simulator settings"));
 	QGroupBox* routeGroup = new QGroupBox(tr("Route settings"));
@@ -163,9 +175,13 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
 	connect(m_spinCoverage, SIGNAL(valueChanged(double)), doc, SLOT(setCoverage(double)));
 	connect(m_spinRouteExpTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteExpirationTimeout(double)));
     connect(m_spinRouteRetryTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteRertyTimeout(double)));
-	connect(m_spinPacketHopsThreshold, SIGNAL(valueChanged(int)), SLOT(setPacketHopsThreshold(int)));
-	connect(m_spinPacketRetryTimeout, SIGNAL(valueChanged(double)), SLOT(setPacketRetryTimeout(double)));
-	connect(m_spinPacketRetryThreshold, SIGNAL(valueChanged(int)), SLOT(setPacketRetryThreshold(int)));
+	connect(m_spinPacketHopsThreshold, SIGNAL(valueChanged(int)), doc, SLOT(setPacketHopsThreshold(int)));
+	connect(m_spinPacketRetryTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setPacketRetryTimeout(double)));
+	connect(m_spinPacketRetryThreshold, SIGNAL(valueChanged(int)), doc, SLOT(setPacketRetryThreshold(int)));
+	connect(m_spinRelayBufferSize, SIGNAL(valueChanged(int)), doc, SLOT(setRelayBufferSize(int)));
+	connect(m_spinRoutingTableSize, SIGNAL(valueChanged(int)), doc, SLOT(setRoutingTableSize(int)));
+	connect(m_checkSmoothenEvents, SIGNAL(toggled(bool)), doc, SLOT(setSmoothenMode(bool)));
+
     connect(this, SIGNAL(updateSize(Size)), doc, SLOT(setWorldSize(Size)));
     connect(doc, SIGNAL(simulationStarted()), this, SLOT(disable()));
     connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
@@ -180,9 +196,12 @@ void MeshViewSettings::updateView()
     m_spinPacketRetryThreshold->setValue(doc->packetRetryThreshold());
     m_spinPacketRetryTimeout->setValue(doc->packetRetryTimeout());
     m_spinPacketHopsThreshold->setValue(doc->packetHopsThreshold());
+    m_spinRelayBufferSize->setValue(doc->relayBufferSize());
     m_spinRouteRetryTimeout->setValue(doc->routeRetryTimeout());
     m_spinCoverage->setValue(doc->coverage());
     m_spinRouteExpTimeout->setValue(doc->routeExpirationTimeout());
+    m_spinRoutingTableSize->setValue(doc->routingTableSize());
+    m_checkSmoothenEvents->setChecked(doc->smoothenMode());
     Size size = doc->worldSize();
     m_spinWidth->setValue((int)(size.x + 0.5));
     m_spinHeight->setValue((int)(size.y + 0.5));

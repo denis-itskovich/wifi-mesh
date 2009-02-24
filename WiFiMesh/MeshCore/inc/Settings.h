@@ -116,6 +116,18 @@ EStatus SettingsSetRouteRetryTimeout(Settings* pThis, double timeout);
  */
 EStatus SettingsGetRouteRetryTimeout(const Settings* pThis, double* pTimeout);
 
+/** Sets routing table size
+ * @param pThis [in] pointer to instance
+ * @param size [in] routing table size
+ */
+EStatus SettingsSetRoutingTableSize(Settings* pThis, int size);
+
+/** Retrieves routing table size
+ * @param pThis [in] pointer to instance
+ * @param pSize [out] routing table size will be stored at *pSize
+ */
+EStatus SettingsGetRoutingTableSize(const Settings* pThis, int* pSize);
+
 /** Sets Tx retry timeout
  * @param pThis [in] pointer to instance
  * @param timeout [in] new packet retry timeout
@@ -151,6 +163,18 @@ EStatus SettingsSetPacketHopsThreshold(Settings* pThis, int hops);
  * @param pHops [out] hops count threshold will be stored at *pHops
  */
 EStatus SettingsGetPacketHopsThreshold(const Settings* pThis, int* pHops);
+
+/** Sets relay buffer size
+ * @param pThis [in] pointer to instance
+ * @param size [in] buffer size in bytes
+ */
+EStatus SettingsSetRelayBufferSize(Settings* pThis, int size);
+
+/** Retrieves relay buffer size
+ * @param pThis [in] pointer to instance
+ * @param pSize [out] size will be stored at *pSize
+ */
+EStatus SettingsGetRelayBufferSize(const Settings* pThis, int* pSize);
 
 /** Sets maximum simulation duration
  * @param pThis [in] pointer to instance

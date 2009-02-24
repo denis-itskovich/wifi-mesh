@@ -34,6 +34,7 @@ struct _TimeLine
 	double         nextTime;
 	double         time;
 	double         propMaxDelta;
+	Boolean        propSmoothenMode;
 	struct
 	{
 		EventTracker 	callback;
@@ -42,6 +43,7 @@ struct _TimeLine
 };
 
 IMPLEMENT_PROPERTY(TimeLine, MaxDelta, double, 0.1)
+IMPLEMENT_PROPERTY(TimeLine, SmoothenMode, Boolean, TRUE);
 
 Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 {
@@ -74,6 +76,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
 	INIT_PROPERTY(TimeLine, MaxDelta, pThis);
+	INIT_PROPERTY(TimeLine, SmoothenMode, pThis);
 	CHECK(SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL));
 	return TimeLineEvent(pThis, 0.0, NULL);
 }
@@ -115,7 +118,7 @@ EStatus TimeLineNext(TimeLine* pThis)
 
 	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
 
-	if (pThis->nextTime - pThis->time > pThis->propMaxDelta)
+	if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta))
 	{
 	    pThis->time += pThis->propMaxDelta;
 	    return eSTATUS_COMMON_OK;
@@ -133,7 +136,7 @@ EStatus TimeLineNext(TimeLine* pThis)
         CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
         pThis->nextTime = pEvent->time;
 
-        if (pThis->nextTime - pThis->time > pThis->propMaxDelta) pThis->time += pThis->propMaxDelta;
+        if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta)) pThis->time += pThis->propMaxDelta;
         else pThis->time = pThis->nextTime;
     }
 

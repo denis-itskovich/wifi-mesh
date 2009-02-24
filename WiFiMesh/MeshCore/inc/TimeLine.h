@@ -108,4 +108,16 @@ EStatus TimeLineGetLength(const TimeLine* pThis, double* pLength);
  */
 EStatus TimeLineSetEventTracker(TimeLine* pThis, EventTracker tracker, void* pUserArg);
 
+/** Sets events smoothen mode
+ * @param pThis [in] pointer to instance
+ * @param bSmooth [in] TRUE if smoothen should be enabled, FALS if should not
+ */
+EStatus TimeLineSetSmoothenMode(TimeLine* pThis, Boolean bSmooth);
+
+/** Retrieves events smoothen mode
+ * @param pThis [in] pointer to instance
+ * @param pSmooth [out] TRUE if smoothen enabled, FALSE if not
+ */
+EStatus TimeLineGetSmoothenMode(const TimeLine* pThis, Boolean* pSmooth);
+
 #endif // _WIFI_MESH_TIMELINE_H

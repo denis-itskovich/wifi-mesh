@@ -80,6 +80,7 @@ int Simulate(const char* inputfile, const char* pathloss)
     Check(SettingsNew(&pSettings));
     Check(TimeLineNew(&pTimeLine));
     Check(SimulatorNew(&pSimulator, pSettings, pTimeLine));
+    Check(TimeLineSetSmoothenMode(pTimeLine, FALSE));
 
     Check(SimulatorImport(pSimulator, inputfile));
     Check(SettingsGetMaxDuration(pSettings, &maxDuration));

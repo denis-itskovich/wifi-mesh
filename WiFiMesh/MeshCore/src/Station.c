@@ -197,7 +197,7 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDelivere
             pThis->bTransmitting = FALSE;
             if (pThis->pInPacket)
             {
-                if (isActive) CHECK(StationHandlePacket(pThis, pThis->pInPacket));
+                if (isActive) StationHandlePacket(pThis, pThis->pInPacket);
                 *ppDeliveredPacket = pThis->pInPacket;
                 pThis->pInPacket = NULL;
             }
