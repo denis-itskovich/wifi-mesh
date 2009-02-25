@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
 
-#ifndef __NO_LOG
+#if 0 // __NO_LOG
     static const char* PKT_EVENTS[] =
     {
         "Added",
@@ -49,23 +49,24 @@ typedef struct _PacketEntry
 
 struct _Station
 {
-	StationId      id;
-	Velocity       velocity;
-	Location       curLocation;
-	Location       orgLocation;
+    StationId       id;
+    Velocity        velocity;
+    Location        curLocation;
+    Location        orgLocation;
 
-	Routing*       pRouting;
-	List*          pOutbox;
-	Scheduler*     pScheduler;
-	Settings*      pSettings;
-	TimeLine*      pTimeLine;
-	double         silentTime;
-	double         receiveTime;
-    PacketEntry*   pOutPacketEntry;
-    Packet*        pInPacket;
-    Boolean        bBusy;
-    Boolean        bTransmitting;
-    unsigned       sequenceNum;
+    Routing*        pRouting;
+    List*           pOutbox;
+    Scheduler*      pScheduler;
+    Settings*       pSettings;
+    TimeLine*       pTimeLine;
+    double          silentTime;
+    double          receiveTime;
+    PacketEntry*    pOutPacketEntry;
+    Packet*         pInPacket;
+    Boolean         bBusy;
+    Boolean         bTransmitting;
+    unsigned        sequenceNum;
+    int             freeBufferSize;
 
     struct
 	{
@@ -91,16 +92,16 @@ struct _Station
 typedef EStatus (*PacketHandler)(Station* pThis, const Packet* pPacket);
 
 void StationHandleRoutingChange(StationId destId,
-								StationId transId,
-								double expirationTime,
-								int length,
-								ERouteEntryUpdate updateAction,
-								Station* pThis);
+                                StationId transId,
+                                double expirationTime,
+                                int length,
+                                ERouteEntryUpdate updateAction,
+                                Station* pThis);
 
 void StationHandleScheduleChange(double time,
-								 const Packet* pPacket,
-								 ESchedulerEvent event,
-								 Station* pThis);
+                                 const Packet* pPacket,
+                                 ESchedulerEvent event,
+                                 Station* pThis);
 
 EStatus StationSendAck(Station* pThis, const Packet* pPacket);
 EStatus StationSendPacket(Station* pThis, Packet* pPacket);
@@ -130,10 +131,10 @@ Boolean StationDumpPacketEntry(PacketEntry* pEntry, void* pArg);
 
 static PacketHandler s_handlers[ePKT_TYPE_LAST] =
 {
-		&StationHandleSearchRequest,
-		&StationHandleSearchResponse,
-		&StationHandleData,
-		&StationHandleAck
+    &StationHandleSearchRequest,
+    &StationHandleSearchResponse,
+    &StationHandleData,
+    &StationHandleAck
 };
 
 EStatus StationNew(Station** ppThis, Velocity velocity, Location location, TimeLine* pTimeLine, Settings* pSettings)
@@ -177,20 +178,20 @@ EStatus StationDestroy(Station* pThis)
 
 EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDeliveredPacket)
 {
-	Packet* pPacket;
-	Boolean isActive;
-	VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
-	*ppDeliveredPacket = NULL;
+    Packet* pPacket;
+    Boolean isActive;
+    VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
+    *ppDeliveredPacket = NULL;
 
-	CHECK(RoutingSynchronize(pThis->pRouting));
+    CHECK(RoutingSynchronize(pThis->pRouting));
 
     pThis->curLocation.x += pThis->velocity.x * timeDelta;
     pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
-	if (pThis->receiveTime > 0)
-	{
-	    CHECK(StationIsActive(pThis, &isActive));
-	    if (!isActive || pThis->receiveTime <= timeDelta)
+    if (pThis->receiveTime > 0)
+    {
+        CHECK(StationIsActive(pThis, &isActive));
+        if (!isActive || pThis->receiveTime <= timeDelta)
         {
             pThis->receiveTime = 0;
             pThis->bBusy = FALSE;
@@ -205,18 +206,18 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDelivere
         else pThis->receiveTime -= timeDelta;
 	}
 
-	if (pThis->silentTime <= timeDelta)
-	{
-		pThis->silentTime = 0;
-	}
-	else pThis->silentTime -= timeDelta;
+    if (pThis->silentTime <= timeDelta)
+    {
+        pThis->silentTime = 0;
+    }
+    else pThis->silentTime -= timeDelta;
 
-	EStatus ret = SchedulerGetPacket(pThis->pScheduler, &pPacket);
-	if (ret == eSTATUS_SCHEDULER_NO_PACKETS) return eSTATUS_COMMON_OK;
-	CHECK(ret);
+    EStatus ret = SchedulerGetPacket(pThis->pScheduler, &pPacket);
+    if (ret == eSTATUS_SCHEDULER_NO_PACKETS) return eSTATUS_COMMON_OK;
+    CHECK(ret);
 
-	return StationSendPacket(pThis, pPacket);
-}
+    return StationSendPacket(pThis, pPacket);
+    }
 
 EStatus StationSetLocation(Station* pThis, Location newLocation)
 {
@@ -245,6 +246,7 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
     Packet* pPacket = pEntry->pPacket;
 	Packet* pNewMsg = NULL;
 	double time;
+	unsigned length = 0, maxLength;
 
 	if (!StationIsPacketValid(pThis, pPacket))
 	{
@@ -254,7 +256,7 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
 
 	// Checking route table whether there is a path for destination
 	if ((pPacket->header.transitDstId != BROADCAST_STATION_ID) &&
-	    (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &pPacket->header.transitDstId, NULL)))
+	    (eSTATUS_COMMON_OK != RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, &pPacket->header.transitDstId, &length)))
 	{
 	    // Path does not exist, not in active and not in pending destinations
 	    // so we are sending another one path query
@@ -280,6 +282,9 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
 
 	// Destination is pending for a path query response
     if (pPacket->header.transitDstId == INVALID_STATION_ID) return TRUE;
+
+    CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
+    if (length > maxLength) return TRUE;
 
     // Checking whether we should retry a packet now
     TimeLineGetTime(pThis->pTimeLine, &time);
@@ -319,8 +324,9 @@ EStatus StationRemovePacket(Station* pThis, PacketEntry* pEntry, EOutboxEvent ev
 
 Boolean StationPacketCleaner(PacketEntry* pEntry, Station* pThis)
 {
-    INFO_PRINT("Removing outbox entry: %s", PKT_EVENTS[pThis->outboxHandler.event]);
-    StationDumpPacketEntry(pEntry, NULL);
+    unsigned size;
+    PacketGetSize(pEntry->pPacket, &size);
+    pThis->freeBufferSize += size;
 
     if (pThis->outboxHandler.callback)
     {
@@ -347,12 +353,21 @@ Boolean StationPacketAcknowledger(PacketEntry* pEntry, Station* pThis)
 
 EStatus StationNewPacketEntry(Station* pThis, Packet* pPacket, PacketEntry** ppEntry)
 {
+    PacketEntry* pEntry;
+    unsigned size;
     VALIDATE_ARGUMENTS(pThis && pPacket && ppEntry);
 
-    PacketEntry* pEntry = NEW(PacketEntry);
+    *ppEntry = NULL;
+    CHECK(PacketGetSize(pPacket, &size));
+    if (pThis->freeBufferSize < size) return eSTATUS_COMMON_OK;
+
+    pThis->freeBufferSize -= size;
+
+    pEntry = NEW(PacketEntry);
     CLEAR(pEntry);
     pEntry->pPacket = pPacket;
     pEntry->retriesCount = 1;
+
 
     if (StationIsAckRequired(pThis, pPacket))
         CHECK(SettingsGetPacketRetryThreshold(pThis->pSettings, &pEntry->retriesCount));
@@ -376,7 +391,12 @@ EStatus StationSendPacket(Station* pThis, Packet* pPacket)
     PacketEntry* pEntry;
 	VALIDATE_ARGUMENTS(pThis && pPacket);
 	if (pPacket->header.type != ePKT_TYPE_ACK) pPacket->header.sequenceNum = pThis->sequenceNum++;
-	CHECK(StationNewPacketEntry(pThis, pPacket, &pEntry));
+	StationNewPacketEntry(pThis, pPacket, &pEntry);
+	if (!pEntry)
+	{
+	    PacketDelete(&pPacket);
+	    return eSTATUS_COMMON_OK;
+	}
 
     if (pThis->outboxHandler.callback)
     {
@@ -390,8 +410,7 @@ EStatus StationSendPacket(Station* pThis, Packet* pPacket)
 
 	if (StationIsPacketPrioritized(pThis, pPacket)) CHECK(ListPushFront(pThis->pOutbox, pEntry));
 	else CHECK(ListPushBack(pThis->pOutbox, pEntry));
-	INFO_PRINT("Adding outbox entry: ");
-	StationDumpPacketEntry(pEntry, NULL);
+
 	return eSTATUS_COMMON_OK;
 }
 
@@ -537,7 +556,7 @@ EStatus StationHandleTransits(Station* pThis, const Packet* pPacket)
 
 	CHECK(PacketClone(&pNewMsg, pPacket));
 	pNewMsg->header.transitSrcId = pThis->id;
-	//pNewMsg->header.transitDstId = INVALID_STATION_ID;
+
 	CHECK(StationSendPacket(pThis, pNewMsg));
 	return eSTATUS_COMMON_OK;
 }
@@ -668,6 +687,7 @@ EStatus StationReset(Station* pThis)
     DUMP_INSTANCE(Station, pThis);
 
     CHECK(ListCleanUp(pThis->pOutbox, (ItemFilter)&StationPacketCleaner, pThis));
+    CHECK(SettingsGetRelayBufferSize(pThis->pSettings, &pThis->freeBufferSize));
 
 	return eSTATUS_COMMON_OK;
 }

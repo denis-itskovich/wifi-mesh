@@ -218,17 +218,23 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 
     CHECK(SettingsGetRoutingTableSize(pThis->pSettings, &maxTableSize));
     CHECK(ListGetCount(pThis->pEntries, &tableSize));
-    while (tableSize >= maxTableSize) CHECK(RoutingEraseLRUEntry(pThis));
+    while (tableSize-- >= maxTableSize)
+    {
+        CHECK(RoutingEraseLRUEntry(pThis));
+    }
 
 	pEntry = NEW(RoutingEntry);
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
 
-    if (transitId == INVALID_STATION_ID) CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+    if (transitId == INVALID_STATION_ID)
+    {
+        CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+        CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
+    }
     else CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
 
-    CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
     RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
     return ListPushFront(pThis->pEntries, pEntry);
 }

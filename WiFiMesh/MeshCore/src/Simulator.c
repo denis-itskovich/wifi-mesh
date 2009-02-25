@@ -381,55 +381,65 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 	Station* pCurrent = NULL;
 	EStatus ret;
 	StationId id;
+	int maxLength;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetId(pStation, &id));
 	CHECK(StationGetPacket(pStation, &pPacket));
 
 	if (!pPacket) return eSTATUS_COMMON_OK;
-	pPacket->routing.path[pPacket->routing.length++] = id;
+
+    pPacket->routing.path[pPacket->routing.length++] = id;
     pPacket->header.hopsCount++;
 
-	CHECK(ListGetHead(pThis->pStations, &pEntry));
-	while (pEntry)
-	{
-        CHECK(ListGetValue(pEntry, &pCurrent));
-        CHECK(StationGetId(pCurrent, &id));
-	    CHECK(StationIsActive(pCurrent, &isActive));
-	    if (isActive)
-	    {
-	        CHECK(StationIsAdjacent(pStation, pCurrent, &isAdjacent));
-	        if (isAdjacent)
-	        {
-	            ret = StationPutPacket(pCurrent, pPacket, &pAbortedPacket);
-	            switch (ret)
-	            {
-	            case eSTATUS_COMMON_OK:
-	                CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
-	                break;
-                case eSTATUS_STATION_PACKET_COLLISION:
-                    if (pAbortedPacket)
+    CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
+    if (pPacket->header.hopsCount <= maxLength)
+    {
+        CHECK(ListGetHead(pThis->pStations, &pEntry));
+        while (pEntry)
+        {
+            CHECK(ListGetValue(pEntry, &pCurrent));
+            CHECK(StationGetId(pCurrent, &id));
+            CHECK(StationIsActive(pCurrent, &isActive));
+            if (isActive)
+            {
+                CHECK(StationIsAdjacent(pStation, pCurrent, &isAdjacent));
+                if (isAdjacent)
+                {
+                    ret = StationPutPacket(pCurrent, pPacket, &pAbortedPacket);
+                    switch (ret)
                     {
-                        CHECK(SimulatorInvokeSniffer(pThis, pAbortedPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
-                        PacketDelete(&pAbortedPacket);
+                    case eSTATUS_COMMON_OK:
+                        CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
+                        break;
+                    case eSTATUS_STATION_PACKET_COLLISION:
+                        if (pAbortedPacket)
+                        {
+                            CHECK(SimulatorInvokeSniffer(pThis, pAbortedPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
+                            PacketDelete(&pAbortedPacket);
+                        }
+                        CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
+                        CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
+                        break;
+                    case eSTATUS_STATION_PACKET_NOT_ACCEPTED:
+                        break;
+                    default:
+                        return ret;
                     }
-                    CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
-                    CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
-                    break;
-	            case eSTATUS_STATION_PACKET_NOT_ACCEPTED:
-	                break;
-	            default:
-	                return ret;
-	            }
-	        }
-	        else
-	        {
-	            if (pPacket->header.transitDstId == id) SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_OUT_OF_RANGE);
-	        }
-	    }
+                }
+                else
+                {
+                    if (pPacket->header.transitDstId == id) SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_OUT_OF_RANGE);
+                }
+            }
 
-		CHECK(ListGetNext(&pEntry));
-	}
+            CHECK(ListGetNext(&pEntry));
+        }
+    }
+    else
+    {
+        SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL, ePKT_STATUS_HOPS_LIMIT_REACHED);
+    }
 
 	CHECK(PacketDelete(&pPacket));
 	return eSTATUS_COMMON_OK;

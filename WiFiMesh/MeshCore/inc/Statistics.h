@@ -35,10 +35,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 typedef enum
 {
-    ePKT_STATUS_DELIVERED,      ///< Transmit was successfully finished
-    ePKT_STATUS_COLLISION,      ///< Transmit was aborted due to collision
-    ePKT_STATUS_OUT_OF_RANGE,   ///< Transmit was not started because destination was out of range
-    ePKT_STATUS_PENDING,        ///< Packet transmitting has been recently started
+    ePKT_STATUS_DELIVERED,          ///< Transmit was successfully finished
+    ePKT_STATUS_COLLISION,          ///< Transmit was aborted due to collision
+    ePKT_STATUS_OUT_OF_RANGE,       ///< Transmit was not started because destination was out of range
+    ePKT_STATUS_HOPS_LIMIT_REACHED, ///< Transmit was not started because maximal hops count was reached
+    ePKT_STATUS_PENDING,            ///< Packet transmitting has been recently started
 
     ePKT_STATUS_LAST            ///< Terminator
 } EPacketStatus;
