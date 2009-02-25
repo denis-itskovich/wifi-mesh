@@ -174,6 +174,7 @@ void MeshDocument::clear()
 {
     emit simulationCleared();
     CHECK(SimulatorClear(m_pSimulator));
+    emit refreshStatistics();
     m_packetId = 0;
 }
 

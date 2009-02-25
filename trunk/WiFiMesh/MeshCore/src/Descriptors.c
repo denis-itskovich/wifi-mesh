@@ -39,6 +39,7 @@ const char* DESC_PACKET_STATUS[ePKT_STATUS_LAST] =
      "Delivered",
      "Collision",
      "Out of range",
+     "Hops limit reached",
      "Pending"
 };
 

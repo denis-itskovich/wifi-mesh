@@ -74,7 +74,7 @@ void MeshViewSettings::init()
 
     m_spinRelayBufferSize = new QSpinBox;
     m_spinRelayBufferSize->setRange(0, 65536);
-    m_spinRelayBufferSize->setSuffix(tr(" [Bytes]"));
+    m_spinRelayBufferSize->setSuffix(tr(" [bytes]"));
 
 	m_spinDataRate = new QDoubleSpinBox;
 	m_spinDataRate->setRange(0.1, 1 << 30);
@@ -88,9 +88,14 @@ void MeshViewSettings::init()
 	connect(m_comboDataUnits, SIGNAL(currentIndexChanged(int)), this, SLOT(setUnits(int)));
 
 	m_spinHeight = new QSpinBox;
-	m_spinWidth = new QSpinBox;
-	m_spinHeight->setRange(0, 10000);
+    m_spinHeight->setRange(0, 10000);
+    m_spinHeight->setSuffix(" [m]");
+
+    m_spinWidth = new QSpinBox;
 	m_spinWidth->setRange(0, 10000);
+	m_spinWidth->setSuffix(" [m]");
+
+
 	connect(m_spinHeight, SIGNAL(valueChanged(int)), this, SLOT(setHeight(int)));
 	connect(m_spinWidth, SIGNAL(valueChanged(int)), this, SLOT(setWidth(int)));
 
@@ -116,7 +121,7 @@ void MeshViewSettings::init()
     QFormLayout* packetLayout = new QFormLayout;
     packetLayout->addRow(tr("Hops count threshold:"), m_spinPacketHopsThreshold);
     packetLayout->addRow(tr("Retry timeout:"), m_spinPacketRetryTimeout);
-    packetLayout->addRow(tr("Retries count threshold:"), m_spinPacketRetryThreshold);
+    packetLayout->addRow(tr("Retry count threshold:"), m_spinPacketRetryThreshold);
     packetLayout->addRow(tr("Relay buffer size:"), m_spinRelayBufferSize);
 
 	QGroupBox* simulatorGroup = new QGroupBox(tr("Simulator settings"));

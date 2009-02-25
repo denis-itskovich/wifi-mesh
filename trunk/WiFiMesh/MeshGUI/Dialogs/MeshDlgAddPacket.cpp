@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 MeshDlgAddPacket::MeshDlgAddPacket(const QList<StationId>& destList, StationId src, QWidget* parent) :
 	QDialog(parent)
 {
+    setWindowTitle(tr("Add new packet to station %1").arg(src));
 	init();
 	for (QList<StationId>::const_iterator i = destList.begin(); i != destList.end(); ++i)
 	{
@@ -43,8 +44,6 @@ MeshDlgAddPacket::MeshDlgAddPacket(const QList<StationId>& destList, StationId s
 void MeshDlgAddPacket::init()
 {
 	setModal(true);
-	setMinimumWidth(minimumWidth() * 2);
-	setWindowTitle(tr("New packet"));
 	setWindowIcon(QIcon(":/packet.png"));
 
 	QGroupBox* mainGroup = new QGroupBox(tr("Packet parameters"));
@@ -57,13 +56,13 @@ void MeshDlgAddPacket::init()
 
 	m_comboDestination = new QComboBox;
 	m_spinTime = new QDoubleSpinBox;
-	m_spinTime->setRange(0.01, 36000);
+	m_spinTime->setRange(0.0, 36000);
 	m_spinTime->setDecimals(2);
 	m_spinTime->setSuffix(" [sec]");
 
 	m_spinSize = new QSpinBox;
 	m_spinSize->setRange(1, 65536);
-	m_spinSize->setSuffix(" [Bytes]");
+	m_spinSize->setSuffix(" [bytes]");
 
 	QFormLayout* mainLayout = new QFormLayout;
 	mainLayout->addRow(tr("Destination:"), m_comboDestination);
@@ -81,6 +80,7 @@ void MeshDlgAddPacket::init()
 	layout->addItem(buttonsLayout);
 
 	setLayout(layout);
+    setMinimumWidth(256);
 }
 
 double MeshDlgAddPacket::time() const
