@@ -21,16 +21,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Macros.h"
 #include "../inc/SortedList.h"
 
+int __counter_TimeLine = 0;
+int __counter_Event = 0;
+
 typedef struct _Event
 {
 	double 			time;
-	const Packet*	pPacket;
 } Event;
 
 struct _TimeLine
 {
 	SortedList*    pEvents;
-	ListEntry*     pCurrent;
 	double         nextTime;
 	double         time;
 	double         propMaxDelta;
@@ -47,11 +48,7 @@ IMPLEMENT_PROPERTY(TimeLine, SmoothenMode, Boolean, TRUE);
 
 Boolean TimeLineCleaner(Event *pEvent, TimeLine* pThis)
 {
-	if (pEvent)
-	{
-		if (pThis->tracker.callback) pThis->tracker.callback(pEvent->time, pEvent->pPacket, FALSE, pThis->tracker.pArg);
-		DELETE(pEvent);
-	}
+    DELETE(Event, pEvent);
 	return FALSE;
 }
 
@@ -63,12 +60,16 @@ Comparison TimeLineComparator(const Event* pLeft, const Event* pRight, const voi
 
 EStatus TimeLineNew(TimeLine** ppThis)
 {
+    BEGIN_FUNCTION;
 	CONSTRUCT(ppThis, TimeLine);
+	END_FUNCTION;
 }
 
 EStatus TimeLineDelete(TimeLine** ppThis)
 {
+    BEGIN_FUNCTION;
 	DESTRUCT(ppThis, TimeLine);
+	END_FUNCTION;
 }
 
 EStatus TimeLineInit(TimeLine* pThis)
@@ -83,9 +84,12 @@ EStatus TimeLineInit(TimeLine* pThis)
 
 EStatus TimeLineDestroy(TimeLine* pThis)
 {
+    BEGIN_FUNCTION;
 	VALIDATE_ARGUMENTS(pThis);
     CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
-	return SortedListDelete(&pThis->pEvents);
+    CHECK(SortedListDelete(&pThis->pEvents));
+    END_FUNCTION;
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
@@ -98,10 +102,13 @@ EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 	if (pThis->tracker.callback) pThis->tracker.callback(time, pPacket, TRUE, pThis->tracker.pArg);
 
 	pEvent->time = time;
-	pEvent->pPacket = pPacket;
 
-	ret = SortedListInsert(pThis->pEvents, pThis->pCurrent, pEvent, TRUE);
-	if (ret == eSTATUS_SORTED_LIST_ALREADY_EXISTS) return eSTATUS_COMMON_OK;
+	ret = SortedListAdd(pThis->pEvents, pEvent, TRUE);
+	if (ret == eSTATUS_SORTED_LIST_ALREADY_EXISTS)
+    {
+	    DELETE(Event, pEvent);
+	    return eSTATUS_COMMON_OK;
+    }
 	return ret;
 }
 
@@ -116,8 +123,6 @@ EStatus TimeLineNext(TimeLine* pThis)
 	Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis);
 
-	if (!pThis->pCurrent) return eSTATUS_TIME_LINE_FINISHED;
-
 	if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta))
 	{
 	    pThis->time += pThis->propMaxDelta;
@@ -130,17 +135,18 @@ EStatus TimeLineNext(TimeLine* pThis)
 	    return eSTATUS_COMMON_OK;
 	}
 
-    CHECK(SortedListGetNext(&pThis->pCurrent));
-    if (pThis->pCurrent)
+	SortedListPopFront(pThis->pEvents, &pEvent);
+    if (pEvent)
     {
-        CHECK(SortedListGetValue(pThis->pCurrent, &pEvent));
         pThis->nextTime = pEvent->time;
 
         if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta)) pThis->time += pThis->propMaxDelta;
         else pThis->time = pThis->nextTime;
-    }
 
-	return eSTATUS_COMMON_OK;
+        DELETE(Event, pEvent);
+        return eSTATUS_COMMON_OK;
+    }
+    return eSTATUS_TIME_LINE_FINISHED;
 }
 
 EStatus TimeLineGetTime(const TimeLine* pThis, double* pTime)
@@ -152,11 +158,9 @@ EStatus TimeLineClear(TimeLine* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
-	pThis->pCurrent = NULL;
 	pThis->time = 0;
 	pThis->nextTime = 0;
 	CHECK(TimeLineEvent(pThis, 0.0, NULL));
-    CHECK(SortedListGetHead(pThis->pEvents, &pThis->pCurrent));
     return eSTATUS_COMMON_OK;
 }
 

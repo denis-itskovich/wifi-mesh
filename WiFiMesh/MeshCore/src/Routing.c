@@ -30,6 +30,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Macros.h"
 #include "../inc/List.h"
 
+int __counter_Routing = 0;
+int __counter_RoutingEntry = 0;
+
 typedef struct _RoutingEntry
 {
 	StationId  dstId;
@@ -111,7 +114,7 @@ Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
 Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis)
 {
 	RoutingInvokeHandler(pThis, pEntry, eROUTE_REMOVE);
-	DELETE(pEntry);
+	DELETE(RoutingEntry, pEntry);
 	return FALSE;
 }
 

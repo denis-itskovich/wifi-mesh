@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Statistics.h"
 #include "../inc/Descriptors.h"
 
+int __counter_Statistics = 0;
+
 EStatus StatisticsNew(Statistics** ppThis)
 {
     CONSTRUCT(ppThis, Statistics);

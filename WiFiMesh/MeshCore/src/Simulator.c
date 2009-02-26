@@ -32,6 +32,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdio.h>
 #include <math.h>
 
+int __counter_Simulator = 0;
+
 static const double PI = 3.1415269;
 
 struct _Simulator
@@ -217,6 +219,7 @@ EStatus SimulatorDestroy(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 
+	CHECK(SimulatorClear(pThis));
     CHECK(StatisticsDelete(&pThis->pStatistics));
 	CHECK(ListDelete(&pThis->pStations));
 
@@ -429,7 +432,8 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
                 }
                 else
                 {
-                    if (pPacket->header.transitDstId == id) SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_OUT_OF_RANGE);
+                    if (pPacket->header.transitDstId == id)
+                        CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_OUT_OF_RANGE));
                 }
             }
 
@@ -438,7 +442,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
     }
     else
     {
-        SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL, ePKT_STATUS_HOPS_LIMIT_REACHED);
+        CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL, ePKT_STATUS_HOPS_LIMIT_REACHED));
     }
 
 	CHECK(PacketDelete(&pPacket));

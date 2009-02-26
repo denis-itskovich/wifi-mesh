@@ -212,6 +212,12 @@ EStatus StationGetLocation(const Station* pThis, Location* pLocation);
  */
 EStatus StationGetVelocity(const Station* pThis, Velocity* pVelocity);
 
+/** Retrieves free buffer size
+ * @param pThis [in] pointer to instance
+ * @param pSize [out] size will be stored at *pSize
+ */
+EStatus StationGetFreeBuffer(const Station* pThis, int* pSize);
+
 /** Resets station state
  * @param pThis [in] pointer to instance
  */

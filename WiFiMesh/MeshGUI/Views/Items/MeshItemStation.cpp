@@ -137,6 +137,13 @@ QString MeshItemStation::velocityString() const
     return QString("%1, %2\xb0").arg(line.length(), 0, 'f', 2).arg(round(angle));
 }
 
+int MeshItemStation::freeBufferSize() const
+{
+    int buffSize;
+    CHECK(StationGetFreeBuffer(m_pStation, &buffSize));
+    return buffSize;
+}
+
 void MeshItemStation::beginTransmit()
 {
     if (!m_transmitting++) updateStation();

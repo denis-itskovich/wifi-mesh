@@ -47,12 +47,16 @@ typedef enum
 	eSEVERITY_LAST		///< terminator
 } ELogSeverity;
 
-#ifndef __NO_LOG
-	#define LOG_PRINT(severity, fmt, ...)	LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
-    #define DUMP_INSTANCE(module, ptr)      module ## Dump(ptr)
-#else
-	#define LOG_PRINT(severity, fmt, ...) {}
+#ifdef __NO_LOG
+    #define LOG_PRINT(severity, fmt, ...) {}
     #define DUMP_INSTANCE(module, ptr) {}
+#elif defined(__CONSOLE)
+    #include <stdio.h>
+    #define LOG_PRINT(severity, fmt, ...) {printf(fmt, ## __VA_ARGS__); printf("\n"); }
+    #define DUMP_INSTANCE(module, ptr) {}
+#else
+    #define LOG_PRINT(severity, fmt, ...)   LogOutput(severity, __FILE__, __PRETTY_FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+    #define DUMP_INSTANCE(module, ptr)      module ## Dump(ptr)
 #endif // __NO_LOG
 
 #define ERROR_PRINT(fmt, ...) 			LOG_PRINT(eSEVERITY_ERROR, fmt, ##__VA_ARGS__)

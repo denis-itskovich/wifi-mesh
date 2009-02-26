@@ -207,15 +207,29 @@ void MeshMainWindow::createDocks()
     setDockOptions(dockOptions() | AllowNestedDocks);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-    addDock(Qt::LeftDockWidgetArea, tr("Stations browser"), new MeshViewStationsList, tr("Alt+1"));
-    addDock(Qt::BottomDockWidgetArea, tr("Packet sniffer"), new MeshViewSniffer, tr("Alt+2"));
-    addDock(Qt::RightDockWidgetArea, tr("Simulator settings"), new MeshViewSettings, tr("Alt+3"));
-    addDock(Qt::RightDockWidgetArea, tr("World generator"), new MeshViewRandomizer, tr("Alt+4"));
+    MeshView* viewSettings = new MeshViewSettings;
+    MeshView* viewGenerator = new MeshViewRandomizer;
 
-    m_tabs->setCurrentIndex(0);
+    QDockWidget* dockStations = createDock(new MeshViewStationsList, tr("Stations browser"), tr("Alt+1"));
+    QDockWidget* dockSniffer = createDock(new MeshViewSniffer, tr("Packet sniffer"), tr("Alt+2"));
+    QDockWidget* dockSettings = createDock(viewSettings, tr("Simulator settings"), tr("Alt+3"));
+    QDockWidget* dockGenerator = createDock(viewGenerator, tr("World generator"), tr("Alt+4"));
+
+    addDockWidget(Qt::LeftDockWidgetArea, dockStations);
+    addDockWidget(Qt::BottomDockWidgetArea, dockSniffer);
+    addDockWidget(Qt::RightDockWidgetArea, dockSettings);
+
+    if (viewSettings->height() + viewGenerator->height() > QDesktopWidget().availableGeometry().height())
+    {
+        tabifyDockWidget(dockSettings, dockGenerator);
+    }
+    else
+    {
+        addDockWidget(Qt::RightDockWidgetArea, dockGenerator);
+    }
 }
 
-void MeshMainWindow::addTab(const QIcon& icon, const QString& str, MeshView* view)
+void MeshMainWindow::addTab(MeshView* view, const QIcon& icon, const QString& str)
 {
     m_tabs->addTab(view, icon, str);
     addView(view);
@@ -226,9 +240,11 @@ void MeshMainWindow::createTabs()
     m_tabs = new QTabWidget(this);
     setCentralWidget(m_tabs);
 
-    addTab(QIcon(":/map.png"), tr("World map"), new MeshViewStationsGraph);
-    addTab(QIcon(":/statistics.png"), tr("Charts"), new MeshViewStatistics);
-    addTab(QIcon(":/log.png"), tr("Statistics"), new MeshViewTextStatistics);
+    addTab(new MeshViewStationsGraph, QIcon(":/map.png"), tr("World map"));
+    addTab(new MeshViewStatistics, QIcon(":/statistics.png"), tr("Charts"));
+    addTab(new MeshViewTextStatistics, QIcon(":/log.png"), tr("Statistics"));
+
+    // m_tabs->addTab(new MeshWidgetLog, QIcon(":/log.png"), tr("Log"));
 }
 
 void MeshMainWindow::addView(MeshView* view)
@@ -236,7 +252,7 @@ void MeshMainWindow::addView(MeshView* view)
     m_views << view;
 }
 
-void MeshMainWindow::addDock(Qt::DockWidgetArea area, const QString& title, MeshView* view, const QKeySequence shortcut)
+QDockWidget* MeshMainWindow::createDock(MeshView* view, const QString& title, const QKeySequence shortcut)
 {
     QDockWidget* dock = new QDockWidget(title, this);
     addView(view);
@@ -244,7 +260,7 @@ void MeshMainWindow::addDock(Qt::DockWidgetArea area, const QString& title, Mesh
     QAction* actToggleView = dock->toggleViewAction();
     actToggleView->setShortcut(shortcut);
     m_menuView->addAction(actToggleView);
-    addDockWidget(area, dock);
+    return dock;
 }
 
 bool MeshMainWindow::getFilename(bool isOpenning)

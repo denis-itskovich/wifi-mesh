@@ -134,13 +134,15 @@ EStatus ListInsertBefore(List* pThis, ListEntry* pEntry, void* pValue);
 
 /** Removes tail item from the list
  * @param pThis [in] pointer to instance
+ * @param ppValue [out] popped value
  */
-EStatus ListPopBack(List* pThis);
+EStatus ListPopBack(List* pThis, void* ppValue);
 
 /** Removes head item from the list
  * @param pThis [in] pointer to instance
+ * @param ppValue [out] popped value
  */
-EStatus ListPopFront(List* pThis);
+EStatus ListPopFront(List* pThis, void* ppValue);
 
 /** Removes an item from specified position
  * @param pThis [in] pointer to instance

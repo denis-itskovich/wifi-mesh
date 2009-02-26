@@ -28,11 +28,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/TimeLine.h"
 #include "../inc/Settings.h"
 #include "../inc/Version.h"
+#include "../inc/Descriptors.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 const char* EXE_NAME = NULL;
+
+extern int __counter_Packet;
+extern int __counter_Station;
+extern int __counter_PacketEntry;
+extern int __counter_ListEntry;
+extern int __counter_Routing;
+extern int __counter_RoutingEntry;
+extern int __counter_Event;
+extern int __counter_Scheduler;
+extern int __counter_SchedulerEntry;
+extern int __counter_PacketTypes[ePKT_TYPE_LAST];
 
 void Welcome()
 {
@@ -101,6 +113,24 @@ int Simulate(const char* inputfile, const char* pathloss)
     Check(SimulatorDelete(&pSimulator));
     Check(TimeLineDelete(&pTimeLine));
     Check(SettingsDelete(&pSettings));
+
+#ifdef _DEBUG
+    int i;
+    printf("Packets: %d\n", __counter_Packet);
+    for (i = 0; i < ePKT_TYPE_LAST; ++i)
+    {
+        printf("Packets (%s): %d\n", DESC_PACKET_TYPE[i], __counter_PacketTypes[i]);
+    }
+
+    printf("Stations: %d\n", __counter_Station);
+    printf("PacketsEntries: %d\n", __counter_PacketEntry);
+    printf("ListEntries: %d\n", __counter_ListEntry);
+    printf("Routing: %d\n", __counter_Routing);
+    printf("RoutingEntries: %d\n", __counter_RoutingEntry);
+    printf("Events: %d\n", __counter_Event);
+    printf("Schedulers: %d\n", __counter_Scheduler);
+    printf("SchedulerEntries: %d\n", __counter_SchedulerEntry);
+#endif // _DEBUG
 
     return 0;
 }

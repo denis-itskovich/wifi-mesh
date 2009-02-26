@@ -63,7 +63,7 @@ EStatus SortedListDestroy(SortedList* pThis);
 
 /** Inserts a new item, while starting search from specified point
  * @param pThis [in] pointer to instance
- * @param pEntry [in] list entry to start the search from
+ * @param pEntry [in] list entry to start the search from (NULL for the first item)
  * @param pValue [in] pointer to new item
  * @param unique [in] if TRUE adding non-unique item will fail with status eSTATUS_SORTED_LIST_ALREADY_EXISTS (see EStatus)
  */
@@ -103,6 +103,18 @@ EStatus SortedListGetNext(ListEntry** ppEntry);
  * @param ppEntry [in, out] previous entry will be stored in *ppEntry
  */
 EStatus SortedListGetPrevious(ListEntry** ppEntry);
+
+/** Retrieves top value and removes it from the list
+ * @param pThis [in] pointer to instance
+ * @param ppValue [out] value
+ */
+EStatus SortedListPopFront(SortedList* pThis, void* ppValue);
+
+/** Retrieves bottom value and removes it from the list
+ * @param pThis [in] pointer to instance
+ * @param ppValue [out] value
+ */
+EStatus SortedListPopBack(SortedList* pThis, void* ppValue);
 
 /** Gets a value by specified entry
  * @param pEntry [in] list entry

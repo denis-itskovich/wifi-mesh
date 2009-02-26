@@ -66,6 +66,7 @@ private:
 	ScheduleMap        m_scheduleMap;
 	bool               m_isActive;
 	bool               m_isTransmitting;
+	QTreeWidgetItem*   m_itemBuffer;
 	QTreeWidgetItem*   m_itemLocation;
 	QTreeWidgetItem*   m_itemVelocity;
 	QTreeWidgetItem*   m_itemRouting;

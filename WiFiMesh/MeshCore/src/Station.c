@@ -24,6 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Scheduler.h"
 #include "../inc/Log.h"
 
+int __counter_Station = 0;
+int __counter_PacketEntry = 0;
+
 #define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
 
 #if 0 // __NO_LOG
@@ -167,12 +170,15 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 
 EStatus StationDestroy(Station* pThis)
 {
+    BEGIN_FUNCTION;
 	VALIDATE_ARGUMENTS(pThis);
 
+	CHECK(StationReset(pThis));
     CHECK(SchedulerDelete(&pThis->pScheduler));
 	CHECK(ListDelete(&pThis->pOutbox));
 	CHECK(RoutingDelete(&pThis->pRouting));
 
+	END_FUNCTION;
 	return eSTATUS_COMMON_OK;
 }
 
@@ -265,11 +271,13 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
 		// if there is ready packet we will schedule it for later transmitting
 		if (pThis->pOutPacketEntry)
 		{
-			CHECK(StationSendPacket(pThis, pNewMsg));
+			StationSendPacket(pThis, pNewMsg);
 		}
 		else
         {
-		    CHECK(StationNewPacketEntry(pThis, pNewMsg, &pThis->pOutPacketEntry));
+		    StationNewPacketEntry(pThis, pNewMsg, &pThis->pOutPacketEntry);
+		    if (pThis->pOutPacketEntry) pThis->pOutPacketEntry->bClear = TRUE;
+		    else PacketDelete(&pNewMsg);
         }
 
 		// Adding pending destination
@@ -338,7 +346,7 @@ Boolean StationPacketCleaner(PacketEntry* pEntry, Station* pThis)
                                       pThis->outboxHandler.pArg);
     }
     PacketDelete(&pEntry->pPacket);
-    DELETE(pEntry);
+    DELETE(PacketEntry, pEntry);
 
     return FALSE;
 }
@@ -359,7 +367,8 @@ EStatus StationNewPacketEntry(Station* pThis, Packet* pPacket, PacketEntry** ppE
 
     *ppEntry = NULL;
     CHECK(PacketGetSize(pPacket, &size));
-    if (pThis->freeBufferSize < size) return eSTATUS_COMMON_OK;
+    if (pThis->freeBufferSize < size)
+        return eSTATUS_COMMON_OK;
 
     pThis->freeBufferSize -= size;
 
@@ -367,7 +376,6 @@ EStatus StationNewPacketEntry(Station* pThis, Packet* pPacket, PacketEntry** ppE
     CLEAR(pEntry);
     pEntry->pPacket = pPacket;
     pEntry->retriesCount = 1;
-
 
     if (StationIsAckRequired(pThis, pPacket))
         CHECK(SettingsGetPacketRetryThreshold(pThis->pSettings, &pEntry->retriesCount));
@@ -416,6 +424,7 @@ EStatus StationSendPacket(Station* pThis, Packet* pPacket)
 
 EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 {
+    int size;
 	VALIDATE_ARGUMENTS(pThis && ppPacket);
 	if (pThis->silentTime > 0) return eSTATUS_COMMON_OK;
 
@@ -430,7 +439,9 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 	else
     {
 	    *ppPacket = pThis->pOutPacketEntry->pPacket;
-	    DELETE(pThis->pOutPacketEntry);
+        CHECK(PacketGetSize(*ppPacket, &size));
+        pThis->freeBufferSize += size;
+	    DELETE(PacketEntry, pThis->pOutPacketEntry);
     }
 
 	pThis->pOutPacketEntry = NULL;
@@ -626,6 +637,11 @@ EStatus StationGetVelocity(const Station* pThis, Velocity* pVelocity)
 	GET_MEMBER(pVelocity, pThis, velocity);
 }
 
+EStatus StationGetFreeBuffer(const Station* pThis, int* pSize)
+{
+    GET_MEMBER(pSize, pThis, freeBufferSize);
+}
+
 EStatus StationIsAdjacent(const Station* pThis, const Station* pStation, Boolean* pIsAdjacent)
 {
 	double coverage;
@@ -765,7 +781,7 @@ EStatus StationExport(const Station* pThis, FILE* file)
 
 EStatus StationDump(const Station* pThis)
 {
-    DUMP_PRINT("Station: [id=%d]", pThis->id);
+    DUMP_PRINT("Station: [id=%d]", (int)pThis->id);
     DUMP_PRINT("Outbox:");
     CHECK(ListEnumerate(pThis->pOutbox, (ItemEnumerator)&StationDumpPacketEntry, NULL));
     DUMP_INSTANCE(Routing, pThis->pRouting);
