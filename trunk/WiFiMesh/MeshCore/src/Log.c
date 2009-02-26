@@ -81,6 +81,5 @@ void LogOutput(ELogSeverity severity, const char* file, const char* function, in
 		vsprintf(buff, fmt, args);
 		va_end(args);
 		s_logDesc.logger.callback(severity, function, buff, s_logDesc.logger.pArg);
-		printf("%s\n", buff);
 	}
 }

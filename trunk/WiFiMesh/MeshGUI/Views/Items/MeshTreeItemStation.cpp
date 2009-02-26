@@ -46,6 +46,10 @@ void MeshTreeItemStation::init()
 	updateIcon();
 
 	QIcon folderIcon(QIcon(":/folder.png"));
+
+	m_itemBuffer = new QTreeWidgetItem(QStringList() << "Buffer size" << QString::number(freeBufferSize()));
+	m_itemBuffer->setIcon(0, folderIcon);
+
 	m_itemLocation = new QTreeWidgetItem(QStringList() << "Location");
 	m_itemLocation->addChild(new QTreeWidgetItem(QStringList() << "x"));
 	m_itemLocation->addChild(new QTreeWidgetItem(QStringList() << "y"));
@@ -62,6 +66,7 @@ void MeshTreeItemStation::init()
 	m_itemSchedule = new QTreeWidgetItem(QStringList() << "Schedule" << "(empty)");
 	m_itemSchedule->setIcon(0, folderIcon);
 
+	addChild(m_itemBuffer);
 	addChild(m_itemLocation);
 	addChild(m_itemVelocity);
 	addChild(m_itemRouting);
@@ -94,6 +99,7 @@ void MeshTreeItemStation::updateStation()
 {
 	initLocationItem();
     initVelocityItem();
+    m_itemBuffer->setText(1, QString::number(freeBufferSize()));
 
     updateIcon();
 

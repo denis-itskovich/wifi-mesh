@@ -31,6 +31,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/SortedList.h"
 #include "../inc/Macros.h"
 
+int __counter_Scheduler = 0;
+int __counter_SchedulerEntry = 0;
+
 typedef struct _SchedulerEntry
 {
     double          time;
@@ -118,7 +121,7 @@ EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time)
 	CHECK(SortedListAdd(pThis->pEntries, pEntry, FALSE));
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
 	CHECK(SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_ADDED));
-	return TimeLineEvent(pThis->pTimeLine, time, pPacket);
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket)
@@ -158,9 +161,9 @@ EStatus SchedulerPacketDelivered(Scheduler* pThis, const Packet* pPacket)
 
 Boolean SchedulerCleaner(SchedulerEntry* pEntry, Scheduler* pThis)
 {
-    CHECK(SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_REMOVED));
+    SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_REMOVED);
 	PacketDelete(&pEntry->pPacket);
-	DELETE(pEntry);
+	DELETE(SchedulerEntry, pEntry);
 	return FALSE;
 }
 

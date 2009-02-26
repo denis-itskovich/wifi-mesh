@@ -30,6 +30,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/SortedList.h"
 #include "../inc/Macros.h"
 
+int __counter_SortedList = 0;
+
 struct _SortedList
 {
 	List*			pList;
@@ -121,6 +123,18 @@ EStatus SortedListGetNext(ListEntry** ppEntry)
 EStatus SortedListGetPrevious(ListEntry** ppEntry)
 {
 	return ListGetPrevious(ppEntry);
+}
+
+EStatus SortedListPopFront(SortedList* pThis, void* ppValue)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    return ListPopFront(pThis->pList, ppValue);
+}
+
+EStatus SortedListPopBack(SortedList* pThis, void* ppValue)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    return ListPopBack(pThis->pList, ppValue);
 }
 
 EStatus SortedListGetValue(ListEntry* pEntry, void* ppValue)

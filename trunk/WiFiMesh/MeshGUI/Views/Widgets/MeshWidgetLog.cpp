@@ -112,19 +112,17 @@ void MeshWidgetLog::LogOutput(ELogSeverity severity, const char* function, const
 
 bool MeshWidgetLog::filter(ELogSeverity severity, const char* file, const char* function, int line)
 {
-	if (!m_severityFilters[severity]->isChecked()) return false;
 	QString module = moduleName(file);
 	if (!m_moduleFilters.count(module))
 	{
 	    QAction* action = new QAction(tr("Show %1 module").arg(module), this);
 	    action->setCheckable(true);
-	    action->setChecked(true);
+	    action->setChecked(false);
 	    m_menuModules->addAction(action);
         if (m_moduleFilters.isEmpty()) m_menu->addMenu(m_menuModules);
 	    m_moduleFilters[module] = action;
-	    return true;
 	}
-	return m_moduleFilters[module]->isChecked();
+	return m_severityFilters[severity]->isChecked() && m_moduleFilters[module]->isChecked();
 }
 
 void MeshWidgetLog::output(ELogSeverity severity, const char* function, const char* msg)

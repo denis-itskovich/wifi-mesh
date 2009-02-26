@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Macros.h"
 #include "../inc/Descriptors.h"
 
+int __counter_Packet = 0;
+int __counter_PacketTypes[ePKT_TYPE_LAST] = {0};
+
 #define CONSTRUCT_PACKET(pptr, _msgtype, ...) SAFE_OPERATION \
 	( \
 		VALIDATE_ARGUMENTS(pptr); \
@@ -33,11 +36,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	( \
 		VALIDATE_ARGUMENTS(ptr); \
 		CLEAR(ptr); \
+		TRACE_PRINT("Creating new %s packet", DESC_PACKET_TYPE[_msgtype]); \
 		ptr->header.originalSrcId = _srcId; \
 		ptr->header.originalDstId = _dstId; \
 		ptr->header.transitSrcId = _srcId; \
 		ptr->header.transitDstId = INVALID_STATION_ID; \
 		ptr->header.type = _msgtype; \
+		++__counter_PacketTypes[_msgtype]; \
 	)
 
 EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId)
@@ -67,17 +72,20 @@ EStatus PacketNewAck(Packet** ppThis, StationId srcId, StationId dstId)
 
 EStatus PacketDelete(Packet** ppThis)
 {
+    --__counter_PacketTypes[(*ppThis)->header.type];
 	DESTRUCT(ppThis, Packet);
 }
 
 EStatus PacketDestroy(Packet* pThis)
 {
+    TRACE_PRINT("Destroying %s packet", DESC_PACKET_TYPE[pThis->header.type]);
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationId dstId)
 {
 	INIT_PACKET(pThis, msgType, srcId, dstId);
+
 	return eSTATUS_COMMON_OK;
 }
 
@@ -124,7 +132,7 @@ EStatus PacketGetSize(const Packet* pThis, unsigned* pSize)
     unsigned size = sizeof(pThis->header);
     VALIDATE_ARGUMENTS(pThis && pSize);
     size += pThis->payload.size;
-    size += pThis->routing.length * pThis->routing.path[0];
+    size += pThis->routing.length * sizeof(pThis->routing.path[0]);
     *pSize = size;
     return eSTATUS_COMMON_OK;
 }

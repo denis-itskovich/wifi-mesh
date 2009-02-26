@@ -47,8 +47,8 @@ private:
     void createTabs();
     void setDocument(MeshDocument* doc);
 
-    void addDock(Qt::DockWidgetArea area, const QString& title, MeshView* view, const QKeySequence shortcut = QKeySequence::UnknownKey);
-    void addTab(const QIcon& icon, const QString& title, MeshView* view);
+    void addTab(MeshView* view, const QIcon& icon, const QString& title);
+    QDockWidget* createDock(MeshView* view, const QString& title, const QKeySequence shortcut = QKeySequence::UnknownKey);
 
 private slots:
     void newFile();

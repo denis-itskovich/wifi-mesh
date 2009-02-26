@@ -63,6 +63,7 @@ public:
     StationId id() const;
     QPointF location() const;
     QPointF velocity() const;
+    int freeBufferSize() const;
 
     void setLocation(QPointF loc);
     void setVelocity(QPointF vel);

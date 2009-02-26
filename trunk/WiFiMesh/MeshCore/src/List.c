@@ -34,6 +34,8 @@ struct _List
 	unsigned	count;
 };
 
+int __counter_List = 0;
+int __counter_ListEntry = 0;
 
 /** Used for items enumeration
  * @param pThis [in] pointer to instance
@@ -127,13 +129,21 @@ EStatus ListInsertBefore(List* pThis, ListEntry* pBefore, void* pValue)
 	return ListInsertAt(pThis, (pBefore) ? pBefore->pPrev : pThis->pTail, pBefore, pValue);
 }
 
-EStatus ListPopBack(List* pThis)
+EStatus ListPopBack(List* pThis, void* ppValue)
 {
+    if (ppValue)
+    {
+        *((void**)ppValue) = pThis->pTail ? pThis->pTail->pValue : NULL;
+    }
 	return ListRemove(pThis, pThis->pTail);
 }
 
-EStatus ListPopFront(List* pThis)
+EStatus ListPopFront(List* pThis, void* ppValue)
 {
+    if (ppValue)
+    {
+        *((void**)ppValue) = pThis->pHead ? pThis->pHead->pValue : NULL;
+    }
 	return ListRemove(pThis, pThis->pHead);
 }
 
@@ -147,7 +157,7 @@ EStatus ListRemove(List* pThis, ListEntry* pEntry)
 	if (pEntry->pPrev) pEntry->pPrev->pNext = pEntry->pNext;
 	else pThis->pHead = pEntry->pNext;
 
-	DELETE(pEntry);
+	DELETE(ListEntry, pEntry);
 
 	--pThis->count;
 

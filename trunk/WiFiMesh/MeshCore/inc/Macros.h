@@ -71,31 +71,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 #define CLEAR(var)								SAFE_OPERATION(memset(var, 0, sizeof(*var)))
 
-/** Zeroes an array
- * @param var pointer to array to be cleared
- * @param size items count
- * @see CLEAR, NEW_ARRAY, DELETE
- */
-#define CLEAR_ARRAY(var, size)					SAFE_OPERATION(memset(var, 0, sizeof(var[0]) * ARRAY_SIZE(size)))
-
 /** Allocates a memory for a type according to its size
  * @param type data type to be allocated
  * @see NEW_ARRAY, DELETE, CLEAR
  */
-#define NEW(type)								(type*)(malloc(sizeof(type)))
+#define NEW(type)								(++__counter_ ## type, (type*)(malloc(sizeof(type))))
 
-/** Allocates an array
- * @param type item type
- * @param size items count
- * @see NEW, DELETE, CLEAR_ARRAY
- */
-#define NEW_ARRAY(type, size)					(type*)(malloc(ARRAY_BYTE_SIZE(type, size)))
-
-/** Frees previousely allocated variable
+/** Frees previously allocated variable
+ * @param type data type to be freed
  * @param ptr pointer to allocated variable
  * @see NEW, NEW_ARRAY, DESTRUCT
  */
-#define DELETE(ptr)								SAFE_OPERATION(free(ptr); ptr = NULL)
+#define DELETE(type, ptr)					      SAFE_OPERATION(free(ptr); --__counter_ ## type; ptr = NULL)
 
 /** Checks return code and exits function if <b>not successful</b>
  * @param rc return code to be checked
@@ -160,7 +147,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		INFO_PRINT("Destroying an instance of %s", #module); \
 		VALIDATE_ARGUMENTS(pptr && *pptr); \
 		CHECK(module ## Destroy(*pptr)); \
-		DELETE(*pptr); \
+		DELETE(module, *pptr); \
 		return eSTATUS_COMMON_OK; \
 	)
 
