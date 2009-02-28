@@ -41,6 +41,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 #define SAFE_OPERATION(operation)				do {operation;} while (0)
 
+/** Assertion */
+#define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
+
 /** Converts double value into rounded long
  * @param val double value
  */

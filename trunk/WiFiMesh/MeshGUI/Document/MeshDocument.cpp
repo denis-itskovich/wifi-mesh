@@ -89,6 +89,7 @@ int     MeshDocument::packetHopsThreshold() const { return getMemberValue(m_pSet
 int     MeshDocument::relayBufferSize() const { return getMemberValue(m_pSettings, &SettingsGetRelayBufferSize); }
 double  MeshDocument::routeExpirationTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteExpirationTimeout); }
 double  MeshDocument::routeRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryTimeout); }
+int     MeshDocument::routeRetryThreshold() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryThreshold); }
 int     MeshDocument::routingTableSize() const { return getMemberValue(m_pSettings, &SettingsGetRoutingTableSize); }
 
 void    MeshDocument::setDataRate(int rate) { setMemberValue(m_pSettings, &SettingsSetDataRate, (unsigned long)rate); }
@@ -101,6 +102,7 @@ void    MeshDocument::setPacketHopsThreshold(int threshold) { setMemberValue(m_p
 void    MeshDocument::setRelayBufferSize(int size) { setMemberValue(m_pSettings, &SettingsSetRelayBufferSize, size); }
 void    MeshDocument::setRouteExpirationTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteExpirationTimeout, timeout); }
 void    MeshDocument::setRouteRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteRetryTimeout, timeout); }
+void    MeshDocument::setRouteRetryThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetRouteRetryThreshold, threshold); }
 void    MeshDocument::setRoutingTableSize(int size) { setMemberValue(m_pSettings, &SettingsSetRoutingTableSize, size); }
 
 int     MeshDocument::randomSeed() const { return m_seed; }
@@ -277,6 +279,8 @@ void MeshDocument::reset()
 {
     emit simulationReset();
     CHECK(SimulatorReset(m_pSimulator));
+    refreshStatistics();
+    initSeed();
 }
 
 void MeshDocument::prepare()

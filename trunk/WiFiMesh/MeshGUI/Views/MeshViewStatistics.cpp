@@ -58,14 +58,6 @@ void MeshViewStatistics::init()
     m_menu->addAction(m_chartPacketsByTraffic->toggleViewAction());
     m_menu->addAction(m_chartSizeByTraffic->toggleViewAction());
 
-//    QActionGroup* typeGroup = new QActionGroup(this);
-//    m_chartPacketsByType->toggleViewAction()->setActionGroup(typeGroup);
-//    m_chartSizeByType->toggleViewAction()->setActionGroup(typeGroup);
-//
-//    QActionGroup* trafficGroup = new QActionGroup(this);
-//    m_chartPacketsByTraffic->toggleViewAction()->setActionGroup(trafficGroup);
-//    m_chartSizeByTraffic->toggleViewAction()->setActionGroup(trafficGroup);
-
     for (int i = 0; i < ePKT_TYPE_LAST; ++i)
     {
         m_itemPacketsByType[i] = createItem(MeshTheme::packetTypeDescriptor((EPacketType)i));
@@ -121,7 +113,6 @@ void MeshViewStatistics::updateStatistics(const Statistics* pStatistics)
         m_itemPacketsByTraffic[i]->setValue(pStatistics->packetsByTraffic[i]);
         m_itemSizeByTraffic[i]->setValue(pStatistics->sizeByTraffic[i]);
     }
-
 }
 
 void MeshViewStatistics::contextMenuEvent(QContextMenuEvent* event)

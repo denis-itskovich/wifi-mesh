@@ -116,6 +116,18 @@ EStatus SettingsSetRouteRetryTimeout(Settings* pThis, double timeout);
  */
 EStatus SettingsGetRouteRetryTimeout(const Settings* pThis, double* pTimeout);
 
+/** Sets search retry threshold
+ * @param pThis [in] pointer to instance
+ * @param threshold [in] new threshold
+ */
+EStatus SettingsSetRouteRetryThreshold(Settings* pThis, int threshold);
+
+/** Retrieves search retry threshold
+ * @param pThis [in] pointer to instance
+ * @param pThreshold [out] threshold will be stored at *pThreshold
+ */
+EStatus SettingsGetRouteRetryThreshold(const Settings* pThis, int* pThreshold);
+
 /** Sets routing table size
  * @param pThis [in] pointer to instance
  * @param size [in] routing table size

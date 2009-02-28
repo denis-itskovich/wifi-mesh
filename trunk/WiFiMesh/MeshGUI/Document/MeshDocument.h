@@ -49,6 +49,7 @@ public:
 
     double  routeExpirationTimeout() const;
     double  routeRetryTimeout() const;
+    int     routeRetryThreshold() const;
     int     routingTableSize() const;
     int     packetHopsThreshold() const;
     int     packetRetryThreshold() const;
@@ -75,6 +76,7 @@ public slots:
 
 	void setRouteExpirationTimeout(double timeout);
 	void setRouteRetryTimeout(double timeout);
+	void setRouteRetryThreshold(int threshold);
 	void setRoutingTableSize(int size);
 
 	void setPacketHopsThreshold(int threshold);

@@ -27,8 +27,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 int __counter_Station = 0;
 int __counter_PacketEntry = 0;
 
-#define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
-
 #if 0 // __NO_LOG
     static const char* PKT_EVENTS[] =
     {

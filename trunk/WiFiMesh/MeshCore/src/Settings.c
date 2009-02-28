@@ -42,6 +42,7 @@ struct _Settings
 	unsigned   propDataRate;
 	double     propRouteExpirationTimeout;
 	double     propRouteRetryTimeout;
+	int        propRouteRetryThreshold;
 	int        propRoutingTableSize;
 	double     propPacketRetryTimeout;
 	int        propPacketRetryThreshold;
@@ -57,7 +58,8 @@ SETTINGS_PROPERTY(WorldSize, Size, DEFAULT_WORLD_SIZE);
 SETTINGS_PROPERTY(Coverage, double, 75);
 SETTINGS_PROPERTY(DataRate, unsigned long, 65536);
 SETTINGS_PROPERTY(RouteExpirationTimeout, double, 20.0);
-SETTINGS_PROPERTY(RouteRetryTimeout, double, 0.5);
+SETTINGS_PROPERTY(RouteRetryTimeout, double, 2);
+SETTINGS_PROPERTY(RouteRetryThreshold, int, 10);
 SETTINGS_PROPERTY(RoutingTableSize, int, 20);
 SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.01);
 SETTINGS_PROPERTY(PacketRetryThreshold, int, 5);
@@ -85,12 +87,13 @@ EStatus SettingsInit(Settings* pThis)
 	SETTINGS_INIT(WorldSize);
 	SETTINGS_INIT(RouteExpirationTimeout);
 	SETTINGS_INIT(RouteRetryTimeout);
-	SETTINGS_INIT(PacketRetryTimeout);
+    SETTINGS_INIT(RouteRetryThreshold);
+    SETTINGS_INIT(RoutingTableSize);
+    SETTINGS_INIT(PacketRetryTimeout);
 	SETTINGS_INIT(PacketRetryThreshold);
 	SETTINGS_INIT(PacketHopsThreshold);
-	SETTINGS_INIT(MaxDuration);
 	SETTINGS_INIT(RelayBufferSize);
-	SETTINGS_INIT(RoutingTableSize);
+    SETTINGS_INIT(MaxDuration);
 
 	return eSTATUS_COMMON_OK;
 }

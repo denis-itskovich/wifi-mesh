@@ -59,6 +59,7 @@ private:
     QDoubleSpinBox*	    m_spinCoverage;
     QDoubleSpinBox*     m_spinRouteExpTimeout;
     QDoubleSpinBox*     m_spinRouteRetryTimeout;
+    QSpinBox*           m_spinRouteRetryThreshold;
     QSpinBox*           m_spinRoutingTableSize;
     QDoubleSpinBox*     m_spinPacketRetryTimeout;
     QSpinBox*           m_spinPacketRetryThreshold;
