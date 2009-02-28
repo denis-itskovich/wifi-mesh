@@ -34,14 +34,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class MeshWidgetChart : public QWidget
 {
+    Q_OBJECT
 public:
     MeshWidgetChart(const QString& title, QWidget* parent = NULL);
     MeshWidgetChart(QWidget* parent = NULL);
 
     void addItem(MeshChartItem* item);
     void removeItem(MeshChartItem* item);
+    const QString& title() const;
 
-    const QString& title() { return m_title; }
     QAction* toggleViewAction();
 
 public slots:
@@ -49,33 +50,33 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent* event);
+    void resizeEvent(QResizeEvent* event);
     void paintItem(QPainter* painter, MeshChartItem* item, const QRect& rect, double normalizedVal);
     void paintLegend(QPainter* painter);
 
-    QRect itemRect(int index);
     const QRect& legendRect() const;
     const QRect& itemsRect() const;
     const QRect& titleRect() const;
 
-private:
+private slots:
+    void updateItems();
     void updateBounds();
+
+private:
     QString itemText(MeshChartItem* item) const;
     QRect calculateItemsRect() const;
     QRect calculateLegendRect() const;
     QRect calculateTitleRect() const;
     QFont legendFont() const;
-    void updateItems();
     void init();
-    typedef QList<MeshChartItem*> ChartItems;
 
-    QAction*    m_action;
-    QString     m_title;
-    ChartItems  m_items;
-    int         m_spacing;
-    int         m_shadowSize;
-    QRect       m_legendRect;
-    QRect       m_itemsRect;
-    QRect       m_titleRect;
+    QString         m_title;
+    QAction*        m_action;
+    int             m_spacing;
+    QRect           m_legendRect;
+    QRect           m_itemsRect;
+    QRect           m_titleRect;
+    MeshChartItem   m_topItem;
 };
 
 #endif /* MESHWIDGETCHART_H_ */

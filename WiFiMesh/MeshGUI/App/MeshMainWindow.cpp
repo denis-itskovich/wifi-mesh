@@ -207,19 +207,21 @@ void MeshMainWindow::createDocks()
     setDockOptions(dockOptions() | AllowNestedDocks);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-    MeshView* viewSettings = new MeshViewSettings;
-    MeshView* viewGenerator = new MeshViewRandomizer;
-
     QDockWidget* dockStations = createDock(new MeshViewStationsList, tr("Stations browser"), tr("Alt+1"));
     QDockWidget* dockSniffer = createDock(new MeshViewSniffer, tr("Packet sniffer"), tr("Alt+2"));
-    QDockWidget* dockSettings = createDock(viewSettings, tr("Simulator settings"), tr("Alt+3"));
-    QDockWidget* dockGenerator = createDock(viewGenerator, tr("World generator"), tr("Alt+4"));
+    QDockWidget* dockSettings = createDock(new MeshViewSettings, tr("Simulator settings"), tr("Alt+3"));
+    QDockWidget* dockGenerator = createDock(new MeshViewRandomizer, tr("World generator"), tr("Alt+4"));
 
     addDockWidget(Qt::LeftDockWidgetArea, dockStations);
     addDockWidget(Qt::BottomDockWidgetArea, dockSniffer);
     addDockWidget(Qt::RightDockWidgetArea, dockSettings);
 
-    if (viewSettings->height() + viewGenerator->height() > QDesktopWidget().availableGeometry().height())
+    QDesktopWidget desktop;
+    int settingsHeight = dockSettings->height();
+    int generatorHeight = dockGenerator->height();
+    int desktopHeight = desktop.availableGeometry().height() - 40;
+
+    if (settingsHeight + generatorHeight > desktopHeight)
     {
         tabifyDockWidget(dockSettings, dockGenerator);
     }
@@ -256,7 +258,9 @@ QDockWidget* MeshMainWindow::createDock(MeshView* view, const QString& title, co
 {
     QDockWidget* dock = new QDockWidget(title, this);
     addView(view);
+    view->adjustSize();
     dock->setWidget(view);
+    dock->adjustSize();
     QAction* actToggleView = dock->toggleViewAction();
     actToggleView->setShortcut(shortcut);
     m_menuView->addAction(actToggleView);

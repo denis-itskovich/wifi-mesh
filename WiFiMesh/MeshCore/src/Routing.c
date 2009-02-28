@@ -39,6 +39,7 @@ typedef struct _RoutingEntry
 	StationId  transitId;
 	double     expires;
 	unsigned   length;
+	int        retriesLeft;
 } RoutingEntry;
 
 struct _Routing
@@ -86,7 +87,7 @@ void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdat
 		pThis->handler.callback(pEntry->dstId,
 		                        pEntry->transitId,
 		                        pEntry->expires,
-		                        pEntry->length,
+		                        pEntry->transitId != INVALID_STATION_ID ? pEntry->length : pEntry->retriesLeft,
 		                        flag,
 		                        pThis->handler.pArg);
 	}
@@ -96,6 +97,7 @@ Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis);
 Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis);
 Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis);
 EStatus RoutingEraseLRUEntry(Routing* pThis);
+EStatus RoutingFind(Routing* pThis, StationId dstId, RoutingEntry** ppEntry);
 
 Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis)
 {
@@ -106,6 +108,7 @@ Boolean RoutingTransitCleaner(RoutingEntry* pEntry, Routing* pThis)
 Boolean RoutingCleaner(RoutingEntry* pEntry, Routing* pThis)
 {
 	double time;
+	if (pEntry->transitId == INVALID_STATION_ID) return TRUE;
 	TimeLineGetTime(pThis->pTimeLine, &time);
 	if (pEntry->expires > time) return TRUE;
 	return RoutingEraser(pEntry, pThis);
@@ -118,15 +121,9 @@ Boolean RoutingEraser(RoutingEntry* pEntry, Routing* pThis)
 	return FALSE;
 }
 
-Comparison RoutingFinder(RoutingEntry* pEntry, StationId* pId, StationId* pTransitId)
+Comparison RoutingFinder(RoutingEntry* pEntry, StationId* pId, Routing* pThis)
 {
-	if (pEntry->dstId == *pId)
-	{
-		if (pTransitId) *pTransitId = pEntry->transitId;
-		return EQUAL;
-	}
-
-	return (pEntry->dstId < *pId) ? LESS : GREAT;
+	return (pEntry->dstId == *pId) ? EQUAL : LESS;
 }
 
 EStatus RoutingNew(Routing** ppThis, Settings* pSettings, TimeLine* pTimeLine)
@@ -209,7 +206,17 @@ EStatus RoutingHandlePacket(Routing* pThis, const Packet* pPacket)
 
 EStatus RoutingAddPending(Routing* pThis, StationId dstId)
 {
-	return RoutingAddRoute(pThis, dstId, INVALID_STATION_ID, (unsigned)-1);
+    RoutingEntry* pEntry = NULL;
+    RoutingFind(pThis, dstId, &pEntry);
+    if (pEntry)
+    {
+        ASSERT(pEntry->retriesLeft > 0);
+        --pEntry->retriesLeft;
+        CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+        RoutingInvokeHandler(pThis, pEntry, eROUTE_UPDATE);
+    }
+    else return RoutingAddRoute(pThis, dstId, INVALID_STATION_ID, (unsigned)-1);
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, unsigned length)
@@ -230,11 +237,13 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 	pEntry->dstId = dstId;
 	pEntry->transitId = transitId;
 	pEntry->length = length;
+	pEntry->retriesLeft = 0;
 
     if (transitId == INVALID_STATION_ID)
     {
         CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
         CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
+        CHECK(SettingsGetRouteRetryThreshold(pThis->pSettings, &pEntry->retriesLeft));
     }
     else CHECK(RoutingGetExpirationTime(pThis, &pEntry->expires));
 
@@ -242,15 +251,28 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
     return ListPushFront(pThis->pEntries, pEntry);
 }
 
+EStatus RoutingFind(Routing* pThis, StationId dstId, RoutingEntry** ppEntry)
+{
+    ListEntry* pEntry;
+    VALIDATE_ARGUMENTS(pThis);
+    CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pThis));
+    CHECK(ListGetValue(pEntry, ppEntry));
+    CHECK(ListMoveToHead(pThis->pEntries, pEntry));
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount)
 {
-	ListEntry* pEntry;
 	RoutingEntry* pRouteEntry;
-	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pTransitId));
-	CHECK(ListGetValue(pEntry, &pRouteEntry));
-	CHECK(ListMoveToHead(pThis->pEntries, pEntry));
+	double time;
+	CHECK(RoutingFind(pThis, dstId, &pRouteEntry));
+	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+	if ((pRouteEntry->transitId == INVALID_STATION_ID) &&
+	    (pRouteEntry->retriesLeft > 0) &&
+	    (pRouteEntry->expires <= time))
+	    return eSTATUS_LIST_NOT_FOUND;
 	if (pHopsCount) *pHopsCount = pRouteEntry->length;
+	if (pTransitId) *pTransitId = pRouteEntry->transitId;
 	return eSTATUS_COMMON_OK;
 }
 

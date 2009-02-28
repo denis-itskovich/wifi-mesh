@@ -23,7 +23,7 @@ TARGET =			$(OUTDIR)/MeshCore.exe
 OUTDIR_DEBUG =		Debug
 OUTDIR_RELEASE =	Release
 
-CFLAGS_DEBUG = 		-O0 -g3 -ggdb
+CFLAGS_DEBUG = 		-O0 -g3 -ggdb -D_DEBUG
 CFLAGS_RELEASE = 	-O3 -D__NO_LOG
 
 LDFLAGS_DEBUG =

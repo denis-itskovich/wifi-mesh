@@ -27,7 +27,8 @@ HEADERS += Views/MeshViewTextStatistics.h \
     Dialogs/MeshDlgAbout.h \
     Document/MeshDocument.h \
     App/MeshApp.h
-SOURCES += Views/MeshViewTextStatistics.cpp \
+SOURCES += Views/Items/MeshChartItem.cpp \
+    Views/MeshViewTextStatistics.cpp \
     App/MeshMainWindow.cpp \
     Views/Theme/MeshTheme.cpp \
     Views/MeshViewStatistics.cpp \
