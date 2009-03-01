@@ -221,7 +221,7 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDelivere
     CHECK(ret);
 
     return StationSendPacket(pThis, pPacket);
-    }
+}
 
 EStatus StationSetLocation(Station* pThis, Location newLocation)
 {
@@ -249,12 +249,11 @@ EStatus StationGetRetryTime(Station* pThis, PacketEntry* pEntry)
 {
     double timeout;
     double time;
-    double transmitTime;
+    double transmitTime = 0.0;
     VALIDATE_ARGUMENTS(pThis && pEntry);
-    CHECK(SettingsGetTransmitTime(pThis->pSettings, pEntry->pPacket, &transmitTime));
+    // CHECK(SettingsGetTransmitTime(pThis->pSettings, pEntry->pPacket, &transmitTime));
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeout));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
-    timeout += ((double)(rand())/(double)RAND_MAX) / 4.0 * timeout;
     pEntry->nextRetryTime = time + timeout + transmitTime;
     return eSTATUS_COMMON_OK;
 }

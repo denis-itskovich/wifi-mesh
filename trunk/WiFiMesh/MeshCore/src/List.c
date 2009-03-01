@@ -135,7 +135,8 @@ EStatus ListPopBack(List* pThis, void* ppValue)
     {
         *((void**)ppValue) = pThis->pTail ? pThis->pTail->pValue : NULL;
     }
-	return ListRemove(pThis, pThis->pTail);
+    if (pThis->pTail) return ListRemove(pThis, pThis->pTail);
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus ListPopFront(List* pThis, void* ppValue)
@@ -144,7 +145,8 @@ EStatus ListPopFront(List* pThis, void* ppValue)
     {
         *((void**)ppValue) = pThis->pHead ? pThis->pHead->pValue : NULL;
     }
-	return ListRemove(pThis, pThis->pHead);
+	if (pThis->pHead) return ListRemove(pThis, pThis->pHead);
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus ListRemove(List* pThis, ListEntry* pEntry)

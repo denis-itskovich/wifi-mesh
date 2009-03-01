@@ -192,8 +192,9 @@ EStatus SimulatorDump(const Simulator* pThis);
 /** Imports a simulation from the file
  * @param pThis [in] pointer to instance
  * @param filename [in] filename to import
+ * @param pathloss [in] path loss file name (NULL if not applied)
  */
-EStatus SimulatorImport(Simulator* pThis, const char* filename);
+EStatus SimulatorImport(Simulator* pThis, const char* filename, const char* pathloss);
 
 /** Exports a simulator into the file
  * @param pThis [in] pointer to instance

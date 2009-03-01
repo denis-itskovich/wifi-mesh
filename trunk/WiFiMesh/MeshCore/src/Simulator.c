@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/TimeLine.h"
 #include "../inc/Macros.h"
 #include "../inc/List.h"
+#include "../inc/PathLoss.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -38,17 +39,18 @@ static const double PI = 3.1415269;
 
 struct _Simulator
 {
-	List*          pStations;
-	TimeLine*      pTimeLine;
-	Settings*      pSettings;
-    Statistics*    pStatistics;
-	StationId      minId;
-	StationId      maxId;
-	Boolean        bDupBroadcast;
-	Boolean        bUpdateRequired;
-	double         lastUpdateTime;
-	double         timeDelta;
-	int            activeStations;
+    List*           pStations;
+    TimeLine*       pTimeLine;
+    Settings*       pSettings;
+    Statistics*     pStatistics;
+    PathLoss*       pPathLoss;
+    StationId       minId;
+    StationId       maxId;
+    Boolean         bDupBroadcast;
+    Boolean         bUpdateRequired;
+    double          lastUpdateTime;
+    double          timeDelta;
+    int             activeStations;
 
 	struct
 	{
@@ -222,6 +224,7 @@ EStatus SimulatorDestroy(Simulator* pThis)
 	CHECK(SimulatorClear(pThis));
     CHECK(StatisticsDelete(&pThis->pStatistics));
 	CHECK(ListDelete(&pThis->pStations));
+	if (pThis->pPathLoss) CHECK(PathLossDelete(&pThis->pPathLoss));
 
 	return eSTATUS_COMMON_OK;
 }
@@ -375,6 +378,19 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
     return eSTATUS_COMMON_OK;
 }
 
+EStatus SimulatorAreAdjacent(Simulator* pThis, Station* pSrc, Station* pDst, Boolean* pAreAdjacent)
+{
+    StationId srcId, dstId;
+    VALIDATE_ARGUMENTS(pThis && pSrc && pDst && pAreAdjacent);
+    if (pThis->pPathLoss)
+    {
+        CHECK(StationGetId(pSrc, &srcId));
+        CHECK(StationGetId(pDst, &dstId));
+        return PathLossIsAdjacent(pThis->pPathLoss, srcId, dstId, pAreAdjacent);
+    }
+    return StationIsAdjacent(pSrc, pDst, pAreAdjacent);
+}
+
 EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 {
 	Packet* pPacket = NULL;
@@ -397,7 +413,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
     pPacket->header.hopsCount++;
 
     CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
-    if (pPacket->header.hopsCount <= maxLength)
+    if (pPacket->routing.length <= maxLength)
     {
         CHECK(ListGetHead(pThis->pStations, &pEntry));
         while (pEntry)
@@ -407,7 +423,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
             CHECK(StationIsActive(pCurrent, &isActive));
             if (isActive)
             {
-                CHECK(StationIsAdjacent(pStation, pCurrent, &isAdjacent));
+                CHECK(SimulatorAreAdjacent(pThis, pStation, pCurrent, &isAdjacent));
                 if (isAdjacent)
                 {
                     ret = StationPutPacket(pCurrent, pPacket, &pAbortedPacket);
@@ -604,7 +620,7 @@ EStatus SimulatorDump(const Simulator* pThis)
     return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorImport(Simulator* pThis, const char* filename)
+EStatus SimulatorImport(Simulator* pThis, const char* filename, const char* pathloss)
 {
     FILE* file;
 
@@ -692,6 +708,11 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     }
 
     fclose(file);
+
+    if (pathloss)
+    {
+        CHECK(PathLossNew(&pThis->pPathLoss, stationsCount, maxAttenuation, pathloss));
+    }
 
     return eSTATUS_COMMON_OK;
 }
