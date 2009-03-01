@@ -43,7 +43,7 @@ void MeshViewSniffer::init()
 {
 	m_packets = new QTreeWidget;
 	m_packets->setMinimumSize(600, 144);
-	m_packets->setColumnCount(10);
+	m_packets->setColumnCount(11);
 	m_packets->setHeaderLabels(QStringList()
 			<< tr("Time")
 			<< tr("Type")
@@ -54,6 +54,7 @@ void MeshViewSniffer::init()
 			<< tr("Arrived to")
 			<< tr("Size")
 			<< tr("Hops count")
+            << tr("Sequence number")
 			<< tr("Status"));
 
 	QPushButton* buttonClear = new QPushButton(QIcon(":/clear.png"), tr("&Clear"));
@@ -146,6 +147,7 @@ QTreeWidgetItem* MeshViewSniffer::createItem(const Packet* pPacket, StationId de
 	        << stationId(deliveredId)
 			<< QString::number(size)
 			<< QString::number(pPacket->header.hopsCount)
+            << QString::number(pPacket->header.sequenceNum)
             << statusDesc.title;
 
 	QTreeWidgetItem* item = new QTreeWidgetItem(columns);

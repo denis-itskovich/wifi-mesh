@@ -114,6 +114,7 @@ EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId
 EStatus PacketInitAck(Packet* pThis, StationId srcId, StationId dstId)
 {
 	INIT_PACKET(pThis, ePKT_TYPE_ACK, srcId, dstId);
+	pThis->header.transitDstId = dstId;
 	return eSTATUS_COMMON_OK;
 }
 

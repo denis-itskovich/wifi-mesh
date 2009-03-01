@@ -61,7 +61,7 @@ SETTINGS_PROPERTY(RouteExpirationTimeout, double, 20.0);
 SETTINGS_PROPERTY(RouteRetryTimeout, double, 2);
 SETTINGS_PROPERTY(RouteRetryThreshold, int, 10);
 SETTINGS_PROPERTY(RoutingTableSize, int, 20);
-SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.01);
+SETTINGS_PROPERTY(PacketRetryTimeout, double, 0.05);
 SETTINGS_PROPERTY(PacketRetryThreshold, int, 5);
 SETTINGS_PROPERTY(PacketHopsThreshold, int, 20);
 SETTINGS_PROPERTY(RelayBufferSize, int, 65536);
