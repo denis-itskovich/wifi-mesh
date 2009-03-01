@@ -367,7 +367,7 @@ void MeshDocument::viewsAttached()
 void MeshDocument::importFromFile(const QString& filename)
 {
     clear();
-    EStatus res = SimulatorImport(m_pSimulator, filename.toLatin1());
+    EStatus res = SimulatorImport(m_pSimulator, filename.toLatin1(), NULL);
     CHECK(res);
     emit updateViews();
 }

@@ -300,7 +300,6 @@ EStatus RoutingGetRetryTime(Routing* pThis, double* pTime)
 	VALIDATE_ARGUMENTS(pThis && pTime);
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 	CHECK(SettingsGetRouteRetryTimeout(pThis->pSettings, &timeout));
-	timeout += ((double)rand() / (double)RAND_MAX) / 4.0 * timeout;
 	*pTime = time + timeout;
 	return eSTATUS_COMMON_OK;
 }
@@ -312,7 +311,6 @@ EStatus RoutingGetExpirationTime(Routing* pThis, double* pTime)
 	VALIDATE_ARGUMENTS(pThis && pTime);
 	CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
 	CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &timeout));
-    timeout += ((double)rand() / (double)RAND_MAX) / 4.0 * timeout;
 	*pTime = time + timeout;
 	return eSTATUS_COMMON_OK;
 }

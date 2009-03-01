@@ -94,7 +94,7 @@ int Simulate(const char* inputfile, const char* pathloss)
     Check(SimulatorNew(&pSimulator, pSettings, pTimeLine));
     Check(TimeLineSetSmoothenMode(pTimeLine, FALSE));
 
-    Check(SimulatorImport(pSimulator, inputfile));
+    Check(SimulatorImport(pSimulator, inputfile, pathloss));
     Check(SettingsGetMaxDuration(pSettings, &maxDuration));
     Check(SimulatorReset(pSimulator));
 

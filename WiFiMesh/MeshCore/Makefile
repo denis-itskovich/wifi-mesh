@@ -11,7 +11,8 @@ SOURCES =			\
     src/Station.c \
     src/Statistics.c \
     src/Status.c \
-    src/TimeLine.c
+    src/TimeLine.c \
+    src/PathLoss.c
 		
 OUTDIR = 			$(OUTDIR_$(CONFIG))
 INTDIR = 			$(OUTDIR)
