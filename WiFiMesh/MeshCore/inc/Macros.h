@@ -95,6 +95,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define NEW_ARRAY(type, size)					(type*)(malloc(sizeof(type) * size))
 
 /** Frees previousely allocated variable
+ * @param type data type to be deleted
  * @param ptr pointer to allocated variable
  * @see NEW, NEW_ARRAY, DESTRUCT
  */
