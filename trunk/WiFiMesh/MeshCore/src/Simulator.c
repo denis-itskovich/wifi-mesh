@@ -354,7 +354,8 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 	    CHECK(SimulatorGetStation(pThis, pPacket->header.originalSrcId, &pOrigSrc));
 	    CHECK(StationPacketDelivered(pOrigSrc, pPacket));
 	}
-	return StatisticsHandlePacket(pThis->pStatistics, pPacket, status);
+	if (status != ePKT_STATUS_PENDING) CHECK(StatisticsHandlePacket(pThis->pStatistics, pPacket, status));
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEvent event)

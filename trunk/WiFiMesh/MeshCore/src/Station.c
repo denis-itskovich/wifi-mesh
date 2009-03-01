@@ -245,6 +245,20 @@ EStatus StationSetId(Station* pThis, StationId id)
 	SET_MEMBER(id, pThis, id);
 }
 
+EStatus StationGetRetryTime(Station* pThis, PacketEntry* pEntry)
+{
+    double timeout;
+    double time;
+    double transmitTime;
+    VALIDATE_ARGUMENTS(pThis && pEntry);
+    CHECK(SettingsGetTransmitTime(pThis->pSettings, pEntry->pPacket, &transmitTime));
+    CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeout));
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+    timeout += ((double)(rand())/(double)RAND_MAX) / 4.0 * timeout;
+    pEntry->nextRetryTime = time + timeout + transmitTime;
+    return eSTATUS_COMMON_OK;
+}
+
 Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
 {
     Packet* pPacket = pEntry->pPacket;
@@ -314,8 +328,7 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
     }
 
     // Scheduling retry transmit for this packet
-    SettingsGetPacketRetryTimeout(pThis->pSettings, &pEntry->nextRetryTime);
-    pEntry->nextRetryTime += time;
+    StationGetRetryTime(pThis, pEntry);
     TimeLineEvent(pThis->pTimeLine, pEntry->nextRetryTime, pPacket);
 
     return TRUE;
@@ -383,10 +396,19 @@ EStatus StationNewPacketEntry(Station* pThis, Packet* pPacket, PacketEntry** ppE
     return eSTATUS_COMMON_OK;
 }
 
+Comparison StationAckFinder(PacketEntry* pEntry, const Packet* pPacket, Station* pThis)
+{
+    return (pEntry->pPacket->header.type == ePKT_TYPE_ACK) &&
+           (pEntry->pPacket->header.transitDstId == pPacket->header.transitSrcId) &&
+           (pEntry->pPacket->header.sequenceNum == pPacket->header.sequenceNum) ? EQUAL : LESS;
+}
+
 EStatus StationSendAck(Station* pThis, const Packet* pPacket)
 {
     Packet* pAck;
+    ListEntry* pEntry;
     if (!StationIsAckRequired(pThis, pPacket)) return eSTATUS_COMMON_OK;
+    NCHECK(ListFind(pThis->pOutbox, &pEntry, (ItemComparator)&StationAckFinder, (void*)pPacket, pThis));
     CHECK(PacketNewAck(&pAck, pThis->id, pPacket->header.transitSrcId));
     pAck->header.sequenceNum = pPacket->header.sequenceNum;
     return StationSendPacket(pThis, pAck);
@@ -708,7 +730,7 @@ EStatus StationReset(Station* pThis)
 
 Boolean StationIsPacketPrioritized(Station* pThis, const Packet* pPacket)
 {
-    return (pPacket->header.type != ePKT_TYPE_DATA) ? TRUE : FALSE;
+    return (pPacket->header.type == ePKT_TYPE_ACK) ? TRUE : FALSE;
 }
 
 Boolean StationIsPacketValid(Station* pThis, const Packet* pPacket)
