@@ -135,6 +135,8 @@ EStatus SimulatorInvokeTracker(Simulator* pThis, Station* pStation, EStationEven
  * @param transId [in] transit station id
  * @param expirationTime [in] entry expiration time
  * @param updateAction [in] routing event
+ * @param length [in] route length
+ * @param retriesLeft [in] retries left for pending entry
  * @param pThis [in] pointer to instance
  */
 void SimulatorRoutingHandler(const Station* pStation,
@@ -142,6 +144,7 @@ void SimulatorRoutingHandler(const Station* pStation,
                              StationId transId,
                              double expirationTime,
                              int length,
+                             int retriesLeft,
                              ERouteEntryUpdate updateAction,
                              Simulator* pThis);
 
@@ -571,12 +574,20 @@ void SimulatorRoutingHandler(const Station* pStation,
                              StationId transId,
                              double expirationTime,
                              int length,
+                             int retriesLeft,
                              ERouteEntryUpdate updateAction,
                              Simulator* pThis)
 {
     if (pThis->routingHandler.callback)
     {
-        pThis->routingHandler.callback(pStation, destId, transId, expirationTime, length, updateAction, pThis->routingHandler.pArg);
+        pThis->routingHandler.callback(pStation,
+                                       destId,
+                                       transId,
+                                       expirationTime,
+                                       length,
+                                       retriesLeft,
+                                       updateAction,
+                                       pThis->routingHandler.pArg);
     }
 }
 

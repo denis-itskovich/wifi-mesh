@@ -59,7 +59,9 @@ public slots:
 	virtual void addStationTriggered();
 
 	virtual void addRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+	virtual void addRouteEntry(const Station* pStation, StationId dst, double nextRetry, int retriesLeft);
 	virtual void updateRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+	virtual void updateRouteEntry(const Station* pStation, StationId dst, double nextRetry, int retriesLeft);
 	virtual void removeRouteEntry(const Station* pStation, StationId dst);
 
 	virtual void addScheduleEntry(const Station* pStation, double time, const Packet* pPacket);

@@ -460,13 +460,20 @@ void MeshDocument::routingHandler(	const Station* pStation,
 									StationId transId,
 									double expirationTime,
 									int length,
+									int retriesLeft,
 									ERouteEntryUpdate updateAction,
 									MeshDocument *pThis)
 {
 	switch (updateAction)
 	{
-	case eROUTE_ADD: emit pThis->routeEntryAdded(pStation, destId, transId, expirationTime, length); break;
-	case eROUTE_UPDATE: emit pThis->routeEntryUpdated(pStation, destId, transId, expirationTime, length); break;
+	case eROUTE_ADD:
+	    if (transId != INVALID_STATION_ID) emit pThis->routeEntryAdded(pStation, destId, transId, expirationTime, length);
+	    else emit pThis->routeEntryAdded(pStation, destId, expirationTime, retriesLeft);
+	    break;
+	case eROUTE_UPDATE:
+        if (transId != INVALID_STATION_ID) emit pThis->routeEntryUpdated(pStation, destId, transId, expirationTime, length);
+        else emit pThis->routeEntryUpdated(pStation, destId, expirationTime, retriesLeft);
+	    break;
 	case eROUTE_REMOVE: emit pThis->routeEntryExpired(pStation, destId); break;
 	}
 }

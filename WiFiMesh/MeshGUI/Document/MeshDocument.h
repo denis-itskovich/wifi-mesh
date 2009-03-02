@@ -123,7 +123,9 @@ signals:
 	void stationUpdated(Station* pStation);
 
 	void routeEntryAdded(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+    void routeEntryAdded(const Station* pStation, StationId dst, double nextRetry, int retriesLeft);
 	void routeEntryUpdated(const Station* pStation, StationId dst, StationId trans, double expires, int length);
+    void routeEntryUpdated(const Station* pStation, StationId dst, double nextRetry, int retriesLeft);
 	void routeEntryExpired(const Station* pStation, StationId dst);
 
 	void scheduleEntryAdded(const Station* pStation, double time, const Packet* pPacket);
@@ -171,6 +173,7 @@ private:
 								StationId transId,
 								double expirationTime,
 								int length,
+								int retriesLeft,
 								ERouteEntryUpdate updateAction,
 								MeshDocument *pThis);
 

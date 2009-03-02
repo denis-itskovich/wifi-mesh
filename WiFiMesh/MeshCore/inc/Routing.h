@@ -52,7 +52,9 @@ typedef enum _ERouteEntryUpdate
  * @param pStation [in] pointer to station
  * @param destId [in] destination station id
  * @param transId [in] transit station id
- * @param expirationTime [in] entry expiration time
+ * @param expirationTime [in] entry expiration time (or next retry time for pending entry)
+ * @param length [in] route length
+ * @param retriesLeft [in] retries left (for pending entry)
  * @param updateAction [in] true if entry is being added or updated
  * @param pUserArg [in] user defined argument
  */
@@ -60,6 +62,7 @@ typedef void (*RoutingHandler)( StationId destId,
                                 StationId transId,
                                 double expirationTime,
                                 int length,
+                                int retriesLeft,
                                 ERouteEntryUpdate updateAction,
                                 void *pUserArg);
 
