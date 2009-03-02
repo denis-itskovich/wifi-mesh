@@ -111,12 +111,14 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
     unsigned size;
     double totalHopsCount;
     double totalRouteLength;
-    static const Packet* pLastPacket = NULL;
+    static unsigned long long previousMsgId = (unsigned long long)(-1);
+    unsigned long long msgId;
 
     VALIDATE_ARGUMENTS(pThis && pPacket);
+    msgId = (unsigned long long)pPacket->header.transitSrcId | ((unsigned long long)pPacket->header.sequenceNum << 32);
 
-    if (pPacket == pLastPacket) return eSTATUS_COMMON_OK;
-    pLastPacket = pPacket;
+    // if (msgId == previousMsgId) return eSTATUS_COMMON_OK;
+    previousMsgId = msgId;
 
     type = pPacket->header.type;
     ++pThis->packetsByStatus[status];

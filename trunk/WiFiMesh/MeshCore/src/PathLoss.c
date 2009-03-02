@@ -135,6 +135,7 @@ EStatus PathLossInit(PathLoss* pThis, int count, double maxAttenuation, const ch
     FILE* file;
     double time;
     VALIDATE_ARGUMENTS(pThis && filename);
+    CLEAR(pThis);
 
     file = fopen(filename, "r");
     if (!file) return eSTATUS_SIMULATOR_FILE_OPEN_FAILURE;
@@ -144,7 +145,7 @@ EStatus PathLossInit(PathLoss* pThis, int count, double maxAttenuation, const ch
 
     while (!feof(file))
     {
-        VALIDATE(fscanf(file, "%lf %d", &time, &index) == 2, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+        if (fscanf(file, "%lf %d", &time, &index) != 2) break;
         CHECK(PathLossAddStation(pThis, time, --index, maxAttenuation, file));
     }
 
@@ -163,7 +164,6 @@ EStatus PathLossDestroy(PathLoss* pThis)
         if (pEntry) CHECK(PathLossDeleteEntry(pThis, pEntry));
     } while (pEntry);
 
-    if (pThis->pCurrent) CHECK(PathLossDeleteEntry(pThis, pThis->pCurrent));
     CHECK(SortedListDelete(&pThis->pEntries));
 
     return eSTATUS_COMMON_OK;
@@ -198,5 +198,6 @@ EStatus PathLossReset(PathLoss* pThis)
     VALIDATE_ARGUMENTS(pThis);
     CHECK(SortedListGetHead(pThis->pEntries, &pThis->pNextEntry));
     if (pThis->pNextEntry) CHECK(SortedListGetValue(pThis->pNextEntry, &pThis->pNext));
+    pThis->pCurrent = NULL;
     return eSTATUS_COMMON_OK;
 }

@@ -185,7 +185,6 @@ EStatus RoutingUpdateDestination(Routing* pThis, StationId dst, StationId transi
             pRouteEntry->length = length;
             pRouteEntry->transitId = transit;
             CHECK(RoutingGetExpirationTime(pThis, &pRouteEntry->expires));
-            CHECK(TimeLineEvent(pThis->pTimeLine, pRouteEntry->expires, NULL));
             RoutingInvokeHandler(pThis, pRouteEntry, eROUTE_UPDATE);
         }
     }
