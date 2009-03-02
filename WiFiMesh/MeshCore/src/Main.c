@@ -33,7 +33,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdlib.h>
 #include <string.h>
 
-const char* EXE_NAME = NULL;
+const char* executableName = NULL;
+TimeLine* pTimeLine = NULL;
 
 extern int __counter_Packet;
 extern int __counter_Station;
@@ -53,10 +54,10 @@ void Welcome()
 
 void Usage()
 {
-    printf("Usage: %s <input_file> [<path_loss_file>] [<log_file>]\n\n", EXE_NAME);
-    printf("Where  <input_file>     is a simulation file (input)\n");
-    printf("       <path_loss_file> is a path loss file (input), as described in user guide\n");
-    printf("       <log_file>       is a log file (output)\n");
+    printf("Usage: %s -i <input_file> [-p <path_loss_file>] [-l <log_file>]\n\n", executableName);
+    printf("Where  <input_file>     is a simulation file        [input, mandatory]\n");
+    printf("       <path_loss_file> is a path loss file         [input, optional]\n");
+    printf("       <log_file>       is a log file (.csv format) [output, optional]\n");
     exit(0);
 }
 
@@ -90,26 +91,35 @@ void Sniffer(const Packet* pPacket,
              FILE* file)
 {
     StationId id;
+    double time;
+    unsigned size;
     if (!file || status == ePKT_STATUS_PENDING) return;
+
     Check(StationGetId(pDest, &id));
-    fprintf(file, "%-16s %-3d %-3d %-3d %-3d %-10s\n",
+    Check(TimeLineGetTime(pTimeLine, &time));
+    Check(PacketGetSize(pPacket, &size));
+
+    fprintf(file, "%-12.9lf,%-16s,%-3d,%-3d,%-3d,%-3d,%-5d,%-3d,%-10s\n",
+            time,
             DESC_PACKET_TYPE[pPacket->header.type],
             (int)pPacket->header.originalSrcId,
             (int)pPacket->header.originalDstId,
             (int)pPacket->header.transitSrcId,
             (int)id,
+            (int)size,
+            (int)pPacket->header.hopsCount,
             DESC_PACKET_STATUS[status]);
 }
 
 int Simulate(const char* inputfile, const char* pathloss, const char* logname)
 {
     Simulator* pSimulator;
-    TimeLine* pTimeLine;
     Settings* pSettings;
     double maxDuration, time;
 
     FILE* logFile = NULL;
     if (logname) logFile = fopen(logname, "w");
+    if (logFile) fprintf(logFile, "Time, Message type, From, To, Source, Destination, Size, Hops count, Status\n");
 
     Check(SettingsNew(&pSettings));
     Check(TimeLineNew(&pTimeLine));
@@ -130,7 +140,7 @@ int Simulate(const char* inputfile, const char* pathloss, const char* logname)
         if (time > maxDuration) break;
     }
 
-    printf("\nSimulation finished, time: %lf\n", time);
+    printf("\nSimulation finished, time: %lf\n\n", time);
     PrintStatistics(pSimulator);
 
     if (logFile) fclose(logFile);
@@ -160,19 +170,37 @@ int Simulate(const char* inputfile, const char* pathloss, const char* logname)
     return 0;
 }
 
+void ParseArgs(int argc, char** argv, const char** pInputFile, const char** pPathlossFile, const char** pLogFile)
+{
+    executableName = *argv++;
+    --argc;
+    *pInputFile = *pPathlossFile = *pLogFile = NULL;
+
+    if (argc < 2) Usage();
+
+    while (argc > 1)
+    {
+        if (strcmp(*argv, "-i") == 0) *pInputFile = argv[1];
+        else if (strcmp(*argv, "-p") == 0) *pPathlossFile = argv[1];
+        else if (strcmp(*argv, "-l") == 0) *pLogFile = argv[1];
+        else Usage();
+        argc -= 2;
+        argv += 2;
+    }
+    if (!*pInputFile)
+    {
+        printf("Error: Input file not specified!\n\n");
+        Usage();
+    }
+}
+
 int main(int argc, char** argv)
 {
-    const char* inputfile = NULL;
-    const char* pathloss = NULL;
-    const char* logname = NULL;
+    const char* inputFile = NULL;
+    const char* pathlossFile = NULL;
+    const char* logFile = NULL;
 
-    EXE_NAME = argv[0];
     Welcome();
-    if ((argc < 2) || (argc > 4) || strcmp(argv[1], "/?") == 0) Usage();
-
-    inputfile = argv[1];
-    if (argc > 2) pathloss = argv[2];
-    if (argc > 3) logname = argv[3];
-
-    return Simulate(inputfile, pathloss, logname);
+    ParseArgs(argc, argv, &inputFile, &pathlossFile, &logFile);
+    return Simulate(inputFile, pathlossFile, logFile);
 }
