@@ -53,9 +53,10 @@ void Welcome()
 
 void Usage()
 {
-    printf("Usage: %s <input_file> [<path_loss_file>]\n\n", EXE_NAME);
-    printf("Where  <input_file> is simulation file\n");
-    printf("       <path_loss_file> is path loss file, as described in user guide\n");
+    printf("Usage: %s <input_file> [<path_loss_file>] [<log_file>]\n\n", EXE_NAME);
+    printf("Where  <input_file>     is a simulation file (input)\n");
+    printf("       <path_loss_file> is a path loss file (input), as described in user guide\n");
+    printf("       <log_file>       is a log file (output)\n");
     exit(0);
 }
 
@@ -82,16 +83,38 @@ void PrintStatistics(Simulator* pSimulator)
     printf("%s", buff);
 }
 
-int Simulate(const char* inputfile, const char* pathloss)
+void Sniffer(const Packet* pPacket,
+             const Station* pSrc,
+             const Station* pDest,
+             EPacketStatus status,
+             FILE* file)
+{
+    StationId id;
+    if (!file || status == ePKT_STATUS_PENDING) return;
+    Check(StationGetId(pDest, &id));
+    fprintf(file, "%-16s %-3d %-3d %-3d %-3d %-10s\n",
+            DESC_PACKET_TYPE[pPacket->header.type],
+            (int)pPacket->header.originalSrcId,
+            (int)pPacket->header.originalDstId,
+            (int)pPacket->header.transitSrcId,
+            (int)id,
+            DESC_PACKET_STATUS[status]);
+}
+
+int Simulate(const char* inputfile, const char* pathloss, const char* logname)
 {
     Simulator* pSimulator;
     TimeLine* pTimeLine;
     Settings* pSettings;
     double maxDuration, time;
 
+    FILE* logFile = NULL;
+    if (logname) logFile = fopen(logname, "w");
+
     Check(SettingsNew(&pSettings));
     Check(TimeLineNew(&pTimeLine));
     Check(SimulatorNew(&pSimulator, pSettings, pTimeLine));
+    Check(SimulatorSetPacketSniffer(pSimulator, (PacketSniffer)&Sniffer, logFile));
     Check(TimeLineSetSmoothenMode(pTimeLine, FALSE));
 
     Check(SimulatorImport(pSimulator, inputfile, pathloss));
@@ -109,6 +132,8 @@ int Simulate(const char* inputfile, const char* pathloss)
 
     printf("\nSimulation finished, time: %lf\n", time);
     PrintStatistics(pSimulator);
+
+    if (logFile) fclose(logFile);
 
     Check(SimulatorDelete(&pSimulator));
     Check(TimeLineDelete(&pTimeLine));
@@ -139,13 +164,15 @@ int main(int argc, char** argv)
 {
     const char* inputfile = NULL;
     const char* pathloss = NULL;
+    const char* logname = NULL;
 
     EXE_NAME = argv[0];
     Welcome();
-    if ((argc < 2) || (argc > 3) || strcmp(argv[1], "/?") == 0) Usage();
+    if ((argc < 2) || (argc > 4) || strcmp(argv[1], "/?") == 0) Usage();
 
     inputfile = argv[1];
     if (argc > 2) pathloss = argv[2];
+    if (argc > 3) logname = argv[3];
 
-    return Simulate(inputfile, pathloss);
+    return Simulate(inputfile, pathloss, logname);
 }

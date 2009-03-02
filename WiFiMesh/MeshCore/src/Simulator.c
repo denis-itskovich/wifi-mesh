@@ -332,6 +332,7 @@ EStatus SimulatorProcess(Simulator* pThis)
 
     INFO_PRINT("Performing simulation step: [time delta: %.2f]", pThis->timeDelta);
 
+    if (pThis->pPathLoss) CHECK(PathLossSynchronize(pThis->pPathLoss, curTime));
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
@@ -515,6 +516,7 @@ EStatus SimulatorReset(Simulator* pThis)
     CHECK(TimeLineClear(pThis->pTimeLine));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
     CHECK(StatisticsReset(pThis->pStatistics));
+    if (pThis->pPathLoss) CHECK(PathLossReset(pThis->pPathLoss));
 	pThis->lastUpdateTime = 0;
 	pThis->activeStations = -1;
 	return eSTATUS_COMMON_OK;
