@@ -87,7 +87,8 @@ void RoutingInvokeHandler(Routing* pThis, RoutingEntry* pEntry, ERouteEntryUpdat
 		pThis->handler.callback(pEntry->dstId,
 		                        pEntry->transitId,
 		                        pEntry->expires,
-		                        pEntry->transitId != INVALID_STATION_ID ? pEntry->length : pEntry->retriesLeft,
+		                        pEntry->length,
+		                        pEntry->retriesLeft,
 		                        flag,
 		                        pThis->handler.pArg);
 	}
@@ -159,19 +160,25 @@ EStatus RoutingRemoveTransit(Routing* pThis, StationId transit)
     return ListCleanUp(pThis->pEntries, (ItemFilter)&RoutingTransitCleaner, pThis);
 }
 
+EStatus RoutingFind(Routing* pThis, StationId dstId, RoutingEntry** ppEntry)
+{
+    ListEntry* pEntry;
+    VALIDATE_ARGUMENTS(pThis);
+    CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pThis));
+    CHECK(ListGetValue(pEntry, ppEntry));
+    CHECK(ListMoveToHead(pThis->pEntries, pEntry));
+    return eSTATUS_COMMON_OK;
+}
+
 EStatus RoutingUpdateDestination(Routing* pThis, StationId dst, StationId transit, unsigned length)
 {
-    ListEntry* pListEntry;
-    RoutingEntry* pRouteEntry;
+    RoutingEntry* pRouteEntry = NULL;
 
-    if (eSTATUS_LIST_NOT_FOUND == ListFind(pThis->pEntries, &pListEntry, (ItemComparator)&RoutingFinder, &dst, NULL))
-    {
-        CHECK(RoutingAddRoute(pThis, dst, transit, length));
-    }
+    VALIDATE_ARGUMENTS(pThis);
+    RoutingFind(pThis, dst, &pRouteEntry);
+    if (!pRouteEntry) CHECK(RoutingAddRoute(pThis, dst, transit, length));
     else
     {
-        CHECK(ListGetValue(pListEntry, &pRouteEntry));
-
         if (pRouteEntry->length > length ||
             (pRouteEntry->length == length && pRouteEntry->transitId != transit))
         {
@@ -213,6 +220,7 @@ EStatus RoutingAddPending(Routing* pThis, StationId dstId)
         ASSERT(pEntry->retriesLeft > 0);
         --pEntry->retriesLeft;
         CHECK(RoutingGetRetryTime(pThis, &pEntry->expires));
+        CHECK(TimeLineEvent(pThis->pTimeLine, pEntry->expires, NULL));
         RoutingInvokeHandler(pThis, pEntry, eROUTE_UPDATE);
     }
     else return RoutingAddRoute(pThis, dstId, INVALID_STATION_ID, (unsigned)-1);
@@ -249,16 +257,6 @@ EStatus RoutingAddRoute(Routing* pThis, StationId dstId, StationId transitId, un
 
     RoutingInvokeHandler(pThis, pEntry, eROUTE_ADD);
     return ListPushFront(pThis->pEntries, pEntry);
-}
-
-EStatus RoutingFind(Routing* pThis, StationId dstId, RoutingEntry** ppEntry)
-{
-    ListEntry* pEntry;
-    VALIDATE_ARGUMENTS(pThis);
-    CHECK(ListFind(pThis->pEntries, &pEntry, (ItemComparator)&RoutingFinder, &dstId, pThis));
-    CHECK(ListGetValue(pEntry, ppEntry));
-    CHECK(ListMoveToHead(pThis->pEntries, pEntry));
-    return eSTATUS_COMMON_OK;
 }
 
 EStatus RoutingLookFor(Routing* pThis, StationId dstId, StationId* pTransitId, unsigned* pHopsCount)

@@ -60,8 +60,10 @@ void MeshViewStations::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(stationRemoved(Station*)), this, SLOT(removeStation(Station*)));
 	connect(doc, SIGNAL(stationUpdated(Station*)), this, SLOT(updateStation(Station*)));
 
-	connect(doc, SIGNAL(routeEntryAdded(const Station*, StationId, StationId, double, int)), this, SLOT(addRouteEntry(const Station*, StationId, StationId, double, int)));
-	connect(doc, SIGNAL(routeEntryUpdated(const Station*, StationId, StationId, double, int)), this, SLOT(updateRouteEntry(const Station*, StationId, StationId, double, int)));
+    connect(doc, SIGNAL(routeEntryAdded(const Station*, StationId, StationId, double, int)), this, SLOT(addRouteEntry(const Station*, StationId, StationId, double, int)));
+    connect(doc, SIGNAL(routeEntryAdded(const Station*, StationId, double, int)), this, SLOT(addRouteEntry(const Station*, StationId, double, int)));
+    connect(doc, SIGNAL(routeEntryUpdated(const Station*, StationId, StationId, double, int)), this, SLOT(updateRouteEntry(const Station*, StationId, StationId, double, int)));
+    connect(doc, SIGNAL(routeEntryUpdated(const Station*, StationId, double, int)), this, SLOT(updateRouteEntry(const Station*, StationId, double, int)));
 	connect(doc, SIGNAL(routeEntryExpired(const Station*, StationId)), this, SLOT(removeRouteEntry(const Station*, StationId)));
 
 	connect(doc, SIGNAL(scheduleEntryAdded(const Station*, double, const Packet*)), this, SLOT(addScheduleEntry(const Station*, double, const Packet*)));
@@ -160,9 +162,19 @@ void MeshViewStations::addRouteEntry(const Station* pStation, StationId dst, Sta
 	findItem(pStation)->addRouteEntry(dst, trans, expires, length);
 }
 
+void MeshViewStations::addRouteEntry(const Station* pStation, StationId dst, double nextRetry, int retriesLeft)
+{
+    findItem(pStation)->addRouteEntry(dst, nextRetry, retriesLeft);
+}
+
 void MeshViewStations::updateRouteEntry(const Station* pStation, StationId dst, StationId trans, double expires, int length)
 {
 	findItem(pStation)->updateRouteEntry(dst, trans, expires, length);
+}
+
+void MeshViewStations::updateRouteEntry(const Station* pStation, StationId dst, double nextRetry, int retriesLeft)
+{
+    findItem(pStation)->updateRouteEntry(dst, nextRetry, retriesLeft);
 }
 
 void MeshViewStations::removeRouteEntry(const Station* pStation, StationId dst)

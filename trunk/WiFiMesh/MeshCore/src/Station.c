@@ -96,6 +96,7 @@ void StationHandleRoutingChange(StationId destId,
                                 StationId transId,
                                 double expirationTime,
                                 int length,
+                                int retriesLeft,
                                 ERouteEntryUpdate updateAction,
                                 Station* pThis);
 
@@ -735,7 +736,9 @@ Boolean StationIsPacketPrioritized(Station* pThis, const Packet* pPacket)
 Boolean StationIsPacketValid(Station* pThis, const Packet* pPacket)
 {
 	if (pPacket->header.type != ePKT_TYPE_SEARCH_REQUEST) return TRUE;
-	return RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, NULL, NULL) != eSTATUS_COMMON_OK ? TRUE : FALSE;
+	if (RoutingLookFor(pThis->pRouting, pPacket->header.originalDstId, NULL, NULL) == eSTATUS_COMMON_OK) return FALSE;
+	RoutingAddPending(pThis->pRouting, pPacket->header.originalDstId);
+	return TRUE;
 }
 
 EStatus StationRegisterSchedulerHandler(Station* pThis, StationSchedulerHandler handler, void* pUserArg)
@@ -770,12 +773,20 @@ void StationHandleRoutingChange(StationId destId,
 								StationId transId,
 								double expirationTime,
 								int length,
+								int retriesLeft,
 								ERouteEntryUpdate updateAction,
 								Station* pThis)
 {
 	if (pThis->routingHandler.callback)
 	{
-		pThis->routingHandler.callback(pThis, destId, transId, expirationTime, length, updateAction, pThis->routingHandler.pArg);
+		pThis->routingHandler.callback(pThis,
+		                               destId,
+		                               transId,
+		                               expirationTime,
+		                               length,
+		                               retriesLeft,
+		                               updateAction,
+		                               pThis->routingHandler.pArg);
 	}
 }
 

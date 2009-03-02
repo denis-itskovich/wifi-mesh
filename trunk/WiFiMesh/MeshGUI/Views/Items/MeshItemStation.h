@@ -48,7 +48,9 @@ public:
 	virtual void reset();
 
 	virtual void addRouteEntry(StationId dst, StationId trans, double expires, int length) {}
+    virtual void addRouteEntry(StationId dst, double nextRetry, int retriesLeft) {}
 	virtual void updateRouteEntry(StationId dst, StationId trans, double expires, int length) {}
+    virtual void updateRouteEntry(StationId dst, double nextRetry, int retriesLeft) {}
 	virtual void removeRouteEntry(StationId dst) {}
 
 	virtual void addScheduleEntry(double time, const Packet* pPacket) {}
