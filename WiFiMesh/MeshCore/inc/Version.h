@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef VERSION_H_
 #define VERSION_H_
 
-#define APP_VERSION     "1.0.13"
+#define APP_VERSION     "1.0.14"
 #define APP_NAME        "WiFi Mesh Simulator Pro"
 
 #endif /* VERSION_H_ */
