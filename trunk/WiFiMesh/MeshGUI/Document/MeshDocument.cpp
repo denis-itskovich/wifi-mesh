@@ -446,6 +446,10 @@ void MeshDocument::packetSniffer(const Packet* pPacket, const Station* pSrc, con
         emit pThis->packetDispatched(pPacket, id, status);
         emit pThis->endTransmit(pDst);
         break;
+    case ePKT_STATUS_OUT_OF_RANGE:
+    case ePKT_STATUS_HOPS_LIMIT_REACHED:
+        emit pThis->packetDispatched(pPacket, id, status);
+        break;
     default: break;
     }
 }

@@ -160,7 +160,6 @@ EStatus TimeLineClear(TimeLine* pThis)
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->time = 0;
 	pThis->nextTime = 0;
-	CHECK(TimeLineEvent(pThis, 0.0, NULL));
     return eSTATUS_COMMON_OK;
 }
 

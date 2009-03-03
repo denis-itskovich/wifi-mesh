@@ -439,6 +439,8 @@ EStatus StationSendPacket(Station* pThis, Packet* pPacket)
 	if (StationIsPacketPrioritized(pThis, pPacket)) CHECK(ListPushFront(pThis->pOutbox, pEntry));
 	else CHECK(ListPushBack(pThis->pOutbox, pEntry));
 
+	if (pThis->silentTime > 0) CHECK(TimeLineRelativeEvent(pThis->pTimeLine, pThis->silentTime, pPacket));
+
 	return eSTATUS_COMMON_OK;
 }
 

@@ -77,6 +77,12 @@ EStatus SortedListInsert(SortedList* pThis, ListEntry* pEntry, void* pValue, Boo
     CHECK(SortedListGetValue(pEntry, &pRight));
     expected = pThis->comparator(pValue, pRight, pThis->pUserArg);
 
+    if (expected == EQUAL)
+    {
+        if (unique) return eSTATUS_SORTED_LIST_ALREADY_EXISTS;
+        else return ListInsertBefore(pThis->pList, pEntry, pValue);
+    }
+
     while (pEntry)
     {
         CHECK(SortedListGetValue(pEntry, &pRight));
