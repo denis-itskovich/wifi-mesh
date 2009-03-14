@@ -151,6 +151,8 @@
 </buildTargets>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
+<pathentry kind="src" path=""/>
+<pathentry kind="out" path=""/>
 <pathentry base-path="D:/Qt/4.5.0/include" include="" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.5.0/include" include="ActiveQt" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.5.0/include" include="Phonon" kind="inc" path="" system="true"/>
@@ -173,8 +175,6 @@
 <pathentry base-path="D:/Qt/4.5.0/include" include="QtWebKit" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.5.0/include" include="QtXml" kind="inc" path="" system="true"/>
 <pathentry base-path="D:/Qt/4.5.0/include" include="QtXmlPatterns" kind="inc" path="" system="true"/>
-<pathentry kind="src" path=""/>
-<pathentry kind="out" path=""/>
 </storageModule>
 </cconfiguration>
 </storageModule>
