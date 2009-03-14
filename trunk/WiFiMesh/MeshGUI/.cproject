@@ -121,30 +121,6 @@
 </storageModule>
 
 
-<storageModule moduleId="org.eclipse.cdt.core.pathentry">
-<pathentry base-path="D:/Qt/4.4.3/include" include="" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="phonon" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="Qt" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="Qt3Support" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtAssistant" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtCore" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtDBus" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtDesigner" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtGui" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtHelp" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtNetwork" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtOpenGL" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtScript" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtSql" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtSvg" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtTest" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtUiTools" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtWebKit" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtXml" kind="inc" path="" system="true"/>
-<pathentry base-path="D:/Qt/4.4.3/include" include="QtXmlPatterns" kind="inc" path="" system="true"/>
-<pathentry kind="src" path=""/>
-<pathentry kind="out" path=""/>
-</storageModule>
 <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 <buildTargets>
@@ -173,6 +149,32 @@
 <runAllBuilders>true</runAllBuilders>
 </target>
 </buildTargets>
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.pathentry">
+<pathentry base-path="D:/Qt/4.5.0/include" include="" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="ActiveQt" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="Phonon" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="Qt" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="Qt3Support" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtAssistant" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtCore" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtDBus" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtDesigner" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtGui" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtHelp" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtNetwork" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtOpenGL" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtScript" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtScriptTools" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtSql" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtSvg" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtTest" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtUiTools" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtWebKit" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtXml" kind="inc" path="" system="true"/>
+<pathentry base-path="D:/Qt/4.5.0/include" include="QtXmlPatterns" kind="inc" path="" system="true"/>
+<pathentry kind="src" path=""/>
+<pathentry kind="out" path=""/>
 </storageModule>
 </cconfiguration>
 </storageModule>

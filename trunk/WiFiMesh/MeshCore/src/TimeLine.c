@@ -78,8 +78,7 @@ EStatus TimeLineInit(TimeLine* pThis)
 	CLEAR(pThis);
 	INIT_PROPERTY(TimeLine, MaxDelta, pThis);
 	INIT_PROPERTY(TimeLine, SmoothenMode, pThis);
-	CHECK(SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL));
-	return TimeLineEvent(pThis, 0.0, NULL);
+	return SortedListNew(&pThis->pEvents, (ItemComparator)&TimeLineComparator, NULL);
 }
 
 EStatus TimeLineDestroy(TimeLine* pThis)
@@ -96,7 +95,13 @@ EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 {
 	Event* pEvent;
 	EStatus ret;
-	VALIDATE_ARGUMENTS(pThis && (time >= 0));
+	VALIDATE_ARGUMENTS(pThis && (time >= pThis->time));
+
+	// Don't create events in the past
+	if (pThis->time == time) return eSTATUS_COMMON_OK;
+
+	if (pThis->nextTime > time) pThis->nextTime = time;
+
 	pEvent = NEW(Event);
 
 	if (pThis->tracker.callback) pThis->tracker.callback(time, pPacket, TRUE, pThis->tracker.pArg);
@@ -156,11 +161,14 @@ EStatus TimeLineGetTime(const TimeLine* pThis, double* pTime)
 
 EStatus TimeLineClear(TimeLine* pThis)
 {
+    Event* pEvent;
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->time = 0;
 	pThis->nextTime = 0;
-    return eSTATUS_COMMON_OK;
+	pEvent = NEW(Event);
+	pEvent->time = 0;
+    return SortedListAdd(pThis->pEvents, pEvent, TRUE);
 }
 
 EStatus TimeLineGetLength(const TimeLine* pThis, double* pLength)
