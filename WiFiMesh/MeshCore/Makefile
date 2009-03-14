@@ -32,7 +32,7 @@ LDFLAGS_RELEASE =	"-Wl,-s,-x"
 
 
 AR =				ar
-CC =				gcc
+CC =				mingw32-gcc
 CFLAGS = 			$(CFLAGS_$(CONFIG)) -Wall -Werror -c -fmessage-length=0 -MMD -MP -o"$(__object)" "$(__source)" -MT"$(__dep)" -MF"$(__dep)"
 LDFLAGS = 			$(LDFLAGS_$(CONFIG)) $(LIBS) -o $(TARGET)
 LIBS =				-lMeshCore -L"$(OUTDIR)"
