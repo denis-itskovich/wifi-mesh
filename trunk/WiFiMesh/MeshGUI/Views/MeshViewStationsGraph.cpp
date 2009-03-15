@@ -136,7 +136,7 @@ void MeshViewStationsGraph::beginTransmit(const Station* pSrc, const Station* pD
 void MeshViewStationsGraph::endTransmit(const Station* pDst)
 {
     MeshViewStations::endTransmit(pDst);
-    assert(m_dstToLink.count(pDst) == 1);
+    // assert(m_dstToLink.count(pDst) == 1);
     if (!m_dstToLink.count(pDst)) return;
     MeshGraphItemLink* link = m_dstToLink.value(pDst);
     const Station* pSrc = m_srcToLink.key(link);

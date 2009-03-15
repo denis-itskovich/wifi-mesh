@@ -32,7 +32,7 @@ typedef struct _Event
 struct _TimeLine
 {
 	SortedList*    pEvents;
-	double         nextTime;
+//	double         nextTime;
 	double         time;
 	double         propMaxDelta;
 	Boolean        propSmoothenMode;
@@ -56,6 +56,16 @@ Comparison TimeLineComparator(const Event* pLeft, const Event* pRight, const voi
 {
 	return (pLeft->time < pRight->time) ? LESS :
 		   (pLeft->time > pRight->time) ? GREAT : EQUAL;
+}
+
+double TimeLineGetNextTime(TimeLine* pThis)
+{
+    ListEntry* pEntry;
+    Event* pEvent;
+    SortedListGetHead(pThis->pEvents, &pEntry);
+    if (!pEntry) return -1;
+    SortedListGetValue(pEntry, &pEvent);
+    return pEvent->time;
 }
 
 EStatus TimeLineNew(TimeLine** ppThis)
@@ -100,8 +110,6 @@ EStatus TimeLineEvent(TimeLine* pThis, double time, const Packet* pPacket)
 	// Don't create events in the past
 	if (pThis->time == time) return eSTATUS_COMMON_OK;
 
-	if (pThis->nextTime > time) pThis->nextTime = time;
-
 	pEvent = NEW(Event);
 
 	if (pThis->tracker.callback) pThis->tracker.callback(time, pPacket, TRUE, pThis->tracker.pArg);
@@ -126,32 +134,29 @@ EStatus TimeLineRelativeEvent(TimeLine* pThis, double timeDelta, const Packet* p
 EStatus TimeLineNext(TimeLine* pThis)
 {
 	Event* pEvent;
+	double nextTime = 0;
+
 	VALIDATE_ARGUMENTS(pThis);
 
-	if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta))
+	nextTime = TimeLineGetNextTime(pThis);
+	if (nextTime < 0) return eSTATUS_TIME_LINE_FINISHED;
+
+	if (pThis->propSmoothenMode && (pThis->time + pThis->propMaxDelta < nextTime))
 	{
 	    pThis->time += pThis->propMaxDelta;
 	    return eSTATUS_COMMON_OK;
 	}
 
-	if (pThis->time < pThis->nextTime)
+	if (pThis->time < nextTime)
 	{
-	    pThis->time = pThis->nextTime;
+	    pThis->time = nextTime;
 	    return eSTATUS_COMMON_OK;
 	}
 
-	SortedListPopFront(pThis->pEvents, &pEvent);
-    if (pEvent)
-    {
-        pThis->nextTime = pEvent->time;
+	CHECK(SortedListPopFront(pThis->pEvents, &pEvent));
+	DELETE(Event, pEvent);
 
-        if (pThis->propSmoothenMode && (pThis->nextTime - pThis->time > pThis->propMaxDelta)) pThis->time += pThis->propMaxDelta;
-        else pThis->time = pThis->nextTime;
-
-        DELETE(Event, pEvent);
-        return eSTATUS_COMMON_OK;
-    }
-    return eSTATUS_TIME_LINE_FINISHED;
+	return TimeLineNext(pThis);
 }
 
 EStatus TimeLineGetTime(const TimeLine* pThis, double* pTime)
@@ -165,10 +170,10 @@ EStatus TimeLineClear(TimeLine* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CHECK(SortedListCleanUp(pThis->pEvents, (ItemFilter)&TimeLineCleaner, pThis));
 	pThis->time = 0;
-	pThis->nextTime = 0;
 	pEvent = NEW(Event);
 	pEvent->time = 0;
-    return SortedListAdd(pThis->pEvents, pEvent, TRUE);
+    //return SortedListAdd(pThis->pEvents, pEvent, TRUE);
+	return eSTATUS_COMMON_OK;
 }
 
 EStatus TimeLineGetLength(const TimeLine* pThis, double* pLength)

@@ -5,7 +5,7 @@ Name "WiFi Mesh Simulator PRO"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0.15
+!define VERSION 1.0.16
 !define COMPANY "Denis Itskovich"
 !define URL ""
 
@@ -45,7 +45,7 @@ InstallDir "$PROGRAMFILES\WiFi Mesh Simulator PRO"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 1.0.15.0
+VIProductVersion 1.0.16.0
 VIAddVersionKey ProductName "WiFi Mesh Simulator PRO"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"

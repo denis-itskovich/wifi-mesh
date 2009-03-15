@@ -68,6 +68,7 @@ struct _Station
     Boolean         bTransmitting;
     unsigned        sequenceNum;
     int             freeBufferSize;
+    double          lastTime;
 
     struct
 	{
@@ -181,17 +182,21 @@ EStatus StationDestroy(Station* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDeliveredPacket)
+EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket)
 {
     Packet* pPacket;
     Boolean isActive;
     double time = 0;
+    double timeDelta = 0;
 
     VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
     *ppDeliveredPacket = NULL;
 
     CHECK(RoutingSynchronize(pThis->pRouting));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+
+    timeDelta = time - pThis->lastTime;
+    pThis->lastTime = time;
 
     pThis->curLocation.x += pThis->velocity.x * timeDelta;
     pThis->curLocation.y += pThis->velocity.y * timeDelta;
@@ -205,9 +210,16 @@ EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDelivere
             pThis->bTransmitting = FALSE;
             if (pThis->pInPacket)
             {
-                if (isActive) StationHandlePacket(pThis, pThis->pInPacket);
-                *ppDeliveredPacket = pThis->pInPacket;
-                pThis->pInPacket = NULL;
+                if (StationHandlePacket(pThis, pThis->pInPacket) == eSTATUS_COMMON_OK)
+                {
+                    *ppDeliveredPacket = pThis->pInPacket;
+                    pThis->pInPacket = NULL;
+                }
+
+                if (pThis->pInPacket)
+                {
+                    PacketDelete(&pThis->pInPacket);
+                }
             }
         }
 	}
@@ -436,12 +448,12 @@ EStatus StationSendPacket(Station* pThis, Packet* pPacket)
 	else CHECK(ListPushBack(pThis->pOutbox, pEntry));
 
 	// Don't check the result: it can fail if silentTime is in the past - just ignore this case
-	TimeLineEvent(pThis->pTimeLine, pThis->silentTime, pPacket);
+	// TimeLineEvent(pThis->pTimeLine, pThis->silentTime, pPacket);
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
+EStatus StationTransmitPacket(Station* pThis, Packet** ppPacket)
 {
     int size;
     double time;
@@ -474,7 +486,6 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket)
 EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
 {
     double time, receiveTime, silenceTime;
-    Boolean isEmpty;
 
     CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
     CHECK(SettingsGetTransmitTime(pThis->pSettings, pPacket, &receiveTime));
@@ -485,13 +496,7 @@ EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
 
     if (pThis->silentTime < silenceTime)
     {
-        // Don't schedule wake up on random silence time if there is nothing to transmit
-        CHECK(ListIsEmpty(pThis->pOutbox, &isEmpty));
-        if (!isEmpty)
-        {
-            CHECK(TimeLineEvent(pThis->pTimeLine, silenceTime, pPacket));
-        }
-
+        CHECK(TimeLineEvent(pThis->pTimeLine, silenceTime, pPacket));
         pThis->silentTime = silenceTime;
     }
 
@@ -513,7 +518,7 @@ EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
     return eSTATUS_COMMON_OK;
 }
 
-EStatus StationPutPacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket)
+EStatus StationReceivePacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket)
 {
     VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type < ePKT_TYPE_LAST));
 
@@ -522,21 +527,27 @@ EStatus StationPutPacket(Station* pThis, const Packet* pPacket, Packet** ppAbort
 
     if (!pThis->bBusy)
     {
-        if (StationIsAccepted(pThis, pPacket))
-        {
-            // ASSERT(pThis->pInPacket == NULL);
-            CHECK(PacketClone(&pThis->pInPacket, pPacket));
-        }
-        else
-        {
-            ret = eSTATUS_STATION_PACKET_NOT_ACCEPTED;
-        }
+        CHECK(PacketClone(&pThis->pInPacket, pPacket));
     }
     else
     {
-        *ppAbortedPacket = pThis->pInPacket;
-        pThis->pInPacket = NULL;
         ret = eSTATUS_STATION_PACKET_COLLISION;
+
+        if (pThis->pInPacket && StationIsAccepted(pThis, pThis->pInPacket))
+        {
+            *ppAbortedPacket = pThis->pInPacket;
+            pThis->pInPacket = NULL;
+        }
+
+        if (pThis->pInPacket)
+        {
+            PacketDelete(&pThis->pInPacket);
+        }
+    }
+
+    if (!StationIsAccepted(pThis, pPacket))
+    {
+        ret = eSTATUS_STATION_PACKET_NOT_ACCEPTED;
     }
 
     CHECK(StationUpdateTiming(pThis, pPacket));
@@ -553,7 +564,7 @@ EStatus StationHandlePacket(Station* pThis, const Packet* pPacket)
 		CHECK(RoutingHandlePacket(pThis->pRouting, pPacket));
 	}
 
-	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_COMMON_OK;
+	if (!StationIsAccepted(pThis, pPacket)) return eSTATUS_STATION_PACKET_NOT_ACCEPTED;
 
 	if (StationHandleLocals(pThis, pPacket) != eSTATUS_COMMON_OK)
 	{
@@ -723,6 +734,7 @@ EStatus StationReset(Station* pThis)
     pThis->receiveTime = -1;
     pThis->sequenceNum = 0;
     pThis->outboxHandler.event = ePKT_EVENT_REMOVED_CLEAN;
+    pThis->lastTime = 0;
 
     CHECK(RoutingClear(pThis->pRouting));
     CHECK(SchedulerReset(pThis->pScheduler));

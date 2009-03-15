@@ -210,7 +210,8 @@ void MeshViewStations::beginTransmit(const Station* pSrc, const Station* pDst, c
 
 void MeshViewStations::endTransmit(const Station* pDst)
 {
-    assert(m_transmits.count(pDst) != 0);
+    //assert(m_transmits.count(pDst) != 0);
+    if (m_transmits.count(pDst) == 0) return;
     const Station* pSrc = m_transmits.value(pDst);
     m_transmits.remove(pDst);
     MeshItemStation* item = findItem(pSrc);
