@@ -49,7 +49,6 @@ struct _Simulator
     Boolean         bDupBroadcast;
     Boolean         bUpdateRequired;
     double          lastUpdateTime;
-    double          timeDelta;
     int             activeStations;
 
 	struct
@@ -285,7 +284,7 @@ Boolean SimulatorSynchronizer(Station* pStation, Simulator* pThis)
 	StationIsActive(pStation, &isActive);
 	if (isActive)
 	{
-		StationSynchronize(pStation, pThis->timeDelta, &pDeliveredPacket);
+		StationSynchronize(pStation, &pDeliveredPacket);
 		StationIsActive(pStation, &isActive);
 		if (pDeliveredPacket)
         {
@@ -312,29 +311,24 @@ Boolean SimulatorDispatcher(Station* pStation, Simulator* pThis)
 
 EStatus SimulatorProcess(Simulator* pThis)
 {
-	double oldTime;
 	double curTime;
 
 	BEGIN_FUNCTION;
 
 	VALIDATE_ARGUMENTS(pThis);
 
-	if (!pThis->activeStations) return eSTATUS_TIME_LINE_FINISHED;
+	if (pThis->activeStations < 2) return eSTATUS_TIME_LINE_FINISHED;
 	pThis->activeStations = 0;
 
-    CHECK(TimeLineGetTime(pThis->pTimeLine, &oldTime));
-    CHECK(TimeLineNext(pThis->pTimeLine));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &curTime));
     pThis->bUpdateRequired = (curTime - pThis->lastUpdateTime > 0.01) ? TRUE : FALSE;
     if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
 
-    pThis->timeDelta = curTime - oldTime;
-
-    INFO_PRINT("Performing simulation step: [time delta: %.2f]", pThis->timeDelta);
-
     if (pThis->pPathLoss) CHECK(PathLossSynchronize(pThis->pPathLoss, curTime));
 	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
     CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
+
+    CHECK(TimeLineNext(pThis->pTimeLine));
 
     DUMP_INSTANCE(Simulator, pThis);
 
@@ -409,7 +403,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetId(pStation, &id));
-	CHECK(StationGetPacket(pStation, &pPacket));
+	CHECK(StationTransmitPacket(pStation, &pPacket));
 
 	if (!pPacket) return eSTATUS_COMMON_OK;
 
@@ -430,18 +424,20 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
                 CHECK(SimulatorAreAdjacent(pThis, pStation, pCurrent, &isAdjacent));
                 if (isAdjacent)
                 {
-                    ret = StationPutPacket(pCurrent, pPacket, &pAbortedPacket);
+                    ret = StationReceivePacket(pCurrent, pPacket, &pAbortedPacket);
+
+                    if (pAbortedPacket)
+                    {
+                        CHECK(SimulatorInvokeSniffer(pThis, pAbortedPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
+                        PacketDelete(&pAbortedPacket);
+                    }
+
                     switch (ret)
                     {
                     case eSTATUS_COMMON_OK:
                         CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
                         break;
                     case eSTATUS_STATION_PACKET_COLLISION:
-                        if (pAbortedPacket)
-                        {
-                            CHECK(SimulatorInvokeSniffer(pThis, pAbortedPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
-                            PacketDelete(&pAbortedPacket);
-                        }
                         CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_PENDING));
                         CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, pCurrent, ePKT_STATUS_COLLISION));
                         break;
@@ -450,6 +446,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
                     default:
                         return ret;
                     }
+
                 }
                 else
                 {
@@ -518,7 +515,7 @@ EStatus SimulatorReset(Simulator* pThis)
     CHECK(StatisticsReset(pThis->pStatistics));
     if (pThis->pPathLoss) CHECK(PathLossReset(pThis->pPathLoss));
 	pThis->lastUpdateTime = 0;
-	pThis->activeStations = -1;
+	pThis->activeStations = 2;
 	return eSTATUS_COMMON_OK;
 }
 

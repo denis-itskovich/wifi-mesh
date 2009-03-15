@@ -132,10 +132,9 @@ EStatus StationDestroy(Station* pThis);
 /** Synchronizes a station with current time
  * Moves the station
  * @param pThis [in] pointer to instance
- * @param timeDelta [in] time, passed since last update
  * @param ppDeliveredPacket [out] packet, that was recently delivered (if any)
  */
-EStatus StationSynchronize(Station* pThis, double timeDelta, Packet** ppDeliveredPacket);
+EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket);
 
 /** Sets a new station location
  * @param pThis [in] pointer to instance
@@ -165,7 +164,7 @@ EStatus StationSetId(Station* pThis, StationId id);
  * @param pThis [in] pointer to instance
  * @param ppPacket [out] pointer to packet will be stored at *ppPacket. NULL will be stored if no outgoing packets are available
  */
-EStatus StationGetPacket(Station* pThis, Packet** ppPacket);
+EStatus StationTransmitPacket(Station* pThis, Packet** ppPacket);
 
 /** Deliveries a packet
  * @param pThis [in] pointer to instance
@@ -175,7 +174,7 @@ EStatus StationGetPacket(Station* pThis, Packet** ppPacket);
  * @return eSTATUS_PACKET_COLLISION if the packet was not delivered due to collision
  * @return eSTATUS_COMMON_OK if the packet was handled
  */
-EStatus StationPutPacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket);
+EStatus StationReceivePacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket);
 
 /** Checks whether a station is adjacent to another one
  * @param pThis [in] pointer to instance
