@@ -49,6 +49,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 #define ROUND(val)								(long)((val) + 0.5)
 
+/** Adds random factor
+ * @param var variable
+ * @param factor maximum variance to var ratio
+ */
+#define VARIANCE(var, factor) var += ((double)rand() / (double)RAND_MAX * factor * var)
+
 /** Checks a condition and returns an error if a condition not satisfied
  * @param condition boolean expression
  * @param error error code to be returned
@@ -99,7 +105,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @param ptr pointer to allocated variable
  * @see NEW, NEW_ARRAY, DESTRUCT
  */
-#define DELETE(type, ptr)					      SAFE_OPERATION(free(ptr); --__counter_ ## type; ptr = NULL)
+#define DELETE(type, ptr)					      SAFE_OPERATION(if (ptr) {free(ptr); --__counter_ ## type; ptr = NULL; } )
 
 /** Checks return code and exits function if <b>not successful</b>
  * @param rc return code to be checked

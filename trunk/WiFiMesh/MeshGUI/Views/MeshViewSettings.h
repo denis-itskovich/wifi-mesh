@@ -52,11 +52,17 @@ private slots:
 	void setHeight(int height);
 	void setWidth(int width);
 
+	void setCoverage(double coverage);
+	void setMaxAttenuation(double atten);
+	void setAttenuationCoefficient(double coef);
+
 private:
 	void init();
 	int dataRate();
 
     QDoubleSpinBox*	    m_spinCoverage;
+    QDoubleSpinBox*     m_spinAttenuationCoefficient;
+    QDoubleSpinBox*     m_spinMaximumAttenuation;
     QDoubleSpinBox*     m_spinRouteExpTimeout;
     QDoubleSpinBox*     m_spinRouteRetryTimeout;
     QSpinBox*           m_spinRouteRetryThreshold;

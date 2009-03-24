@@ -160,6 +160,7 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 	pThis->velocity = velocity;
 	pThis->pSettings = pSettings;
 	pThis->pTimeLine = pTimeLine;
+	pThis->id = INVALID_STATION_ID;
 
 	CHECK(RoutingNew(&pThis->pRouting, pSettings, pTimeLine));
 	CHECK(ListNew(&pThis->pOutbox));
@@ -262,7 +263,11 @@ EStatus StationGetRetryTime(Station* pThis, PacketEntry* pEntry)
     // CHECK(SettingsGetTransmitTime(pThis->pSettings, pEntry->pPacket, &transmitTime));
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeout));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
-    pEntry->nextRetryTime = time + timeout + transmitTime;
+
+    timeout += transmitTime;
+    // VARIANCE(timeout, 0.1);
+
+    pEntry->nextRetryTime = time + timeout;
     return eSTATUS_COMMON_OK;
 }
 

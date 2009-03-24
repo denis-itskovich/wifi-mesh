@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Settings.h"
 #include "../inc/Macros.h"
 #include <stdlib.h>
+#include <math.h>
 
 int __counter_Settings = 0;
 
@@ -38,7 +39,8 @@ int __counter_Settings = 0;
 
 struct _Settings
 {
-	double     propCoverage;
+	double     propMaxAttenuation;
+	double     propAttenuationCoefficient;
 	unsigned   propDataRate;
 	double     propRouteExpirationTimeout;
 	double     propRouteRetryTimeout;
@@ -55,7 +57,6 @@ struct _Settings
 static const Size DEFAULT_WORLD_SIZE = {600, 400};
 
 SETTINGS_PROPERTY(WorldSize, Size, DEFAULT_WORLD_SIZE);
-SETTINGS_PROPERTY(Coverage, double, 100);
 SETTINGS_PROPERTY(DataRate, unsigned long, 65536);
 SETTINGS_PROPERTY(RouteExpirationTimeout, double, 20.0);
 SETTINGS_PROPERTY(RouteRetryTimeout, double, 2);
@@ -66,6 +67,9 @@ SETTINGS_PROPERTY(PacketRetryThreshold, int, 5);
 SETTINGS_PROPERTY(PacketHopsThreshold, int, 20);
 SETTINGS_PROPERTY(RelayBufferSize, int, 65536);
 SETTINGS_PROPERTY(MaxDuration, double, 60.0);
+// SETTINGS_PROPERTY(Coverage, double, 100);
+SETTINGS_PROPERTY(AttenuationCoefficient, double, 0.2);
+SETTINGS_PROPERTY(MaxAttenuation, double, 2000);
 
 EStatus SettingsNew(Settings** ppThis)
 {
@@ -82,7 +86,6 @@ EStatus SettingsInit(Settings* pThis)
 	VALIDATE_ARGUMENTS(pThis);
 	CLEAR(pThis);
 
-	SETTINGS_INIT(Coverage);
 	SETTINGS_INIT(DataRate);
 	SETTINGS_INIT(WorldSize);
 	SETTINGS_INIT(RouteExpirationTimeout);
@@ -94,6 +97,9 @@ EStatus SettingsInit(Settings* pThis)
 	SETTINGS_INIT(PacketHopsThreshold);
 	SETTINGS_INIT(RelayBufferSize);
     SETTINGS_INIT(MaxDuration);
+    // SETTINGS_INIT(Coverage);
+    SETTINGS_INIT(AttenuationCoefficient);
+    SETTINGS_INIT(MaxAttenuation);
 
 	return eSTATUS_COMMON_OK;
 }
@@ -102,6 +108,13 @@ EStatus SettingsDestroy(Settings* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
 	return eSTATUS_COMMON_OK;
+}
+
+EStatus SettingsGetCoverage(const Settings* pThis, double* pCoverage)
+{
+    VALIDATE_ARGUMENTS(pThis && pCoverage);
+    *pCoverage = sqrt(pThis->propMaxAttenuation / pThis->propAttenuationCoefficient);
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus SettingsGetTransmitTime(const Settings* pThis, const Packet* pPacket, double* pTime)

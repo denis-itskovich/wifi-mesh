@@ -52,7 +52,6 @@ MeshDocument::MeshDocument() :
 	m_avgDataSize(65536),
 	m_avgMsgCount(100),
 	m_avgVelocity(30.0),
-	m_duration(60),
 	m_isRunning(false),
 	m_isPaused(false),
 	m_timerId(0),
@@ -77,8 +76,10 @@ MeshDocument::~MeshDocument()
 	CHECK(SettingsDelete(&m_pSettings));
 }
 
-int     MeshDocument::dataRate() const { return getMemberValue(m_pSettings, &SettingsGetDataRate); }
 double  MeshDocument::coverage() const { return getMemberValue(m_pSettings, &SettingsGetCoverage); }
+double  MeshDocument::maxAttenuation() const { return getMemberValue(m_pSettings, &SettingsGetMaxAttenuation); }
+double  MeshDocument::attenuationCoefficient() const { return getMemberValue(m_pSettings, &SettingsGetAttenuationCoefficient); }
+int     MeshDocument::dataRate() const { return getMemberValue(m_pSettings, &SettingsGetDataRate); }
 bool    MeshDocument::smoothenMode() const { return getMemberValue(m_pTimeLine, &TimeLineGetSmoothenMode); }
 Size    MeshDocument::worldSize() const {	return getMemberValue(m_pSettings, &SettingsGetWorldSize); }
 double  MeshDocument::time() const { return getMemberValue(m_pTimeLine, &TimeLineGetTime); }
@@ -91,9 +92,12 @@ double  MeshDocument::routeExpirationTimeout() const { return getMemberValue(m_p
 double  MeshDocument::routeRetryTimeout() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryTimeout); }
 int     MeshDocument::routeRetryThreshold() const { return getMemberValue(m_pSettings, &SettingsGetRouteRetryThreshold); }
 int     MeshDocument::routingTableSize() const { return getMemberValue(m_pSettings, &SettingsGetRoutingTableSize); }
+double  MeshDocument::duration() const { return getMemberValue(m_pSettings, &SettingsGetMaxDuration); }
 
+// void    MeshDocument::setCoverage(double coverage) { setMemberValue(m_pSettings, &SettingsSetCoverage, coverage); }
+void    MeshDocument::setMaxAttenuation(double atten) { setMemberValue(m_pSettings, &SettingsSetMaxAttenuation, atten); }
+void    MeshDocument::setAttenuationCoefficient(double coef) { setMemberValue(m_pSettings, &SettingsSetAttenuationCoefficient, coef); }
 void    MeshDocument::setDataRate(int rate) { setMemberValue(m_pSettings, &SettingsSetDataRate, (unsigned long)rate); }
-void    MeshDocument::setCoverage(double coverage) { setMemberValue(m_pSettings, &SettingsSetCoverage, coverage); }
 void    MeshDocument::setSmoothenMode(bool isEnabled) { setMemberValue(m_pTimeLine, &TimeLineSetSmoothenMode, (Boolean)isEnabled); }
 void    MeshDocument::setWorldSize(Size size) { setMemberValue(m_pSettings, &SettingsSetWorldSize, size); emit worldSizeChanged(); }
 void    MeshDocument::setPacketRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetPacketRetryTimeout, timeout); }
@@ -104,20 +108,19 @@ void    MeshDocument::setRouteExpirationTimeout(double timeout) { setMemberValue
 void    MeshDocument::setRouteRetryTimeout(double timeout) { setMemberValue(m_pSettings, &SettingsSetRouteRetryTimeout, timeout); }
 void    MeshDocument::setRouteRetryThreshold(int threshold) { setMemberValue(m_pSettings, &SettingsSetRouteRetryThreshold, threshold); }
 void    MeshDocument::setRoutingTableSize(int size) { setMemberValue(m_pSettings, &SettingsSetRoutingTableSize, size); }
+void    MeshDocument::setDuration(double duration) { setMemberValue(m_pSettings, &SettingsSetMaxDuration, duration); }
 
 int     MeshDocument::randomSeed() const { return m_seed; }
 int     MeshDocument::stationCount() const { return m_stationsCount; }
 int     MeshDocument::avgPacketCount() const { return m_avgMsgCount; }
 int     MeshDocument::avgDataSize() const { return m_avgDataSize; }
 double  MeshDocument::avgVelocity() const { return m_avgVelocity; }
-double  MeshDocument::duration() const { return m_duration; }
 
 void    MeshDocument::setRandomSeed(int seed) { m_seed = seed; }
 void    MeshDocument::setStationCount(int count) { m_stationsCount = count; }
 void    MeshDocument::setAvgDataSize(int dataSize) { m_avgDataSize = dataSize; }
 void    MeshDocument::setAvgVelocity(double avgVelocity) { m_avgVelocity = avgVelocity; }
 void    MeshDocument::setAvgPacketCount(int avgMsgCount) { m_avgMsgCount = avgMsgCount; }
-void    MeshDocument::setDuration(double duration) { m_duration = duration; }
 
 Station*    MeshDocument::currentStation() const { return m_pCurStation; }
 
@@ -245,7 +248,7 @@ void MeshDocument::generatePackets()
         CHECK(StationGetId(m_stations[dstIdx], &dst));
 
         int dataSize = rand(m_avgDataSize * stationsCount * 2 / msgCount + 1);
-        double time = rand(m_duration);
+        double time = rand(duration());
 
         addPacket(m_stations[srcIdx], time, dst, dataSize);
     }
@@ -367,7 +370,7 @@ void MeshDocument::viewsAttached()
 void MeshDocument::importFromFile(const QString& filename)
 {
     clear();
-    EStatus res = SimulatorImport(m_pSimulator, filename.toLatin1(), NULL);
+    EStatus res = SimulatorImport(m_pSimulator, filename.toAscii());
     CHECK(res);
     emit updateViews();
 }
@@ -500,4 +503,12 @@ void MeshDocument::schedulerHandler(	const Station* pStation,
 void MeshDocument::timerEvent(QTimerEvent*)
 {
 	step();
+}
+
+void MeshDocument::setPathLoss(const QString& filename)
+{
+    const char* pathloss = NULL;
+    if (!filename.isEmpty()) pathloss = filename.toAscii();
+
+    CHECK(SimulatorSetPathLoss(m_pSimulator, pathloss));
 }

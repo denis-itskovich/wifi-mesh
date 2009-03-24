@@ -137,6 +137,8 @@ EStatus PathLossInit(PathLoss* pThis, int count, double maxAttenuation, const ch
     VALIDATE_ARGUMENTS(pThis && filename);
     CLEAR(pThis);
 
+    if (count < 0) return eSTATUS_COMMON_INVALID_ARGUMENT;
+
     file = fopen(filename, "r");
     if (!file) return eSTATUS_SIMULATOR_FILE_OPEN_FAILURE;
 
@@ -157,6 +159,8 @@ EStatus PathLossDestroy(PathLoss* pThis)
 {
     PathLossEntry* pEntry;
     VALIDATE_ARGUMENTS(pThis);
+
+    if (!pThis->pEntries) return eSTATUS_COMMON_OK;
 
     do
     {

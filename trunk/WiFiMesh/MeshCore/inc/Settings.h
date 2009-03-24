@@ -56,11 +56,11 @@ EStatus SettingsInit(Settings* pThis);
  */
 EStatus SettingsDestroy(Settings* pThis);
 
-/** Sets coverage
- * @param pThis [in] pointer to instance
- * @param coverage [in] new coverage radius
- */
-EStatus SettingsSetCoverage(Settings* pThis, double coverage);
+///** Sets coverage
+// * @param pThis [in] pointer to instance
+// * @param coverage [in] new coverage radius
+// */
+//EStatus SettingsSetCoverage(Settings* pThis, double coverage);
 
 /** Retrieves coverage
  * @param pThis [in] pointer to instance
@@ -199,6 +199,30 @@ EStatus SettingsSetMaxDuration(Settings* pThis, double duration);
  * @param pDuration [out] duration will be stored at *pDuration
  */
 EStatus SettingsGetMaxDuration(const Settings* pThis, double* pDuration);
+
+/** Sets attenuation coefficient
+ * @param pThis [in] pointer to instance
+ * @param coef [in] attenuation coefficient
+ */
+EStatus SettingsSetAttenuationCoefficient(Settings* pThis, double coef);
+
+/** Retrieves attenuation coefficient
+ * @param pThis [in] pointer to instance
+ * @param pCoef [out] coefficient will be stored at *pCoef
+ */
+EStatus SettingsGetAttenuationCoefficient(const Settings* pThis, double* pCoef);
+
+/** Sets maximum attenuation
+ * @param pThis [in] pointer to instance
+ * @param atten [in] maximum attenuation
+ */
+EStatus SettingsSetMaxAttenuation(Settings* pThis, double atten);
+
+/** Retrieves maximum attenuation
+ * @param pThis [in] pointer to instance
+ * @param pAtten [out] maximum attenuation will be stored at *pAtten
+ */
+EStatus SettingsGetMaxAttenuation(const Settings* pThis, double* pAtten);
 
 /** Calculates transmit time for given packet
  * @param pThis [in] pointer to instance

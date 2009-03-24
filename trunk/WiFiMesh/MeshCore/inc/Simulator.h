@@ -192,14 +192,19 @@ EStatus SimulatorDump(const Simulator* pThis);
 /** Imports a simulation from the file
  * @param pThis [in] pointer to instance
  * @param filename [in] filename to import
- * @param pathloss [in] path loss file name (NULL if not applied)
  */
-EStatus SimulatorImport(Simulator* pThis, const char* filename, const char* pathloss);
+EStatus SimulatorImport(Simulator* pThis, const char* filename);
 
 /** Exports a simulator into the file
  * @param pThis [in] pointer to instance
  * @param filename [in] export filename
  */
 EStatus SimulatorExport(Simulator* pThis, const char* filename);
+
+/** Sets path loss
+ * @param pThis [in] pointer to instance
+ * @param filename [in] path loss filename
+ */
+EStatus SimulatorSetPathLoss(Simulator* pThis, const char* filename);
 
 #endif /* WIFI_MESH_SIMULATOR_H_ */

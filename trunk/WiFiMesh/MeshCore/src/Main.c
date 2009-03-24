@@ -126,8 +126,9 @@ int Simulate(const char* inputfile, const char* pathloss, const char* logname)
     Check(SimulatorNew(&pSimulator, pSettings, pTimeLine));
     Check(SimulatorSetPacketSniffer(pSimulator, (PacketSniffer)&Sniffer, logFile));
     Check(TimeLineSetSmoothenMode(pTimeLine, FALSE));
+    Check(SimulatorImport(pSimulator, inputfile));
+    Check(SimulatorSetPathLoss(pSimulator, pathloss));
 
-    Check(SimulatorImport(pSimulator, inputfile, pathloss));
     Check(SettingsGetMaxDuration(pSettings, &maxDuration));
     Check(SimulatorReset(pSimulator));
 

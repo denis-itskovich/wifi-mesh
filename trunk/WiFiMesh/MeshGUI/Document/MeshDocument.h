@@ -40,8 +40,11 @@ public:
 
     Station* currentStation() const;
 
-    int     dataRate() const;
     double  coverage() const;
+    double  maxAttenuation() const;
+    double  attenuationCoefficient() const;
+
+    int     dataRate() const;
     bool    smoothenMode() const;
     Size    worldSize() const;
     double  duration() const;
@@ -68,8 +71,12 @@ public:
     double  simulationDuration() const;
 
 public slots:
-	void setDataRate(int dataRate);
-	void setCoverage(double coverage);
+	// void setCoverage(double coverage);
+	void setMaxAttenuation(double atten);
+    void setAttenuationCoefficient(double coef);
+    void setPathLoss(const QString& filename);
+
+    void setDataRate(int dataRate);
 	void setSmoothenMode(bool isEnabled);
 	void setWorldSize(Size size);
 	void setDuration(double duration);
