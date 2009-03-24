@@ -38,6 +38,10 @@ public:
 
 	virtual void setDocument(MeshDocument* document);
 
+private slots:
+    void setPathLoss(const QString& filename);
+    void browse();
+
 private:
 	void init();
 	void updateView();
@@ -48,6 +52,9 @@ private:
     QSpinBox*           m_spinAvgDataSize;
     QSpinBox*           m_spinAvgPacketCount;
     QDoubleSpinBox*     m_spinDuration;
+    QLineEdit*          m_editPathLossFile;
+    QAbstractButton*    m_buttonBrowse;
+    QLabel*             m_labelFlag;
 
     QPushButton*        m_buttonGenerateWorld;
     QPushButton*        m_buttonGeneratePackets;

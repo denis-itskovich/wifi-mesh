@@ -62,8 +62,23 @@ void MeshViewRandomizer::init()
 	m_spinDuration->setDecimals(1);
 	m_spinDuration->setSuffix(tr(" [sec]"));
 
+	m_editPathLossFile = new QLineEdit;
+    connect(m_editPathLossFile, SIGNAL(textChanged(const QString&)), this, SLOT(setPathLoss(const QString&)));
+
+    m_buttonBrowse = new QToolButton;
+    m_buttonBrowse->setText(tr("..."));
+	connect(m_buttonBrowse, SIGNAL(clicked()), this, SLOT(browse()));
+
+	m_labelFlag = new QLabel(tr("<font color=\"red\"><b>!</b></font>"));
+	m_labelFlag->hide();
+
 	m_buttonGenerateWorld = new QPushButton(QIcon(":/generate.png"), tr("Generate world"));
 	m_buttonGeneratePackets = new QPushButton(QIcon(":/packet.png"), tr("Generate packets only"));
+
+	QHBoxLayout* pathLossLayout = new QHBoxLayout;
+    pathLossLayout->addWidget(m_labelFlag, 0);
+	pathLossLayout->addWidget(m_editPathLossFile, 99);
+	pathLossLayout->addWidget(m_buttonBrowse, 0);
 
 	QFormLayout* mainLayout = new QFormLayout;
 
@@ -77,8 +92,12 @@ void MeshViewRandomizer::init()
 	QGroupBox* group = new QGroupBox("Randomization parameters");
 	group->setLayout(mainLayout);
 
+	QGroupBox* pathLossGroup = new QGroupBox("Path loss file");
+	pathLossGroup->setLayout(pathLossLayout);
+
 	QVBoxLayout* layout = new QVBoxLayout;
 	layout->addWidget(group);
+	layout->addWidget(pathLossGroup);
 	layout->addStretch();
 
 //	layout->addWidget(m_buttonGenerateWorld);
@@ -92,6 +111,11 @@ void MeshViewRandomizer::init()
 	layout->addItem(buttonLayout);
 
 	setLayout(layout);
+}
+
+void MeshViewRandomizer::browse()
+{
+    m_editPathLossFile->setText(QFileDialog::getOpenFileName(NULL, tr("Open path loss file"), m_editPathLossFile->text(), tr("Text files (*.txt);;All files (*.*)")));
 }
 
 void MeshViewRandomizer::setDocument(MeshDocument* doc)
@@ -111,6 +135,21 @@ void MeshViewRandomizer::setDocument(MeshDocument* doc)
 	connect(doc, SIGNAL(simulationStopped()), this, SLOT(enable()));
 
 	MeshView::setDocument(doc);
+}
+
+void MeshViewRandomizer::setPathLoss(const QString& filename)
+{
+    try
+    {
+        document()->setPathLoss(filename);
+        m_labelFlag->hide();
+    }
+    catch (MeshException* e)
+    {
+        m_labelFlag->setToolTip(e->what());
+        m_labelFlag->show();
+        delete e;
+    }
 }
 
 void MeshViewRandomizer::updateView()

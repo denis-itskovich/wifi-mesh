@@ -60,7 +60,6 @@ typedef struct _Packet
         StationId       transitDstId;               ///< Transit destination id
         unsigned        hopsCount;                  ///< Transit nodes counts
         unsigned        sequenceNum;                ///< Packet sequence number
-        unsigned        timeToLive;                 ///< Maximum hops count to live
     }                   header;                     ///< Packet header
     //---------------------------------------------------------------------------
     struct _PacketPayload

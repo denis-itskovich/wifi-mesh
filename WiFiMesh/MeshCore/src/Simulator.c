@@ -82,6 +82,8 @@ struct _Simulator
     } outboxHandler;
 };
 
+EStatus SimulatorAddId(Simulator* pThis, StationId id);
+
 /** Looks for a station with specified id
  * @param pThis [in] pointer to instance
  * @param id [in] station id to look for
@@ -233,8 +235,14 @@ EStatus SimulatorDestroy(Simulator* pThis)
 
 EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 {
+    StationId id;
 	VALIDATE_ARGUMENTS(pThis && pStation);
-	CHECK(StationSetId(pStation, SimulatorAssignId(pThis)));
+	CHECK(StationGetId(pStation, &id));
+
+	if (id == INVALID_STATION_ID) id = SimulatorAssignId(pThis);
+	else SimulatorAddId(pThis, id);
+
+	CHECK(StationSetId(pStation, id));
 	SimulatorInvokeTracker(pThis, pStation, eSTATION_ADDED);
 	return ListPushBack(pThis->pStations, pStation);
 }
@@ -536,6 +544,13 @@ EStatus SimulatorEnumerateStations(Simulator* pThis, StationsEnumerator enumerat
 	return ListEnumerate(pThis->pStations, (ItemEnumerator)enumerator, pUserArg);
 }
 
+EStatus SimulatorAddId(Simulator* pThis, StationId id)
+{
+    if (pThis->minId > id) pThis->minId = id;
+    if (pThis->maxId < id) pThis->maxId = id;
+    return eSTATUS_COMMON_OK;
+}
+
 StationId SimulatorAssignId(Simulator* pThis)
 {
 	if (pThis->minId > 0) return --pThis->minId;
@@ -616,7 +631,6 @@ void SimulatorOutboxHandler(const Station* pStation,
     }
 }
 
-
 Boolean SimulatorDumpStation(const Station* pStation, void* pArg)
 {
     DUMP_INSTANCE(Station, pStation);
@@ -630,34 +644,24 @@ EStatus SimulatorDump(const Simulator* pThis)
     return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorImport(Simulator* pThis, const char* filename, const char* pathloss)
+EStatus SimulatorImport(Simulator* pThis, const char* filename)
 {
     FILE* file;
 
-    int routingProtocol;
-    int dataLinkProtocol;
-    int bufferRouting;
-    double attenuationConst;
-    double maxAttenuation;
-    Size worldSize;
-    int stationsCount;
-    int dataRate;
-    int bufferSize;
-    int ctrlMessagesPriority;
-    double crcProbability;
-    double timeUntilReply;
-    int routingTableSize;
-    double routeEntryTimeout;
-    int searchRetries;
-    int routingTablePolicy;
-    int maxEntriesToSameHost;
-    double beaconSendInterval;
-    double neighborsListSendTime;
-    double tdmaSlotSize;
-    int tdmaSlotsNumber;
-    int connectionAttempts;
-    double simulationSamplingRate;
-    double simulationTimeout;
+    double  attenuationConst;
+    double  maxAttenuation;
+    Size    worldSize;
+    int     stationsCount;
+    int     dataRate;
+    int     bufferSize;
+    int     routingTableSize;
+    double  routeExpirationTimeout;
+    int     routeRetryThreshold;
+    double  routeRetryTimeout;
+    int     packetHopsThreshold;
+    int     packetRetryThreshold;
+    double  packetRetryTimeout;
+    double  simulationTimeout;
 
     int i;
     double angle, vel;
@@ -665,64 +669,58 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename, const char* path
     Velocity v;
     Station* pStation;
 
-    int src, dst;
+    int id, src, dst;
     int pktId;
     double time;
     int size;
-    int hopsCount;
     Packet* pPacket;
 
     VALIDATE_ARGUMENTS(pThis && filename);
 
     file = fopen(filename, "r");
     VALIDATE(file, eSTATUS_SIMULATOR_FILE_OPEN_FAILURE);
-    VALIDATE(fscanf(file, "%d %d %d", &routingProtocol, &dataLinkProtocol, &bufferRouting) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%lf %lf %d %lf %lf", &worldSize.x, &worldSize.y, &stationsCount, &maxAttenuation, &attenuationConst) == 5, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%d %d %d %lf", &dataRate, &bufferSize, &ctrlMessagesPriority, &crcProbability) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%lf %d %lf", &timeUntilReply, &routingTableSize, &routeEntryTimeout) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%d %d %d", &searchRetries, &routingTablePolicy, &maxEntriesToSameHost) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%lf %lf %lf %d", &beaconSendInterval, &neighborsListSendTime, &tdmaSlotSize, &tdmaSlotsNumber) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
-    VALIDATE(fscanf(file, "%d %lf %lf", &connectionAttempts, &simulationSamplingRate, &simulationTimeout) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%lf %lf %d", &worldSize.x, &worldSize.y, &stationsCount) == 3, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%lf %lf %d %d", &maxAttenuation, &attenuationConst, &dataRate, &bufferSize) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%d %lf %d %lf", &routingTableSize, &routeExpirationTimeout, &routeRetryThreshold, &routeRetryTimeout) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+    VALIDATE(fscanf(file, "%d %d %lf %lf", &packetHopsThreshold, &packetRetryThreshold, &packetRetryTimeout, &simulationTimeout) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
 
+    CHECK(SettingsSetMaxAttenuation(pThis->pSettings, maxAttenuation));
+    CHECK(SettingsSetAttenuationCoefficient(pThis->pSettings, attenuationConst));
     CHECK(SettingsSetDataRate(pThis->pSettings, dataRate * 1024));
     CHECK(SettingsSetWorldSize(pThis->pSettings, worldSize));
-    CHECK(SettingsSetCoverage(pThis->pSettings, sqrt(maxAttenuation/attenuationConst)));
-    CHECK(SettingsSetPacketRetryTimeout(pThis->pSettings, timeUntilReply));
-    CHECK(SettingsSetRouteExpirationTimeout(pThis->pSettings, routeEntryTimeout));
     CHECK(SettingsSetMaxDuration(pThis->pSettings, simulationTimeout));
-    CHECK(SettingsSetRoutingTableSize(pThis->pSettings, routingTableSize));
     CHECK(SettingsSetRelayBufferSize(pThis->pSettings, bufferSize));
+    CHECK(SettingsSetRoutingTableSize(pThis->pSettings, routingTableSize));
+    CHECK(SettingsSetRouteExpirationTimeout(pThis->pSettings, routeExpirationTimeout));
+    CHECK(SettingsSetRouteRetryThreshold(pThis->pSettings, routeRetryThreshold));
+    CHECK(SettingsSetRouteRetryTimeout(pThis->pSettings, routeRetryTimeout));
+    CHECK(SettingsSetPacketHopsThreshold(pThis->pSettings, packetHopsThreshold));
+    CHECK(SettingsSetPacketRetryThreshold(pThis->pSettings, packetRetryThreshold));
+    CHECK(SettingsSetPacketRetryTimeout(pThis->pSettings, packetRetryTimeout));
 
     for (i = 0; i < stationsCount; ++i)
     {
-        VALIDATE(fscanf(file, "%lf %lf %lf %lf", &l.x, &l.y, &angle, &vel) == 4, eSTATUS_SIMULATOR_FILE_CORRUPTED);
+        VALIDATE(fscanf(file, "%d %lf %lf %lf %lf", &id, &l.x, &l.y, &angle, &vel) == 5, eSTATUS_SIMULATOR_FILE_CORRUPTED);
         angle = angle / 180 * PI;
         l.x -= worldSize.x / 2.0;
         l.y -= worldSize.y / 2.0;
         v.x = vel * cos(angle);
         v.y = -vel * sin(angle);
         CHECK(StationNew(&pStation, v, l, pThis->pTimeLine, pThis->pSettings));
+        CHECK(StationSetId(pStation, id));
         CHECK(SimulatorAddStation(pThis, pStation));
     }
 
     while (!feof(file))
     {
-        if (fscanf(file, "%d %d %d %lf %d %d", &pktId, &src, &dst, &time, &size, &hopsCount) < 6) break;
-        ++src, ++dst;
+        if (fscanf(file, "%d %d %d %lf %d", &pktId, &src, &dst, &time, &size) < 5) break;
 
         CHECK(PacketNewData(&pPacket, (StationId)src, (StationId)dst, (unsigned long)size, pktId));
-        pPacket->header.timeToLive = hopsCount;
-
         CHECK(SimulatorGetStation(pThis, src, &pStation));
         CHECK(StationSchedulePacket(pStation, pPacket, time));
     }
 
     fclose(file);
-
-    if (pathloss)
-    {
-        CHECK(PathLossNew(&pThis->pPathLoss, stationsCount, maxAttenuation, pathloss));
-    }
 
     return eSTATUS_COMMON_OK;
 }
@@ -731,44 +729,27 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
 {
     FILE* file;
 
-    int routingProtocol = 0;
-    int dataLinkProtocol = 0;
-    int bufferRouting = 0;
-    double attenuationConst = 1;
-    double maxAttenuation = 0;
-    Size worldSize = {0};
-    int stationsCount = 0;
-    unsigned long dataRate = 0;
-    int bufferSize = 0;
-    int ctrlMessagesPriority = 0;
-    double crcProbability = 0;
-    double timeUntilReply = 0;
-    int routingTableSize = 0;
-    double routeEntryTimeout = 0;
-    int searchRetries = 0;
-    int routingTablePolicy = 3;
-    int maxEntriesToSameHost = 0;
-    double beaconSendInterval = 0;
-    double neighborsListSendTime = 0;
-    double tdmaSlotSize = 0;
-    int tdmaSlotsNumber = 0;
-    int connectionAttempts = 0;
-    double simulationSamplingRate = 0;
-    double simulationTimeout = 0;
-    double coverage = 0;
+    double          attenuationConst = 0;
+    double          maxAttenuation = 0;
+    Size            worldSize = {0};
+    int             stationsCount = 0;
+    unsigned long   dataRate = 0;
+    int             bufferSize = 0;
+    int             routingTableSize = 0;
+    double          routeExpirationTimeout = 0;
+    int             routeRetryThreshold = 0;
+    double          routeRetryTimeout = 0;
+    int             packetHopsThreshold = 0;
+    int             packetRetryThreshold = 0;
+    double          packetRetryTimeout = 0;
+    double          simulationTimeout = 0;
 
-//    int i = 0;
     double angle = 0, vel = 0;
     Location l = {0};
     Velocity v = {0};
     Station* pStation = NULL;
+    StationId id;
 
-//    StationId src = 0, dst = 0;
-//    int pktId = 0;
-//    double time = 0;
-//    int size = 0;
-//    int hopsCount = 0;
-//    Packet* pPacket = NULL;
     ListEntry* pEntry;
 
     VALIDATE_ARGUMENTS(pThis && filename);
@@ -776,26 +757,26 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     file = fopen(filename, "w");
     VALIDATE(file, eSTATUS_SIMULATOR_FILE_OPEN_FAILURE);
 
+    CHECK(SettingsGetMaxAttenuation(pThis->pSettings, &maxAttenuation));
+    CHECK(SettingsGetAttenuationCoefficient(pThis->pSettings, &attenuationConst));
     CHECK(SettingsGetDataRate(pThis->pSettings, &dataRate));
     CHECK(SettingsGetWorldSize(pThis->pSettings, &worldSize));
-    CHECK(SettingsGetCoverage(pThis->pSettings, &coverage));
-    CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &timeUntilReply));
-    CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeEntryTimeout));
     CHECK(SettingsGetMaxDuration(pThis->pSettings, &simulationTimeout));
-    CHECK(SettingsGetRoutingTableSize(pThis->pSettings, &routingTableSize));
     CHECK(SettingsGetRelayBufferSize(pThis->pSettings, &bufferSize));
+    CHECK(SettingsGetRoutingTableSize(pThis->pSettings, &routingTableSize));
+    CHECK(SettingsGetRouteExpirationTimeout(pThis->pSettings, &routeExpirationTimeout));
+    CHECK(SettingsGetRouteRetryThreshold(pThis->pSettings, &routeRetryThreshold));
+    CHECK(SettingsGetRouteRetryTimeout(pThis->pSettings, &routeRetryTimeout));
+    CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &packetHopsThreshold));
+    CHECK(SettingsGetPacketRetryThreshold(pThis->pSettings, &packetRetryThreshold));
+    CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &packetRetryTimeout));
 
     CHECK(ListGetCount(pThis->pStations, &stationsCount));
 
-    maxAttenuation = pow(coverage, 2);
-
-    fprintf(file, "%d %d %d\n", routingProtocol, dataLinkProtocol, bufferRouting);
-    fprintf(file, "%d %d %d %lf %lf\n", (int)worldSize.x, (int)worldSize.y, stationsCount, maxAttenuation, attenuationConst);
-    fprintf(file, "%d %d %d %lf\n", (int)dataRate / 1024, bufferSize, ctrlMessagesPriority, crcProbability);
-    fprintf(file, "%lf %d %lf ", timeUntilReply, routingTableSize, routeEntryTimeout);
-    fprintf(file, "%d %d %d\n", searchRetries, routingTablePolicy, maxEntriesToSameHost);
-    fprintf(file, "%lf %lf %lf %d\n", beaconSendInterval, neighborsListSendTime, tdmaSlotSize, tdmaSlotsNumber);
-    fprintf(file, "%d %lf %lf\n", connectionAttempts, simulationSamplingRate, simulationTimeout);
+    fprintf(file, "%lf %lf %d\n", worldSize.x, worldSize.y, stationsCount);
+    fprintf(file, "%lf %lf %d %d\n", maxAttenuation, attenuationConst, (int)dataRate / 1024, bufferSize);
+    fprintf(file, "%d %lf %d %lf", routingTableSize, routeExpirationTimeout, routeRetryThreshold, routeRetryTimeout);
+    fprintf(file, "%d %d %lf %lf", packetHopsThreshold, packetRetryThreshold, packetRetryTimeout, simulationTimeout);
 
     fprintf(file, "\n\n");
 
@@ -805,6 +786,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
         CHECK(ListGetValue(pEntry, &pStation));
         CHECK(StationGetLocation(pStation, &l));
         CHECK(StationGetVelocity(pStation, &v));
+        CHECK(StationGetId(pStation, &id));
 
         vel = sqrt(pow(v.x, 2) + pow(v.y, 2));
 
@@ -818,7 +800,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
 
         l.x += worldSize.x / 2;
         l.y += worldSize.y / 2;
-        fprintf(file, "%d %d %lf %lf\n", (int)l.x, (int)l.y, angle, vel);
+        fprintf(file, "%d %d %d %lf %lf\n", (int)id, (int)l.x, (int)l.y, angle, vel);
         CHECK(ListGetNext(&pEntry));
     }
 
@@ -833,6 +815,29 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     }
 
     fclose(file);
+
+    return eSTATUS_COMMON_OK;
+}
+
+EStatus SimulatorSetPathLoss(Simulator* pThis, const char* filename)
+{
+    double maxAttenuation;
+    int count;
+
+    VALIDATE_ARGUMENTS(pThis);
+
+    if (pThis->pPathLoss) CHECK(PathLossDelete(&pThis->pPathLoss));
+    if (!filename) return eSTATUS_COMMON_OK;
+
+    CHECK(SettingsGetMaxAttenuation(pThis->pSettings, &maxAttenuation));
+    CHECK(ListGetCount(pThis->pStations, &count));
+    EStatus ret = PathLossNew(&pThis->pPathLoss, count, maxAttenuation, filename);
+
+    if (ret != eSTATUS_COMMON_OK)
+    {
+        CHECK(PathLossDelete(&pThis->pPathLoss));
+        return ret;
+    }
 
     return eSTATUS_COMMON_OK;
 }

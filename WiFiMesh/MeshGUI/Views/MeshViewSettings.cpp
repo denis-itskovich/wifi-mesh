@@ -46,6 +46,17 @@ void MeshViewSettings::init()
 	m_spinCoverage->setSingleStep(1);
 	m_spinCoverage->setRange(0.01, 1000);
 	m_spinCoverage->setSuffix(" [m]");
+	connect(m_spinCoverage, SIGNAL(valueChanged(double)), this, SLOT(setCoverage(double)));
+
+	m_spinMaximumAttenuation = new QDoubleSpinBox;
+	m_spinMaximumAttenuation->setSingleStep(1);
+	m_spinMaximumAttenuation->setSuffix(" [dB]");
+	connect(m_spinMaximumAttenuation, SIGNAL(valueChanged(double)), this, SLOT(setMaxAttenuation(double)));
+
+	m_spinAttenuationCoefficient = new QDoubleSpinBox;
+	m_spinAttenuationCoefficient->setSingleStep(1);
+	m_spinAttenuationCoefficient->setRange(0.01, 1000);
+	connect(m_spinAttenuationCoefficient, SIGNAL(valueChanged(double)), this, SLOT(setAttenuationCoefficient(double)));
 
 	m_spinRouteExpTimeout = new QDoubleSpinBox;
 	m_spinRouteExpTimeout->setSingleStep(1);
@@ -87,6 +98,7 @@ void MeshViewSettings::init()
 
 	m_comboDataUnits = new QComboBox;
 	m_comboDataUnits->addItems(QStringList() << tr("Bit/s") << tr("KBit/s") << tr("MBit/s"));
+	m_comboDataUnits->setCurrentIndex(1);
 	connect(m_spinDataRate, SIGNAL(valueChanged(double)), this, SLOT(setDataRate(double)));
 	connect(m_comboDataUnits, SIGNAL(currentIndexChanged(int)), this, SLOT(setUnits(int)));
 
@@ -113,6 +125,8 @@ void MeshViewSettings::init()
 
 	QFormLayout* simulatorLayout = new QFormLayout;
 	simulatorLayout->addRow(tr("Coverage radius:"), m_spinCoverage);
+	simulatorLayout->addRow(tr("Maximum attenuation:"), m_spinMaximumAttenuation);
+	simulatorLayout->addRow(tr("Attenuation coefficient:"), m_spinAttenuationCoefficient);
 	simulatorLayout->addRow(tr("Data rate:"), dataRateLayout);
 	simulatorLayout->addRow(m_checkSmoothenEvents);
 
@@ -161,6 +175,7 @@ void MeshViewSettings::setUnits(int units)
     double val = (double)dataRate / (double)(1 << (10 * units));
 
     m_spinDataRate->setDecimals(units);
+    m_spinDataRate->setSingleStep(pow(10, -units));
     m_spinDataRate->setRange(min, max);
 	m_spinDataRate->setValue(val);
 }
@@ -181,7 +196,6 @@ void MeshViewSettings::setDocument(MeshDocument* doc)
 {
 	disconnect(document());
 
-	connect(m_spinCoverage, SIGNAL(valueChanged(double)), doc, SLOT(setCoverage(double)));
 	connect(m_spinRouteExpTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteExpirationTimeout(double)));
     connect(m_spinRouteRetryTimeout, SIGNAL(valueChanged(double)), doc, SLOT(setRouteRetryTimeout(double)));
     connect(m_spinRouteRetryThreshold, SIGNAL(valueChanged(int)), doc, SLOT(setRouteRetryThreshold(int)));
@@ -209,6 +223,7 @@ void MeshViewSettings::updateView()
     m_spinRelayBufferSize->setValue(doc->relayBufferSize());
     m_spinRouteRetryTimeout->setValue(doc->routeRetryTimeout());
     m_spinRouteRetryThreshold->setValue(doc->routeRetryThreshold());
+    m_spinAttenuationCoefficient->setValue(doc->attenuationCoefficient());
     m_spinCoverage->setValue(doc->coverage());
     m_spinRouteExpTimeout->setValue(doc->routeExpirationTimeout());
     m_spinRoutingTableSize->setValue(doc->routingTableSize());
@@ -217,7 +232,7 @@ void MeshViewSettings::updateView()
     m_spinWidth->setValue((int)(size.x + 0.5));
     m_spinHeight->setValue((int)(size.y + 0.5));
     m_dataRate = doc->dataRate() * 8;
-    m_comboDataUnits->setCurrentIndex(1);
+    setUnits(m_comboDataUnits->currentIndex());
 }
 
 int MeshViewSettings::dataRate()
@@ -225,4 +240,28 @@ int MeshViewSettings::dataRate()
 	int units = m_comboDataUnits->currentIndex();
 	m_dataRate = (int)(m_spinDataRate->value() * (double)(1 << (units * 10)));
 	return m_dataRate;
+}
+
+void MeshViewSettings::setCoverage(double coverage)
+{
+    double atten = pow(coverage, 2) * document()->attenuationCoefficient();
+    document()->setMaxAttenuation(atten);
+    m_spinMaximumAttenuation->setValue(atten);
+}
+
+void MeshViewSettings::setMaxAttenuation(double atten)
+{
+    document()->setMaxAttenuation(atten);
+    double coverage = sqrt(atten / document()->attenuationCoefficient());
+    m_spinCoverage->setValue(coverage);
+}
+
+void MeshViewSettings::setAttenuationCoefficient(double coef)
+{
+    double coverage = document()->coverage();
+    document()->setAttenuationCoefficient(coef);
+    double atten = pow(coverage, 2) * coef;
+    document()->setMaxAttenuation(atten);
+    m_spinMaximumAttenuation->setRange(coef * pow(m_spinCoverage->minimum(), 2), coef * pow(m_spinCoverage->maximum(), 2));
+    m_spinMaximumAttenuation->setValue(atten);
 }
