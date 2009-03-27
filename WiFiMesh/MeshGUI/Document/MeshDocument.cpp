@@ -377,7 +377,7 @@ void MeshDocument::importFromFile(const QString& filename)
 
 void MeshDocument::exportToFile(const QString& filename)
 {
-    CHECK(SimulatorExport(m_pSimulator, filename.toLatin1()));
+    CHECK(SimulatorExport(m_pSimulator, filename.toAscii()));
 }
 
 double MeshDocument::rand(double limit)
@@ -507,8 +507,5 @@ void MeshDocument::timerEvent(QTimerEvent*)
 
 void MeshDocument::setPathLoss(const QString& filename)
 {
-    const char* pathloss = NULL;
-    if (!filename.isEmpty()) pathloss = filename.toAscii();
-
-    CHECK(SimulatorSetPathLoss(m_pSimulator, pathloss));
+    CHECK(SimulatorSetPathLoss(m_pSimulator, !filename.isEmpty() ? (const char*)filename.toAscii() : NULL));
 }

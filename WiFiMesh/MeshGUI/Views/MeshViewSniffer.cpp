@@ -67,8 +67,11 @@ void MeshViewSniffer::init()
 
 	m_actShowPath = new QAction(tr("Show packet path"), this);
 	m_actShowPath->setCheckable(true);
+	m_actShowPath->setChecked(true);
+
 	m_actShowCollisions = new QAction(tr("Show collided packets"), this);
 	m_actShowCollisions->setCheckable(true);
+	m_actShowCollisions->setChecked(true);
 
 	m_actAutoScroll = new QAction(tr("&Auto scroll"), this);
 	m_actAutoScroll->setCheckable(true);

@@ -130,11 +130,15 @@ EStatus StationInit(Station* pThis, Velocity velocity, Location location, TimeLi
 EStatus StationDestroy(Station* pThis);
 
 /** Synchronizes a station with current time
- * Moves the station
  * @param pThis [in] pointer to instance
  * @param ppDeliveredPacket [out] packet, that was recently delivered (if any)
  */
 EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket);
+
+/** Advances a station
+ * @param pThis [in] pointer to instance
+ */
+EStatus StationAdvance(Station* pThis);
 
 /** Sets a new station location
  * @param pThis [in] pointer to instance

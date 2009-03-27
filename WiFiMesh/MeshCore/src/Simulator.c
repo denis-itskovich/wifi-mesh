@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "../inc/Station.h"
 #include "../inc/TimeLine.h"
 #include "../inc/Macros.h"
-#include "../inc/List.h"
+#include "../inc/SortedList.h"
 #include "../inc/PathLoss.h"
 #include <stdio.h>
 #include <math.h>
@@ -39,17 +39,16 @@ static const double PI = 3.1415269;
 
 struct _Simulator
 {
-    List*           pStations;
+    SortedList*     pStations;
     TimeLine*       pTimeLine;
     Settings*       pSettings;
     Statistics*     pStatistics;
     PathLoss*       pPathLoss;
-    StationId       minId;
-    StationId       maxId;
     Boolean         bDupBroadcast;
     Boolean         bUpdateRequired;
     double          lastUpdateTime;
     int             activeStations;
+    char*           pathLossFile;
 
 	struct
 	{
@@ -83,6 +82,7 @@ struct _Simulator
 };
 
 EStatus SimulatorAddId(Simulator* pThis, StationId id);
+EStatus SimulatorInitPathLoss(Simulator* pThis);
 
 /** Looks for a station with specified id
  * @param pThis [in] pointer to instance
@@ -108,12 +108,6 @@ EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppE
  * @param pThis [in] pointer to instance
  */
 StationId SimulatorAssignId(Simulator* pThis);
-
-/** Frees station id
- * @param pThis [in] pointer to instance
- * @param id [in] id to free
- */
-void SimulatorFreeId(Simulator* pThis, StationId id);
 
 /** Invokes sniffer callback (if exists)
  * @param pThis [in] pointer to instance
@@ -185,7 +179,6 @@ Boolean SimulatorCleaner(Station* pStation, Simulator* pThis)
     SimulatorInvokeTracker(pThis, pStation, eSTATION_REMOVED);
 	StationGetId(pStation, &id);
 	StationDelete(&pStation);
-	SimulatorFreeId(pThis, id);
 
 	return FALSE;
 }
@@ -195,6 +188,14 @@ Boolean SimulatorResetter(Station* pStation, Simulator* pThis)
 	StationReset(pStation);
 	SimulatorInvokeTracker(pThis, pStation, eSTATION_UPDATED);
 	return TRUE;
+}
+
+Comparison SimulatorStationComparator(Station* pLeft, Station* pRight, Simulator* pThis)
+{
+    StationId left, right;
+    StationGetId(pLeft, &left);
+    StationGetId(pRight, &right);
+    return (left < right) ? LESS : (left > right) ? GREAT : EQUAL;
 }
 
 EStatus SimulatorNew(Simulator** ppThis, Settings* pSettings, TimeLine* pTimeLine)
@@ -207,7 +208,7 @@ EStatus SimulatorInit(Simulator* pThis, Settings* pSettings, TimeLine* pTimeLine
 	VALIDATE_ARGUMENTS(pThis && pSettings);
 	CLEAR(pThis);
 
-	CHECK(ListNew(&pThis->pStations));
+	CHECK(SortedListNew(&pThis->pStations, (ItemComparator)&SimulatorStationComparator, pThis));
 	CHECK(StatisticsNew(&pThis->pStatistics));
 	pThis->pTimeLine = pTimeLine;
 	pThis->pSettings = pSettings;
@@ -227,8 +228,9 @@ EStatus SimulatorDestroy(Simulator* pThis)
 
 	CHECK(SimulatorClear(pThis));
     CHECK(StatisticsDelete(&pThis->pStatistics));
-	CHECK(ListDelete(&pThis->pStations));
+	CHECK(SortedListDelete(&pThis->pStations));
 	if (pThis->pPathLoss) CHECK(PathLossDelete(&pThis->pPathLoss));
+	if (pThis->pathLossFile) free(pThis->pathLossFile);
 
 	return eSTATUS_COMMON_OK;
 }
@@ -240,11 +242,10 @@ EStatus SimulatorAddStation(Simulator* pThis, Station* pStation)
 	CHECK(StationGetId(pStation, &id));
 
 	if (id == INVALID_STATION_ID) id = SimulatorAssignId(pThis);
-	else SimulatorAddId(pThis, id);
 
 	CHECK(StationSetId(pStation, id));
-	SimulatorInvokeTracker(pThis, pStation, eSTATION_ADDED);
-	return ListPushBack(pThis->pStations, pStation);
+    CHECK(SortedListAdd(pThis->pStations, pStation, TRUE));
+	return SimulatorInvokeTracker(pThis, pStation, eSTATION_ADDED);
 }
 
 EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
@@ -258,7 +259,7 @@ EStatus SimulatorRemoveStation(Simulator* pThis, Station* pStation)
 	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
 	SimulatorCleaner(pStation, pThis);
 
-	return ListRemove(pThis->pStations, pEntry);
+	return SortedListRemove(pThis->pStations, pEntry);
 }
 
 Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId, void* pUserArg)
@@ -273,7 +274,7 @@ Comparison SimulatorStationFinder(const Station* pStation, const StationId* pId,
 EStatus SimulatorGetStationEntry(Simulator* pThis, StationId id, ListEntry** ppEntry)
 {
 	VALIDATE_ARGUMENTS(pThis && ppEntry);
-	CHECK(ListFind(pThis->pStations, ppEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
+	CHECK(SortedListFind(pThis->pStations, ppEntry, (ItemComparator)&SimulatorStationFinder, &id, NULL));
 	return eSTATUS_COMMON_OK;
 }
 
@@ -281,7 +282,7 @@ EStatus SimulatorGetStation(Simulator* pThis, StationId id, Station** ppStation)
 {
 	ListEntry* pEntry;
 	CHECK(SimulatorGetStationEntry(pThis, id, &pEntry));
-	CHECK(ListGetValue(pEntry, ppStation));
+	CHECK(SortedListGetValue(pEntry, ppStation));
 	return eSTATUS_COMMON_OK;
 }
 
@@ -293,6 +294,7 @@ Boolean SimulatorSynchronizer(Station* pStation, Simulator* pThis)
 	if (isActive)
 	{
 		StationSynchronize(pStation, &pDeliveredPacket);
+		if (!pThis->pPathLoss) StationAdvance(pStation);
 		StationIsActive(pStation, &isActive);
 		if (pDeliveredPacket)
         {
@@ -333,8 +335,8 @@ EStatus SimulatorProcess(Simulator* pThis)
     if (pThis->bUpdateRequired) pThis->lastUpdateTime = curTime;
 
     if (pThis->pPathLoss) CHECK(PathLossSynchronize(pThis->pPathLoss, curTime));
-	CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
-    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
+	CHECK(SortedListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorSynchronizer, pThis));
+    CHECK(SortedListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDispatcher, pThis));
 
     CHECK(TimeLineNext(pThis->pTimeLine));
 
@@ -421,10 +423,10 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
     CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
     if (pPacket->routing.length <= maxLength)
     {
-        CHECK(ListGetHead(pThis->pStations, &pEntry));
+        CHECK(SortedListGetHead(pThis->pStations, &pEntry));
         while (pEntry)
         {
-            CHECK(ListGetValue(pEntry, &pCurrent));
+            CHECK(SortedListGetValue(pEntry, &pCurrent));
             CHECK(StationGetId(pCurrent, &id));
             CHECK(StationIsActive(pCurrent, &isActive));
             if (isActive)
@@ -463,7 +465,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
                 }
             }
 
-            CHECK(ListGetNext(&pEntry));
+            CHECK(SortedListGetNext(&pEntry));
         }
     }
     else
@@ -519,9 +521,9 @@ EStatus SimulatorReset(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
     CHECK(TimeLineClear(pThis->pTimeLine));
-    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
+    CHECK(SortedListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorResetter, pThis));
     CHECK(StatisticsReset(pThis->pStatistics));
-    if (pThis->pPathLoss) CHECK(PathLossReset(pThis->pPathLoss));
+    CHECK(SimulatorInitPathLoss(pThis));
 	pThis->lastUpdateTime = 0;
 	pThis->activeStations = 2;
 	return eSTATUS_COMMON_OK;
@@ -530,7 +532,7 @@ EStatus SimulatorReset(Simulator* pThis)
 EStatus SimulatorClear(Simulator* pThis)
 {
 	VALIDATE_ARGUMENTS(pThis);
-	CHECK(ListCleanUp(pThis->pStations, (ItemFilter)&SimulatorCleaner, pThis));
+	CHECK(SortedListCleanUp(pThis->pStations, (ItemFilter)&SimulatorCleaner, pThis));
 	CHECK(TimeLineClear(pThis->pTimeLine));
     CHECK(StatisticsClear(pThis->pStatistics));
     pThis->lastUpdateTime = 0;
@@ -541,29 +543,28 @@ EStatus SimulatorClear(Simulator* pThis)
 EStatus SimulatorEnumerateStations(Simulator* pThis, StationsEnumerator enumerator, void* pUserArg)
 {
 	VALIDATE_ARGUMENTS(pThis && enumerator);
-	return ListEnumerate(pThis->pStations, (ItemEnumerator)enumerator, pUserArg);
+	return SortedListEnumerate(pThis->pStations, (ItemEnumerator)enumerator, pUserArg);
 }
 
 EStatus SimulatorAddId(Simulator* pThis, StationId id)
 {
-    if (pThis->minId > id) pThis->minId = id;
-    if (pThis->maxId < id) pThis->maxId = id;
     return eSTATUS_COMMON_OK;
+}
+
+Boolean SimulatorIdFinder(Station* pStation, StationId* pId)
+{
+    StationId id;
+    StationGetId(pStation, &id);
+    if (id != *pId) return FALSE;
+    ++*pId;
+    return TRUE;
 }
 
 StationId SimulatorAssignId(Simulator* pThis)
 {
-	if (pThis->minId > 0) return --pThis->minId;
-	return ++pThis->maxId;
-}
-
-void SimulatorFreeId(Simulator* pThis, StationId id)
-{
-	int count = 0;
-	if (pThis->minId == id) ++pThis->minId;
-	if (pThis->maxId == id) --pThis->maxId;
-	ListGetCount(pThis->pStations, &count);
-	if (count == 1) pThis->minId = pThis->maxId = 0;
+    StationId id = 0;
+    SortedListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorIdFinder, &id);
+    return id;
 }
 
 EStatus SimulatorSetSniffingMode(Simulator* pThis, Boolean bSingle)
@@ -640,7 +641,7 @@ Boolean SimulatorDumpStation(const Station* pStation, void* pArg)
 EStatus SimulatorDump(const Simulator* pThis)
 {
     DUMP_PRINT("Simulator:");
-    CHECK(ListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDumpStation, NULL));
+    CHECK(SortedListEnumerate(pThis->pStations, (ItemEnumerator)&SimulatorDumpStation, NULL));
     return eSTATUS_COMMON_OK;
 }
 
@@ -771,7 +772,7 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     CHECK(SettingsGetPacketRetryThreshold(pThis->pSettings, &packetRetryThreshold));
     CHECK(SettingsGetPacketRetryTimeout(pThis->pSettings, &packetRetryTimeout));
 
-    CHECK(ListGetCount(pThis->pStations, &stationsCount));
+    CHECK(SortedListGetCount(pThis->pStations, &stationsCount));
 
     fprintf(file, "%lf %lf %d\n", worldSize.x, worldSize.y, stationsCount);
     fprintf(file, "%lf %lf %d %d\n", maxAttenuation, attenuationConst, (int)dataRate / 1024, bufferSize);
@@ -780,10 +781,10 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
 
     fprintf(file, "\n\n");
 
-    CHECK(ListGetHead(pThis->pStations, &pEntry));
+    CHECK(SortedListGetHead(pThis->pStations, &pEntry));
     while (pEntry)
     {
-        CHECK(ListGetValue(pEntry, &pStation));
+        CHECK(SortedListGetValue(pEntry, &pStation));
         CHECK(StationGetLocation(pStation, &l));
         CHECK(StationGetVelocity(pStation, &v));
         CHECK(StationGetId(pStation, &id));
@@ -801,17 +802,17 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
         l.x += worldSize.x / 2;
         l.y += worldSize.y / 2;
         fprintf(file, "%d %d %d %lf %lf\n", (int)id, (int)l.x, (int)l.y, angle, vel);
-        CHECK(ListGetNext(&pEntry));
+        CHECK(SortedListGetNext(&pEntry));
     }
 
     fprintf(file, "\n\n");
 
-    CHECK(ListGetHead(pThis->pStations, &pEntry));
+    CHECK(SortedListGetHead(pThis->pStations, &pEntry));
     while (pEntry)
     {
-        CHECK(ListGetValue(pEntry, &pStation));
+        CHECK(SortedListGetValue(pEntry, &pStation));
         CHECK(StationExport(pStation, file));
-        CHECK(ListGetNext(&pEntry));
+        CHECK(SortedListGetNext(&pEntry));
     }
 
     fclose(file);
@@ -819,25 +820,50 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
     return eSTATUS_COMMON_OK;
 }
 
-EStatus SimulatorSetPathLoss(Simulator* pThis, const char* filename)
+StationId SimulatorGetMaxId(Simulator* pThis)
+{
+    ListEntry* pEntry;
+    Station* pStation;
+    StationId id;
+
+    SortedListGetTail(pThis->pStations, &pEntry);
+    if (!pEntry) return 0;
+
+    SortedListGetValue(pEntry, &pStation);
+    StationGetId(pStation, &id);
+
+    return id + 1;
+}
+
+EStatus SimulatorInitPathLoss(Simulator* pThis)
 {
     double maxAttenuation;
-    int count;
+    StationId maxId;
 
     VALIDATE_ARGUMENTS(pThis);
 
     if (pThis->pPathLoss) CHECK(PathLossDelete(&pThis->pPathLoss));
-    if (!filename) return eSTATUS_COMMON_OK;
+    if (!pThis->pathLossFile) return eSTATUS_COMMON_OK;
 
+    maxId = SimulatorGetMaxId(pThis);
     CHECK(SettingsGetMaxAttenuation(pThis->pSettings, &maxAttenuation));
-    CHECK(ListGetCount(pThis->pStations, &count));
-    EStatus ret = PathLossNew(&pThis->pPathLoss, count, maxAttenuation, filename);
+    EStatus ret = PathLossNew(&pThis->pPathLoss, maxId, maxAttenuation, pThis->pathLossFile);
 
     if (ret != eSTATUS_COMMON_OK)
     {
         CHECK(PathLossDelete(&pThis->pPathLoss));
         return ret;
     }
+
+    return PathLossReset(pThis->pPathLoss);
+}
+
+EStatus SimulatorSetPathLoss(Simulator* pThis, const char* filename)
+{
+    VALIDATE_ARGUMENTS(pThis);
+
+    if (pThis->pathLossFile) free(pThis->pathLossFile);
+    pThis->pathLossFile = (filename) ? strdup(filename) : NULL;
 
     return eSTATUS_COMMON_OK;
 }

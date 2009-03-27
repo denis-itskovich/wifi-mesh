@@ -148,7 +148,7 @@ EStatus PathLossInit(PathLoss* pThis, int count, double maxAttenuation, const ch
     while (!feof(file))
     {
         if (fscanf(file, "%lf %d", &time, &index) != 2) break;
-        CHECK(PathLossAddStation(pThis, time, --index, maxAttenuation, file));
+        CHECK(PathLossAddStation(pThis, time, index, maxAttenuation, file));
     }
 
     fclose(file);
@@ -193,7 +193,7 @@ EStatus PathLossIsAdjacent(PathLoss* pThis, StationId srcId, StationId dstId, Bo
     *pIsAdjacent = FALSE;
     if (!pThis->pCurrent) return eSTATUS_COMMON_OK;
 
-    *pIsAdjacent = pThis->pCurrent->ppAdjacency[--srcId][--dstId];
+    *pIsAdjacent = pThis->pCurrent->ppAdjacency[srcId][dstId];
     return eSTATUS_COMMON_OK;
 }
 
