@@ -188,19 +188,12 @@ EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket)
     Packet* pPacket;
     Boolean isActive;
     double time = 0;
-    double timeDelta = 0;
 
     VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
     *ppDeliveredPacket = NULL;
 
     CHECK(RoutingSynchronize(pThis->pRouting));
     CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
-
-    timeDelta = time - pThis->lastTime;
-    pThis->lastTime = time;
-
-    pThis->curLocation.x += pThis->velocity.x * timeDelta;
-    pThis->curLocation.y += pThis->velocity.y * timeDelta;
 
     if (pThis->receiveTime >= time)
     {
@@ -230,6 +223,23 @@ EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket)
     CHECK(ret);
 
     return StationSendPacket(pThis, pPacket);
+}
+
+EStatus StationAdvance(Station* pThis)
+{
+    double time = 0;
+    double timeDelta = 0;
+    VALIDATE_ARGUMENTS(pThis);
+
+    CHECK(TimeLineGetTime(pThis->pTimeLine, &time));
+
+    timeDelta = time - pThis->lastTime;
+    pThis->lastTime = time;
+
+    pThis->curLocation.x += pThis->velocity.x * timeDelta;
+    pThis->curLocation.y += pThis->velocity.y * timeDelta;
+
+    return eSTATUS_COMMON_OK;
 }
 
 EStatus StationSetLocation(Station* pThis, Location newLocation)

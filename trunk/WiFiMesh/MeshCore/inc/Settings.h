@@ -56,12 +56,6 @@ EStatus SettingsInit(Settings* pThis);
  */
 EStatus SettingsDestroy(Settings* pThis);
 
-///** Sets coverage
-// * @param pThis [in] pointer to instance
-// * @param coverage [in] new coverage radius
-// */
-//EStatus SettingsSetCoverage(Settings* pThis, double coverage);
-
 /** Retrieves coverage
  * @param pThis [in] pointer to instance
  * @param pCoverage [out] coverage will be stored at *pCoverage

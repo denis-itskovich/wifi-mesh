@@ -131,6 +131,12 @@ EStatus SortedListGetPrevious(ListEntry** ppEntry)
 	return ListGetPrevious(ppEntry);
 }
 
+EStatus SortedListGetCount(SortedList* pThis, unsigned* pCount)
+{
+    VALIDATE_ARGUMENTS(pThis);
+    return ListGetCount(pThis->pList, pCount);
+}
+
 EStatus SortedListPopFront(SortedList* pThis, void* ppValue)
 {
     VALIDATE_ARGUMENTS(pThis);

@@ -104,6 +104,12 @@ EStatus SortedListGetNext(ListEntry** ppEntry);
  */
 EStatus SortedListGetPrevious(ListEntry** ppEntry);
 
+/** Gets entries count
+ * @param pThis [in] pointer to instance
+ * @param pCount [out] count will be stored at *pCount
+ */
+EStatus SortedListGetCount(SortedList* pThis, unsigned* pCount);
+
 /** Retrieves top value and removes it from the list
  * @param pThis [in] pointer to instance
  * @param ppValue [out] value
