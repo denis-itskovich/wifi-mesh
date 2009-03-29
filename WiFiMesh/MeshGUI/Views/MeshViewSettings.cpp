@@ -56,6 +56,8 @@ void MeshViewSettings::init()
 	m_spinAttenuationCoefficient = new QDoubleSpinBox;
 	m_spinAttenuationCoefficient->setSingleStep(1);
 	m_spinAttenuationCoefficient->setRange(0.01, 1000);
+	m_spinAttenuationCoefficient->setSingleStep(0.1);
+    m_spinAttenuationCoefficient->setSuffix(" [dB/m\xb2]");
 	connect(m_spinAttenuationCoefficient, SIGNAL(valueChanged(double)), this, SLOT(setAttenuationCoefficient(double)));
 
 	m_spinRouteExpTimeout = new QDoubleSpinBox;
