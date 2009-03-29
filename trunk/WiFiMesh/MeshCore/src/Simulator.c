@@ -409,7 +409,6 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 	Station* pCurrent = NULL;
 	EStatus ret;
 	StationId id;
-	int maxLength;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetId(pStation, &id));
@@ -420,8 +419,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
     pPacket->routing.path[pPacket->routing.length++] = id;
     pPacket->header.hopsCount++;
 
-    CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
-    if (pPacket->routing.length <= maxLength)
+    if (pPacket->routing.length <= pPacket->header.ttl)
     {
         CHECK(SortedListGetHead(pThis->pStations, &pEntry));
         while (pEntry)
@@ -670,8 +668,7 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
     Velocity v;
     Station* pStation;
 
-    int id, src, dst;
-    int pktId;
+    int id, src, dst, pktId, ttl;
     double time;
     int size;
     Packet* pPacket;
@@ -714,9 +711,11 @@ EStatus SimulatorImport(Simulator* pThis, const char* filename)
 
     while (!feof(file))
     {
-        if (fscanf(file, "%d %d %d %lf %d", &pktId, &src, &dst, &time, &size) < 5) break;
+        i = fscanf(file, "%d %d %d %lf %d %d", &pktId, &src, &dst, &time, &size, &ttl);
+        if (i <= 0) break;
+        if (i < 6) return eSTATUS_SIMULATOR_FILE_CORRUPTED;
 
-        CHECK(PacketNewData(&pPacket, (StationId)src, (StationId)dst, (unsigned long)size, pktId));
+        CHECK(PacketNewData(&pPacket, (StationId)src, (StationId)dst, (unsigned long)size, pktId, (unsigned)ttl));
         CHECK(SimulatorGetStation(pThis, src, &pStation));
         CHECK(StationSchedulePacket(pStation, pPacket, time));
     }
@@ -776,8 +775,8 @@ EStatus SimulatorExport(Simulator* pThis, const char* filename)
 
     fprintf(file, "%lf %lf %d\n", worldSize.x, worldSize.y, stationsCount);
     fprintf(file, "%lf %lf %d %d\n", maxAttenuation, attenuationConst, (int)dataRate / 1024, bufferSize);
-    fprintf(file, "%d %lf %d %lf", routingTableSize, routeExpirationTimeout, routeRetryThreshold, routeRetryTimeout);
-    fprintf(file, "%d %d %lf %lf", packetHopsThreshold, packetRetryThreshold, packetRetryTimeout, simulationTimeout);
+    fprintf(file, "%d %lf %d %lf\n", routingTableSize, routeExpirationTimeout, routeRetryThreshold, routeRetryTimeout);
+    fprintf(file, "%d %d %lf %lf\n", packetHopsThreshold, packetRetryThreshold, packetRetryTimeout, simulationTimeout);
 
     fprintf(file, "\n\n");
 

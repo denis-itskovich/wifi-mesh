@@ -659,7 +659,7 @@ EStatus StationHandleSearchRequest(Station* pThis, const Packet* pPacket)
 	}
 
 	dstId = pPacket->header.originalSrcId;
-	CHECK(PacketNewSearchResponse(&pResponse, pThis->id, dstId));
+	CHECK(PacketNewSearchResponse(&pResponse, pThis->id, dstId, pPacket->header.hopsCount));
 	pResponse->header.hopsCount = length;
 	pResponse->header.transitDstId = pPacket->header.transitSrcId;
 	pResponse->header.originalSrcId = pPacket->header.originalDstId;

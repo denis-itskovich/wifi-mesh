@@ -32,7 +32,7 @@ int __counter_PacketTypes[ePKT_TYPE_LAST] = {0};
 		return PacketInit ## _msgtype (*pptr, __VA_ARGS__) \
 	)
 
-#define INIT_PACKET(ptr, _msgtype, _srcId, _dstId) SAFE_OPERATION \
+#define INIT_PACKET(ptr, _msgtype, _srcId, _dstId, _ttl) SAFE_OPERATION \
 	( \
 		VALIDATE_ARGUMENTS(ptr); \
 		CLEAR(ptr); \
@@ -42,17 +42,18 @@ int __counter_PacketTypes[ePKT_TYPE_LAST] = {0};
 		ptr->header.transitSrcId = _srcId; \
 		ptr->header.transitDstId = INVALID_STATION_ID; \
 		ptr->header.type = _msgtype; \
+		ptr->header.ttl = _ttl; \
 		++__counter_PacketTypes[_msgtype]; \
 	)
 
-EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId)
+EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId, unsigned ttl)
 {
-	CONSTRUCT(ppThis, Packet, msgType, srcId, dstId);
+	CONSTRUCT(ppThis, Packet, msgType, srcId, dstId, ttl);
 }
 
-EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id)
+EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id, unsigned ttl)
 {
-	CONSTRUCT_PACKET(ppThis, Data, srcId, dstId, size, id);
+	CONSTRUCT_PACKET(ppThis, Data, srcId, dstId, size, id, ttl);
 }
 
 EStatus PacketNewSearchRequest(Packet** ppThis, StationId srcId, StationId lookForId)
@@ -60,9 +61,9 @@ EStatus PacketNewSearchRequest(Packet** ppThis, StationId srcId, StationId lookF
 	CONSTRUCT_PACKET(ppThis, SearchRequest, srcId, lookForId);
 }
 
-EStatus PacketNewSearchResponse(Packet** ppThis, StationId srcId, StationId dstId)
+EStatus PacketNewSearchResponse(Packet** ppThis, StationId srcId, StationId dstId, unsigned pathLen)
 {
-	CONSTRUCT_PACKET(ppThis, SearchResponse, srcId, dstId);
+	CONSTRUCT_PACKET(ppThis, SearchResponse, srcId, dstId, pathLen);
 }
 
 EStatus PacketNewAck(Packet** ppThis, StationId srcId, StationId dstId)
@@ -82,16 +83,16 @@ EStatus PacketDestroy(Packet* pThis)
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationId dstId)
+EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationId dstId, unsigned ttl)
 {
-	INIT_PACKET(pThis, msgType, srcId, dstId);
+	INIT_PACKET(pThis, msgType, srcId, dstId, ttl);
 
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id)
+EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id, unsigned ttl)
 {
-	INIT_PACKET(pThis, ePKT_TYPE_DATA, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_DATA, srcId, dstId, ttl);
 	pThis->payload.size = size;
 	pThis->payload.id = id;
 
@@ -100,20 +101,20 @@ EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned
 
 EStatus PacketInitSearchRequest(Packet* pThis, StationId srcId, StationId lookForId)
 {
-	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_REQUEST, srcId, lookForId);
+	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_REQUEST, srcId, lookForId, INFINITE_TTL);
 	pThis->header.transitDstId = BROADCAST_STATION_ID;
 	return eSTATUS_COMMON_OK;
 }
 
-EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId)
+EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId, unsigned pathLen)
 {
-	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_RESPONSE, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_SEARCH_RESPONSE, srcId, dstId, pathLen);
 	return eSTATUS_COMMON_OK;
 }
 
 EStatus PacketInitAck(Packet* pThis, StationId srcId, StationId dstId)
 {
-	INIT_PACKET(pThis, ePKT_TYPE_ACK, srcId, dstId);
+	INIT_PACKET(pThis, ePKT_TYPE_ACK, srcId, dstId, 1);
 	pThis->header.transitDstId = dstId;
 	return eSTATUS_COMMON_OK;
 }
@@ -122,7 +123,7 @@ EStatus PacketClone(Packet** ppDst, const Packet* pSrc)
 {
 	VALIDATE_ARGUMENTS(ppDst && pSrc);
 
-	CHECK(PacketNew(ppDst, pSrc->header.type, pSrc->header.originalSrcId, pSrc->header.originalDstId));
+	CHECK(PacketNew(ppDst, pSrc->header.type, pSrc->header.originalSrcId, pSrc->header.originalDstId, pSrc->header.ttl));
 	memcpy(*ppDst, pSrc, sizeof(*pSrc));
 
 	return eSTATUS_COMMON_OK;

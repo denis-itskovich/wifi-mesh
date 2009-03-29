@@ -194,12 +194,13 @@ EStatus SchedulerRegisterHandler(Scheduler* pThis, SchedulerHandler handler, voi
 EStatus SchedulerExportEntry(const SchedulerEntry* pEntry, FILE* file)
 {
     const Packet* pPacket = pEntry->pPacket;
-    fprintf(file, "%d %d %d %lf %d\n",
+    fprintf(file, "%d %d %d %lf %d %d\n",
             pPacket->payload.id,
             (int)pPacket->header.originalSrcId,
             (int)pPacket->header.originalDstId,
             pEntry->time,
-            (int)pPacket->payload.size);
+            (int)pPacket->payload.size,
+            (int)pPacket->header.ttl);
 
     return TRUE;
 }

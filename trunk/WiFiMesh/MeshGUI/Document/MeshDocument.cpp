@@ -56,6 +56,7 @@ MeshDocument::MeshDocument() :
 	m_isPaused(false),
 	m_timerId(0),
 	m_delay(1),
+    m_packetId(0),
 	m_seed(0)
 {
 	CHECK(SettingsNew(&m_pSettings));
@@ -269,7 +270,7 @@ void MeshDocument::addPacket(Station* pStation, double time, StationId dst, unsi
 	StationId src;
 	CHECK(StationGetId(pStation, &src));
 	Packet* pPacket;
-	CHECK(PacketNewData(&pPacket, src, dst, size, m_packetId++));
+	CHECK(PacketNewData(&pPacket, src, dst, size, m_packetId++, packetHopsThreshold()));
 	CHECK(StationSchedulePacket(pStation, pPacket, time));
 }
 
@@ -341,7 +342,6 @@ void MeshDocument::pause()
 	killTimer(m_timerId);
 	m_timerId = 0;
 }
-
 
 void MeshDocument::resume()
 {

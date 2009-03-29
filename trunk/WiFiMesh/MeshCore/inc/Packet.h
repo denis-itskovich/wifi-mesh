@@ -60,6 +60,7 @@ typedef struct _Packet
         StationId       transitDstId;               ///< Transit destination id
         unsigned        hopsCount;                  ///< Transit nodes counts
         unsigned        sequenceNum;                ///< Packet sequence number
+        unsigned        ttl;                        ///< Packet initial time to live
     }                   header;                     ///< Packet header
     //---------------------------------------------------------------------------
     struct _PacketPayload
@@ -76,13 +77,16 @@ typedef struct _Packet
     //---------------------------------------------------------------------------
 } Packet;
 
+#define INFINITE_TTL    ((unsigned)-1)
+
 /** Allocates new packet
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
  * @param msgType [in] packet type
  * @param srcId [in] source id
  * @param dstId [in] destination id
+ * @param ttl [in] time to live (max hops count)
  */
-EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId);
+EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, StationId dstId, unsigned ttl);
 
 /** Allocates data packet
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -90,8 +94,9 @@ EStatus PacketNew(Packet** ppThis, EPacketType msgType, StationId srcId, Station
  * @param dstId [in] destination id
  * @param size [in] size
  * @param id [in] data packet id
+ * @param ttl [in] time to live (max hops count)
  */
-EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id);
+EStatus PacketNewData(Packet** ppThis, StationId srcId, StationId dstId, unsigned long size, int id, unsigned ttl);
 
 /** Allocates search request packet
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
@@ -104,8 +109,9 @@ EStatus PacketNewSearchRequest(Packet** ppThis, StationId srcId, StationId lookF
  * @param ppThis [out] pointer to new instance will be stored at *ppThis
  * @param srcId [in] source id
  * @param dstId [in] destination id
+ * @param pathLen [in] path length
  */
-EStatus PacketNewSearchResponse(Packet** ppThis, StationId srcId, StationId dstId);
+EStatus PacketNewSearchResponse(Packet** ppThis, StationId srcId, StationId dstId, unsigned pathLen);
 
 /** Allocates ack packet
  * @param ppThis [in] pointer to new instance will be stored at *ppThis
@@ -119,8 +125,9 @@ EStatus PacketNewAck(Packet** ppThis, StationId srcId, StationId dstId);
  * @param msgType [in] packet type
  * @param srcId [in] source id
  * @param dstId [in] destination id
+ * @param ttl [in] time to live (max hops count)
  */
-EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationId dstId);
+EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationId dstId, unsigned ttl);
 
 /** Initializes data packet
  * @param pThis [in] pointer to instance
@@ -128,8 +135,9 @@ EStatus PacketInit(Packet* pThis, EPacketType msgType, StationId srcId, StationI
  * @param dstId [in] destination id
  * @param size [in] size
  * @param id [in] data packet id
+ * @param ttl [in] time to live (max hops count)
  */
-EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id);
+EStatus PacketInitData(Packet* pThis, StationId srcId, StationId dstId, unsigned long size, int id, unsigned ttl);
 
 /** Initializes search request packet
  * @param pThis [in] pointer to instance
@@ -142,8 +150,9 @@ EStatus PacketInitSearchRequest(Packet* pThis, StationId srcId, StationId lookFo
  * @param pThis [in] pointer to instance
  * @param srcId [in] source id
  * @param dstId [in] destination id
+ * @param pathLen [in] path length
  */
-EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId);
+EStatus PacketInitSearchResponse(Packet* pThis, StationId srcId, StationId dstId, unsigned pathLen);
 
 /** Initializes ack packet
  * @param pThis [in] pointer to instance
