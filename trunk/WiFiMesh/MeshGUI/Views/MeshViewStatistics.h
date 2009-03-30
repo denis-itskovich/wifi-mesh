@@ -54,12 +54,22 @@ private:
     MeshWidgetChart*    m_chartSizeByType;
     MeshWidgetChart*    m_chartPacketsByTraffic;
     MeshWidgetChart*    m_chartSizeByTraffic;
+    MeshWidgetChart*    m_chartDelays;
+    MeshWidgetChart*    m_chartPathLen;
+    MeshWidgetChart*    m_chartThroughput;
 
     MeshChartItem*      m_itemPacketsByStatus[ePKT_STATUS_PENDING];
     MeshChartItem*      m_itemPacketsByType[ePKT_TYPE_LAST];
     MeshChartItem*      m_itemSizeByType[ePKT_TYPE_LAST];
     MeshChartItem*      m_itemPacketsByTraffic[eTRAFFIC_LAST];
     MeshChartItem*      m_itemSizeByTraffic[eTRAFFIC_LAST];
+    MeshChartItem*      m_itemDelayType[eSTAT_LAST];
+    MeshChartItem*      m_itemPathLen[eSTAT_LAST];
+    MeshChartItem*      m_itemThroughput[eSTAT_LAST];
+
+    QActionGroup*       m_groupByTraffic;
+    QActionGroup*       m_groupByType;
+    QActionGroup*       m_groupThroughput;
 
     QMenu*              m_menu;
 };

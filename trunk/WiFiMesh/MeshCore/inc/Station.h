@@ -60,9 +60,7 @@ typedef enum
  * @param pUserArg [in] user defined argument
  */
 typedef void (*StationSchedulerHandler)(const Station* pStation,
-										double time,
-										const Packet* pPacket,
-										ESchedulerEvent event,
+										const SchedulerEntry* pEntry,
 										void* pUserArg);
 
 /** Routing entry update handler.

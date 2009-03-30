@@ -54,6 +54,15 @@ typedef enum
     eTRAFFIC_LAST               ///< Terminator
 } ETraffic;
 
+typedef enum
+{
+    eSTAT_MIN,                 ///< Minimum delivery delay
+    eSTAT_AVG,                 ///< Average delivery delay
+    eSTAT_MAX,                 ///< Maximum delivery delay
+
+    eSTAT_LAST                 ///< Terminator
+} EStatisticsType;
+
 /// Statistics collection
 typedef struct _Statistics
 {
@@ -63,11 +72,12 @@ typedef struct _Statistics
     int     packetsByTraffic[eTRAFFIC_LAST];        ///< Packets count by traffic type @see ETraffic
     int     sizeByTraffic[eTRAFFIC_LAST];           ///< Data amounts by traffic type @see ETraffic
 
-    int     maxHopsCount;                           ///< Maximal delivered hops count
-    double  avgHopsCount;                           ///< Average delivered hops count
+    double  hopsCount[eSTAT_LAST];                  ///< Delivered hops count
+    double  routeLength[eSTAT_LAST];                ///< Delivered length
 
-    int     maxRouteLength;                         ///< Longest delivered route length
-    double  avgRouteLength;                         ///< Average delivered route length
+    double  deliveryDelay[eSTAT_LAST];              ///< Min, Avg & Max delivery delays
+    double  throughput[eSTAT_LAST];                 ///< Upper layer throughput
+    double  totalTime;
 } Statistics;
 
 /** Allocates and initializes new instance of statistics
@@ -111,10 +121,9 @@ EStatus StatisticsHandlePacket(Statistics* pThis, const Packet* pPacket, EPacket
 
 /** Handles scheduler event
  * @param pThis [in] pointer to instance
- * @param pPacket [in] pointer to packet
- * @param event [in] scheduler event
+ * @param pEntry [in] pointer to schedule entry
  */
-EStatus StatisticsHandleSchedulerEvent(Statistics* pThis, const Packet* pPacket, ESchedulerEvent event);
+EStatus StatisticsHandleSchedulerEvent(Statistics* pThis, const SchedulerEntry* pEntry);
 
 /** Prints statistics into buffer
  * @param pThis [in] pointer to instance

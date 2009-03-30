@@ -49,3 +49,10 @@ const char* DESC_TRAFFIC_TYPE[eTRAFFIC_LAST] =
      "Issued",
      "Delivered"
 };
+
+const char* DESC_STAT_TYPE[eSTAT_LAST] =
+{
+     "Minimum",
+     "Average",
+     "Maximum"
+};

@@ -101,9 +101,7 @@ void StationHandleRoutingChange(StationId destId,
                                 ERouteEntryUpdate updateAction,
                                 Station* pThis);
 
-void StationHandleScheduleChange(double time,
-                                 const Packet* pPacket,
-                                 ESchedulerEvent event,
+void StationHandleScheduleChange(const SchedulerEntry* pEntry,
                                  Station* pThis);
 
 EStatus StationSendAck(Station* pThis, const Packet* pPacket);
@@ -286,7 +284,7 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
     Packet* pPacket = pEntry->pPacket;
 	Packet* pNewMsg = NULL;
 	double time;
-	unsigned length = 0, maxLength;
+	unsigned length = 0;
 
 	if (!StationIsPacketValid(pThis, pPacket))
 	{
@@ -325,8 +323,8 @@ Boolean StationPacketFilter(PacketEntry* pEntry, Station* pThis)
 	// Destination is pending for a path query response
     if (pPacket->header.transitDstId == INVALID_STATION_ID) return TRUE;
 
-    CHECK(SettingsGetPacketHopsThreshold(pThis->pSettings, &maxLength));
-    if (length > maxLength) return TRUE;
+    // Check TTL/length matching
+    if (length > pPacket->header.ttl) return TRUE;
 
     // Checking whether we should retry a packet now
     TimeLineGetTime(pThis->pTimeLine, &time);
@@ -824,11 +822,11 @@ void StationHandleRoutingChange(StationId destId,
 	}
 }
 
-void StationHandleScheduleChange(double time, const Packet* pPacket, ESchedulerEvent event, Station* pThis)
+void StationHandleScheduleChange(const SchedulerEntry* pEntry, Station* pThis)
 {
 	if (pThis->schedulerHandler.callback)
 	{
-		pThis->schedulerHandler.callback(pThis, time, pPacket, event, pThis->schedulerHandler.pArg);
+		pThis->schedulerHandler.callback(pThis, pEntry, pThis->schedulerHandler.pArg);
 	}
 }
 

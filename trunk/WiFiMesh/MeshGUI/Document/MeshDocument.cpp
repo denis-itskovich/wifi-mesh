@@ -486,16 +486,14 @@ void MeshDocument::routingHandler(	const Station* pStation,
 }
 
 void MeshDocument::schedulerHandler(	const Station* pStation,
-										double time,
-										const Packet* pPacket,
-										ESchedulerEvent event,
+										const SchedulerEntry* pEntry,
 										MeshDocument* pThis)
 {
-	switch (event)
+	switch (pEntry->state)
 	{
-	case eSCHEDULE_ADDED: emit pThis->scheduleEntryAdded(pStation, time, pPacket); break;
-	case eSCHEDULE_DELIVERED: emit pThis->scheduleEntryDelivered(pStation, pPacket); break;
-	case eSCHEDULE_REMOVED: emit pThis->scheduleEntryRemoved(pStation, pPacket); break;
+	case eSCHEDULE_ADDED: emit pThis->scheduleEntryAdded(pStation, pEntry->timeStamp[pEntry->state], pEntry->pPacket); break;
+	case eSCHEDULE_DELIVERED: emit pThis->scheduleEntryDelivered(pStation, pEntry->pPacket); break;
+	case eSCHEDULE_REMOVED: emit pThis->scheduleEntryRemoved(pStation, pEntry->pPacket); break;
 	default: break;
 	}
 }

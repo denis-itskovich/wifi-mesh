@@ -34,5 +34,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 extern const char* DESC_PACKET_TYPE[ePKT_TYPE_LAST];
 extern const char* DESC_PACKET_STATUS[ePKT_STATUS_LAST];
 extern const char* DESC_TRAFFIC_TYPE[eTRAFFIC_LAST];
+extern const char* DESC_STAT_TYPE[eSTAT_LAST];
 
 #endif /* DESCRIPTORS_H_ */

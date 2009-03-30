@@ -50,6 +50,22 @@ void MeshViewStatistics::init()
     m_chartSizeByType = new MeshWidgetChart("Traffic by packet type");
     m_chartPacketsByTraffic = new MeshWidgetChart("Packets by scheduling status");
     m_chartSizeByTraffic = new MeshWidgetChart("Traffic by scheduling status");
+    m_chartDelays = new MeshWidgetChart("Packet delivery delay");
+    m_chartPathLen = new MeshWidgetChart("Delivery path length");
+    m_chartThroughput = new MeshWidgetChart("Upper layer throughput");
+
+//    m_groupByTraffic = new QActionGroup(this);
+//    m_groupByTraffic->addAction(m_chartPacketsByTraffic->toggleViewAction());
+//    m_groupByTraffic->addAction(m_chartSizeByTraffic->toggleViewAction());
+//
+//    m_groupByType = new QActionGroup(this);
+//    m_groupByType->addAction(m_chartPacketsByType->toggleViewAction());
+//    m_groupByType->addAction(m_chartSizeByType->toggleViewAction());
+//
+//    m_groupThroughput = new QActionGroup(this);
+//    m_groupThroughput->addAction(m_chartThroughput->toggleViewAction());
+//    m_groupThroughput->addAction(m_chartDelays->toggleViewAction());
+//    m_groupThroughput->addAction(m_chartPathLen->toggleViewAction());
 
     m_menu = new QMenu(this);
     m_menu->addAction(m_chartPacketsByStatus->toggleViewAction());
@@ -57,6 +73,13 @@ void MeshViewStatistics::init()
     m_menu->addAction(m_chartSizeByType->toggleViewAction());
     m_menu->addAction(m_chartPacketsByTraffic->toggleViewAction());
     m_menu->addAction(m_chartSizeByTraffic->toggleViewAction());
+    m_menu->addAction(m_chartThroughput->toggleViewAction());
+    m_menu->addAction(m_chartDelays->toggleViewAction());
+    m_menu->addAction(m_chartPathLen->toggleViewAction());
+
+    m_chartSizeByType->hide();
+    m_chartSizeByTraffic->hide();
+    m_chartPathLen->hide();
 
     for (int i = 0; i < ePKT_TYPE_LAST; ++i)
     {
@@ -80,15 +103,28 @@ void MeshViewStatistics::init()
         m_chartSizeByTraffic->addItem(m_itemSizeByTraffic[i]);
     }
 
+    for (int i = 0; i < eSTAT_LAST; ++i)
+    {
+        m_itemDelayType[i] = createItem(MeshTheme::statisticTypeDescriptor((EStatisticsType)i));
+        m_itemPathLen[i] = createItem(MeshTheme::statisticTypeDescriptor((EStatisticsType)i));
+        m_itemThroughput[i] = createItem(MeshTheme::statisticTypeDescriptor((EStatisticsType)i));
+        m_chartDelays->addItem(m_itemDelayType[i]);
+        m_chartPathLen->addItem(m_itemPathLen[i]);
+        m_chartThroughput->addItem(m_itemThroughput[i]);
+    }
+
     QVBoxLayout* vlayout = new QVBoxLayout;
     QHBoxLayout* topLayout = new QHBoxLayout;
     QHBoxLayout* bottomLayout = new QHBoxLayout;
 
     topLayout->addWidget(m_chartSizeByType);
     topLayout->addWidget(m_chartPacketsByType);
-    bottomLayout->addWidget(m_chartSizeByTraffic);
-    bottomLayout->addWidget(m_chartPacketsByTraffic);
+    topLayout->addWidget(m_chartSizeByTraffic);
+    topLayout->addWidget(m_chartPacketsByTraffic);
     bottomLayout->addWidget(m_chartPacketsByStatus);
+    bottomLayout->addWidget(m_chartThroughput);
+    bottomLayout->addWidget(m_chartDelays);
+    bottomLayout->addWidget(m_chartPathLen);
 
     vlayout->addItem(topLayout);
     vlayout->addItem(bottomLayout);
@@ -112,6 +148,13 @@ void MeshViewStatistics::updateStatistics(const Statistics* pStatistics)
     {
         m_itemPacketsByTraffic[i]->setValue(pStatistics->packetsByTraffic[i]);
         m_itemSizeByTraffic[i]->setValue(pStatistics->sizeByTraffic[i]);
+    }
+
+    for (int i = 0; i < eSTAT_LAST; ++i)
+    {
+        m_itemDelayType[i]->setValue(pStatistics->deliveryDelay[i]);
+        m_itemPathLen[i]->setValue(pStatistics->routeLength[i]);
+        m_itemThroughput[i]->setValue(pStatistics->throughput[i]);
     }
 }
 

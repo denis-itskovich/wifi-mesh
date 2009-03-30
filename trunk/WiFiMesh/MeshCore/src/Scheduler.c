@@ -34,13 +34,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 int __counter_Scheduler = 0;
 int __counter_SchedulerEntry = 0;
 
-typedef struct _SchedulerEntry
-{
-    double          time;
-    Packet*         pPacket;
-    ESchedulerEvent state;
-} SchedulerEntry;
-
 struct _Scheduler
 {
 	TimeLine* 	pTimeLine;
@@ -60,15 +53,17 @@ Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry
 
 Comparison SchedulerComparator(const SchedulerEntry* pLeft, const SchedulerEntry* pRight, void* pUserArg)
 {
-	return (pLeft->time < pRight->time) ? LESS :
-		   (pLeft->time > pRight->time) ? GREAT : EQUAL;
+	return (pLeft->timeStamp[eSCHEDULE_ADDED] < pRight->timeStamp[eSCHEDULE_ADDED]) ? LESS :
+		   (pLeft->timeStamp[eSCHEDULE_ADDED] > pRight->timeStamp[eSCHEDULE_ADDED]) ? GREAT : EQUAL;
 }
 
 Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
 {
-	SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_RESET);
+    int i;
+    SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_RESET);
+    for (i = eSCHEDULE_RESET; i < eSCHEDULE_LAST; ++i) pEntry->timeStamp[i] = 0;
 	pEntry->state = eSCHEDULE_ADDED;
-	TimeLineEvent(pThis->pTimeLine, pEntry->time, pEntry->pPacket);
+	TimeLineEvent(pThis->pTimeLine, pEntry->timeStamp[eSCHEDULE_ADDED], pEntry->pPacket);
 	return TRUE;
 }
 
@@ -101,12 +96,15 @@ EStatus SchedulerInvokeHandler(Scheduler* pThis, SchedulerEntry* pEntry, ESchedu
 {
 	VALIDATE_ARGUMENTS(pThis && pEntry);
 	if (pEntry->state == event) return eSTATUS_COMMON_OK;
+    pEntry->state = event;
+
+    if (event != eSCHEDULE_ADDED) CHECK(TimeLineGetTime(pThis->pTimeLine, &pEntry->timeStamp[event]));
 
 	if (pThis->handler.callback)
 	{
-		pThis->handler.callback(pEntry->time, pEntry->pPacket, event, pThis->handler.pArg);
+		pThis->handler.callback(pEntry, pThis->handler.pArg);
 	}
-	pEntry->state = event;
+
 	return eSTATUS_COMMON_OK;
 }
 
@@ -116,11 +114,13 @@ EStatus SchedulerPutPacket(Scheduler* pThis, Packet* pPacket, double time)
 	VALIDATE_ARGUMENTS(pThis && pPacket && (time >= 0));
 
 	pEntry = NEW(SchedulerEntry);
-	pEntry->time = time;
 	pEntry->pPacket = pPacket;
+    pEntry->timeStamp[eSCHEDULE_ADDED] = time;
+
 	CHECK(SortedListAdd(pThis->pEntries, pEntry, FALSE));
 	CHECK(SortedListGetHead(pThis->pEntries, &pThis->pCurrent));
 	CHECK(SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_ADDED));
+
 	return eSTATUS_COMMON_OK;
 }
 
@@ -136,10 +136,11 @@ EStatus SchedulerGetPacket(Scheduler* pThis, Packet** ppPacket)
 	if (!pThis->pCurrent) return eSTATUS_SCHEDULER_NO_PACKETS;
 
 	CHECK(SortedListGetValue(pThis->pCurrent, &pSchedulerEntry));
-	if (pSchedulerEntry->time > time) return eSTATUS_SCHEDULER_NO_PACKETS;
+	if (pSchedulerEntry->timeStamp[eSCHEDULE_ADDED] > time) return eSTATUS_SCHEDULER_NO_PACKETS;
 
 	CHECK(PacketClone(ppPacket, pSchedulerEntry->pPacket));
 	CHECK(SortedListGetNext(&pThis->pCurrent));
+
 	CHECK(SchedulerInvokeHandler(pThis, pSchedulerEntry, eSCHEDULE_ISSUED));
 	return eSTATUS_COMMON_OK;
 }
@@ -153,8 +154,12 @@ EStatus SchedulerPacketDelivered(Scheduler* pThis, const Packet* pPacket)
 {
     ListEntry* pEntry;
     SchedulerEntry* pSchedulerEntry;
+
+    VALIDATE_ARGUMENTS(pThis && pPacket);
     CHECK(SortedListFind(pThis->pEntries, &pEntry, (ItemComparator)&SchedulerEntryFinder, pPacket, pThis));
     CHECK(SortedListGetValue(pEntry, &pSchedulerEntry));
+    pSchedulerEntry->pPacket->routing.length = pPacket->routing.length;
+    pSchedulerEntry->pPacket->header.hopsCount = pPacket->header.hopsCount;
     CHECK(SchedulerInvokeHandler(pThis, pSchedulerEntry, eSCHEDULE_DELIVERED));
     return eSTATUS_COMMON_OK;
 }
@@ -198,7 +203,7 @@ EStatus SchedulerExportEntry(const SchedulerEntry* pEntry, FILE* file)
             pPacket->payload.id,
             (int)pPacket->header.originalSrcId,
             (int)pPacket->header.originalDstId,
-            pEntry->time,
+            pEntry->timeStamp[eSCHEDULE_ADDED],
             (int)pPacket->payload.size,
             (int)pPacket->header.ttl);
 
@@ -212,7 +217,7 @@ EStatus SchedulerExport(const Scheduler* pThis, FILE* file)
 
 Boolean SchedulerDumpEntry(const SchedulerEntry* pEntry, void* pArg)
 {
-    DUMP_PRINT("SchedulerEntry: [time=%f]", pEntry->time);
+    DUMP_PRINT("SchedulerEntry: [time=%f]", pEntry->timeStamp[eSCHEDULE_ADDED]);
     return TRUE;
 }
 
