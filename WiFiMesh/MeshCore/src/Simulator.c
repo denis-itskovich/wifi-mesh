@@ -152,9 +152,7 @@ void SimulatorRoutingHandler(const Station* pStation,
  * @param pThis [in] pointer to instance
  */
 void SimulatorSchedulerHandler(const Station* pStation,
-                               double time,
-                               const Packet* pPacket,
-                               ESchedulerEvent event,
+                               const SchedulerEntry* pEntry,
                                Simulator* pThis);
 
 /** Handles station output box events
@@ -605,16 +603,14 @@ void SimulatorRoutingHandler(const Station* pStation,
 }
 
 void SimulatorSchedulerHandler(const Station* pStation,
-                               double time,
-                               const Packet* pPacket,
-                               ESchedulerEvent event,
+                               const SchedulerEntry* pEntry,
                                Simulator* pThis)
 {
     if (pThis->schedulerHandler.callback)
     {
-        pThis->schedulerHandler.callback(pStation, time, pPacket, event, pThis->schedulerHandler.pArg);
+        pThis->schedulerHandler.callback(pStation, pEntry, pThis->schedulerHandler.pArg);
     }
-    StatisticsHandleSchedulerEvent(pThis->pStatistics, pPacket, event);
+    StatisticsHandleSchedulerEvent(pThis->pStatistics, pEntry);
 }
 
 void SimulatorOutboxHandler(const Station* pStation,

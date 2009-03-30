@@ -47,6 +47,7 @@ public:
 
 public slots:
     void setTitle(const QString& title);
+    void setVisible(bool visible);
 
 protected:
     void paintEvent(QPaintEvent* event);

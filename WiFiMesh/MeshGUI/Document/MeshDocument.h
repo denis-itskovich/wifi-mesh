@@ -185,9 +185,7 @@ private:
 								MeshDocument *pThis);
 
 	static void schedulerHandler(	const Station* pStation,
-									double time,
-									const Packet* pPacket,
-									ESchedulerEvent event,
+									const SchedulerEntry* pEntry,
 									MeshDocument* pThis);
 
 	QList<StationId>   m_stationIds;

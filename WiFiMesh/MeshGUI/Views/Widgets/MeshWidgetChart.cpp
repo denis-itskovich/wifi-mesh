@@ -56,6 +56,12 @@ QAction* MeshWidgetChart::toggleViewAction()
     return m_action;
 }
 
+void MeshWidgetChart::setVisible(bool visible)
+{
+    QWidget::setVisible(visible);
+    m_action->setChecked(visible);
+}
+
 const QString& MeshWidgetChart::title() const
 {
     return m_title;

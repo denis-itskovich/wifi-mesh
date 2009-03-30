@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *********************************************************************************/
 
 #include "../inc/Status.h"
+#include "../inc/Macros.h"
 #include <wchar.h>
 
 #define STATUS_MESSAGE(msg) { msg, L ## msg }
@@ -27,8 +28,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		const char* amsg; \
 		const wchar_t* wmsg; \
 	} name[(count) + 1] =
-
-#define _MIN(a,b) ((a) < (b) ? (a) : (b))
 
 DECLARE_STATUS_MESSAGES(s_statusMessages, eSTATUS_LAST)
 {
@@ -70,5 +69,5 @@ EStatus s_lastStatus;
 
 const char* StatusGetMessage(EStatus status)
 {
-	return s_statusMessages[_MIN(status, eSTATUS_LAST)].amsg;
+	return s_statusMessages[MIN(status, eSTATUS_LAST)].amsg;
 }

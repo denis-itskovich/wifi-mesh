@@ -51,6 +51,13 @@ const MeshTheme::ItemDescriptor MeshTheme::s_trafficType[eTRAFFIC_LAST] =
      { DESC_TRAFFIC_TYPE[eTRAFFIC_DELIVERED],               0x0000bfbf }
 };
 
+const MeshTheme::ItemDescriptor MeshTheme::s_statisticType[eSTAT_LAST] =
+{
+     { DESC_STAT_TYPE[eSTAT_MIN],                           0x0000bfbf },
+     { DESC_STAT_TYPE[eSTAT_AVG],                           0x000000bf },
+     { DESC_STAT_TYPE[eSTAT_MAX],                           0x00bf00bf }
+};
+
 const MeshTheme::ItemDescriptor& MeshTheme::packetTypeDescriptor(EPacketType packetType)
 {
     assert(packetType < ePKT_TYPE_LAST);
@@ -67,4 +74,10 @@ const MeshTheme::ItemDescriptor& MeshTheme::trafficTypeDescriptor(ETraffic traff
 {
     assert(trafficType < eTRAFFIC_LAST);
     return s_trafficType[trafficType];
+}
+
+const MeshTheme::ItemDescriptor& MeshTheme::statisticTypeDescriptor(EStatisticsType type)
+{
+    assert(type < eSTAT_LAST);
+    return s_statisticType[type];
 }

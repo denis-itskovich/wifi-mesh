@@ -43,20 +43,25 @@ typedef enum _ESchedulerEvent
 	eSCHEDULE_ADDED,
     eSCHEDULE_RESET,
 	eSCHEDULE_ISSUED,
-	eSCHEDULE_DELIVERED
+	eSCHEDULE_DELIVERED,
+	eSCHEDULE_LAST,
 } ESchedulerEvent;
 
+/** Schedule entry structure
+ * Describes application layer data packet
+ */
+typedef struct _SchedulerEntry
+{
+    double          timeStamp[eSCHEDULE_LAST];  ///< event time stamp
+    Packet*         pPacket;                    ///< packet associated with an entry
+    ESchedulerEvent state;                      ///< current state
+} SchedulerEntry;
+
 /** Scheduler adding/removing packet handler
- * @param pStation [in] pointer to station
- * @param time [in] time, when a packet should be issued
- * @param pPacket [in] pointer to packet instance
- * @param bAdded [in] if TRUE packet is being added, otherwise removed
+ * @param pEntry [in] pointer to schedule entry
  * @param pUserArg [in] user defined argument
  */
-typedef void (*SchedulerHandler)(   double time,
-                                    const Packet* pPacket,
-                                    ESchedulerEvent bAdded,
-                                    void* pUserArg);
+typedef void (*SchedulerHandler)(const SchedulerEntry* pEntry, void* pUserArg);
 
 /** Allocates and initializes new instance
  * @param ppThis [out] pointer to new instance will be stored at *ppThis

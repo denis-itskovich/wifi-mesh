@@ -192,4 +192,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 #define INIT_PROPERTY(module, name, ptr) CHECK(module ## Init ## name(ptr))
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 #endif // _WIFI_MESH_MACROS_H
