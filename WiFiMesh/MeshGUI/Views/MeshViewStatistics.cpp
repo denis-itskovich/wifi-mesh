@@ -47,12 +47,12 @@ void MeshViewStatistics::init()
 {
     m_chartPacketsByStatus = new MeshWidgetChart("Packets by delivery status");
     m_chartPacketsByType = new MeshWidgetChart("Packets by packet type");
-    m_chartSizeByType = new MeshWidgetChart("Traffic by packet type");
+    m_chartSizeByType = new MeshWidgetChart("Traffic by packet type\n[bytes]");
     m_chartPacketsByTraffic = new MeshWidgetChart("Packets by scheduling status");
-    m_chartSizeByTraffic = new MeshWidgetChart("Traffic by scheduling status");
-    m_chartDelays = new MeshWidgetChart("Packet delivery delay");
+    m_chartSizeByTraffic = new MeshWidgetChart("Traffic by scheduling status\n[bytes]");
+    m_chartDelays = new MeshWidgetChart("Packet delivery delay\n[milliseconds]");
     m_chartPathLen = new MeshWidgetChart("Delivery path length");
-    m_chartThroughput = new MeshWidgetChart("Upper layer throughput");
+    m_chartThroughput = new MeshWidgetChart("Upper layer throughput\n[bit/s]");
 
 //    m_groupByTraffic = new QActionGroup(this);
 //    m_groupByTraffic->addAction(m_chartPacketsByTraffic->toggleViewAction());

@@ -230,13 +230,13 @@ void StatisticsPrintArray(char** ppBuff,
 
 EStatus StatisticsPrint(const Statistics* pThis, char* buffer, int len)
 {
-    StatisticsPrintArray(&buffer, &len, "Traffic by packet type", DESC_PACKET_TYPE, pThis->sizeByType, NULL, ePKT_TYPE_LAST, FALSE, FALSE);
+    StatisticsPrintArray(&buffer, &len, "Traffic by packet type [bytes]", DESC_PACKET_TYPE, pThis->sizeByType, NULL, ePKT_TYPE_LAST, FALSE, FALSE);
     StatisticsPrintArray(&buffer, &len, "Packets count by packet type", DESC_PACKET_TYPE, pThis->packetsByType, NULL, ePKT_TYPE_LAST, FALSE, FALSE);
     StatisticsPrintArray(&buffer, &len, "Packets count by delivery status", DESC_PACKET_STATUS, pThis->packetsByStatus, NULL, ePKT_STATUS_PENDING, FALSE, FALSE);
-    StatisticsPrintArray(&buffer, &len, "Traffic by scheduling status", DESC_TRAFFIC_TYPE, pThis->sizeByTraffic, NULL, eTRAFFIC_LAST, TRUE, FALSE);
+    StatisticsPrintArray(&buffer, &len, "Traffic by scheduling status [bytes]", DESC_TRAFFIC_TYPE, pThis->sizeByTraffic, NULL, eTRAFFIC_LAST, TRUE, FALSE);
     StatisticsPrintArray(&buffer, &len, "Packets count by scheduling status", DESC_TRAFFIC_TYPE, pThis->packetsByTraffic, NULL, eTRAFFIC_LAST, TRUE, FALSE);
-    StatisticsPrintArray(&buffer, &len, "Packet delivery delay (msec)", DESC_STAT_TYPE, NULL, pThis->deliveryDelay, eSTAT_LAST, FALSE, TRUE);
+    StatisticsPrintArray(&buffer, &len, "Packet delivery delay [msec]", DESC_STAT_TYPE, NULL, pThis->deliveryDelay, eSTAT_LAST, FALSE, TRUE);
     StatisticsPrintArray(&buffer, &len, "Packet delivery path length", DESC_STAT_TYPE, NULL, pThis->routeLength, eSTAT_LAST, FALSE, TRUE);
-    StatisticsPrintArray(&buffer, &len, "Upper layer throughput (bps)", DESC_STAT_TYPE, NULL, pThis->throughput, eSTAT_LAST, FALSE, TRUE);
+    StatisticsPrintArray(&buffer, &len, "Upper layer throughput [bit/s]", DESC_STAT_TYPE, NULL, pThis->throughput, eSTAT_LAST, FALSE, TRUE);
     return eSTATUS_COMMON_OK;
 }
