@@ -63,6 +63,8 @@ Boolean SchedulerResetter(SchedulerEntry* pEntry, Scheduler* pThis)
     SchedulerInvokeHandler(pThis, pEntry, eSCHEDULE_RESET);
     for (i = eSCHEDULE_RESET; i < eSCHEDULE_LAST; ++i) pEntry->timeStamp[i] = 0;
 	pEntry->state = eSCHEDULE_ADDED;
+	pEntry->pPacket->routing.length = 0;
+	pEntry->pPacket->header.hopsCount = 0;
 	TimeLineEvent(pThis->pTimeLine, pEntry->timeStamp[eSCHEDULE_ADDED], pEntry->pPacket);
 	return TRUE;
 }
