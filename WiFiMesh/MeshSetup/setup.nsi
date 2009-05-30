@@ -5,7 +5,7 @@ Name "WiFi Mesh Simulator PRO"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.1.1
+!define VERSION 1.1.2
 !define COMPANY "Denis Itskovich"
 !define URL ""
 
@@ -45,7 +45,7 @@ InstallDir "$PROGRAMFILES\WiFi Mesh Simulator PRO"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 1.1.1.0
+VIProductVersion 1.1.2.0
 VIAddVersionKey ProductName "WiFi Mesh Simulator PRO"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
@@ -67,9 +67,11 @@ Section -Main SEC0000
     File ..\MeshCore\Documentation\MeshCore.chm
     File ..\MeshCore\Documentation\MeshCore.chi
     File ..\MeshCore\Documentation\WiFiMeshSimulator.doc
+    File ..\Meshcore\Documentation\UserManual.doc
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk" $INSTDIR\MeshCore.chm
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Documentation.lnk" $INSTDIR\WiFiMeshSimulator.doc
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh User Manual.lnk" $INSTDIR\UserManual.doc
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Command prompt.lnk" "cmd.exe" "/k cd $INSTDIR" "$SYSDIR\cmd.exe"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\License.lnk" $INSTDIR\License.txt
     SetOutPath "$INSTDIR"
@@ -109,7 +111,8 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Simulator PRO.lnk"  
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh User Manual.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Documentation.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Core API.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\WiFi Mesh Command prompt.lnk"

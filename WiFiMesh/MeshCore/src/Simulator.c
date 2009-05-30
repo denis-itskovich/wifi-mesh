@@ -350,11 +350,11 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 
 	if (pThis->sniffer.callback)
 	{
-		if ((pThis->bDupBroadcast && pDst) ||
-			(!pThis->bDupBroadcast && !pDst))
-		{
+//		if ((pThis->bDupBroadcast && pDst) ||
+//			(!pThis->bDupBroadcast && !pDst))
+//		{
 			pThis->sniffer.callback(pPacket, pSrc, pDst, status, pThis->sniffer.pArg);
-		}
+//		}
 	}
 	if (pPacket->header.type == ePKT_TYPE_DATA &&
 	    status == ePKT_STATUS_DELIVERED &&
@@ -363,7 +363,11 @@ EStatus SimulatorInvokeSniffer(Simulator* pThis, const Packet* pPacket, const St
 	    CHECK(SimulatorGetStation(pThis, pPacket->header.originalSrcId, &pOrigSrc));
 	    CHECK(StationPacketDelivered(pOrigSrc, pPacket));
 	}
-	if (status != ePKT_STATUS_PENDING) CHECK(StatisticsHandlePacket(pThis->pStatistics, pPacket, status));
+	if (status != ePKT_STATUS_PENDING &&
+	    !(status == ePKT_STATUS_OUT_OF_RANGE && !pDst))
+    {
+	    CHECK(StatisticsHandlePacket(pThis->pStatistics, pPacket, status));
+    }
 	return eSTATUS_COMMON_OK;
 }
 
@@ -407,6 +411,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 	Station* pCurrent = NULL;
 	EStatus ret;
 	StationId id;
+	int deliveredCounter;
 
 	VALIDATE_ARGUMENTS(pThis && pStation);
 	CHECK(StationGetId(pStation, &id));
@@ -420,6 +425,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
     if (pPacket->routing.length <= pPacket->header.ttl)
     {
         CHECK(SortedListGetHead(pThis->pStations, &pEntry));
+        deliveredCounter = 0;
         while (pEntry)
         {
             CHECK(SortedListGetValue(pEntry, &pCurrent));
@@ -430,6 +436,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
                 CHECK(SimulatorAreAdjacent(pThis, pStation, pCurrent, &isAdjacent));
                 if (isAdjacent)
                 {
+                    ++deliveredCounter;
                     ret = StationReceivePacket(pCurrent, pPacket, &pAbortedPacket);
 
                     if (pAbortedPacket)
@@ -463,6 +470,7 @@ EStatus SimulatorDispatchPacket(Simulator* pThis, Station* pStation)
 
             CHECK(SortedListGetNext(&pEntry));
         }
+        if (deliveredCounter <= 1) CHECK(SimulatorInvokeSniffer(pThis, pPacket, pStation, NULL, ePKT_STATUS_OUT_OF_RANGE));
     }
     else
     {
