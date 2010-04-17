@@ -117,7 +117,7 @@ void MeshChartItem::paint(QPainter* painter, const QRect& rect, double reference
         itemsRect.setLeft(rect.left() + rect.width() / (items().count() + 1));
     }
 
-    int itemWidth = (int)round(((double)itemsRect.width() - (double)((count - 1) * m_spacing)) / (double)count);
+    int itemWidth = (int)floor(((double)itemsRect.width() - (double)((count - 1) * m_spacing)) / (double)count);
 
     foreach (MeshChartItem* item, m_children)
     {

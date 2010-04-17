@@ -42,7 +42,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define SAFE_OPERATION(operation)				do {operation;} while (0)
 
 /** Assertion */
-#define ASSERT(pred) SAFE_OPERATION(if (!(pred)) asm("int3;"); )
+#define ASSERT(pred) SAFE_OPERATION(if (!(pred)) *((int*)(0)) = 0; )
 
 /** Converts double value into rounded long
  * @param val double value
@@ -153,13 +153,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @see NEW
  */
 #define CONSTRUCT(pptr, module, ...) \
-	SAFE_OPERATION ( \
 		INFO_PRINT("Creating an instance of %s", #module); \
 		VALIDATE_ARGUMENTS(pptr); \
 		*pptr = NEW(module); \
 		VALIDATE(*pptr, eSTATUS_COMMON_NO_MEMORY); \
-		return module ## Init (*pptr, ## __VA_ARGS__); \
-	)
+		return module ## Init (*pptr, ## __VA_ARGS__)
 
 /** Destroys and deallocates a structure
  * @param pptr *pptr must point to valid structure

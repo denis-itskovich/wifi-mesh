@@ -134,7 +134,7 @@ QString MeshItemStation::velocityString() const
     QLineF line(QPointF(0, 0), velocity());
     qreal angle = line.angle();
     if (angle < 0) angle += 360;
-    return QString("%1, %2\xb0").arg(line.length(), 0, 'f', 2).arg(round(angle));
+    return QString("%1, %2\xb0").arg(line.length(), 0, 'f', 2).arg(floor(angle));
 }
 
 int MeshItemStation::freeBufferSize() const

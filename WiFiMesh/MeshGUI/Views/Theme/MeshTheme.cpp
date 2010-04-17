@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "MeshTheme.h"
-#include "../../../MeshCore/inc/Descriptors.h"
+#include <cassert>
 
 const MeshTheme::ItemDescriptor MeshTheme::s_packetType[ePKT_TYPE_LAST] =
 {

@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef MESHWIDGETLOG_H
 #define MESHWIDGETLOG_H
 
-#include <QtGui>
-#include "../Core/MeshCore.h"
+#include <QtGui/QtGui>
+#include "../../Core/MeshCore.h"
 
 class MeshWidgetLog : public QListWidget
 {

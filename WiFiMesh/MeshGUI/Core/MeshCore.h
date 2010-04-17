@@ -33,12 +33,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 extern "C"
 {
-	#include "../../MeshCore/inc/Station.h"
-	#include "../../MeshCore/inc/Simulator.h"
-	#include "../../MeshCore/inc/Settings.h"
-	#include "../../MeshCore/inc/Log.h"
-	#include "../../MeshCore/inc/Packet.h"
-    #include "../../MeshCore/inc/Statistics.h"
+#	include "../../MeshCore/inc/Station.h"
+#	include "../../MeshCore/inc/Simulator.h"
+#	include "../../MeshCore/inc/Settings.h"
+#	include "../../MeshCore/inc/Log.h"
+#	include "../../MeshCore/inc/Packet.h"
+#	include "../../MeshCore/inc/Statistics.h"
+#	include "../../MeshCore/inc/Descriptors.h"
 }
 
 #include "MeshException.h"

@@ -34,8 +34,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 int __counter_Settings = 0;
 
-#define SETTINGS_PROPERTY(...)  IMPLEMENT_PROPERTY(Settings, ## __VA_ARGS__)
-#define SETTINGS_INIT(name)     INIT_PROPERTY(Settings, name, pThis)
+#define SETTINGS_PROPERTY(name, type, initval)  IMPLEMENT_PROPERTY(Settings, name, type, initval)
+#define SETTINGS_INIT(name)						INIT_PROPERTY(Settings, name, pThis)
 
 struct _Settings
 {

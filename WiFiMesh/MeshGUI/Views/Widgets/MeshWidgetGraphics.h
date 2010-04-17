@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef MESHWIDGETGTAPHICS_H_
 #define MESHWIDGETGTAPHICS_H_
 
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class MeshWidgetGraphics: public QGraphicsView
 {

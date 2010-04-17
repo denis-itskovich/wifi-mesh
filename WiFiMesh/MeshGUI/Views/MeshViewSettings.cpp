@@ -172,12 +172,12 @@ void MeshViewSettings::setDataRate(double)
 void MeshViewSettings::setUnits(int units)
 {
     int dataRate = m_dataRate;
-    double min = pow(10, -units);
+    double min = pow(10.0, -units);
     double max = (double)(1 << (10 * (3 - units)));
     double val = (double)dataRate / (double)(1 << (10 * units));
 
     m_spinDataRate->setDecimals(units);
-    m_spinDataRate->setSingleStep(pow(10, -units));
+    m_spinDataRate->setSingleStep(pow(10.0, -units));
     m_spinDataRate->setRange(min, max);
 	m_spinDataRate->setValue(val);
 }

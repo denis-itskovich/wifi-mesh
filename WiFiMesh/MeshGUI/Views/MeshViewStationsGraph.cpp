@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "MeshViewStationsGraph.h"
+#include <cassert>
 
 MeshViewStationsGraph::MeshViewStationsGraph(QWidget *parent) :
 	MeshViewStations(parent)
