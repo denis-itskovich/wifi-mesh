@@ -186,6 +186,7 @@ EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket)
     Packet* pPacket;
     Boolean isActive;
     double time = 0;
+	EStatus ret = eSTATUS_COMMON_OK;
 
     VALIDATE_ARGUMENTS(pThis && ppDeliveredPacket);
     *ppDeliveredPacket = NULL;
@@ -216,7 +217,7 @@ EStatus StationSynchronize(Station* pThis, Packet** ppDeliveredPacket)
         }
 	}
 
-    EStatus ret = SchedulerGetPacket(pThis->pScheduler, &pPacket);
+    ret = SchedulerGetPacket(pThis->pScheduler, &pPacket);
     if (ret == eSTATUS_SCHEDULER_NO_PACKETS) return eSTATUS_COMMON_OK;
     CHECK(ret);
 
@@ -393,13 +394,15 @@ Boolean StationPacketAcknowledger(PacketEntry* pEntry, Station* pThis)
 EStatus StationNewPacketEntry(Station* pThis, Packet* pPacket, PacketEntry** ppEntry)
 {
     PacketEntry* pEntry;
-    unsigned size;
+    int size;
     VALIDATE_ARGUMENTS(pThis && pPacket && ppEntry);
 
     *ppEntry = NULL;
     CHECK(PacketGetSize(pPacket, &size));
     if (pThis->freeBufferSize < size)
+	{
         return eSTATUS_COMMON_OK;
+	}
 
     pThis->freeBufferSize -= size;
 
@@ -533,9 +536,10 @@ EStatus StationUpdateTiming(Station* pThis, const Packet* pPacket)
 
 EStatus StationReceivePacket(Station* pThis, const Packet* pPacket, Packet** ppAbortedPacket)
 {
-    VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type < ePKT_TYPE_LAST));
-
     EStatus ret = eSTATUS_COMMON_OK;
+
+	VALIDATE_ARGUMENTS(pThis && pPacket && (pPacket->header.type < ePKT_TYPE_LAST));
+
     *ppAbortedPacket = NULL;
 
     if (!pThis->bBusy)
@@ -601,7 +605,7 @@ Boolean StationIsDestination(Station* pThis, const Packet* pPacket)
 
 Boolean StationIsAccepted(Station* pThis, const Packet* pPacket)
 {
-    int i;
+    unsigned i;
 
     for (i = 0; i < pPacket->routing.length; ++i)
     {

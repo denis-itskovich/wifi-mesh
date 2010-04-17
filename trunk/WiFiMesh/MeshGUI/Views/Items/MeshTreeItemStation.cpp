@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "MeshTreeItemStation.h"
+#include <cassert>
 
 MeshTreeItemStation::MeshTreeItemStation(MeshViewStations* pContainer, Station* pStation) :
 	MeshItemStation(pContainer, pStation),

@@ -29,6 +29,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef WIFI_MESH_COMMONTYPES_H_
 #define WIFI_MESH_COMMONTYPES_H_
 
+#ifndef __GNUC__
+#	pragma warning (disable: 4996)
+#endif // __GNUC__
+
 #undef FALSE
 #undef TRUE
 
@@ -43,10 +47,10 @@ typedef struct _Vector
 } Vector;
 
 
-typedef Vector Location;			///< Location vector declaration
-typedef Vector Velocity;			///< Velocity vector declaration
-typedef Vector Size;				///< Size declaration
-typedef unsigned long StationId; 	///< Station id
+typedef Vector	Location;		///< Location vector declaration
+typedef Vector	Velocity;		///< Velocity vector declaration
+typedef Vector	Size;			///< Size declaration
+typedef int		StationId; 		///< Station id
 
 /// Rect declaration - defines top-left point and size
 typedef struct _Rect

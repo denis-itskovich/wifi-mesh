@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef MESHCHARTITEM_H_
 #define MESHCHARTITEM_H_
 
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class MeshChartItem;
 

@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define MESHGRAPHITEMSTATION_H_
 
 #include "MeshItemStation.h"
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class MeshGraphItemStation : public MeshItemStation, public QGraphicsItem
 {
@@ -49,6 +49,7 @@ protected:
     virtual void setCurrent(bool isCurrent);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	virtual bool isActive() const { return MeshItemStation::isActive(); }
 
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 

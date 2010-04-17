@@ -116,9 +116,12 @@ int Simulate(const char* inputfile, const char* pathloss, const char* logname)
     Simulator* pSimulator;
     Settings* pSettings;
     double maxDuration, time;
-
     FILE* logFile = NULL;
-    if (logname) logFile = fopen(logname, "w");
+
+#ifdef _DEBUG
+	int i;
+#endif // _DEBUG
+	if (logname) logFile = fopen(logname, "w");
     if (logFile) fprintf(logFile, "Time, Message type, From, To, Source, Destination, Size, Hops count, Status\n");
 
     Check(SettingsNew(&pSettings));
@@ -151,7 +154,6 @@ int Simulate(const char* inputfile, const char* pathloss, const char* logname)
     Check(SettingsDelete(&pSettings));
 
 #ifdef _DEBUG
-    int i;
     printf("Packets: %d\n", __counter_Packet);
     for (i = 0; i < ePKT_TYPE_LAST; ++i)
     {

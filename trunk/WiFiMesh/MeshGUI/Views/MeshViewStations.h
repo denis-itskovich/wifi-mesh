@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "MeshView.h"
 #include "Items/MeshItemStation.h"
-#include <QtCore>
+#include <QtCore/QtCore>
 
 class MeshViewStations : public MeshView
 {

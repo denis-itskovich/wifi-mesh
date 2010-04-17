@@ -842,6 +842,7 @@ EStatus SimulatorInitPathLoss(Simulator* pThis)
 {
     double maxAttenuation;
     StationId maxId;
+	EStatus ret;
 
     VALIDATE_ARGUMENTS(pThis);
 
@@ -850,7 +851,7 @@ EStatus SimulatorInitPathLoss(Simulator* pThis)
 
     maxId = SimulatorGetMaxId(pThis);
     CHECK(SettingsGetMaxAttenuation(pThis->pSettings, &maxAttenuation));
-    EStatus ret = PathLossNew(&pThis->pPathLoss, maxId, maxAttenuation, pThis->pathLossFile);
+    ret = PathLossNew(&pThis->pPathLoss, maxId, maxAttenuation, pThis->pathLossFile);
 
     if (ret != eSTATUS_COMMON_OK)
     {

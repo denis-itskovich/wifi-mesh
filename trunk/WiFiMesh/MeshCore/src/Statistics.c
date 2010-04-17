@@ -48,10 +48,16 @@ EStatus StatisticsInit(Statistics* pThis)
 
 EStatus StatisticsReset(Statistics* pThis)
 {
+	int scheduledSize = 0;
+	int scheduledPackets = 0;
+
     VALIDATE_ARGUMENTS(pThis);
-    int scheduledSize = pThis->sizeByTraffic[eTRAFFIC_SCHEDULED];
-    int scheduledPackets = pThis->packetsByTraffic[eTRAFFIC_SCHEDULED];
+
+    scheduledSize = pThis->sizeByTraffic[eTRAFFIC_SCHEDULED];
+    scheduledPackets = pThis->packetsByTraffic[eTRAFFIC_SCHEDULED];
+
     CHECK(StatisticsClear(pThis));
+
     pThis->sizeByTraffic[eTRAFFIC_SCHEDULED] = scheduledSize;
     pThis->packetsByTraffic[eTRAFFIC_SCHEDULED] = scheduledPackets;
     return eSTATUS_COMMON_OK;
@@ -177,7 +183,8 @@ void StatisticsPrintArray(char** ppBuff,
                           Boolean alignToMax)
 {
     double total = 0;
-    int i;
+	double percent = 0;
+	int i;
     double val;
     char c;
     int lineLen;
@@ -213,7 +220,7 @@ void StatisticsPrintArray(char** ppBuff,
         if (val > 10240) { val /= 1024.0; c = 'M'; }
         if (val > 10240) { val /= 1024.0; c = 'G'; }
 
-        double percent = total > 0 ? pDoubleArray[i] / total * 100 : 0;
+        percent = total > 0 ? pDoubleArray[i] / total * 100 : 0;
         lineLen = sprintf(*ppBuff, "    %-24s%*.0lf%-*c (%.2lf%%)\n", desc[i], c == ' ' ? 9 : 8, val, c == ' ' ? 1 : 2, c, percent);
         (*ppBuff) += lineLen;
         *pLen -= lineLen;

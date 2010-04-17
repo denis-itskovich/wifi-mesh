@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef MESHGRAPHITEMARROW_H_
 #define MESHGRAPHITEMARROW_H_
 
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class MeshGraphItemArrow : public QGraphicsItem
 {
