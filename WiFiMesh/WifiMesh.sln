@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshCore", "MeshCore\MeshCore.vcproj", "{86AF795C-8E5A-46E8-8232-0F0B3AEBB9D1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshGUI", "MeshGUI\MeshGUI.vcproj", "{F69BF60C-E2AE-4B2E-A3CB-37EBFD4B29F2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{86AF795C-8E5A-46E8-8232-0F0B3AEBB9D1} = {86AF795C-8E5A-46E8-8232-0F0B3AEBB9D1}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshCore", "MeshCore\MeshCore.vcproj", "{86AF795C-8E5A-46E8-8232-0F0B3AEBB9D1}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MeshSetup", "MeshSetup\MeshSetup.vdproj", "{890D4C3C-1DCB-45EF-BA5B-E11B58569EB1}"
 EndProject
