@@ -45,6 +45,7 @@ void MeshGraphItemVelocityHandle::init()
     font.setPointSize(font.pointSize() - 1);
     m_text->setFont(font);
     setFlag(ItemIsMovable);
+	setFlag(ItemSendsGeometryChanges);
     setZValue(2);
     setCursor(Qt::OpenHandCursor);
     setPos(m_station->velocity());
