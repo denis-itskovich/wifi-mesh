@@ -10,6 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshGUI", "MeshGUI\MeshGUI.
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MeshSetup", "MeshSetup\MeshSetup.vdproj", "{890D4C3C-1DCB-45EF-BA5B-E11B58569EB1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DFE8FD9-E150-4F96-BBE9-68D616F54DD3}"
+	ProjectSection(SolutionItems) = preProject
+		README.txt = README.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

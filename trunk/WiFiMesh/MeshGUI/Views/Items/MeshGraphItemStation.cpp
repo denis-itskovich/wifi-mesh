@@ -37,6 +37,7 @@ MeshGraphItemStation::MeshGraphItemStation(MeshViewStations* pContainer, Station
 	m_handle(NULL)
 {
     setFlag(ItemIsMovable);
+	setFlag(ItemSendsGeometryChanges);
     setAcceptHoverEvents(true);
 //    setCacheMode(ItemCoordinateCache);
     setPos(location());
