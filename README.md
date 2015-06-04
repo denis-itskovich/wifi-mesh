@@ -2,6 +2,8 @@
 #### Introduction
 This simulator was developed as an academic project in 2009. It is not officially supported anymore, but you are welcome to fork and change it if you wish.
 
+The project was transferred to *GitHub* from *Google Code* in 2015.
+
 #### Features
 Allows to simulate traffic and routing building between moving in 2D space stations. Each station has the following properties:
 * Initial location
