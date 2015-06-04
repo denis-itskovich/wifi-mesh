@@ -20,3 +20,6 @@ Simulator has very extensive GUI, allowing performing deeper research, such as:
 * Current station position and it's velocity vector
 * All data transaction shown on the world map
 * Each station may be investigated for packets queue and routing table
+
+#### License
+The source code of this simulator is distributed under GPL version 2 license. See [license agreement](LICENSE) for more details
