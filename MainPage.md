@@ -1,0 +1,12 @@
+# WiFi Mesh Simulator Pro #
+
+Allows to simulate traffic and routing building between moving in 2D space stations.
+
+
+# Details #
+
+Each station has the following features:
+  * Constant velocity (direction and absolute value)
+  * Location in 2D space
+  * Scheduled for delivery packets (time, destination and data)
+  * Routing table, which is being built dynamically using reactive protocol.
